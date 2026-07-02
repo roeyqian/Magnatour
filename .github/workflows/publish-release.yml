@@ -124,7 +124,7 @@ jobs:
           changelog: ${{ github.event.release.body }}
           loaders: fabric
           game-versions: ${{ steps.meta.outputs.game_version }}
-          modrinth-id: magnatour
+          modrinth-id: xu8wy0oC
           modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
           curseforge-id: 1595314
           curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
