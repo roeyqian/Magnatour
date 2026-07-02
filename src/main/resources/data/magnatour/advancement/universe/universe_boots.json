@@ -1,0 +1,33 @@
+{
+  "parent": "magnatour:universe/universe_star",
+  "criteria": {
+    "universe_boots": {
+      "conditions": {
+        "items": [
+          {
+            "items": "magnatour:universe_boots"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.magnatour.universe_boots.description"
+    },
+    "frame": "challenge",
+    "icon": {
+      "id": "magnatour:universe_boots"
+    },
+    "title": {
+      "translate": "advancements.magnatour.universe_boots.title"
+    }
+  },
+  "requirements": [
+    [
+      "universe_boots"
+    ]
+  ],
+  "sends_telemetry_event": false
+}

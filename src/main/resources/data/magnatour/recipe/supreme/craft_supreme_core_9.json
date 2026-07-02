@@ -1,0 +1,16 @@
+{
+  "type": "magnatour:supreme_crafting",
+  "category": "misc",
+  "group": "supreme:items",
+  "pattern": [
+    "A"
+  ],
+  "key": {
+    "A": "magnatour:supreme_block"
+  },
+  "result": {
+    "count": 9,
+    "id": "magnatour:supreme_core"
+  },
+  "show_notification": true
+}

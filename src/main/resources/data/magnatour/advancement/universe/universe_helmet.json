@@ -1,0 +1,33 @@
+{
+  "parent": "magnatour:universe/universe_star",
+  "criteria": {
+    "universe_helmet": {
+      "conditions": {
+        "items": [
+          {
+            "items": "magnatour:universe_helmet"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.magnatour.universe_helmet.description"
+    },
+    "frame": "challenge",
+    "icon": {
+      "id": "magnatour:universe_helmet"
+    },
+    "title": {
+      "translate": "advancements.magnatour.universe_helmet.title"
+    }
+  },
+  "requirements": [
+    [
+      "universe_helmet"
+    ]
+  ],
+  "sends_telemetry_event": false
+}

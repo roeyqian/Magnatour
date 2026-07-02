@@ -1,0 +1,35 @@
+{
+  "criteria": {
+    "universe_primary_fragment": {
+      "conditions": {
+        "items": [
+          {
+            "items": "magnatour:universe_primary_fragment"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "background": "minecraft:block/bedrock",
+    "description": {
+      "translate": "advancements.magnatour.universe.description"
+    },
+    "frame": "challenge",
+    "icon": {
+      "id": "magnatour:universe_primary_fragment"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancements.magnatour.universe.title"
+    }
+  },
+  "requirements": [
+    [
+      "universe_primary_fragment"
+    ]
+  ],
+  "sends_telemetry_event": false
+}

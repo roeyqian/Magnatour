@@ -1,0 +1,13 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "up": "magnatour:block/supreme_furnace_top",
+    "down": "magnatour:block/supreme_furnace_top",
+    "particle": "magnatour:block/supreme_furnace_front",
+    "north": "magnatour:block/supreme_furnace_front",
+    "south": "magnatour:block/supreme_furnace_side",
+    "west": "magnatour:block/supreme_furnace_side",
+    "east": "magnatour:block/supreme_furnace_side"
+  }
+}
+

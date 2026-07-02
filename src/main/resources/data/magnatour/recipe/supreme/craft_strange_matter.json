@@ -1,0 +1,22 @@
+{
+  "type": "magnatour:supreme_crafting",
+  "category": "misc",
+  "group": "magnatour:items",
+  "pattern": [
+    "ABA",
+    "CDC",
+    "EBE"
+  ],
+  "key": {
+    "A": "minecraft:fermented_spider_eye",
+    "B": "minecraft:dragon_breath",
+    "C": "minecraft:glistering_melon_slice",
+    "D": "magnatour:supreme_banquet",
+    "E": "minecraft:rabbit_foot"
+  },
+  "result": {
+    "count": 1,
+    "id": "magnatour:strange_matter"
+  },
+  "show_notification": true
+}

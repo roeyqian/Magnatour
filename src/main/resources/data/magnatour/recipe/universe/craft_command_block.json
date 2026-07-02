@@ -1,0 +1,20 @@
+{
+  "type": "magnatour:universe_crafting",
+  "category": "building",
+  "group": "magnatour:items",
+  "pattern": [
+    "ABA",
+    "BCB",
+    "ABA"
+  ],
+  "key": {
+    "A": "magnatour:universe_primary_block",
+    "B": "minecraft:redstone_block",
+    "C": "magnatour:universe_block"
+  },
+  "result": {
+    "count": 1,
+    "id": "minecraft:command_block"
+  },
+  "show_notification": true
+}

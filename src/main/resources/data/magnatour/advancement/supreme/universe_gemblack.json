@@ -1,0 +1,33 @@
+{
+  "parent": "magnatour:supreme/sculk_behemoth",
+  "criteria": {
+    "universe_gemblack": {
+      "conditions": {
+        "items": [
+          {
+            "items": "magnatour:universe_gemblack"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.magnatour.universe_gemblack.description"
+    },
+    "frame": "challenge",
+    "icon": {
+      "id": "magnatour:universe_gemblack"
+    },
+    "title": {
+      "translate": "advancements.magnatour.universe_gemblack.title"
+    }
+  },
+  "requirements": [
+    [
+      "universe_gemblack"
+    ]
+  ],
+  "sends_telemetry_event": false
+}

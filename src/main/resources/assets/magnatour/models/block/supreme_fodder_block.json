@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cube_column",
+  "textures": {
+    "end": "magnatour:block/supreme_fodder_block_end",
+    "side": "magnatour:block/supreme_fodder_block_side"
+  }
+}

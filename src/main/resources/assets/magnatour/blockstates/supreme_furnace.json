@@ -1,0 +1,9 @@
+{
+  "variants": {
+    "facing=north": { "model": "magnatour:block/supreme_furnace" },
+    "facing=south": { "model": "magnatour:block/supreme_furnace", "y": 180 },
+    "facing=west":  { "model": "magnatour:block/supreme_furnace", "y": 270 },
+    "facing=east":  { "model": "magnatour:block/supreme_furnace", "y": 90 }
+  }
+}
+

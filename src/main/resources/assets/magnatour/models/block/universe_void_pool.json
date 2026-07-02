@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cube_column",
+  "textures": {
+    "end": "magnatour:block/universe_void_pool_end",
+    "side": "magnatour:block/universe_void_pool_side"
+  }
+}

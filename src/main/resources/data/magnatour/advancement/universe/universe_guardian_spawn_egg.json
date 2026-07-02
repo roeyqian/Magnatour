@@ -1,0 +1,33 @@
+{
+  "parent": "magnatour:universe/universe_star",
+  "criteria": {
+    "universe_guardian_spawn_egg": {
+      "conditions": {
+        "items": [
+          {
+            "items": "magnatour:universe_guardian_spawn_egg"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.magnatour.universe_guardian_spawn_egg.description"
+    },
+    "frame": "challenge",
+    "icon": {
+      "id": "magnatour:universe_guardian_spawn_egg"
+    },
+    "title": {
+      "translate": "advancements.magnatour.universe_guardian_spawn_egg.title"
+    }
+  },
+  "requirements": [
+    [
+      "universe_guardian_spawn_egg"
+    ]
+  ],
+  "sends_telemetry_event": false
+}

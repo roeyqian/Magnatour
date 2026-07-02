@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "magnatour:item/strange_lingering_potion"
+  }
+}
+

@@ -1,0 +1,33 @@
+{
+  "parent": "magnatour:supreme/gold_bell_tower",
+  "criteria": {
+    "universe_gemyellow": {
+      "conditions": {
+        "items": [
+          {
+            "items": "magnatour:universe_gemyellow"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.magnatour.universe_gemyellow.description"
+    },
+    "frame": "challenge",
+    "icon": {
+      "id": "magnatour:universe_gemyellow"
+    },
+    "title": {
+      "translate": "advancements.magnatour.universe_gemyellow.title"
+    }
+  },
+  "requirements": [
+    [
+      "universe_gemyellow"
+    ]
+  ],
+  "sends_telemetry_event": false
+}

@@ -1,0 +1,21 @@
+{
+  "type": "magnatour:supreme_crafting",
+  "category": "building",
+  "group": "supreme:items",
+  "pattern": [
+    "A"
+  ],
+  "key": {
+    "A": [
+      "magnatour:golden_log",
+      "magnatour:golden_wood",
+      "magnatour:stripped_golden_log",
+      "magnatour:stripped_golden_wood"
+    ]
+  },
+  "result": {
+    "count": 4,
+    "id": "magnatour:golden_planks"
+  },
+  "show_notification": true
+}

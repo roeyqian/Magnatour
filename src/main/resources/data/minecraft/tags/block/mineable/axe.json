@@ -1,0 +1,20 @@
+{
+  "replace": false,
+  "values": [
+    "magnatour:golden_log",
+    "magnatour:stripped_golden_log",
+    "magnatour:golden_wood",
+    "magnatour:stripped_golden_wood",
+    "magnatour:golden_planks",
+    "magnatour:supreme_pumpkin_head",
+    "magnatour:supreme_worktable",
+    "magnatour:supreme_chest",
+    "magnatour:universe_log",
+    "magnatour:stripped_universe_log",
+    "magnatour:universe_wood",
+    "magnatour:stripped_universe_wood",
+    "magnatour:universe_planks",
+    "magnatour:universe_library",
+    "magnatour:universe_workstation"
+  ]
+}

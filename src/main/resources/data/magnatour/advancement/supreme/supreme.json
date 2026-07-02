@@ -1,0 +1,34 @@
+{
+  "criteria": {
+    "supreme_worktable": {
+      "conditions": {
+        "items": [
+          {
+            "items": "magnatour:supreme_worktable"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "background": "minecraft:block/obsidian",
+    "description": {
+      "translate": "advancements.magnatour.supreme.description"
+    },
+    "icon": {
+      "id": "magnatour:supreme_worktable"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancements.magnatour.supreme.title"
+    }
+  },
+  "requirements": [
+    [
+      "supreme_worktable"
+    ]
+  ],
+  "sends_telemetry_event": false
+}

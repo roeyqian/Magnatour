@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/cube_bottom_top",
+  "textures": {
+    "top": "magnatour:entity/primed_chunk_tnt/primed_chunk_tnt_top",
+    "bottom": "magnatour:entity/primed_chunk_tnt/primed_chunk_tnt_bottom",
+    "side": "magnatour:entity/primed_chunk_tnt/primed_chunk_tnt_side"
+  }
+}

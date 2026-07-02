@@ -1,0 +1,17 @@
+{
+  "type": "magnatour:universe_crafting",
+  "category": "building",
+  "group": "magnatour:items",
+  "pattern": [
+    "AA",
+    "AA"
+  ],
+  "key": {
+    "A": "magnatour:stripped_universe_log"
+  },
+  "result": {
+    "count": 4,
+    "id": "magnatour:stripped_universe_wood"
+  },
+  "show_notification": true
+}

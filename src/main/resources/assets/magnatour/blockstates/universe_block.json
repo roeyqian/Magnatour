@@ -1,0 +1,6 @@
+{
+  "variants": {
+    "lit=false": { "model": "magnatour:block/universe_block" },
+    "lit=true": { "model": "magnatour:block/universe_block" }
+  }
+}

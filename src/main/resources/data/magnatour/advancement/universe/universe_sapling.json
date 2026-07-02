@@ -1,0 +1,33 @@
+{
+  "parent": "magnatour:universe/universe_stick",
+  "criteria": {
+    "universe_sapling": {
+      "conditions": {
+        "items": [
+          {
+            "items": "magnatour:universe_sapling"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.magnatour.universe_sapling.description"
+    },
+    "frame": "challenge",
+    "icon": {
+      "id": "magnatour:universe_sapling"
+    },
+    "title": {
+      "translate": "advancements.magnatour.universe_sapling.title"
+    }
+  },
+  "requirements": [
+    [
+      "universe_sapling"
+    ]
+  ],
+  "sends_telemetry_event": false
+}

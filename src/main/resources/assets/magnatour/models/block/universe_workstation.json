@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "up": "magnatour:block/universe_workstation_top",
+    "down": "magnatour:block/universe_workstation_bottom",
+    "particle": "magnatour:block/universe_workstation_front",
+    "north": "magnatour:block/universe_workstation_front",
+    "south": "magnatour:block/universe_workstation_back",
+    "west": "magnatour:block/universe_workstation_left",
+    "east": "magnatour:block/universe_workstation_right"
+  }
+}

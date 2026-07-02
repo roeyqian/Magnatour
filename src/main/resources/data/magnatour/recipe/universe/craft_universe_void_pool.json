@@ -1,0 +1,19 @@
+{
+  "type": "magnatour:universe_crafting",
+  "category": "building",
+  "group": "magnatour:items",
+  "pattern": [
+    "AAA",
+    "ABA",
+    "AAA"
+  ],
+  "key": {
+    "A": "magnatour:universe_block",
+    "B": "minecraft:barrier"
+  },
+  "result": {
+    "count": 1,
+    "id": "magnatour:universe_void_pool"
+  },
+  "show_notification": true
+}

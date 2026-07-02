@@ -1,0 +1,6 @@
+{
+  "variants": {
+    "powered=false": { "model": "magnatour:block/redstone_trigger" },
+    "powered=true": { "model": "magnatour:block/redstone_trigger_on" }
+  }
+}

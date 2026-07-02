@@ -1,0 +1,33 @@
+{
+  "parent": "magnatour:universe/universe_star",
+  "criteria": {
+    "universe_stick": {
+      "conditions": {
+        "items": [
+          {
+            "items": "magnatour:universe_stick"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.magnatour.universe_stick.description"
+    },
+    "frame": "challenge",
+    "icon": {
+      "id": "magnatour:universe_stick"
+    },
+    "title": {
+      "translate": "advancements.magnatour.universe_stick.title"
+    }
+  },
+  "requirements": [
+    [
+      "universe_stick"
+    ]
+  ],
+  "sends_telemetry_event": false
+}

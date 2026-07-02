@@ -1,0 +1,17 @@
+{
+  "type": "magnatour:supreme_crafting",
+  "category": "building",
+  "group": "supreme:items",
+  "pattern": [
+    "AA",
+    "AA"
+  ],
+  "key": {
+    "A": "magnatour:supreme_core"
+  },
+  "result": {
+    "count": 1,
+    "id": "magnatour:supreme_worktable"
+  },
+  "show_notification": true
+}

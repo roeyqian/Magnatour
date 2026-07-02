@@ -1,0 +1,16 @@
+{
+  "type": "magnatour:universe_crafting",
+  "category": "misc",
+  "group": "magnatour:items",
+  "pattern": [
+    "A"
+  ],
+  "key": {
+    "A": "magnatour:universe_block"
+  },
+  "result": {
+    "id": "magnatour:universe_star",
+    "count": 9
+  },
+  "show_notification": true
+}

@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "magnatour:golden_log",
+    "magnatour:stripped_golden_log",
+    "magnatour:golden_wood",
+    "magnatour:stripped_golden_wood",
+    "magnatour:universe_log",
+    "magnatour:stripped_universe_log",
+    "magnatour:universe_wood",
+    "magnatour:stripped_universe_wood"
+  ]
+}

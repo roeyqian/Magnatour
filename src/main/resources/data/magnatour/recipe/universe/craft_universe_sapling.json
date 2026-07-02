@@ -1,0 +1,20 @@
+{
+  "type": "magnatour:universe_crafting",
+  "category": "building",
+  "group": "magnatour:items",
+  "pattern": [
+    "A",
+    "B",
+    "C"
+  ],
+  "key": {
+    "A": "magnatour:universe_star",
+    "B": "magnatour:universe_stick",
+    "C": "magnatour:universe_block"
+  },
+  "result": {
+    "count": 1,
+    "id": "magnatour:universe_sapling"
+  },
+  "show_notification": true
+}

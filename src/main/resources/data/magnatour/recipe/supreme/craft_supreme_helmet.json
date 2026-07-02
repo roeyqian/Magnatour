@@ -1,0 +1,17 @@
+{
+  "type": "magnatour:supreme_crafting",
+  "category": "equipment",
+  "group": "supreme:items",
+  "pattern": [
+    "AAA",
+    "A A"
+  ],
+  "key": {
+    "A": "magnatour:supreme_metal"
+  },
+  "result": {
+    "count": 1,
+    "id": "magnatour:supreme_helmet"
+  },
+  "show_notification": true
+}

@@ -1,0 +1,33 @@
+{
+  "parent": "magnatour:supreme/city_of_diamond",
+  "criteria": {
+    "ore_core": {
+      "conditions": {
+        "items": [
+          {
+            "items": "magnatour:ore_core"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.magnatour.ore_core.description"
+    },
+    "frame": "goal",
+    "icon": {
+      "id": "magnatour:ore_core"
+    },
+    "title": {
+      "translate": "advancements.magnatour.ore_core.title"
+    }
+  },
+  "requirements": [
+    [
+      "ore_core"
+    ]
+  ],
+  "sends_telemetry_event": false
+}

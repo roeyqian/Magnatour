@@ -1,0 +1,33 @@
+{
+  "parent": "magnatour:universe/universe_star",
+  "criteria": {
+    "universe_chestplate": {
+      "conditions": {
+        "items": [
+          {
+            "items": "magnatour:universe_chestplate"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.magnatour.universe_chestplate.description"
+    },
+    "frame": "challenge",
+    "icon": {
+      "id": "magnatour:universe_chestplate"
+    },
+    "title": {
+      "translate": "advancements.magnatour.universe_chestplate.title"
+    }
+  },
+  "requirements": [
+    [
+      "universe_chestplate"
+    ]
+  ],
+  "sends_telemetry_event": false
+}

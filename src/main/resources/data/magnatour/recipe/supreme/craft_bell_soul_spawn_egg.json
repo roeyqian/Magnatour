@@ -1,0 +1,19 @@
+{
+  "type": "magnatour:supreme_crafting",
+  "category": "misc",
+  "group": "magnatour:spawn_eggs",
+  "pattern": [
+    "AAA",
+    "ABA",
+    "AAA"
+  ],
+  "key": {
+    "A": "minecraft:soul_lantern",
+    "B": "magnatour:strange_matter"
+  },
+  "result": {
+    "count": 1,
+    "id": "magnatour:bell_soul_spawn_egg"
+  },
+  "show_notification": true
+}

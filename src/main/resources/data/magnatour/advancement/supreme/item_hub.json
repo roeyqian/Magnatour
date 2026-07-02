@@ -1,0 +1,32 @@
+{
+  "parent": "magnatour:supreme/supreme",
+  "criteria": {
+    "item_hub": {
+      "conditions": {
+        "items": [
+          {
+            "items": "magnatour:item_hub"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.magnatour.item_hub.description"
+    },
+    "icon": {
+      "id": "magnatour:item_hub"
+    },
+    "title": {
+      "translate": "advancements.magnatour.item_hub.title"
+    }
+  },
+  "requirements": [
+    [
+      "item_hub"
+    ]
+  ],
+  "sends_telemetry_event": false
+}

@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:random_selector",
+  "config": {
+    "default": "magnatour:golden_tree",
+    "features": [
+      {
+        "chance": 1,
+        "feature": "magnatour:golden_tree"
+      }
+    ]
+  }
+}

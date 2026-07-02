@@ -1,0 +1,21 @@
+{
+  "type": "magnatour:supreme_crafting",
+  "category": "misc",
+  "group": "magnatour:items",
+  "pattern": [
+    "ABA",
+    "CDC",
+    "ABA"
+  ],
+  "key": {
+    "A": "minecraft:wheat",
+    "B": "minecraft:milk_bucket",
+    "C": "minecraft:honey_bottle",
+    "D": "magnatour:fruit_of_all_things"
+  },
+  "result": {
+    "count": 1,
+    "id": "magnatour:supreme_banquet"
+  },
+  "show_notification": true
+}

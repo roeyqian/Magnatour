@@ -1,0 +1,33 @@
+{
+  "parent": "magnatour:universe/universe_stick",
+  "criteria": {
+    "universe_ultima_sword": {
+      "conditions": {
+        "items": [
+          {
+            "items": "magnatour:universe_ultima_sword"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.magnatour.universe_ultima_sword.description"
+    },
+    "frame": "challenge",
+    "icon": {
+      "id": "magnatour:universe_ultima_sword"
+    },
+    "title": {
+      "translate": "advancements.magnatour.universe_ultima_sword.title"
+    }
+  },
+  "requirements": [
+    [
+      "universe_ultima_sword"
+    ]
+  ],
+  "sends_telemetry_event": false
+}

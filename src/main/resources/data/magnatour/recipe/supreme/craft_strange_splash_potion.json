@@ -1,0 +1,19 @@
+{
+  "type": "magnatour:supreme_crafting",
+  "category": "misc",
+  "group": "magnatour:items",
+  "pattern": [
+    " A ",
+    "ABA",
+    " A "
+  ],
+  "key": {
+    "A": "minecraft:splash_potion",
+    "B": "magnatour:strange_matter"
+  },
+  "result": {
+    "count": 1,
+    "id": "magnatour:strange_splash_potion"
+  },
+  "show_notification": true
+}

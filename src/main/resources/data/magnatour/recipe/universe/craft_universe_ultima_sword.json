@@ -1,0 +1,19 @@
+{
+  "type": "magnatour:universe_crafting",
+  "category": "equipment",
+  "group": "magnatour:items",
+  "pattern": [
+    "AAA",
+    "ABA",
+    " B "
+  ],
+  "key": {
+    "A": "magnatour:universe_star",
+    "B": "magnatour:universe_stick"
+  },
+  "result": {
+    "count": 1,
+    "id": "magnatour:universe_ultima_sword"
+  },
+  "show_notification": true
+}

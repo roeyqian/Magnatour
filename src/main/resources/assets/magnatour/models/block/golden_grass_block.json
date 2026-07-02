@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "up": "magnatour:block/golden_grass_block_top",
+    "down": "magnatour:block/ever_water_soil",
+    "particle": "magnatour:block/golden_grass_block_side",
+    "north": "magnatour:block/golden_grass_block_side",
+    "south": "magnatour:block/golden_grass_block_side",
+    "west": "magnatour:block/golden_grass_block_side",
+    "east": "magnatour:block/golden_grass_block_side"
+  }
+}

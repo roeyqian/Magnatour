@@ -1,0 +1,20 @@
+{
+  "type": "magnatour:supreme_crafting",
+  "category": "building",
+  "group": "supreme:items",
+  "pattern": [
+    "ABA",
+    "BCB",
+    "ABA"
+  ],
+  "key": {
+    "A": "minecraft:hay_block",
+    "B": "minecraft:honeycomb_block",
+    "C": "magnatour:supreme_core"
+  },
+  "result": {
+    "count": 1,
+    "id": "magnatour:supreme_fodder_block"
+  },
+  "show_notification": true
+}

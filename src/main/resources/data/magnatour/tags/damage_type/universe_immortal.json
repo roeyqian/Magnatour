@@ -1,0 +1,16 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:in_fire",
+    "minecraft:on_fire",
+    "minecraft:lava",
+    "minecraft:cactus",
+    "minecraft:explosion",
+    "minecraft:player_explosion",
+    "minecraft:wither",
+    "minecraft:dragon_breath",
+    "minecraft:sweet_berry_bush",
+    "minecraft:lightning_bolt",
+    "minecraft:thorns"
+  ]
+}

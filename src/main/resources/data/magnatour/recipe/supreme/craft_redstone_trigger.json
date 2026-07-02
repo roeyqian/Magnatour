@@ -1,0 +1,19 @@
+{
+  "type": "magnatour:supreme_crafting",
+  "category": "building",
+  "group": "supreme:items",
+  "pattern": [
+    " A ",
+    "ABA",
+    " A "
+  ],
+  "key": {
+    "A": "magnatour:supreme_core",
+    "B": "minecraft:redstone_block"
+  },
+  "result": {
+    "count": 1,
+    "id": "magnatour:redstone_trigger"
+  },
+  "show_notification": true
+}

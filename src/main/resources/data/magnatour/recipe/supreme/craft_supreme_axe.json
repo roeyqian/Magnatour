@@ -1,0 +1,21 @@
+{
+  "type": "magnatour:supreme_crafting",
+  "category": "equipment",
+  "group": "supreme:items",
+  "pattern": [
+    "BA",
+    "AC",
+    " D"
+  ],
+  "key": {
+    "A": "magnatour:supreme_crystal",
+    "B": "magnatour:supreme_metal",
+    "C": "minecraft:blaze_rod",
+    "D": "minecraft:breeze_rod"
+  },
+  "result": {
+    "count": 1,
+    "id": "magnatour:supreme_axe"
+  },
+  "show_notification": true
+}

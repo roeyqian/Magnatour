@@ -1,0 +1,20 @@
+{
+  "type": "magnatour:universe_crafting",
+  "category": "building",
+  "group": "magnatour:items",
+  "pattern": [
+    "ABA",
+    "BCB",
+    "ABA"
+  ],
+  "key": {
+    "A": "minecraft:jigsaw",
+    "B": "minecraft:structure_block",
+    "C": "magnatour:universe_block"
+  },
+  "result": {
+    "count": 1,
+    "id": "magnatour:universe_teleport_point"
+  },
+  "show_notification": true
+}

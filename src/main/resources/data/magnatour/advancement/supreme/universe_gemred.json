@@ -1,0 +1,33 @@
+{
+  "parent": "magnatour:supreme/strange_matter",
+  "criteria": {
+    "universe_gemred": {
+      "conditions": {
+        "items": [
+          {
+            "items": "magnatour:universe_gemred"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.magnatour.universe_gemred.description"
+    },
+    "frame": "challenge",
+    "icon": {
+      "id": "magnatour:universe_gemred"
+    },
+    "title": {
+      "translate": "advancements.magnatour.universe_gemred.title"
+    }
+  },
+  "requirements": [
+    [
+      "universe_gemred"
+    ]
+  ],
+  "sends_telemetry_event": false
+}

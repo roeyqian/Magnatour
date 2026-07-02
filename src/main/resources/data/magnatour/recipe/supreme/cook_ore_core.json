@@ -1,0 +1,11 @@
+{
+  "type": "magnatour:supreme_cooking",
+  "category": "misc",
+  "cookingtime": 960,
+  "experience": 480,
+  "ingredient": "magnatour:supreme_metal",
+  "result": {
+    "id": "magnatour:ore_core"
+  }
+}
+

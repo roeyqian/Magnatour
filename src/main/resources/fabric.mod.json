@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "id": "magnatour",
+  "version": "${version}",
+  "name": "Magnatour",
+  "description": "Magnatour features experiencing explosive growth in numbers and mechanism throughout your adventures.",
+  "authors": [
+    "RoeyQian"
+  ],
+  "contact": {
+    "homepage": "https://fabricmc.net/",
+    "sources": "https://github.com/roeyqian/Magnatour"
+  },
+  "license": "GPL-3.0-only",
+  "icon": "assets/magnatour/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": ["roeyqian.magnatour.Magnatour"],
+    "client": ["roeyqian.magnatour.MagnatourClient"]
+  },
+  "mixins": [
+    "magnatour.mixins.json",
+    {
+      "config": "magnatour.client.mixins.json",
+      "environment": "client"
+    }
+  ],
+  "depends": {
+    "fabricloader": ">=0.18.4",
+    "minecraft": "26.1",
+    "java": ">=25",
+    "fabric-api": "*"
+  }
+}

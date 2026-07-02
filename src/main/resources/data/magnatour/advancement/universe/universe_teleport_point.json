@@ -1,0 +1,33 @@
+{
+  "parent": "magnatour:universe/universe_star",
+  "criteria": {
+    "universe_teleport_point": {
+      "conditions": {
+        "items": [
+          {
+            "items": "magnatour:universe_teleport_point"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.magnatour.universe_teleport_point.description"
+    },
+    "frame": "challenge",
+    "icon": {
+      "id": "magnatour:universe_teleport_point"
+    },
+    "title": {
+      "translate": "advancements.magnatour.universe_teleport_point.title"
+    }
+  },
+  "requirements": [
+    [
+      "universe_teleport_point"
+    ]
+  ],
+  "sends_telemetry_event": false
+}

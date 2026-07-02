@@ -1,0 +1,10 @@
+{
+  "type": "magnatour:universe_cooking",
+  "category": "misc",
+  "cookingtime": 1000000,
+  "experience": 200000,
+  "ingredient": "minecraft:bedrock",
+  "result": {
+    "id": "magnatour:universe_primary_fragment"
+  }
+}

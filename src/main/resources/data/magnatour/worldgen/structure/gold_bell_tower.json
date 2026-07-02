@@ -1,0 +1,7 @@
+{
+  "type": "magnatour:gold_bell_tower",
+  "biomes": "#magnatour:has_structure/gold_bell_tower",
+  "step": "surface_structures",
+  "spawn_overrides": {},
+  "terrain_adaptation": "beard_thin"
+}

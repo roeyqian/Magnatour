@@ -1,0 +1,58 @@
+[
+  {
+    "title": "Java Standard",
+    "prefixes": ["java.", "javax."]
+  },
+  {
+    "title": "Google Guava",
+    "prefixes": ["com.google."]
+  },
+  {
+    "title": "Mojang",
+    "prefixes": ["com.mojang."]
+  },
+  {
+    "title": "Fabric",
+    "prefixes": ["net.fabricmc."]
+  },
+  {
+    "title": "Minecraft",
+    "prefixes": ["net.minecraft."]
+  },
+  {
+    "title": "SLF4J",
+    "prefixes": ["org.slf4j."]
+  },
+  {
+    "title": "SpongePowered Mixin",
+    "prefixes": ["org.spongepowered."]
+  },
+  {
+    "title": "JSpecify",
+    "prefixes": ["org.jspecify."]
+  },
+  {
+    "title": "JOML",
+    "prefixes": ["org.joml."]
+  },
+  {
+    "title": "Lightweight Java Game Library",
+    "prefixes": ["org.lwjgl."]
+  },
+  {
+    "title": "FastUtil",
+    "prefixes": ["it.unimi."]
+  },
+  {
+    "title": "ObjectWeb ASM",
+    "prefixes": ["org.objectweb."]
+  },
+  {
+    "title": "Magnatour",
+    "prefixes": ["roeyqian.magnatour."]
+  },
+  {
+    "title": "Other",
+    "prefixes": []
+  }
+]

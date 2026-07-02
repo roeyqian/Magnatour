@@ -1,0 +1,193 @@
+/*
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ * Copyright (C) 2026 Roey Qian
+ *
+ * This file is part of Universe Mod.
+ * Full license text available in the LICENSE file in the project root.
+ */
+package roeyqian.magnatour.utility.mixin.block;
+
+// Minecraft
+import net.minecraft.core.NonNullList;
+import net.minecraft.core.BlockPos;
+import net.minecraft.recipebook.PlaceRecipeHelper;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingInput;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.CraftingRecipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
+
+// SpongePowered Mixin
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+// Magnatour
+import roeyqian.magnatour.block.SummonStructureHelper;
+import roeyqian.magnatour.gen.CraftingResultHelper;
+import roeyqian.magnatour.gen.recipe.SupremeCraftingRecipe;
+import roeyqian.magnatour.gen.recipe.UniverseCraftingRecipe;
+import roeyqian.magnatour.utility.registry.gen.RegRecipes;
+
+public final class BlockHelperForFunction {
+
+  private BlockHelperForFunction() {}
+
+  public static void handleOnTake(
+      Player player,
+      CraftingContainer craftSlots,
+      ItemStack stack,
+      int removeCount,
+      AchievementConsumer achievementConsumer,
+      CallbackInfo ci
+  ) {
+    RecipeHolder<? extends CraftingRecipe> recipeHolder = getActiveCustomRecipe(player, craftSlots);
+    if (recipeHolder == null) return;
+
+    CraftingRecipe recipe = recipeHolder.value();
+    int baseResultCount = getBaseResultCount(recipe);
+    int removedItemCount = removeCount > 0 ? removeCount : Math.max(stack.getCount(), baseResultCount);
+    int craftsToConsume = CraftingResultHelper.getConsumedCraftCount(
+        removedItemCount,
+        baseResultCount
+    );
+    ItemStack achievementStack = stack.isEmpty()
+        ? recipe.assemble(craftSlots.asCraftInput()).copyWithCount(baseResultCount)
+        : stack;
+
+    achievementConsumer.accept(achievementStack);
+
+    for (int i = 0; i < craftsToConsume; i++) {
+      consumeSingleCraft(player, craftSlots, recipe);
+    }
+
+    ci.cancel();
+  }
+
+  public static <T> boolean handlePlaceRecipe(
+      int width,
+      int height,
+      Recipe<?> recipe,
+      Iterable<T> slots,
+      PlaceRecipeHelper.Output<T> filler
+  ) {
+    if (recipe instanceof SupremeCraftingRecipe supremeRecipe) {
+      PlaceRecipeHelper.placeRecipe(
+          width, height,
+          supremeRecipe.getWidth(), supremeRecipe.getHeight(),
+          slots, filler
+      );
+      return true;
+    }
+
+    if (recipe instanceof UniverseCraftingRecipe universeRecipe) {
+      PlaceRecipeHelper.placeRecipe(
+          width, height,
+          universeRecipe.getWidth(), universeRecipe.getHeight(),
+          slots, filler
+      );
+      return true;
+    }
+
+    return false;
+  }
+
+  public static void handleVanillaSummonTriggerOnPlace(
+      BlockState state,
+      Level level,
+      BlockPos pos,
+      BlockState oldState
+  ) {
+    SummonStructureHelper.execBlockTrigger(state, level, pos, oldState);
+  }
+
+  public static boolean shouldHandleCustomRecipe(
+      Player player,
+      CraftingContainer craftSlots
+  ) {
+    return getActiveCustomRecipe(player, craftSlots) != null;
+  }
+
+  private static RecipeHolder<? extends CraftingRecipe> getActiveCustomRecipe(
+      Player player,
+      CraftingContainer craftSlots
+  ) {
+    if (player.level().isClientSide()) return null;
+
+    Level world = player.level();
+    CraftingInput recipeInput = craftSlots.asCraftInput();
+    var recipeManager = world.recipeAccess().getSynchronizedRecipes();
+
+    if (recipeManager.getFirstMatch(RecipeType.CRAFTING, recipeInput, world).isPresent()) {
+      return null;
+    }
+
+    var supremeMatch = recipeManager.getFirstMatch(RegRecipes.SUPREME_CRAFTING_TYPE, recipeInput, world);
+    if (supremeMatch.isPresent()) return supremeMatch.get();
+
+    var universeMatch = recipeManager.getFirstMatch(RegRecipes.UNIVERSE_CRAFTING_TYPE, recipeInput, world);
+    return universeMatch.orElse(null);
+  }
+
+  private static int getBaseResultCount(
+      CraftingRecipe recipe
+  ) {
+    if (recipe instanceof SupremeCraftingRecipe supremeRecipe) {
+      return supremeRecipe.getBaseResultCount();
+    }
+    if (recipe instanceof UniverseCraftingRecipe universeRecipe) {
+      return universeRecipe.getBaseResultCount();
+    }
+
+    return 1;
+  }
+
+  private static void consumeSingleCraft(
+      Player player,
+      CraftingContainer craftSlots,
+      CraftingRecipe recipe
+  ) {
+    CraftingInput.Positioned positionedInput = craftSlots.asPositionedCraftInput();
+    CraftingInput currentInput = positionedInput.input();
+    NonNullList<ItemStack> remainingItems = recipe.getRemainingItems(currentInput);
+    int left = positionedInput.left();
+    int top = positionedInput.top();
+
+    for (int y = 0; y < currentInput.height(); y++) {
+      for (int x = 0; x < currentInput.width(); x++) {
+        int slotIndex = x + left + (y + top) * craftSlots.getWidth();
+        ItemStack inputStack = craftSlots.getItem(slotIndex);
+        ItemStack remainingStack = remainingItems.get(x + y * currentInput.width());
+
+        if (!inputStack.isEmpty()) {
+          craftSlots.removeItem(slotIndex, 1);
+          inputStack = craftSlots.getItem(slotIndex);
+        }
+
+        if (remainingStack.isEmpty()) continue;
+
+        if (inputStack.isEmpty()) {
+          craftSlots.setItem(slotIndex, remainingStack);
+        } else if (ItemStack.isSameItemSameComponents(inputStack, remainingStack)) {
+          remainingStack.grow(inputStack.getCount());
+          craftSlots.setItem(slotIndex, remainingStack);
+        } else if (!player.getInventory().add(remainingStack)) {
+          player.drop(remainingStack, false);
+        }
+      }
+    }
+  }
+
+@FunctionalInterface
+public interface AchievementConsumer {
+
+    void accept(
+        ItemStack stack
+    );
+
+}
+
+}

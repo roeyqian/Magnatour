@@ -1,0 +1,23 @@
+{
+  "type": "magnatour:supreme_crafting",
+  "category": "building",
+  "group": "supreme:items",
+  "pattern": [
+    "ABA",
+    "BCB",
+    "ABA"
+  ],
+  "key": {
+    "A": [
+      "minecraft:sand",
+      "minecraft:red_sand"
+    ],
+    "B": "minecraft:gunpowder",
+    "C": "magnatour:strange_matter"
+  },
+  "result": {
+    "count": 1,
+    "id": "magnatour:supreme_pumpkin_head"
+  },
+  "show_notification": true
+}

@@ -1,0 +1,17 @@
+{
+  "type": "magnatour:universe_crafting",
+  "category": "equipment",
+  "group": "magnatour:items",
+  "pattern": [
+    "AAA",
+    "A A"
+  ],
+  "key": {
+    "A": "magnatour:universe_star"
+  },
+  "result": {
+    "count": 1,
+    "id": "magnatour:universe_helmet"
+  },
+  "show_notification": true
+}

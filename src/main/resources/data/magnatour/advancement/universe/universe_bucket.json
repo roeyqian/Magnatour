@@ -1,0 +1,33 @@
+{
+  "parent": "magnatour:universe/universe_star",
+  "criteria": {
+    "universe_bucket": {
+      "conditions": {
+        "items": [
+          {
+            "items": "magnatour:universe_bucket"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.magnatour.universe_bucket.description"
+    },
+    "frame": "challenge",
+    "icon": {
+      "id": "magnatour:universe_bucket"
+    },
+    "title": {
+      "translate": "advancements.magnatour.universe_bucket.title"
+    }
+  },
+  "requirements": [
+    [
+      "universe_bucket"
+    ]
+  ],
+  "sends_telemetry_event": false
+}

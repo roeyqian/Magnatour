@@ -1,0 +1,20 @@
+{
+  "type": "magnatour:supreme_crafting",
+  "category": "building",
+  "group": "supreme:items",
+  "pattern": [
+    "ABA",
+    "BCB",
+    "ABA"
+  ],
+  "key": {
+    "A": "minecraft:obsidian",
+    "B": "minecraft:ancient_debris",
+    "C": "magnatour:supreme_core"
+  },
+  "result": {
+    "count": 1,
+    "id": "magnatour:supreme_gem_block"
+  },
+  "show_notification": true
+}

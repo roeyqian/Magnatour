@@ -1,0 +1,36 @@
+{
+  "parent": "magnatour:supreme/supreme",
+  "criteria": {
+    "summon_pale_lord": {
+      "conditions": {
+        "entity": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "type": "magnatour:pale_lord"
+            }
+          }
+        ]
+      },
+      "trigger": "minecraft:summoned_entity"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.magnatour.pale_lord.description"
+    },
+    "icon": {
+      "id": "magnatour:pale_lord_spawn_egg"
+    },
+    "title": {
+      "translate": "advancements.magnatour.pale_lord.title"
+    }
+  },
+  "requirements": [
+    [
+      "summon_pale_lord"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

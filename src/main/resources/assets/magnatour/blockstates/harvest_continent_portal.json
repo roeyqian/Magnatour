@@ -1,0 +1,6 @@
+{
+  "variants": {
+    "axis=x": { "model": "magnatour:block/harvest_continent_portal_ns" },
+    "axis=z": { "model": "magnatour:block/harvest_continent_portal_ew" }
+  }
+}

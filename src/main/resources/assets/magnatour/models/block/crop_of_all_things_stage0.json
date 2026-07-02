@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/crop",
+  "textures": {
+    "crop": "magnatour:block/crop_of_all_things_stage0"
+  }
+}

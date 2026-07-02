@@ -1,0 +1,8 @@
+{
+  "variants": {
+    "facing=north": { "model": "magnatour:block/universe_workstation" },
+    "facing=south": { "model": "magnatour:block/universe_workstation", "y": 180 },
+    "facing=west":  { "model": "magnatour:block/universe_workstation", "y": 270 },
+    "facing=east":  { "model": "magnatour:block/universe_workstation", "y": 90 }
+  }
+}

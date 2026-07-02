@@ -1,0 +1,55 @@
+{
+  "parent": "magnatour:universe/universe",
+  "criteria": {
+    "universe_light": {
+      "conditions": {
+        "items": [
+          {
+            "items": "magnatour:universe_light"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "universe_dark": {
+      "conditions": {
+        "items": [
+          {
+            "items": "magnatour:universe_dark"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "universe_primary_block": {
+      "conditions": {
+        "items": [
+          {
+            "items": "magnatour:universe_primary_block"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.magnatour.universe_primary_block.description"
+    },
+    "frame": "challenge",
+    "icon": {
+      "id": "magnatour:universe_primary_block"
+    },
+    "title": {
+      "translate": "advancements.magnatour.universe_primary_block.title"
+    }
+  },
+  "requirements": [
+    [
+      "universe_light",
+      "universe_dark",
+      "universe_primary_block"
+    ]
+  ],
+  "sends_telemetry_event": false
+}

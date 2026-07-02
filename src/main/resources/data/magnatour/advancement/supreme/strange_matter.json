@@ -1,0 +1,33 @@
+{
+  "parent": "magnatour:supreme/fruit_of_all_things",
+  "criteria": {
+    "strange_matters": {
+      "conditions": {
+        "items": [
+          {
+            "items": "magnatour:strange_matter"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.magnatour.strange_matter.description"
+    },
+    "frame": "goal",
+    "icon": {
+      "id": "magnatour:strange_matter"
+    },
+    "title": {
+      "translate": "advancements.magnatour.strange_matter.title"
+    }
+  },
+  "requirements": [
+    [
+      "strange_matters"
+    ]
+  ],
+  "sends_telemetry_event": false
+}

@@ -1,0 +1,64 @@
+{
+  "attributes": {
+    "minecraft:audio/ambient_sounds": {
+      "mood": {
+        "block_search_extent": 8,
+        "offset": 2.0,
+        "sound": "minecraft:ambient.cave",
+        "tick_delay": 6000
+      }
+    },
+    "minecraft:audio/background_music": {
+      "default": {
+        "max_delay": 24000,
+        "min_delay": 12000,
+        "sound": "minecraft:music.game"
+      }
+    },
+    "minecraft:visual/fog_color": "#c0d8ff",
+    "minecraft:visual/sky_color": "#78a7ff"
+  },
+  "carvers": [],
+  "downfall": 0.4,
+  "effects": {
+    "water_color": "#3f76e4"
+  },
+  "features": [
+    [], [], [], [], [], [],
+    [
+      "magnatour:ore_continent_coal",
+      "magnatour:ore_continent_iron",
+      "magnatour:ore_continent_copper",
+      "magnatour:ore_continent_gold",
+      "magnatour:ore_continent_lapis",
+      "magnatour:ore_continent_redstone",
+      "magnatour:ore_continent_emerald",
+      "magnatour:ore_continent_diamond",
+      "magnatour:ore_continent_coal_deep",
+      "magnatour:ore_continent_iron_deep",
+      "magnatour:ore_continent_copper_deep",
+      "magnatour:ore_continent_gold_deep",
+      "magnatour:ore_continent_lapis_deep",
+      "magnatour:ore_continent_redstone_deep",
+      "magnatour:ore_continent_emerald_deep",
+      "magnatour:ore_continent_diamond_deep",
+      "magnatour:ore_continent_quartz_nether",
+      "magnatour:ore_continent_gold_nether",
+      "magnatour:ore_continent_ancient_debris"
+    ],
+    [], [], [], []
+  ],
+  "has_precipitation": false,
+  "spawn_costs": {},
+  "spawners": {
+    "ambient": [],
+    "axolotls": [],
+    "creature": [],
+    "misc": [],
+    "monster": [],
+    "underground_water_creature": [],
+    "water_ambient": [],
+    "water_creature": []
+  },
+  "temperature": 0.8
+}

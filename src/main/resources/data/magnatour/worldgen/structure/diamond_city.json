@@ -1,0 +1,7 @@
+{
+  "type": "magnatour:diamond_city",
+  "biomes": "#magnatour:has_structure/diamond_city",
+  "step": "surface_structures",
+  "spawn_overrides": {},
+  "terrain_adaptation": "none"
+}

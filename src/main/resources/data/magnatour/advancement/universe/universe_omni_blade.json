@@ -1,0 +1,33 @@
+{
+  "parent": "magnatour:universe/universe_stick",
+  "criteria": {
+    "universe_omni_blade": {
+      "conditions": {
+        "items": [
+          {
+            "items": "magnatour:universe_omni_blade"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.magnatour.universe_omni_blade.description"
+    },
+    "frame": "challenge",
+    "icon": {
+      "id": "magnatour:universe_omni_blade"
+    },
+    "title": {
+      "translate": "advancements.magnatour.universe_omni_blade.title"
+    }
+  },
+  "requirements": [
+    [
+      "universe_omni_blade"
+    ]
+  ],
+  "sends_telemetry_event": false
+}

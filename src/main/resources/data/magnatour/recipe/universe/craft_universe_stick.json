@@ -1,0 +1,20 @@
+{
+  "type": "magnatour:universe_crafting",
+  "category": "misc",
+  "group": "magnatour:items",
+  "pattern": [
+    "A",
+    "B",
+    "C"
+  ],
+  "key": {
+    "A": "magnatour:universe_star",
+    "B": "minecraft:blaze_rod",
+    "C": "minecraft:breeze_rod"
+  },
+  "result": {
+    "id": "magnatour:universe_stick",
+    "count": 1
+  },
+  "show_notification": true
+}

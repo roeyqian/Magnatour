@@ -1,0 +1,10 @@
+{
+  "type": "magnatour:supreme_cooking",
+  "category": "misc",
+  "cookingtime": 32768,
+  "experience": 1200,
+  "ingredient": "magnatour:rainbow_thing",
+  "result": {
+    "id": "magnatour:supreme_core"
+  }
+}

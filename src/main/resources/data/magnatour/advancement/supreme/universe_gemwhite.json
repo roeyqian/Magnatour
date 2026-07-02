@@ -1,0 +1,33 @@
+{
+  "parent": "magnatour:supreme/pale_lord",
+  "criteria": {
+    "universe_gemwhite": {
+      "conditions": {
+        "items": [
+          {
+            "items": "magnatour:universe_gemwhite"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.magnatour.universe_gemwhite.description"
+    },
+    "frame": "challenge",
+    "icon": {
+      "id": "magnatour:universe_gemwhite"
+    },
+    "title": {
+      "translate": "advancements.magnatour.universe_gemwhite.title"
+    }
+  },
+  "requirements": [
+    [
+      "universe_gemwhite"
+    ]
+  ],
+  "sends_telemetry_event": false
+}

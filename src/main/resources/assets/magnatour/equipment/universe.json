@@ -1,0 +1,14 @@
+{
+  "layers": {
+    "humanoid": [
+      {
+        "texture": "magnatour:universe"
+      }
+    ],
+    "humanoid_leggings": [
+      {
+        "texture": "magnatour:universe"
+      }
+    ]
+  }
+}

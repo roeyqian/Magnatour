@@ -1,0 +1,20 @@
+{
+  "type": "magnatour:universe_crafting",
+  "category": "misc",
+  "group": "universe:items",
+  "pattern": [
+    "A",
+    "B",
+    "C"
+  ],
+  "key": {
+    "A": "magnatour:universe_gemred",
+    "B": "magnatour:universe_gemyellow",
+    "C": "magnatour:universe_gemwhite"
+  },
+  "result": {
+    "count": 1,
+    "id": "magnatour:universe_light"
+  },
+  "show_notification": true
+}

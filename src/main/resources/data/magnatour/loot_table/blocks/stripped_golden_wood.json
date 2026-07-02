@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "magnatour:stripped_golden_wood"
+        }
+      ],
+      "conditions": []
+    }
+  ]
+}

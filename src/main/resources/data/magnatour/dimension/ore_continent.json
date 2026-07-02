@@ -1,0 +1,32 @@
+{
+  "type": "magnatour:ore_continent_type",
+  "generator": {
+    "type": "minecraft:flat",
+    "settings": {
+      "biome": "magnatour:ore_continent",
+      "lakes": false,
+      "features": true,
+      "layers": [
+        {
+          "block": "minecraft:bedrock",
+          "height": 1
+        },
+        {
+          "block": "minecraft:netherrack",
+          "height": 30
+        },
+        {
+          "block": "minecraft:deepslate",
+          "height": 100
+        },
+        {
+          "block": "minecraft:stone",
+          "height": 100
+        }
+      ],
+      "structure_overrides": [
+        "magnatour:diamond_city"
+      ]
+    }
+  }
+}

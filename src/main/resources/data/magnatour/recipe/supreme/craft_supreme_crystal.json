@@ -1,0 +1,21 @@
+{
+  "type": "magnatour:supreme_crafting",
+  "category": "misc",
+  "group": "supreme:items",
+  "pattern": [
+    "ABA",
+    "CDC",
+    "ABA"
+  ],
+  "key": {
+    "A": "minecraft:amethyst_shard",
+    "B": "minecraft:popped_chorus_fruit",
+    "C": "magnatour:ore_core",
+    "D": "magnatour:supreme_core"
+  },
+  "result": {
+    "count": 1,
+    "id": "magnatour:supreme_crystal"
+  },
+  "show_notification": true
+}

@@ -1,0 +1,18 @@
+{
+  "type": "magnatour:universe_crafting",
+  "category": "building",
+  "group": "universe:items",
+  "pattern": [
+    " A ",
+    "A A",
+    " A "
+  ],
+  "key": {
+    "A": "magnatour:universe_light"
+  },
+  "result": {
+    "count": 1,
+    "id": "magnatour:universe_light_air"
+  },
+  "show_notification": true
+}

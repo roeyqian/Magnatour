@@ -1,0 +1,33 @@
+{
+  "parent": "magnatour:supreme/gold_bell_tower",
+  "criteria": {
+    "harvest_core": {
+      "conditions": {
+        "items": [
+          {
+            "items": "magnatour:harvest_core"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.magnatour.harvest_core.description"
+    },
+    "frame": "goal",
+    "icon": {
+      "id": "magnatour:harvest_core"
+    },
+    "title": {
+      "translate": "advancements.magnatour.harvest_core.title"
+    }
+  },
+  "requirements": [
+    [
+      "harvest_core"
+    ]
+  ],
+  "sends_telemetry_event": false
+}

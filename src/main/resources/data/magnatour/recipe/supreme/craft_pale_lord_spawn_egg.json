@@ -1,0 +1,19 @@
+{
+  "type": "magnatour:supreme_crafting",
+  "category": "misc",
+  "group": "magnatour:spawn_eggs",
+  "pattern": [
+    "AAA",
+    "ABA",
+    "AAA"
+  ],
+  "key": {
+    "A": "minecraft:creaking_heart",
+    "B": "magnatour:strange_matter"
+  },
+  "result": {
+    "count": 1,
+    "id": "magnatour:pale_lord_spawn_egg"
+  },
+  "show_notification": true
+}

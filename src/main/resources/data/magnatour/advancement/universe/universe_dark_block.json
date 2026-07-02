@@ -1,0 +1,33 @@
+{
+  "parent": "magnatour:universe/universe",
+  "criteria": {
+    "universe_dark_block": {
+      "conditions": {
+        "items": [
+          {
+            "items": "magnatour:universe_dark_block"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.magnatour.universe_dark_block.description"
+    },
+    "frame": "challenge",
+    "icon": {
+      "id": "magnatour:universe_dark_block"
+    },
+    "title": {
+      "translate": "advancements.magnatour.universe_dark_block.title"
+    }
+  },
+  "requirements": [
+    [
+      "universe_dark_block"
+    ]
+  ],
+  "sends_telemetry_event": false
+}

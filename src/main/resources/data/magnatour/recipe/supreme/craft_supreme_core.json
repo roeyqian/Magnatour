@@ -1,0 +1,23 @@
+{
+  "type": "magnatour:supreme_crafting",
+  "category": "misc",
+  "group": "supreme:items",
+  "pattern": [
+    "ABA",
+    "CDC",
+    "EFE"
+  ],
+  "key": {
+    "A": "minecraft:conduit",
+    "B": "minecraft:echo_shard",
+    "C": "minecraft:nether_star",
+    "D": "minecraft:enchanted_golden_apple",
+    "E": "minecraft:heavy_core",
+    "F": "minecraft:elytra"
+  },
+  "result": {
+    "count": 1,
+    "id": "magnatour:supreme_core"
+  },
+  "show_notification": true
+}

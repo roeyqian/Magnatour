@@ -1,0 +1,36 @@
+{
+  "parent": "magnatour:supreme/supreme",
+  "criteria": {
+    "summon_sculk_behemoth": {
+      "conditions": {
+        "entity": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "type": "magnatour:sculk_behemoth"
+            }
+          }
+        ]
+      },
+      "trigger": "minecraft:summoned_entity"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.magnatour.sculk_behemoth.description"
+    },
+    "icon": {
+      "id": "magnatour:sculk_behemoth_spawn_egg"
+    },
+    "title": {
+      "translate": "advancements.magnatour.sculk_behemoth.title"
+    }
+  },
+  "requirements": [
+    [
+      "summon_sculk_behemoth"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

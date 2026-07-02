@@ -1,0 +1,33 @@
+{
+  "parent": "magnatour:supreme/ever_water_grass_block",
+  "criteria": {
+    "universe_gemgreen": {
+      "conditions": {
+        "items": [
+          {
+            "items": "magnatour:universe_gemgreen"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.magnatour.universe_gemgreen.description"
+    },
+    "frame": "challenge",
+    "icon": {
+      "id": "magnatour:universe_gemgreen"
+    },
+    "title": {
+      "translate": "advancements.magnatour.universe_gemgreen.title"
+    }
+  },
+  "requirements": [
+    [
+      "universe_gemgreen"
+    ]
+  ],
+  "sends_telemetry_event": false
+}

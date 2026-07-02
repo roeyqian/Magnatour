@@ -1,0 +1,18 @@
+{
+  "type": "magnatour:universe_crafting",
+  "category": "building",
+  "group": "magnatour:items",
+  "pattern": [
+    "AAA",
+    "BBB"
+  ],
+  "key": {
+    "A": "magnatour:universe_star",
+    "B": "magnatour:universe_stick"
+  },
+  "result": {
+    "count": 1,
+    "id": "magnatour:universe_library"
+  },
+  "show_notification": true
+}

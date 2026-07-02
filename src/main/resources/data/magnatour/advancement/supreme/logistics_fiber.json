@@ -1,0 +1,32 @@
+{
+  "parent": "magnatour:supreme/supreme",
+  "criteria": {
+    "logistics_fiber": {
+      "conditions": {
+        "items": [
+          {
+            "items": "magnatour:logistics_fiber"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.magnatour.logistics_fiber.description"
+    },
+    "icon": {
+      "id": "magnatour:logistics_fiber"
+    },
+    "title": {
+      "translate": "advancements.magnatour.logistics_fiber.title"
+    }
+  },
+  "requirements": [
+    [
+      "logistics_fiber"
+    ]
+  ],
+  "sends_telemetry_event": false
+}

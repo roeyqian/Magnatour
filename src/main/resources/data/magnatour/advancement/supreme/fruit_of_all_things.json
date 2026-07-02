@@ -1,0 +1,33 @@
+{
+  "parent": "magnatour:supreme/harvest_core",
+  "criteria": {
+    "fruit_of_all_things": {
+      "conditions": {
+        "items": [
+          {
+            "items": "magnatour:fruit_of_all_things"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.magnatour.fruit_of_all_things.description"
+    },
+    "frame": "goal",
+    "icon": {
+      "id": "magnatour:fruit_of_all_things"
+    },
+    "title": {
+      "translate": "advancements.magnatour.fruit_of_all_things.title"
+    }
+  },
+  "requirements": [
+    [
+      "fruit_of_all_things"
+    ]
+  ],
+  "sends_telemetry_event": false
+}

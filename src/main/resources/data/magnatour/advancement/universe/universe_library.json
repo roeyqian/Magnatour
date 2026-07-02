@@ -1,0 +1,33 @@
+{
+  "parent": "magnatour:universe/universe_stick",
+  "criteria": {
+    "universe_library": {
+      "conditions": {
+        "items": [
+          {
+            "items": "magnatour:universe_library"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.magnatour.universe_library.description"
+    },
+    "frame": "challenge",
+    "icon": {
+      "id": "magnatour:universe_library"
+    },
+    "title": {
+      "translate": "advancements.magnatour.universe_library.title"
+    }
+  },
+  "requirements": [
+    [
+      "universe_library"
+    ]
+  ],
+  "sends_telemetry_event": false
+}

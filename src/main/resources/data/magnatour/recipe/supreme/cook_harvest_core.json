@@ -1,0 +1,10 @@
+{
+  "type": "magnatour:supreme_cooking",
+  "category": "misc",
+  "cookingtime": 960,
+  "experience": 480,
+  "ingredient": "magnatour:fruit_of_all_things",
+  "result": {
+    "id": "magnatour:harvest_core"
+  }
+}

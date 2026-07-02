@@ -1,0 +1,33 @@
+{
+  "parent": "magnatour:universe/universe_star",
+  "criteria": {
+    "universe_leggings": {
+      "conditions": {
+        "items": [
+          {
+            "items": "magnatour:universe_leggings"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.magnatour.universe_leggings.description"
+    },
+    "frame": "challenge",
+    "icon": {
+      "id": "magnatour:universe_leggings"
+    },
+    "title": {
+      "translate": "advancements.magnatour.universe_leggings.title"
+    }
+  },
+  "requirements": [
+    [
+      "universe_leggings"
+    ]
+  ],
+  "sends_telemetry_event": false
+}

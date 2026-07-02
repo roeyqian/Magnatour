@@ -1,0 +1,21 @@
+{
+  "replace": false,
+  "values": [
+    "magnatour:supreme_gem_block",
+    "magnatour:supreme_block",
+    "magnatour:primed_chunk_tnt_visual",
+    "magnatour:chunk_tnt",
+    "magnatour:logistics_fiber",
+    "magnatour:ore_continent_portal",
+    "magnatour:harvest_continent_portal",
+    "magnatour:supreme_furnace",
+    "magnatour:supreme_reserver",
+    "magnatour:redstone_trigger",
+    "magnatour:item_hub",
+    "magnatour:universe_primary_block",
+    "magnatour:universe_block",
+    "magnatour:universe_refinery",
+    "magnatour:universe_void_pool",
+    "magnatour:universe_teleport_point"
+  ]
+}

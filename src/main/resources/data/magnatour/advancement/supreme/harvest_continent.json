@@ -1,0 +1,28 @@
+{
+  "parent": "magnatour:supreme/supreme",
+  "criteria": {
+    "reach_harvest_continent": {
+      "conditions": {
+        "to": "magnatour:harvest_continent"
+      },
+      "trigger": "minecraft:changed_dimension"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.magnatour.harvest_continent.description"
+    },
+    "icon": {
+      "id": "magnatour:supreme_fodder_block"
+    },
+    "title": {
+      "translate": "advancements.magnatour.harvest_continent.title"
+    }
+  },
+  "requirements": [
+    [
+      "reach_harvest_continent"
+    ]
+  ],
+  "sends_telemetry_event": false
+}

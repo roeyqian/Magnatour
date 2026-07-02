@@ -1,0 +1,33 @@
+{
+  "parent": "magnatour:universe/universe_star",
+  "criteria": {
+    "universe_banquet": {
+      "conditions": {
+        "items": [
+          {
+            "items": "magnatour:universe_banquet"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.magnatour.universe_banquet.description"
+    },
+    "frame": "challenge",
+    "icon": {
+      "id": "magnatour:universe_banquet"
+    },
+    "title": {
+      "translate": "advancements.magnatour.universe_banquet.title"
+    }
+  },
+  "requirements": [
+    [
+      "universe_banquet"
+    ]
+  ],
+  "sends_telemetry_event": false
+}

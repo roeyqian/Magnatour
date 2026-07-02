@@ -1,0 +1,32 @@
+{
+  "parent": "magnatour:supreme/supreme",
+  "criteria": {
+    "redstone_trigger": {
+      "conditions": {
+        "items": [
+          {
+            "items": "magnatour:redstone_trigger"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.magnatour.redstone_trigger.description"
+    },
+    "icon": {
+      "id": "magnatour:redstone_trigger"
+    },
+    "title": {
+      "translate": "advancements.magnatour.redstone_trigger.title"
+    }
+  },
+  "requirements": [
+    [
+      "redstone_trigger"
+    ]
+  ],
+  "sends_telemetry_event": false
+}

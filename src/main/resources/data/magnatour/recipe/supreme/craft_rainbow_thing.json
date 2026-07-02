@@ -1,0 +1,20 @@
+{
+  "type": "magnatour:supreme_crafting",
+  "category": "misc",
+  "group": "magnatour:items",
+  "pattern": [
+    "ABA",
+    "BCB",
+    "ABA"
+  ],
+  "key": {
+    "A": "magnatour:ore_core",
+    "B": "magnatour:harvest_core",
+    "C": "magnatour:supreme_core"
+  },
+  "result": {
+    "count": 1,
+    "id": "magnatour:rainbow_thing"
+  },
+  "show_notification": true
+}

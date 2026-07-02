@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "all": "magnatour:block/supreme_pumpkin_head"
+  }
+}

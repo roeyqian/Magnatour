@@ -1,0 +1,37 @@
+{
+  "required": true,
+  "package": "roeyqian.magnatour.mixin",
+  "compatibilityLevel": "JAVA_25",
+  "mixins": [
+    "block.BlockBehaviorMixin",
+    "block.BlockStateBaseMixin",
+    "block.AbstractFurnaceBlockEntityAccessor",
+    "block.BaseFireBlockMixin",
+    "block.FireBlockMixin",
+    "block.ResultSlotMixin",
+    "block.CropBlockMixin",
+    "block.PowderSnowBlockMixin",
+    "block.PlaceRecipeHelperMixin",
+    "block.StemBlockMixin",
+    "entity.EatGrassGoalMixin",
+    "entity.EntityMixin",
+    "entity.LivingEntityMixin",
+    "entity.PlayerMixin",
+    "entity.RangedAttributeMixin",
+    "menu.EnchantmentMenuMixin",
+    "menu.AbstractContainerMenuMixin",
+    "server.ServerPlayerGameModeMixin",
+    "world.BlockLightEngineMixin",
+    "world.EnderDragonFightMixin",
+    "world.WorldGenRegionAccessor",
+    "world.IngredientAccessor",
+    "world.NoiseChunkGeneratorMixin",
+    "world.ShapelessRecipeAccessor"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "overwrites": {
+    "requireAnnotations": true
+  }
+}

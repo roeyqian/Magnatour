@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "magnatour:ever_water_grass_block",
+    "magnatour:golden_grass_block",
+    "magnatour:ever_water_soil",
+    "magnatour:ever_water_farmland",
+    "magnatour:universe_light_block",
+    "magnatour:universe_dark_block",
+    "magnatour:universe_light_air",
+    "magnatour:universe_dark_air"
+  ]
+}

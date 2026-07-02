@@ -1,0 +1,33 @@
+{
+  "parent": "magnatour:universe/universe",
+  "criteria": {
+    "universe_dark_air": {
+      "conditions": {
+        "items": [
+          {
+            "items": "magnatour:universe_dark_air"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.magnatour.universe_dark_air.description"
+    },
+    "frame": "challenge",
+    "icon": {
+      "id": "magnatour:universe_dark_air"
+    },
+    "title": {
+      "translate": "advancements.magnatour.universe_dark_air.title"
+    }
+  },
+  "requirements": [
+    [
+      "universe_dark_air"
+    ]
+  ],
+  "sends_telemetry_event": false
+}

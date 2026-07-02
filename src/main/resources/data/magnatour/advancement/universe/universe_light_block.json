@@ -1,0 +1,33 @@
+{
+  "parent": "magnatour:universe/universe",
+  "criteria": {
+    "universe_light_block": {
+      "conditions": {
+        "items": [
+          {
+            "items": "magnatour:universe_light_block"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.magnatour.universe_light_block.description"
+    },
+    "frame": "challenge",
+    "icon": {
+      "id": "magnatour:universe_light_block"
+    },
+    "title": {
+      "translate": "advancements.magnatour.universe_light_block.title"
+    }
+  },
+  "requirements": [
+    [
+      "universe_light_block"
+    ]
+  ],
+  "sends_telemetry_event": false
+}

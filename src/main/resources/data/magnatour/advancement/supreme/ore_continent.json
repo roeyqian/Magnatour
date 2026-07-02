@@ -1,0 +1,28 @@
+{
+  "parent": "magnatour:supreme/supreme",
+  "criteria": {
+    "reach_ore_continent": {
+      "conditions": {
+        "to": "magnatour:ore_continent"
+      },
+      "trigger": "minecraft:changed_dimension"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.magnatour.ore_continent.description"
+    },
+    "icon": {
+      "id": "magnatour:supreme_gem_block"
+    },
+    "title": {
+      "translate": "advancements.magnatour.ore_continent.title"
+    }
+  },
+  "requirements": [
+    [
+      "reach_ore_continent"
+    ]
+  ],
+  "sends_telemetry_event": false
+}

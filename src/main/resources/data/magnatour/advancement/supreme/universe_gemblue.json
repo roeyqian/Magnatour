@@ -1,0 +1,33 @@
+{
+  "parent": "magnatour:supreme/city_of_diamond",
+  "criteria": {
+    "universe_gemblue": {
+      "conditions": {
+        "items": [
+          {
+            "items": "magnatour:universe_gemblue"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.magnatour.universe_gemblue.description"
+    },
+    "frame": "challenge",
+    "icon": {
+      "id": "magnatour:universe_gemblue"
+    },
+    "title": {
+      "translate": "advancements.magnatour.universe_gemblue.title"
+    }
+  },
+  "requirements": [
+    [
+      "universe_gemblue"
+    ]
+  ],
+  "sends_telemetry_event": false
+}
