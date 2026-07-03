@@ -2,6 +2,9 @@
   "key.category.magnatour.general": "Magnatour",
   "key.magnatour.universe_mode": "Cambiar modo de herramienta",
 
+  "tag.item.magnatour.supreme_core": "Núcleo Supremo",
+  "tag.item.magnatour.universe_star": "Estrella del Universo",
+
   "advancements.magnatour.supreme.title": "Supremo",
   "advancements.magnatour.supreme.description": "Emprende un viaje supremo",
   "advancements.magnatour.redstone_trigger.title": "Disparador de redstone",
