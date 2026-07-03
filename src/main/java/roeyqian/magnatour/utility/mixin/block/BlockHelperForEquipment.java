@@ -30,6 +30,10 @@ import roeyqian.magnatour.utility.registry.item.RegDurableItems;
 
 public final class BlockHelperForEquipment {
 
+  private static final float UNIVERSE_OMNI_BLADE_MODE_0_DESTROY_PROGRESS = 0.02F;
+  private static final float UNIVERSE_OMNI_BLADE_MODE_1_DESTROY_PROGRESS = 1.0F;
+  private static final float UNIVERSE_ULTIMA_SWORD_DESTROY_PROGRESS = 0.5F;
+
   private BlockHelperForEquipment() {}
 
   public static void handleCanEntityWalkOnPowderSnow(
@@ -52,13 +56,22 @@ public final class BlockHelperForEquipment {
   ) {
     ItemStack stack = player.getItemInHand(player.getUsedItemHand());
     if (stack.is(RegDurableItems.UNIVERSE_ULTIMA_SWORD)) {
-      cir.setReturnValue(0.5F);
+      cir.setReturnValue(UNIVERSE_ULTIMA_SWORD_DESTROY_PROGRESS);
       return;
     }
 
-    if (stack.is(RegDurableItems.UNIVERSE_OMNI_BLADE)
-        && stack.getOrDefault(RegComponentTypes.UNIVERSE_OMNI_BLADE_MODE, 0) == 1) {
-      cir.setReturnValue(1.0F);
+    if (!stack.is(RegDurableItems.UNIVERSE_OMNI_BLADE)) {
+      return;
+    }
+
+    int mode = stack.getOrDefault(RegComponentTypes.UNIVERSE_OMNI_BLADE_MODE, 0);
+    if (mode == 0) {
+      cir.setReturnValue(UNIVERSE_OMNI_BLADE_MODE_0_DESTROY_PROGRESS);
+      return;
+    }
+
+    if (mode == 1) {
+      cir.setReturnValue(UNIVERSE_OMNI_BLADE_MODE_1_DESTROY_PROGRESS);
     }
   }
 
