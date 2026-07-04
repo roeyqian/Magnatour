@@ -48,7 +48,7 @@ public class LayerRenderStateGlintMixin implements RenderHelperForGlint.Universe
   private void inClear(
       CallbackInfo ci
   ) {
-    this.universe$glintType = RenderHelperForGlint.GlintType.NONE;
+    RenderHelperForGlint.clearGlint(this);
   }
 
 }

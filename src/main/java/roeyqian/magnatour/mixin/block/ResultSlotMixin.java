@@ -58,10 +58,13 @@ public abstract class ResultSlotMixin extends Slot {
       int amount,
       CallbackInfo ci
   ) {
-    if (!BlockHelperForFunction.shouldHandleCustomRecipe(this.player, this.craftSlots)) return;
-
-    this.removeCount += amount;
-    ci.cancel();
+    this.removeCount = BlockHelperForFunction.handleQuickCraft(
+        this.player,
+        this.craftSlots,
+        this.removeCount,
+        amount,
+        ci
+    );
   }
 
   /* Universe Workstation & Supreme Worktable: Item Deduction
