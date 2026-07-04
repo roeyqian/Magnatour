@@ -27,6 +27,9 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+// JSpecify
+import org.jspecify.annotations.Nullable;
+
 // Magnatour
 import roeyqian.magnatour.utility.registry.block.RegActiveBlocks;
 import roeyqian.magnatour.utility.registry.item.RegConsumableItems;
@@ -44,7 +47,7 @@ public abstract class EnderDragonFightMixin {
   private BlockPos origin;
 
   @Unique
-  private Block magnatour$dragonKillRewardBlock;
+  private @Nullable Block magnatour$dragonKillRewardBlock;
 
   @Shadow
   private ServerLevel level;
