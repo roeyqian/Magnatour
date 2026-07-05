@@ -20,6 +20,7 @@ import net.minecraft.world.entity.Crackiness;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.NeutralMob;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
@@ -80,7 +81,7 @@ public class ObsidianGolem extends AbstractGolem implements NeutralMob {
       return false;
     }
 
-    if (this.isPlayerCreated() && target.is(EntityType.PLAYER)) {
+    if (this.isPlayerCreated() && target.is(EntityTypes.PLAYER)) {
       return false;
     }
 

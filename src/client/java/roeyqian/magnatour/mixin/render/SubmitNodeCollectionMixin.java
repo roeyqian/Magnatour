@@ -7,9 +7,6 @@
  */
 package roeyqian.magnatour.mixin.render;
 
-// Java Standard
-import java.util.List;
-
 // Mojang
 import com.mojang.blaze3d.vertex.PoseStack;
 
@@ -19,18 +16,17 @@ import net.fabricmc.api.Environment;
 
 // Minecraft
 import net.minecraft.client.renderer.SubmitNodeCollection;
-import net.minecraft.client.renderer.SubmitNodeStorage;
+import net.minecraft.client.renderer.feature.ItemFeatureRenderer;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.resources.model.geometry.BakedQuad;
 import net.minecraft.world.item.ItemDisplayContext;
 
 // SpongePowered Mixin
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 // Magnatour
 import roeyqian.magnatour.utility.mixin.render.RenderHelperForGlint;
@@ -38,16 +34,17 @@ import roeyqian.magnatour.utility.mixin.render.RenderHelperForGlint;
 @Environment(EnvType.CLIENT) @Mixin(value = SubmitNodeCollection.class, priority = 3600000)
 public class SubmitNodeCollectionMixin {
 
-  @Shadow @Final
-  private List<SubmitNodeStorage.ItemSubmit> itemSubmits;
-
   /* Universe Items: Mark Item Submit for Glint
    */
   @Inject(method = "submitItem(Lcom/mojang/blaze3d/vertex/PoseStack;"
       + "Lnet/minecraft/world/item/ItemDisplayContext;III[I"
       + "Ljava/util/List;"
       + "Lnet/minecraft/client/renderer/item/ItemStackRenderState$FoilType;)V",
-      at = @At("TAIL"))
+      at = @At(
+          value = "INVOKE",
+          target = "Lnet/minecraft/client/renderer/feature/ItemFeatureRenderer$Submit;hasTranslucency()Z"
+      ),
+      locals = LocalCapture.CAPTURE_FAILHARD)
   private void inSubmitItem(
       PoseStack poseStack,
       ItemDisplayContext displayContext,
@@ -55,11 +52,13 @@ public class SubmitNodeCollectionMixin {
       int overlayCoords,
       int outlineColor,
       int[] tintLayers,
-      List<BakedQuad> quads,
+      java.util.List<BakedQuad> quads,
       ItemStackRenderState.FoilType foilType,
-      CallbackInfo ci
+      CallbackInfo ci,
+      PoseStack.Pose pose,
+      ItemFeatureRenderer.Submit submit
   ) {
-    RenderHelperForGlint.markLastSubmit(this.itemSubmits);
+    RenderHelperForGlint.markLastSubmit(submit);
   }
 
 }

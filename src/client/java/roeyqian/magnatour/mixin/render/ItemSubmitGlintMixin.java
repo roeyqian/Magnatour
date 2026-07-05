@@ -12,7 +12,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 
 // Minecraft
-import net.minecraft.client.renderer.SubmitNodeStorage;
+import net.minecraft.client.renderer.feature.ItemFeatureRenderer;
 
 // SpongePowered Mixin
 import org.spongepowered.asm.mixin.Mixin;
@@ -21,7 +21,7 @@ import org.spongepowered.asm.mixin.Unique;
 // Magnatour
 import roeyqian.magnatour.utility.mixin.render.RenderHelperForGlint;
 
-@Environment(EnvType.CLIENT) @Mixin(value = SubmitNodeStorage.ItemSubmit.class, priority = 3600000)
+@Environment(EnvType.CLIENT) @Mixin(value = ItemFeatureRenderer.Submit.class, priority = 3600000)
 public class ItemSubmitGlintMixin implements RenderHelperForGlint.UniverseGlintHolder {
 
   @Unique

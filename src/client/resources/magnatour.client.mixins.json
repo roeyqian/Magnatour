@@ -3,7 +3,7 @@
   "package": "roeyqian.magnatour.mixin",
   "compatibilityLevel": "JAVA_25",
   "mixins": [
-    "render.BufferSourceAccessor",
+    "client.GuiMixin",
     "render.CuboidItemModelWrapperMixin",
     "render.EquipmentLayerRendererMixin",
     "render.FogRendererMixin",
@@ -13,7 +13,6 @@
     "render.ItemSubmitGlintMixin",
     "render.LayerRenderStateGlintMixin",
     "render.LayerRenderStateSubmitMixin",
-    "render.RenderBuffersMixin",
     "render.SubmitNodeCollectionMixin",
     "screen.WindowAccessor",
     "screen.GhostSlotsInvoker",

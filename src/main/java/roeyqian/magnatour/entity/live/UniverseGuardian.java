@@ -316,7 +316,7 @@ public class UniverseGuardian extends TamableAnimal {
 
       this.playSound(SoundEvents.WARDEN_SONIC_BOOM, 1.0F, 1.0F);
       target.hurtServer(serverWorld, this.damageSources().sonicBoom(this), Integer.MAX_VALUE);
-      target.knockback(3.0, -dX, -dZ);
+      target.knockback(3.0, -dX, -dZ, this.damageSources().sonicBoom(this), 0.0F);
     }
   }
 

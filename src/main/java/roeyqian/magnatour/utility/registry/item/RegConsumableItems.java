@@ -9,6 +9,7 @@ package roeyqian.magnatour.utility.registry.item;
 
 // Minecraft
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -96,11 +97,11 @@ public final class RegConsumableItems {
   // Supreme Group: Spawn Egg
   public static final Item WITHER_SPAWN_EGG = ItemRegHelper.registerConsumableItem(
       "wither_spawn_egg", 64, SpawnEggItem::new,
-      new Item.Properties().rarity(Rarity.RARE).spawnEgg(EntityType.WITHER)
+      new Item.Properties().rarity(Rarity.RARE).spawnEgg(EntityTypes.WITHER)
   );
   public static final Item ENDER_DRAGON_SPAWN_EGG = ItemRegHelper.registerConsumableItem(
       "ender_dragon_spawn_egg", 64, SpawnEggItem::new,
-      new Item.Properties().rarity(Rarity.RARE).spawnEgg(EntityType.ENDER_DRAGON)
+      new Item.Properties().rarity(Rarity.RARE).spawnEgg(EntityTypes.ENDER_DRAGON)
   );
   public static final Item SCULK_BEHEMOTH_SPAWN_EGG = ItemRegHelper.registerConsumableItem(
       "sculk_behemoth_spawn_egg", 64, SpawnEggItem::new,

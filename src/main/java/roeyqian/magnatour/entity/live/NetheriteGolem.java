@@ -20,6 +20,7 @@ import net.minecraft.world.entity.Crackiness;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.NeutralMob;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
@@ -78,7 +79,7 @@ public class NetheriteGolem extends AbstractGolem implements NeutralMob {
   public boolean canAttack(
       final @NonNull LivingEntity target
   ) {
-    if (target.is(EntityType.PLAYER)) {
+    if (target.is(EntityTypes.PLAYER)) {
       return false;
     }
 

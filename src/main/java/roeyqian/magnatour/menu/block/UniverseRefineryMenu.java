@@ -20,7 +20,6 @@ import net.minecraft.world.inventory.RecipeBookType;
 import net.minecraft.world.inventory.SimpleContainerData;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipePropertySet;
-import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
 
 // JSpecify
@@ -62,7 +61,6 @@ public class UniverseRefineryMenu extends AbstractFurnaceMenu {
   ) {
     super(
         RegBlockMenus.UNIVERSE_REFINERY_HANDLER,
-        RecipeType.SMELTING,
         RecipePropertySet.FURNACE_INPUT,
         RecipeBookType.FURNACE,
         syncId,

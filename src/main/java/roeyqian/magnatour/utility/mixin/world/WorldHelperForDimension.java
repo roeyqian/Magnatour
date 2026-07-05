@@ -432,7 +432,13 @@ public final class WorldHelperForDimension {
     );
 
     setBlockInChunk(chunk, localX, targetSurfaceY, localZ, Blocks.RED_SAND.defaultBlockState());
-    setBlockInChunk(chunk, localX, targetSurfaceY - 1, localZ, Blocks.ORANGE_TERRACOTTA.defaultBlockState());
+    setBlockInChunk(
+        chunk,
+        localX,
+        targetSurfaceY - 1,
+        localZ,
+        Blocks.DYED_TERRACOTTA.orange().defaultBlockState()
+    );
     setBlockInChunk(chunk, localX, targetSurfaceY - 2, localZ, Blocks.TERRACOTTA.defaultBlockState());
     setBlockInChunk(chunk, localX, targetSurfaceY - 3, localZ, Blocks.TERRACOTTA.defaultBlockState());
 

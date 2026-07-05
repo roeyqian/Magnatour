@@ -35,7 +35,7 @@ public final class RegUniverseBootsFlashing {
 
   public static void init() {
     ClientTickEvents.END_CLIENT_TICK.register(client -> {
-      if (client.player == null || client.screen != null) return;
+      if (client.player == null || client.gui.screen() != null) return;
 
       if (!client.player.isCrouching()) {
         waitingSecondTap = false;

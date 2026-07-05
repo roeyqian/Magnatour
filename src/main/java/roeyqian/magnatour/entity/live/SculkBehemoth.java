@@ -172,7 +172,19 @@ public class SculkBehemoth extends Mob implements Enemy, CustomBossEntity {
   public void knockback(
       double strength,
       double x,
-      double z
+      double z,
+      DamageSource source,
+      float knockbackResistance
+  ) {}
+
+  @Override
+  public void knockback(
+      double strength,
+      double x,
+      double z,
+      DamageSource source,
+      float knockbackResistance,
+      boolean indicateDamage
   ) {}
 
   @Override

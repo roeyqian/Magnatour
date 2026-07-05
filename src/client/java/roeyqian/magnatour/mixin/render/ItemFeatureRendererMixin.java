@@ -8,48 +8,68 @@
 package roeyqian.magnatour.mixin.render;
 
 // Mojang
-import com.mojang.blaze3d.vertex.QuadInstance;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.SheetedDecalTextureGenerator;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 
 // Fabric
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 
 // Minecraft
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.OutlineBufferSource;
-import net.minecraft.client.renderer.SubmitNodeStorage;
 import net.minecraft.client.renderer.feature.ItemFeatureRenderer;
+import net.minecraft.client.renderer.feature.RenderTypeFeatureRenderer;
+import net.minecraft.client.renderer.rendertype.RenderType;
 
 // SpongePowered Mixin
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 // Magnatour
 import roeyqian.magnatour.utility.mixin.render.RenderHelperForGlint;
 
 @Environment(EnvType.CLIENT) @Mixin(value = ItemFeatureRenderer.class, priority = 3600000)
-public abstract class ItemFeatureRendererMixin {
+public abstract class ItemFeatureRendererMixin extends RenderTypeFeatureRenderer<ItemFeatureRenderer.Submit> {
 
-  @Shadow @Final
-  private QuadInstance quadInstance;
+  @Inject(method = "getFoilBuffer", at = @At("HEAD"), cancellable = true)
+  private void inGetFoilBuffer(
+      RenderType baseRenderType,
+      PoseStack.Pose decalPose,
+      CallbackInfoReturnable<VertexConsumer> cir
+  ) {
+    RenderHelperForGlint.GlintType glintType = RenderHelperForGlint.currentFoilGlint();
+    if (glintType == RenderHelperForGlint.GlintType.NONE) {
+      return;
+    }
+
+    VertexConsumer vertexConsumer = this.getVertexBuilder(
+        RenderHelperForGlint.glintRenderType(baseRenderType, glintType)
+    );
+    if (decalPose != null) {
+      vertexConsumer = new SheetedDecalTextureGenerator(vertexConsumer, decalPose, 0.0078125F);
+    }
+    cir.setReturnValue(vertexConsumer);
+  }
 
   /* Universe Items: Render Custom Rainbow Glint
    */
-  @Inject(method = "renderItem(Lnet/minecraft/client/renderer/MultiBufferSource$BufferSource;"
-      + "Lnet/minecraft/client/renderer/OutlineBufferSource;"
-      + "Lnet/minecraft/client/renderer/SubmitNodeStorage$ItemSubmit;)V",
-      at = @At("TAIL"))
-  private void inRenderItem(
-      MultiBufferSource.BufferSource bufferSource,
-      OutlineBufferSource outlineBufferSource,
-      SubmitNodeStorage.ItemSubmit submit,
+  @Inject(method = "prepareFoilSubmit", at = @At("HEAD"))
+  private void inPrepareFoilSubmit(
+      ItemFeatureRenderer.Submit submit,
       CallbackInfo ci
   ) {
-    RenderHelperForGlint.renderRainbowGlint(this.quadInstance, bufferSource, submit);
+    RenderHelperForGlint.armFoilSubmit(submit);
+  }
+
+  @Inject(method = "prepareFoilSubmit", at = @At("RETURN"))
+  private void inPrepareFoilSubmit2(
+      ItemFeatureRenderer.Submit submit,
+      CallbackInfo ci
+  ) {
+    RenderHelperForGlint.disarmFoilSubmit();
   }
 
 }
