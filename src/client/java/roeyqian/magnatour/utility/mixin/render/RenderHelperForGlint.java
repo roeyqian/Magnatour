@@ -52,6 +52,12 @@ public final class RenderHelperForGlint {
     UniverseGlintBridge.arm(((UniverseGlintHolder) layer).universeGlintType());
   }
 
+  public static void clearGlint(
+      UniverseGlintHolder holder
+  ) {
+    holder.setUniverseGlint(GlintType.NONE);
+  }
+
   public static void disarmGlintBridge() {
     UniverseGlintBridge.arm(GlintType.NONE);
   }
@@ -69,6 +75,16 @@ public final class RenderHelperForGlint {
     }
 
     output.setAnimated();
+  }
+
+  public static void markGlint(
+      ItemStackRenderState output,
+      ItemStack itemStack
+  ) {
+    GlintType glintType = glintType(itemStack);
+    if (glintType == GlintType.NONE) return;
+
+    markGlint(output, glintType);
   }
 
   public static void markLastSubmit(
@@ -147,6 +163,18 @@ public final class RenderHelperForGlint {
     );
   }
 
+  private static GlintType glintType(
+      ItemStack itemStack
+  ) {
+    if (Boolean.TRUE.equals(itemStack.get(RegComponentTypes.UNIVERSE_GLINT_OVERRIDE))) {
+      return GlintType.UNIVERSE;
+    }
+    if (Boolean.TRUE.equals(itemStack.get(RegComponentTypes.SUPREME_GLINT_OVERRIDE))) {
+      return GlintType.SUPREME;
+    }
+    return GlintType.NONE;
+  }
+
   private static int layerColor(
       int[] tintLayers,
       BakedQuad.MaterialInfo material
@@ -168,18 +196,6 @@ public final class RenderHelperForGlint {
       return transparent ? GlintRenderTypes.SUPREME_GLINT_TRANSLUCENT : GlintRenderTypes.SUPREME_GLINT;
     }
     return transparent ? GlintRenderTypes.GLINT_TRANSLUCENT : GlintRenderTypes.GLINT;
-  }
-
-  private static GlintType glintType(
-      ItemStack itemStack
-  ) {
-    if (Boolean.TRUE.equals(itemStack.get(RegComponentTypes.UNIVERSE_GLINT_OVERRIDE))) {
-      return GlintType.UNIVERSE;
-    }
-    if (Boolean.TRUE.equals(itemStack.get(RegComponentTypes.SUPREME_GLINT_OVERRIDE))) {
-      return GlintType.SUPREME;
-    }
-    return GlintType.NONE;
   }
 
   private static RenderType armorGlintRenderType(

@@ -148,6 +148,7 @@
   "gui.magnatour.universe_teleport_point.invalid_input": "Entrez une dimension valide et des coordonnées entières",
   "gui.magnatour.universe_teleport_point.name": "Nom",
   "gui.magnatour.universe_teleport_point.dimension": "Dimension",
+  "gui.magnatour.universe_teleport_point.delete_btn": "Supprimer ce point de téléportation",
   "gui.magnatour.universe_teleport_point.save": "Enregistrer",
   "gui.magnatour.universe_teleport_point.cancel": "Annuler",
   "gui.magnatour.universe_teleport_point.current": "Utiliser la position actuelle",

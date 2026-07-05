@@ -45,6 +45,7 @@ import net.minecraft.world.phys.Vec3;
 
 // JSpecify
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 // Magnatour
 import roeyqian.magnatour.entity.CustomBossEntity;
@@ -85,8 +86,8 @@ public class SculkBehemoth extends Mob implements Enemy, CustomBossEntity {
 
   private SmashState smashState = SmashState.JUMPING;
 
-  private Vec3 chargeDirection = null;
-  private Vec3 smashTargetEntityPos = null;
+  private @Nullable Vec3 chargeDirection = null;
+  private @Nullable Vec3 smashTargetEntityPos = null;
 
   private final ServerBossEvent bossBar;
 

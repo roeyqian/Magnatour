@@ -11,6 +11,7 @@ package roeyqian.magnatour.item.consumable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -33,6 +34,8 @@ import roeyqian.magnatour.item.CustomItemSetting;
 
 public class UniverseBanquet extends Item {
 
+  private static final int CONSUME_CHANCE = 9;
+
   public UniverseBanquet(
       Item.Properties settings
   ) {
@@ -45,7 +48,7 @@ public class UniverseBanquet extends Item {
       @NonNull Level world,
       @NonNull LivingEntity user
   ) {
-    if (user.getRandom().nextInt(0, 9) != 0) {
+    if (!shouldConsume(user.getRandom())) {
       if (user instanceof Player player) {
         var food = stack.get(DataComponents.FOOD);
         if (food != null) {
@@ -81,6 +84,7 @@ public class UniverseBanquet extends Item {
         && BoneMealItem.growWaterPlant(stack, world, relativePos, context.getClickedFace())
     ) {
       if (!world.isClientSide()) {
+        refundUseIfNeeded(stack, world.getRandom());
         stack.causeUseVibration(context.getPlayer(), GameEvent.ITEM_INTERACT_FINISH);
         world.levelEvent(LevelEvent.PARTICLES_AND_SOUND_PLANT_GROWTH, relativePos, 15);
       }
@@ -101,6 +105,12 @@ public class UniverseBanquet extends Item {
         );
   }
 
+  private static boolean shouldConsume(
+      RandomSource random
+  ) {
+    return random.nextInt(CONSUME_CHANCE) == 0;
+  }
+
   private static boolean growCropGuaranteed(
       ItemStack stack,
       Level world,
@@ -115,9 +125,27 @@ public class UniverseBanquet extends Item {
     }
     if (world instanceof ServerLevel serverWorld) {
       bonemealableBlock.performBonemeal(serverWorld, world.getRandom(), pos, state);
-      stack.shrink(1);
+      consumeIfNeeded(stack, world.getRandom());
     }
     return true;
+  }
+
+  private static void refundUseIfNeeded(
+      ItemStack stack,
+      RandomSource random
+  ) {
+    if (!shouldConsume(random)) {
+      stack.grow(1);
+    }
+  }
+
+  private static void consumeIfNeeded(
+      ItemStack stack,
+      RandomSource random
+  ) {
+    if (shouldConsume(random)) {
+      stack.shrink(1);
+    }
   }
 
 }

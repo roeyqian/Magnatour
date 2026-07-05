@@ -23,9 +23,12 @@ import net.minecraft.server.level.TicketType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.ChunkPos;
 
+// JSpecify
+import org.jspecify.annotations.Nullable;
+
 public final class RemoteAccessManager {
 
-  public static TicketType REMOTE_ACCESS_TICKET = null;
+  public static @Nullable TicketType REMOTE_ACCESS_TICKET = null;
 
   private static final Set<UUID> OPENING_REMOTE = ConcurrentHashMap.newKeySet();
 

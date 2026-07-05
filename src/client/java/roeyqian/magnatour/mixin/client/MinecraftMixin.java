@@ -16,18 +16,12 @@ import net.minecraft.client.gui.screens.Screen;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-// Lightweight Java Game Library
-import org.lwjgl.glfw.GLFW;
-
 // Magnatour
-import roeyqian.magnatour.mixin.screen.WindowAccessor;
-import roeyqian.magnatour.screen.item.UniverseConsoleScreen;
 import roeyqian.magnatour.utility.mixin.client.ClientHelperForEquipment;
 
 @Mixin(value = Minecraft.class, priority = 3600000)
@@ -39,14 +33,6 @@ public class MinecraftMixin {
   @Shadow
   public Screen screen;
 
-  @Unique
-  private double magnatour$savedMouseX = 0.0;
-  @Unique
-  private double magnatour$savedMouseY = 0.0;
-
-  @Unique
-  private boolean magnatour$shouldRestoreMouse = false;
-
   /* Restore the saved mouse position once the new screen has been fully set up.
    * This runs after releaseMouse() has made the cursor visible again.
    */
@@ -55,12 +41,7 @@ public class MinecraftMixin {
       Screen newScreen,
       CallbackInfo ci
   ) {
-    if (this.magnatour$shouldRestoreMouse && newScreen != null) {
-      Minecraft self = (Minecraft) (Object) this;
-      long windowHandle = ((WindowAccessor) (Object) self.getWindow()).getHandle();
-      GLFW.glfwSetCursorPos(windowHandle, this.magnatour$savedMouseX, this.magnatour$savedMouseY);
-      this.magnatour$shouldRestoreMouse = false;
-    }
+    ClientHelperForEquipment.handleAfterSetScreen((Minecraft) (Object) this, newScreen);
   }
 
   @Inject(method = "startAttack", at = @At("HEAD"), cancellable = true)
@@ -77,11 +58,12 @@ public class MinecraftMixin {
       Screen newScreen,
       CallbackInfo ci
   ) {
-    if (newScreen == null && this.screen instanceof UniverseConsoleScreen) {
-      this.magnatour$savedMouseX = this.mouseHandler.xpos();
-      this.magnatour$savedMouseY = this.mouseHandler.ypos();
-      this.magnatour$shouldRestoreMouse = true;
-    }
+    ClientHelperForEquipment.handleBeforeSetScreen(
+        (Minecraft) (Object) this,
+        this.mouseHandler,
+        this.screen,
+        newScreen
+    );
   }
 
 }

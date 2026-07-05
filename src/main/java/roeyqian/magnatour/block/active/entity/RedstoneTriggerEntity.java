@@ -21,6 +21,7 @@ import net.minecraft.world.level.storage.ValueOutput;
 
 // JSpecify
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 // Magnatour
 import roeyqian.magnatour.block.active.RedstoneTrigger;
@@ -82,7 +83,7 @@ public class RedstoneTriggerEntity extends BlockEntity {
   }
 
   public void applySettings(
-      TriggerMode mode,
+      @Nullable TriggerMode mode,
       boolean enabled,
       int intervalTicks
   ) {

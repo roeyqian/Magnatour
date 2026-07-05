@@ -17,11 +17,13 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.player.Abilities;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.FoodData;
 import net.minecraft.world.item.ItemStack;
@@ -41,6 +43,8 @@ import roeyqian.magnatour.utility.registry.item.RegDurableItems;
 
 public final class EntityHelperForEquipment {
 
+  private static final float DEFAULT_FLYING_SPEED = new Abilities().getFlyingSpeed();
+
   private EntityHelperForEquipment() {}
 
   public static void handleDefaultFlight(
@@ -54,6 +58,61 @@ public final class EntityHelperForEquipment {
       player.getAbilities().mayfly = false;
       player.getAbilities().flying = false;
       player.onUpdateAbilities();
+    }
+  }
+
+  public static void handleEntityIsInLava(
+      Entity entity,
+      CallbackInfoReturnable<Boolean> cir
+  ) {
+    if (entity instanceof Player player) {
+      handleUniverseBootsFluidContact(player, cir);
+    }
+  }
+
+  public static void handleEntityIsInWater(
+      Entity entity,
+      CallbackInfoReturnable<Boolean> cir
+  ) {
+    if (entity instanceof Player player) {
+      handleUniverseBootsFluidContact(player, cir);
+    }
+  }
+
+  public static void handleEntityTick(
+      Entity entity
+  ) {
+    if (entity instanceof Player player) {
+      handleUniverseBootsFluidWalking(player);
+    }
+  }
+
+  public static int handleLivingBaseTick(
+      LivingEntity living,
+      int flightTicks
+  ) {
+    if (!(living instanceof Player player)) {
+      return flightTicks;
+    }
+
+    if (player.getItemBySlot(EquipmentSlot.CHEST).is(RegDurableItems.UNIVERSE_CHESTPLATE)) {
+      return handleUniverseFlight(player, flightTicks);
+    }
+
+    if (player.getAbilities().getFlyingSpeed() != DEFAULT_FLYING_SPEED) {
+      handleDefaultFlight(player, DEFAULT_FLYING_SPEED);
+    }
+
+    return flightTicks;
+  }
+
+  public static void handleLivingForceAddEffect(
+      LivingEntity living,
+      MobEffectInstance effect,
+      CallbackInfo ci
+  ) {
+    if (living instanceof Player player) {
+      handleUniverseHelmetImmunity(player, effect, ci);
     }
   }
 

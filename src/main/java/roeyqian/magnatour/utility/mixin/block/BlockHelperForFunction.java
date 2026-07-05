@@ -8,25 +8,30 @@
 package roeyqian.magnatour.utility.mixin.block;
 
 // Minecraft
-import net.minecraft.core.NonNullList;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.NonNullList;
 import net.minecraft.recipebook.PlaceRecipeHelper;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingInput;
-import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 
 // SpongePowered Mixin
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 // Magnatour
+import roeyqian.magnatour.block.CustomPortalBlock;
 import roeyqian.magnatour.block.SummonStructureHelper;
+import roeyqian.magnatour.block.insert.ChunkTntBlock;
 import roeyqian.magnatour.gen.CraftingResultHelper;
 import roeyqian.magnatour.gen.recipe.SupremeCraftingRecipe;
 import roeyqian.magnatour.gen.recipe.UniverseCraftingRecipe;
@@ -35,6 +40,41 @@ import roeyqian.magnatour.utility.registry.gen.RegRecipes;
 public final class BlockHelperForFunction {
 
   private BlockHelperForFunction() {}
+
+  public static void handleBaseFireCanBePlacedAt(
+      Level level,
+      BlockPos pos,
+      Direction forwardDirection,
+      CallbackInfoReturnable<Boolean> cir
+  ) {
+    if (cir.getReturnValue()) return;
+
+    cir.setReturnValue(CustomPortalBlock.canBePlacedAt(level, pos, forwardDirection));
+  }
+
+  public static void handleBaseFireOnPlace(
+      BlockState state,
+      Level level,
+      BlockPos pos,
+      BlockState oldState,
+      CallbackInfo ci
+  ) {
+    if (oldState.is(state.getBlock())) return;
+    if (CustomPortalBlock.tryCreatePortalFromFire(level, pos)) ci.cancel();
+  }
+
+  public static void handleFireTick(
+      ServerLevel level,
+      BlockPos pos
+  ) {
+    for (Direction direction : Direction.values()) {
+      BlockPos neighbor = pos.relative(direction);
+      if (!(level.getBlockState(neighbor).getBlock() instanceof ChunkTntBlock)) continue;
+
+      ChunkTntBlock.prime(level, neighbor, null);
+      level.removeBlock(neighbor, false);
+    }
+  }
 
   public static void handleOnTake(
       Player player,
@@ -93,6 +133,21 @@ public final class BlockHelperForFunction {
     }
 
     return false;
+  }
+
+  public static int handleQuickCraft(
+      Player player,
+      CraftingContainer craftSlots,
+      int removeCount,
+      int amount,
+      CallbackInfo ci
+  ) {
+    if (!shouldHandleCustomRecipe(player, craftSlots)) {
+      return removeCount;
+    }
+
+    ci.cancel();
+    return removeCount + amount;
   }
 
   public static void handleVanillaSummonTriggerOnPlace(
