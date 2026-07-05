@@ -31,7 +31,6 @@ import org.jspecify.annotations.Nullable;
 
 // Magnatour
 import roeyqian.magnatour.utility.mixin.render.RenderHelperForGlint;
-import roeyqian.magnatour.utility.registry.gen.RegComponentTypes;
 
 @Environment(EnvType.CLIENT) @Mixin(value = CuboidItemModelWrapper.class, priority = 3600000)
 public class CuboidItemModelWrapperMixin {
@@ -49,11 +48,7 @@ public class CuboidItemModelWrapperMixin {
       int seed,
       CallbackInfo ci
   ) {
-    if (Boolean.TRUE.equals(item.get(RegComponentTypes.UNIVERSE_GLINT_OVERRIDE))) {
-      RenderHelperForGlint.markGlint(output, RenderHelperForGlint.GlintType.UNIVERSE);
-    } else if (Boolean.TRUE.equals(item.get(RegComponentTypes.SUPREME_GLINT_OVERRIDE))) {
-      RenderHelperForGlint.markGlint(output, RenderHelperForGlint.GlintType.SUPREME);
-    }
+    RenderHelperForGlint.markGlint(output, item);
   }
 
 }

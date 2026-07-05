@@ -71,6 +71,35 @@ public interface BlockRegHelper {
     }
   }
 
+  static Block registerCrop(
+      String name,
+      String type,
+      Function<BlockBehaviour.Properties, Block> factory,
+      BlockBehaviour.Properties properties
+  ) {
+    if (Objects.equals(type, "supreme")) {
+      return register(
+          name, factory, properties
+              .noCollision()
+              .randomTicks()
+              .instabreak()
+              .sound(SoundType.CROP)
+              .pushReaction(PushReaction.DESTROY),
+          setting -> setting.rarity(Rarity.RARE)
+      );
+    } else {
+      return register(
+          name, factory, properties
+              .noCollision()
+              .randomTicks()
+              .instabreak()
+              .sound(SoundType.CROP)
+              .pushReaction(PushReaction.DESTROY),
+          setting -> setting.rarity(Rarity.EPIC)
+      );
+    }
+  }
+
   static Block registerGrass(
       String name,
       String type,

@@ -75,7 +75,7 @@ public final class RegInsertBlocks {
       "golden_leaves", supreme,
       GoldenLeavesBlock::new, BlockBehaviour.Properties.of()
   );
-  public static final Block CROP_OF_ALL_THINGS = BlockRegHelper.registerGrass(
+  public static final Block CROP_OF_ALL_THINGS = BlockRegHelper.registerCrop(
       "crop_of_all_things", supreme,
       CropOfAllThings::new, BlockBehaviour.Properties.of()
   );

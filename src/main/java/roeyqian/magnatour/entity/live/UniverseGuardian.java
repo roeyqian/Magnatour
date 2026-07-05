@@ -38,6 +38,7 @@ import net.minecraft.world.phys.Vec3;
 
 // JSpecify
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 // Magnatour
 import roeyqian.magnatour.entity.EntityLootTableHelper;
@@ -49,7 +50,7 @@ public class UniverseGuardian extends TamableAnimal {
 
   private int attackCooldown = 0;
 
-  private Vec3 lastOwnerPos = null;
+  private @Nullable Vec3 lastOwnerPos = null;
 
   public UniverseGuardian(
       EntityType<? extends TamableAnimal> entityType,
@@ -88,7 +89,7 @@ public class UniverseGuardian extends TamableAnimal {
   }
 
   @Override
-  public AgeableMob getBreedOffspring(
+  public @Nullable AgeableMob getBreedOffspring(
       @NonNull ServerLevel world,
       @NonNull AgeableMob entity
   ) {

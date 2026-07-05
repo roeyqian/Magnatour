@@ -148,6 +148,7 @@
   "gui.magnatour.universe_teleport_point.invalid_input": "有効な次元と整数座標を入力してください",
   "gui.magnatour.universe_teleport_point.name": "名前",
   "gui.magnatour.universe_teleport_point.dimension": "次元",
+  "gui.magnatour.universe_teleport_point.delete_btn": "この転送地点を削除",
   "gui.magnatour.universe_teleport_point.save": "保存",
   "gui.magnatour.universe_teleport_point.cancel": "キャンセル",
   "gui.magnatour.universe_teleport_point.current": "現在地を使用",

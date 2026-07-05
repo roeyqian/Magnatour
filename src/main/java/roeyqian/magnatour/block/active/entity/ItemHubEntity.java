@@ -173,7 +173,7 @@ public class ItemHubEntity extends RandomizableContainerBlockEntity implements H
 
   @Nullable
   public static String normalizeFilterItemId(
-      String filterItemId
+      @Nullable String filterItemId
   ) {
     String trimmed = filterItemId == null ? "" : filterItemId.trim();
     if (trimmed.isEmpty()) {
@@ -240,7 +240,7 @@ public class ItemHubEntity extends RandomizableContainerBlockEntity implements H
   }
 
   public boolean applyFilterItemId(
-      String rawFilterItemId
+      @Nullable String rawFilterItemId
   ) {
     String normalizedFilterItemId = normalizeFilterItemId(rawFilterItemId);
     if (normalizedFilterItemId == null) {
@@ -258,7 +258,7 @@ public class ItemHubEntity extends RandomizableContainerBlockEntity implements H
   @Override
   public boolean canPlaceItem(
       int slot,
-      ItemStack itemStack
+      @NonNull ItemStack itemStack
   ) {
     return this.matchesFilter(itemStack);
   }
@@ -294,7 +294,7 @@ public class ItemHubEntity extends RandomizableContainerBlockEntity implements H
 
   @Override
   public @NonNull CompoundTag getUpdateTag(
-      HolderLookup.Provider registries
+      HolderLookup.@NonNull Provider registries
   ) {
     return this.saveWithoutMetadata(registries);
   }
@@ -305,7 +305,7 @@ public class ItemHubEntity extends RandomizableContainerBlockEntity implements H
   }
 
   @Override
-  public ItemStack removeItem(
+  public @NonNull ItemStack removeItem(
       int slot,
       int count
   ) {
@@ -316,7 +316,7 @@ public class ItemHubEntity extends RandomizableContainerBlockEntity implements H
   @Override
   public void setItem(
       int slot,
-      ItemStack itemStack
+      @NonNull ItemStack itemStack
   ) {
     this.unpackLootTable(null);
     this.getItems().set(slot, itemStack);
@@ -324,9 +324,9 @@ public class ItemHubEntity extends RandomizableContainerBlockEntity implements H
   }
 
   @Override
-  protected AbstractContainerMenu createMenu(
+  protected @NonNull AbstractContainerMenu createMenu(
       int containerId,
-      Inventory inventory
+      @NonNull Inventory inventory
   ) {
     return new ItemHubMenu(
         containerId,
@@ -339,18 +339,18 @@ public class ItemHubEntity extends RandomizableContainerBlockEntity implements H
   }
 
   @Override
-  protected Component getDefaultName() {
+  protected @NonNull Component getDefaultName() {
     return DEFAULT_NAME;
   }
 
   @Override
-  protected NonNullList<ItemStack> getItems() {
+  protected @NonNull NonNullList<ItemStack> getItems() {
     return this.items;
   }
 
   @Override
   protected void loadAdditional(
-      ValueInput input
+      @NonNull ValueInput input
   ) {
     super.loadAdditional(input);
     this.items = NonNullList.withSize(this.getContainerSize(), ItemStack.EMPTY);
@@ -365,7 +365,7 @@ public class ItemHubEntity extends RandomizableContainerBlockEntity implements H
 
   @Override
   protected void saveAdditional(
-      ValueOutput output
+      @NonNull ValueOutput output
   ) {
     super.saveAdditional(output);
     if (!this.trySaveLootTable(output)) {
@@ -378,7 +378,7 @@ public class ItemHubEntity extends RandomizableContainerBlockEntity implements H
 
   @Override
   protected void setItems(
-      NonNullList<ItemStack> items
+      @NonNull NonNullList<ItemStack> items
   ) {
     this.items = items;
   }

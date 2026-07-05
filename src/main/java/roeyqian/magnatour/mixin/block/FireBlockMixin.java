@@ -9,7 +9,6 @@ package roeyqian.magnatour.mixin.block;
 
 // Minecraft
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.FireBlock;
 import net.minecraft.world.level.block.state.BlockState;
@@ -21,7 +20,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 // Magnatour
-import roeyqian.magnatour.block.insert.ChunkTntBlock;
+import roeyqian.magnatour.utility.mixin.block.BlockHelperForFunction;
 
 @Mixin(value = FireBlock.class, priority = 3600000)
 public class FireBlockMixin {
@@ -34,13 +33,7 @@ public class FireBlockMixin {
       net.minecraft.util.RandomSource random,
       CallbackInfo ci
   ) {
-    for (Direction dir : Direction.values()) {
-      BlockPos neighbor = pos.relative(dir);
-      if (level.getBlockState(neighbor).getBlock() instanceof ChunkTntBlock) {
-        ChunkTntBlock.prime(level, neighbor, null);
-        level.removeBlock(neighbor, false);
-      }
-    }
+    BlockHelperForFunction.handleFireTick(level, pos);
   }
 
 }

@@ -22,7 +22,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 // Magnatour
-import roeyqian.magnatour.block.CustomPortalBlock;
+import roeyqian.magnatour.utility.mixin.block.BlockHelperForFunction;
 
 @Mixin(value = BaseFireBlock.class, priority = 3600000)
 public class BaseFireBlockMixin {
@@ -36,8 +36,7 @@ public class BaseFireBlockMixin {
       Direction forwardDirection,
       CallbackInfoReturnable<Boolean> cir
   ) {
-    if (cir.getReturnValue()) return;
-    cir.setReturnValue(CustomPortalBlock.canBePlacedAt(level, pos, forwardDirection));
+    BlockHelperForFunction.handleBaseFireCanBePlacedAt(level, pos, forwardDirection, cir);
   }
 
   /* Custom Portal: Vanilla Fire onPlace Portal Creation
@@ -51,8 +50,7 @@ public class BaseFireBlockMixin {
       boolean movedByPiston,
       CallbackInfo ci
   ) {
-    if (oldState.is(state.getBlock())) return;
-    if (CustomPortalBlock.tryCreatePortalFromFire(level, pos)) ci.cancel();
+    BlockHelperForFunction.handleBaseFireOnPlace(state, level, pos, oldState, ci);
   }
 
 }

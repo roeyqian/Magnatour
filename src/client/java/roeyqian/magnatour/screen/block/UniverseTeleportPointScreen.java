@@ -142,6 +142,17 @@ public class UniverseTeleportPointScreen extends AbstractContainerScreen<Univers
   }
 
   @Override
+  public void extractRenderState(
+      @NonNull GuiGraphicsExtractor graphics,
+      int mouseX,
+      int mouseY,
+      float delta
+  ) {
+    super.extractRenderState(graphics, mouseX, mouseY, delta);
+    drawTooltips(graphics, mouseX, mouseY);
+  }
+
+  @Override
   public boolean keyPressed(
       @NonNull KeyEvent event
   ) {
@@ -346,6 +357,41 @@ public class UniverseTeleportPointScreen extends AbstractContainerScreen<Univers
       );
       graphics.text(this.font, name, rowX + 6, rowY + 6, TEXT_COLOR, true);
       graphics.text(this.font, coordinates, coordinatesX, rowY + 6, TEXT_COLOR, true);
+    }
+  }
+
+  private void drawTooltips(
+      GuiGraphicsExtractor graphics,
+      int mouseX,
+      int mouseY
+  ) {
+    if (addMode || destinations.isEmpty()) return;
+
+    int rows = Math.min(VISIBLE_ROWS, destinations.size() - scrollOffset);
+    for (int i = 0; i < rows; i++) {
+      int index = scrollOffset + i;
+      UniverseTeleportPointEntity.Destination destination = destinations.get(index);
+      int rowX = leftPos + ROW_X;
+      int rowY = topPos + LIST_BUTTON_TOP + i * ROW_HEIGHT;
+      int deleteX = rowX + ROW_BUTTON_WIDTH;
+
+      if (mouseOverMain(mouseX, mouseY, rowX, rowY)) {
+        List<Component> tooltip = List.of(
+            Component.literal(destination.name()),
+            Component.literal("§o" + destination.x() + ", " + destination.y() + ", " + destination.z()),
+            Component.translatable("dimension." + destination.dimension().identifier())
+        );
+        graphics.setComponentTooltipForNextFrame(this.font, tooltip, mouseX, mouseY);
+        break;
+      }
+
+      if (mouseOverDelete(mouseX, mouseY, deleteX, rowY)) {
+        List<Component> tooltip = List.of(
+            Component.translatable("gui.magnatour.universe_teleport_point.delete_btn")
+        );
+        graphics.setComponentTooltipForNextFrame(this.font, tooltip, mouseX, mouseY);
+        break;
+      }
     }
   }
 
