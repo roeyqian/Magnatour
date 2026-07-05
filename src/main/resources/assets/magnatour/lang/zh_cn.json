@@ -148,6 +148,7 @@
   "gui.magnatour.universe_teleport_point.invalid_input": "请输入有效的维度与整数坐标",
   "gui.magnatour.universe_teleport_point.name": "名称",
   "gui.magnatour.universe_teleport_point.dimension": "维度",
+  "gui.magnatour.universe_teleport_point.delete_btn": "删除该传送地点",
   "gui.magnatour.universe_teleport_point.save": "保存",
   "gui.magnatour.universe_teleport_point.cancel": "取消",
   "gui.magnatour.universe_teleport_point.current": "使用当前位置",
