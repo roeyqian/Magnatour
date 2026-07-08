@@ -400,9 +400,9 @@ public final class SummonStructureHelper {
     return false;
   }
 
-private record ScheduledSummonCheck(
-    ServerLevel level,
-    BlockPos pos
-) {}
+  private record ScheduledSummonCheck(
+      ServerLevel level,
+      BlockPos pos
+  ) {}
 
 }

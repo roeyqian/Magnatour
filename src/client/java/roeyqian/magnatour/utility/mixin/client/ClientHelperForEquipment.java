@@ -130,7 +130,7 @@ public final class ClientHelperForEquipment {
         && (fluid == Fluids.WATER || fluid == Fluids.LAVA);
   }
 
-private static final class MouseRestoreState {
+  private static final class MouseRestoreState {
 
     private final double mouseX;
     private final double mouseY;
@@ -143,6 +143,6 @@ private static final class MouseRestoreState {
       this.mouseY = mouseY;
     }
 
-}
+  }
 
 }

@@ -233,9 +233,9 @@ public class UniverseOmniBlade extends Item {
     return InteractionResult.SUCCESS;
   }
 
-private record TillBehavior(
-    Predicate<UseOnContext> predicate,
-    Consumer<UseOnContext> consumer
-) {}
+  private record TillBehavior(
+      Predicate<UseOnContext> predicate,
+      Consumer<UseOnContext> consumer
+  ) {}
 
 }

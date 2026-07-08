@@ -251,7 +251,7 @@ public class UniverseLibraryMenu extends AbstractContainerMenu {
     return displayIndex + (this.scrollOffset.get() * 9);
   }
 
-private class DisplayInventory implements Container {
+  private class DisplayInventory implements Container {
 
     private final NonNullList<ItemStack> clientItems = NonNullList.withSize(54, ItemStack.EMPTY);
 
@@ -372,9 +372,9 @@ private class DisplayInventory implements Container {
       return true;
     }
 
-}
+  }
 
-private class DisplaySlot extends Slot {
+  private class DisplaySlot extends Slot {
 
     public DisplaySlot(
         Container inventory,
@@ -408,6 +408,6 @@ private class DisplaySlot extends Slot {
       return UniverseLibraryMenu.this.getRealIndex(this.getContainerSlot());
     }
 
-}
+  }
 
 }

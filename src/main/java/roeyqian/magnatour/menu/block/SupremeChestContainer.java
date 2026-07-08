@@ -192,9 +192,9 @@ public class SupremeChestContainer implements WorldlyContainer {
     throw new IndexOutOfBoundsException("Slot " + slot + " outside Supreme Chest container");
   }
 
-private record SlotLocation(
-    Container container,
-    int slot
-) {}
+  private record SlotLocation(
+      Container container,
+      int slot
+  ) {}
 
 }

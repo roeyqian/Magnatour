@@ -71,12 +71,12 @@ public final class UniverseSonicBoomParticle extends SonicBoomParticle {
     this.setColor(r, g, b);
   }
 
-public enum Mode {
+  public enum Mode {
     RAINBOW
   }
 
-@Environment(EnvType.CLIENT)
-public static class RainbowFactory implements ParticleProvider<SimpleParticleType> {
+  @Environment(EnvType.CLIENT)
+  public static class RainbowFactory implements ParticleProvider<SimpleParticleType> {
 
     private final SpriteSet spriteSet;
 
@@ -106,6 +106,6 @@ public static class RainbowFactory implements ParticleProvider<SimpleParticleTyp
       );
     }
 
-}
+  }
 
 }

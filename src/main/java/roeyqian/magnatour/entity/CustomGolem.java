@@ -365,7 +365,7 @@ public final class CustomGolem<T extends AbstractGolem & NeutralMob> {
     return (float) this.owner.getAttributeValue(Attributes.ATTACK_DAMAGE);
   }
 
-private static final class FasterMeleeAttackGoal extends MeleeAttackGoal {
+  private static final class FasterMeleeAttackGoal extends MeleeAttackGoal {
 
     private int attackCooldown;
     private int attackPatternIndex;
@@ -426,6 +426,6 @@ private static final class FasterMeleeAttackGoal extends MeleeAttackGoal {
       }
     }
 
-}
+  }
 
 }
