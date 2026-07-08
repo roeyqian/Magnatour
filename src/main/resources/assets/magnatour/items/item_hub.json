@@ -1,6 +1,6 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "magnatour:block/item_hub"
+    "model": "magnatour:item/item_hub"
   }
 }
