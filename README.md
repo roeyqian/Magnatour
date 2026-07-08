@@ -72,6 +72,7 @@
 要点：
 
 - 传送门支持类似原版门框的矩形检测逻辑。
+- 当前最小有效门框为“宽 `3`、高 `4`”。
 - 可在主世界与对应维度之间双向往返。
 - 进入门内需要累计约 `80 tick` 触发传送。
 - 创造模式玩家会直接触发传送。
@@ -464,6 +465,7 @@ Two custom dimension portals are currently implemented, with behavior close to t
 Key points:
 
 - The portals support a rectangular frame detection logic similar to vanilla portals.
+- The smallest valid frame is `3` blocks wide and `4` blocks tall.
 - They allow two-way travel between the Overworld and the corresponding dimension.
 - Entering the portal requires about `80 ticks` of accumulation before teleportation triggers.
 - Players in creative mode teleport immediately.
@@ -856,6 +858,7 @@ This project is open-sourced under the GPL-v3 license. See `LICENSE` for details
 要点:
 
 - バニラのポータルに近い長方形フレーム検出ロジックを持ちます。
+- 最小で有効なポータル枠は「幅 `3`、高さ `4`」です。
 - オーバーワールドと対応次元の間を双方向に移動できます。
 - ポータル内部に入ってから転送が発動するまでに約 `80 tick` の蓄積が必要です。
 - クリエイティブモードのプレイヤーは即座に転送されます。
@@ -1248,6 +1251,7 @@ Actualmente hay dos portales de dimensión personalizados, con un comportamiento
 Puntos clave:
 
 - Los portales usan una lógica de detección rectangular similar a la de los portales vanilla.
+- El marco válido más pequeño mide `3` bloques de ancho y `4` de alto.
 - Permiten viajar en ambos sentidos entre el Overworld y la dimensión correspondiente.
 - Entrar al portal requiere acumular unos `80 ticks` antes de activar el teletransporte.
 - Los jugadores en modo creativo se teletransportan de inmediato.
