@@ -371,10 +371,10 @@ public final class SummonStructureHelper {
   private static BlockPattern getOrCreateSculkBehemothPattern() {
     if (sculkBehemothPattern == null) {
       sculkBehemothPattern = BlockPatternBuilder.start()
-          .aisle("~~~", "###", "#~#")
+          .aisle("~~~", "###", "C~C")
           .aisle("~~~", "###", "~~~")
-          .aisle("~~~", "###", "#~#")
-          .aisle("~S~", "~C~", "~~~")
+          .aisle("~~~", "###", "C~C")
+          .aisle("~S~", "~S~", "~~~")
           .where('#', BlockInWorld.hasState(BlockStatePredicate.forBlock(RegInsertBlocks.SUPREME_GEM_BLOCK)))
           .where('C', BlockInWorld.hasState(BlockStatePredicate.forBlock(Blocks.SCULK_CATALYST)))
           .where('S', BlockInWorld.hasState(BlockStatePredicate.forBlock(Blocks.SCULK)))
