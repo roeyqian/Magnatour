@@ -134,7 +134,7 @@ public class UniverseLibraryMenu extends AbstractContainerMenu {
       if (index < 54) {
         if (!this.moveItemStackTo(original, 54, 90, true)) return ItemStack.EMPTY;
       } else {
-        if (!this.moveItemStackTo(original, 0, 54, false)) return ItemStack.EMPTY;
+        if (!this.moveItemStackToSourceInventory(original)) return ItemStack.EMPTY;
       }
 
       if (original.isEmpty()) slot.setByPlayer(ItemStack.EMPTY);
@@ -186,6 +186,63 @@ public class UniverseLibraryMenu extends AbstractContainerMenu {
 
   private void refreshDisplay() {
     super.broadcastFullState();
+  }
+
+  private boolean moveItemStackToSourceInventory(
+      ItemStack stack
+  ) {
+    if (stack.isEmpty()) return false;
+
+    int originalCount = stack.getCount();
+    mergeIntoExistingSourceStacks(stack);
+    fillEmptySourceSlots(stack);
+
+    return stack.getCount() < originalCount;
+  }
+
+  private void mergeIntoExistingSourceStacks(
+      ItemStack stack
+  ) {
+    for (int slotIndex = 0; slotIndex < this.sourceInventory.getContainerSize(); slotIndex++) {
+      if (stack.isEmpty()) return;
+      if (!this.sourceInventory.canPlaceItem(slotIndex, stack)) continue;
+
+      ItemStack existing = this.sourceInventory.getItem(slotIndex);
+      if (existing.isEmpty()) continue;
+      if (!ItemStack.isSameItemSameComponents(existing, stack)) continue;
+
+      int maxStackSize = Math.min(
+          existing.getMaxStackSize(),
+          this.sourceInventory.getMaxStackSize(existing)
+      );
+      int space = maxStackSize - existing.getCount();
+      if (space <= 0) continue;
+
+      int moved = Math.min(space, stack.getCount());
+      existing.grow(moved);
+      stack.shrink(moved);
+      this.sourceInventory.setChanged();
+    }
+  }
+
+  private void fillEmptySourceSlots(
+      ItemStack stack
+  ) {
+    for (int slotIndex = 0; slotIndex < this.sourceInventory.getContainerSize(); slotIndex++) {
+      if (stack.isEmpty()) return;
+      if (!this.sourceInventory.canPlaceItem(slotIndex, stack)) continue;
+      if (!this.sourceInventory.getItem(slotIndex).isEmpty()) continue;
+
+      int maxStackSize = Math.min(
+          stack.getMaxStackSize(),
+          this.sourceInventory.getMaxStackSize(stack)
+      );
+      int moved = Math.min(maxStackSize, stack.getCount());
+
+      ItemStack movedStack = stack.copyWithCount(moved);
+      stack.shrink(moved);
+      this.sourceInventory.setItem(slotIndex, movedStack);
+    }
   }
 
   private int getRealIndex(
