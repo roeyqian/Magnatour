@@ -22,7 +22,7 @@ public interface CustomToolMaterial {
 
   ToolMaterial SUPREME_TOOL = new ToolMaterial(
       BlockTags.INCORRECT_FOR_NETHERITE_TOOL,
-      2400, 64, 2400, 64,
+      2400, 100, 2400, 100,
       createRepairItemsTag("supreme_core")
   );
   ToolMaterial UNIVERSE_TOOL = new ToolMaterial(

@@ -8,8 +8,7 @@
 package roeyqian.magnatour.mixin.menu;
 
 // Minecraft
-import net.minecraft.world.Container;
-import net.minecraft.world.inventory.EnchantmentMenu;
+import net.minecraft.world.inventory.AnvilMenu;
 
 // SpongePowered Mixin
 import org.spongepowered.asm.mixin.Mixin;
@@ -18,19 +17,18 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 // Magnatour
-import roeyqian.magnatour.utility.mixin.menu.MenuHelperForEquipment;
+import roeyqian.magnatour.utility.mixin.menu.MenuHelperForEnchantment;
 
-@Mixin(value = EnchantmentMenu.class, priority = 3600000)
-public class EnchantmentMenuMixin {
+@Mixin(value = AnvilMenu.class, priority = 3600000)
+public class AnvilMenuMixin {
 
-  /* Universe Equipment: Unenchantable
+  /* Universe Equipment: No anvil enchanting
    */
-  @Inject(method = "slotsChanged", at = @At("HEAD"), cancellable = true)
-  private void inSlotsChanged(
-      Container inventory,
+  @Inject(method = "createResult", at = @At("HEAD"), cancellable = true)
+  private void inCreateResult(
       CallbackInfo ci
   ) {
-    MenuHelperForEquipment.handleSlotsChanged(inventory, ci);
+    MenuHelperForEnchantment.handleCreateResult((AnvilMenu) (Object) this, ci);
   }
 
 }
