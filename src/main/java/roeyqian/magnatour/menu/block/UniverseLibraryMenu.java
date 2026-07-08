@@ -9,8 +9,6 @@ package roeyqian.magnatour.menu.block;
 
 // Minecraft
 import net.minecraft.core.NonNullList;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.SimpleContainer;
@@ -20,7 +18,6 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.DataSlot;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
 
 // JSpecify
 import org.jspecify.annotations.NonNull;
@@ -54,6 +51,7 @@ public class UniverseLibraryMenu extends AbstractContainerMenu {
     this.sourceInventory = inventory;
     this.liveSourceInventory = inventory instanceof UniverseLibraryEntity;
     this.addDataSlot(this.scrollOffset);
+    inventory.startOpen(playerInventory.player);
 
     for (int row = 0; row < 6; row++) {
       for (int col = 0; col < 9; col++) {
@@ -153,35 +151,14 @@ public class UniverseLibraryMenu extends AbstractContainerMenu {
       @NonNull Player player
   ) {
     super.removed(player);
-
-    if (!player.level().isClientSide()
-        && this.sourceInventory instanceof UniverseLibraryEntity libraryBe) {
-      libraryBe.setOpened(false);
-      Level world = libraryBe.getLevel();
-      if (world == null) return;
-
-      world.blockEvent(
-          libraryBe.getBlockPos(),
-          libraryBe.getBlockState().getBlock(),
-          1,
-          0
-      );
-      world.playSound(
-          null,
-          libraryBe.getBlockPos(),
-          SoundEvents.ENDER_CHEST_CLOSE,
-          SoundSource.BLOCKS,
-          0.5f,
-          world.getRandom().nextFloat() * 0.1f + 0.9f
-      );
-    }
+    this.sourceInventory.stopOpen(player);
   }
 
   @Override
   public boolean stillValid(
       @NonNull Player player
   ) {
-    return true;
+    return this.sourceInventory.stillValid(player);
   }
 
   private void refreshDisplay() {

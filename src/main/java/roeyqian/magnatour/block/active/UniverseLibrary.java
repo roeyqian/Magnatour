@@ -17,6 +17,8 @@ import com.mojang.serialization.MapCodec;
 // Minecraft
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
@@ -73,11 +75,13 @@ public class UniverseLibrary extends BaseEntityBlock {
       @NonNull BlockState state,
       @NonNull BlockEntityType<T> type
   ) {
-    return createTickerHelper(
-        type,
-        RegBlockEntities.UNIVERSE_LIBRARY_ENTITY,
-        (_, _, _, be) -> UniverseLibraryEntity.tick(be)
-    );
+    return world.isClientSide()
+        ? createTickerHelper(
+            type,
+            RegBlockEntities.UNIVERSE_LIBRARY_ENTITY,
+            (_, _, _, be) -> UniverseLibraryEntity.tick(be)
+        )
+        : null;
   }
 
   @Override
@@ -131,6 +135,17 @@ public class UniverseLibrary extends BaseEntityBlock {
     return SHAPE;
   }
 
+  @Override
+  protected void tick(
+      @NonNull BlockState state,
+      ServerLevel level,
+      @NonNull BlockPos pos,
+      @NonNull RandomSource random
+  ) {
+    BlockEntity blockEntity = level.getBlockEntity(pos);
+    if (blockEntity instanceof UniverseLibraryEntity libraryEntity) libraryEntity.recheckOpen();
+  }
+
   @Override @NonNull
   protected InteractionResult useWithoutItem(
       @NonNull BlockState state,
@@ -141,7 +156,7 @@ public class UniverseLibrary extends BaseEntityBlock {
   ) {
     if (!world.isClientSide()) {
       BlockEntity be = world.getBlockEntity(pos);
-      if (be instanceof UniverseLibraryEntity libraryBe) openLibrary(libraryBe, world, pos, player);
+      if (be instanceof UniverseLibraryEntity libraryBe) player.openMenu(libraryBe);
     }
     return InteractionResult.SUCCESS;
   }
@@ -168,30 +183,6 @@ public class UniverseLibrary extends BaseEntityBlock {
       }
 
       libraryEntity.clearContent();
-    }
-  }
-
-  private void openLibrary(
-      UniverseLibraryEntity libraryBe,
-      Level world,
-      BlockPos pos,
-      Player player
-  ) {
-    world.blockEvent(pos, this, 1, 1);
-    world.playSound(
-        null, pos,
-        net.minecraft.sounds.SoundEvents.ENDER_CHEST_OPEN,
-        net.minecraft.sounds.SoundSource.BLOCKS,
-        0.5F, world.getRandom().nextFloat() * 0.1f + 0.9f
-    );
-
-    if (!libraryBe.isOpened()) {
-      world.blockEvent(pos, this, 1, 1);
-      player.openMenu(libraryBe);
-      libraryBe.setOpened(true);
-    } else {
-      world.blockEvent(pos, this, 1, 0);
-      libraryBe.setOpened(false);
     }
   }
 
