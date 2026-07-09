@@ -124,13 +124,13 @@ public class RedstoneTriggerMenu extends AbstractContainerMenu {
     return true;
   }
 
-public record OpeningData(
-    BlockPos blockPos,
-    ResourceKey<Level> dimension,
-    RedstoneTriggerEntity.TriggerMode mode,
-    boolean enabled,
-    int intervalTicks
-) {
+  public record OpeningData(
+      BlockPos blockPos,
+      ResourceKey<Level> dimension,
+      RedstoneTriggerEntity.TriggerMode mode,
+      boolean enabled,
+      int intervalTicks
+  ) {
 
     public static final StreamCodec<RegistryFriendlyByteBuf, OpeningData> PACKET_CODEC =
         StreamCodec.composite(

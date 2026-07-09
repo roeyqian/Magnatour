@@ -578,15 +578,15 @@ public interface CustomPortalBlock {
     return true;
   }
 
-record CustomPortalShape(
-    Direction.Axis axis,
-    Direction rightDir,
-    BlockPos bottomLeft,
-    int width,
-    int height,
-    int numPortalBlocks,
-    Block portalBlock
-) {
+  record CustomPortalShape(
+      Direction.Axis axis,
+      Direction rightDir,
+      BlockPos bottomLeft,
+      int width,
+      int height,
+      int numPortalBlocks,
+      Block portalBlock
+  ) {
 
     boolean isValid() {
       return this.width >= MIN_PORTAL_INNER_WIDTH && this.width <= MAX_PORTAL_INNER_WIDTH
@@ -610,11 +610,11 @@ record CustomPortalShape(
 
   }
 
-record PortalSpec(
-    Block frameBlock,
-    Block portalBlock,
-    ResourceKey<Level> portalDimension
-) {
+  record PortalSpec(
+      Block frameBlock,
+      Block portalBlock,
+      ResourceKey<Level> portalDimension
+  ) {
 
     boolean canIgniteIn(
         LevelAccessor world

@@ -419,8 +419,8 @@ public final class StructureMobSpawner {
     return spawned;
   }
 
-@FunctionalInterface
-private interface MobCounter {
+  @FunctionalInterface
+  private interface MobCounter {
 
     int count(
         ServerLevel level,
@@ -429,8 +429,8 @@ private interface MobCounter {
 
   }
 
-@FunctionalInterface
-private interface MobSpawner {
+  @FunctionalInterface
+  private interface MobSpawner {
 
     int spawn(
         ServerLevel level,
@@ -442,7 +442,7 @@ private interface MobSpawner {
 
   }
 
-private static final class SpawnState {
+  private static final class SpawnState {
 
     private long lastSeenTick;
     private long lastSpawnTick;
@@ -457,26 +457,26 @@ private static final class SpawnState {
 
   }
 
-private record StructureInstanceKey(
-    ResourceKey<Level> dimensionKey,
-    String structureId,
-    long startChunk
-) {}
+  private record StructureInstanceKey(
+      ResourceKey<Level> dimensionKey,
+      String structureId,
+      long startChunk
+  ) {}
 
-private record StructureSpawnProfile(
-    String id,
-    ResourceKey<Level> dimensionKey,
-    StructureType<?> structureType,
-    int playerChunkScanRadius,
-    double activationPadding,
-    int boostThreshold,
-    int maxPopulation,
-    long boostIntervalTicks,
-    long normalIntervalTicks,
-    double mobCountHorizontalPadding,
-    double mobCountVerticalPadding,
-    MobCounter mobCounter,
-    MobSpawner mobSpawner
-) {}
+  private record StructureSpawnProfile(
+      String id,
+      ResourceKey<Level> dimensionKey,
+      StructureType<?> structureType,
+      int playerChunkScanRadius,
+      double activationPadding,
+      int boostThreshold,
+      int maxPopulation,
+      long boostIntervalTicks,
+      long normalIntervalTicks,
+      double mobCountHorizontalPadding,
+      double mobCountVerticalPadding,
+      MobCounter mobCounter,
+      MobSpawner mobSpawner
+  ) {}
 
 }

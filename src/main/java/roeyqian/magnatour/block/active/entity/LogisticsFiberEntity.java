@@ -466,30 +466,30 @@ public class LogisticsFiberEntity extends BlockEntity {
         || worldlyContainer.canPlaceItemThroughFace(slot, itemStack, direction);
   }
 
-private record DestinationEndpoint(
-    BlockPos anchor,
-    Container container,
-    Direction accessDirection
-) {}
+  private record DestinationEndpoint(
+      BlockPos anchor,
+      Container container,
+      Direction accessDirection
+  ) {}
 
-private record FiberNetwork(
-    BlockPos controller,
-    Map<BlockPos, FiberNode> fibers,
-    Map<BlockPos, List<BlockPos>> connections,
-    List<SourceEndpoint> sources,
-    Map<BlockPos, DestinationEndpoint> destinations
-) {}
+  private record FiberNetwork(
+      BlockPos controller,
+      Map<BlockPos, FiberNode> fibers,
+      Map<BlockPos, List<BlockPos>> connections,
+      List<SourceEndpoint> sources,
+      Map<BlockPos, DestinationEndpoint> destinations
+  ) {}
 
-private record FiberNode(
-    BlockPos pos,
-    Direction facing
-) {}
+  private record FiberNode(
+      BlockPos pos,
+      Direction facing
+  ) {}
 
-private record SourceEndpoint(
-    BlockPos anchor,
-    Container container,
-    Direction accessDirection,
-    BlockPos entryFiber
-) {}
+  private record SourceEndpoint(
+      BlockPos anchor,
+      Container container,
+      Direction accessDirection,
+      BlockPos entryFiber
+  ) {}
 
 }

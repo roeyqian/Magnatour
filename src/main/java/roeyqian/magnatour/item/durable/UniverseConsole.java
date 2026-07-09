@@ -211,9 +211,9 @@ public class UniverseConsole extends Item {
     return InteractionResult.SUCCESS;
   }
 
-public record BoundBlockList(
-    List<BoundBlocks> blocks
-) {
+  public record BoundBlockList(
+      List<BoundBlocks> blocks
+  ) {
 
     public static final BoundBlockList EMPTY = new BoundBlockList(List.of());
 
@@ -243,11 +243,11 @@ public record BoundBlockList(
 
   }
 
-public record BoundBlocks(
-    BlockPos pos,
-    ResourceKey<Level> dimension,
-    String displayName
-) {
+  public record BoundBlocks(
+      BlockPos pos,
+      ResourceKey<Level> dimension,
+      String displayName
+  ) {
 
     public static final Codec<BoundBlocks> CODEC = RecordCodecBuilder.create((instance) -> instance
         .group(

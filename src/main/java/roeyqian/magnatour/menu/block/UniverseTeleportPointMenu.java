@@ -91,11 +91,11 @@ public class UniverseTeleportPointMenu extends AbstractContainerMenu {
     return true;
   }
 
-public record OpeningData(
-    BlockPos blockPos,
-    ResourceKey<Level> dimension,
-    List<UniverseTeleportPointEntity.Destination> destinations
-) {
+  public record OpeningData(
+      BlockPos blockPos,
+      ResourceKey<Level> dimension,
+      List<UniverseTeleportPointEntity.Destination> destinations
+  ) {
 
     public static final StreamCodec<RegistryFriendlyByteBuf, OpeningData> PACKET_CODEC =
         StreamCodec.composite(

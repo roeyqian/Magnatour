@@ -125,10 +125,10 @@ public final class RemoteAccessManager {
     });
   }
 
-private record AccessInfo(
-    ServerLevel world,
-    ChunkPos chunkPos,
-    BlockPos pos
-) {}
+  private record AccessInfo(
+      ServerLevel world,
+      ChunkPos chunkPos,
+      BlockPos pos
+  ) {}
 
 }

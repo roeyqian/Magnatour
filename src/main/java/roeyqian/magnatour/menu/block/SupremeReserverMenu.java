@@ -495,7 +495,7 @@ public class SupremeReserverMenu extends AbstractContainerMenu {
     }
   }
 
-private static class DisplaySlot extends Slot {
+  private static class DisplaySlot extends Slot {
 
     public DisplaySlot(
         Container inventory,

@@ -443,9 +443,9 @@ public final class SummonStructureHelper {
     return builder.build();
   }
 
-private record ScheduledSummonCheck(
-    ServerLevel level,
-    BlockPos pos
-) {}
+  private record ScheduledSummonCheck(
+      ServerLevel level,
+      BlockPos pos
+  ) {}
 
 }

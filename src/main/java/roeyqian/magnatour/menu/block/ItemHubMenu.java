@@ -153,11 +153,11 @@ public class ItemHubMenu extends AbstractContainerMenu {
     return this.hopper.stillValid(player);
   }
 
-public record OpeningData(
-    BlockPos blockPos,
-    ResourceKey<Level> dimension,
-    String filterItemId
-) {
+  public record OpeningData(
+      BlockPos blockPos,
+      ResourceKey<Level> dimension,
+      String filterItemId
+  ) {
 
     public static final StreamCodec<RegistryFriendlyByteBuf, OpeningData> PACKET_CODEC =
         StreamCodec.composite(

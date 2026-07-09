@@ -16,244 +16,244 @@ import javax.tools.SimpleJavaFileObject
 import javax.tools.ToolProvider
 
 plugins {
-	id 'net.fabricmc.fabric-loom' version "${loom_version}"
-	id 'maven-publish'
+    id 'net.fabricmc.fabric-loom' version "${loom_version}"
+    id 'maven-publish'
 }
 
 version = project.mod_version
 group = project.maven_group
 
 repositories {
-	// Add repositories to retrieve artifacts from in here.
-	// You should only use this when depending on other mods because
-	// Loom adds the essential maven repositories to download Minecraft and libraries from automatically.
-	// See https://docs.gradle.org/current/userguide/declaring_repositories.html
-	// for more information about repositories.
+    // Add repositories to retrieve artifacts from in here.
+    // You should only use this when depending on other mods because
+    // Loom adds the essential maven repositories to download Minecraft and libraries from automatically.
+    // See https://docs.gradle.org/current/userguide/declaring_repositories.html
+    // for more information about repositories.
 }
 
 loom {
-	splitEnvironmentSourceSets()
-	mods {
-		"magnatour" {
-			sourceSet sourceSets.main
-			sourceSet sourceSets.client
-		}
-	}
+    splitEnvironmentSourceSets()
+    mods {
+        "magnatour" {
+            sourceSet sourceSets.main
+            sourceSet sourceSets.client
+        }
+    }
 }
 
 dependencies {
-	minecraft "com.mojang:minecraft:${project.minecraft_version}"
-	implementation "net.fabricmc:fabric-loader:${project.loader_version}"
-	implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
+    minecraft "com.mojang:minecraft:${project.minecraft_version}"
+    implementation "net.fabricmc:fabric-loader:${project.loader_version}"
+    implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
 }
 
 processResources {
-	inputs.property "version", project.version
+    inputs.property "version", project.version
 
-	filesMatching("fabric.mod.json") {
-		expand "version": inputs.properties.version
-	}
+    filesMatching("fabric.mod.json") {
+        expand "version": inputs.properties.version
+    }
 }
 
 tasks.withType(JavaCompile).configureEach {
-	it.options.release = 25
+    it.options.release = 25
 }
 
 def importGroupConfigFile = layout.projectDirectory.file("gradle/config/import-groups.json")
 def javaSourceFiles = fileTree("src") {
-	include "**/*.java"
+    include "**/*.java"
 }
 
 def loadImportGroups = {
-	new JsonSlurper().parse(importGroupConfigFile.asFile)
+    new JsonSlurper().parse(importGroupConfigFile.asFile)
 }
 
 def importGroupFor = { String importLine, List groups ->
-	def imported = importLine.substring("import ".length()).replace(";", "").trim()
-	if (imported.startsWith("static ")) {
-		imported = imported.substring("static ".length())
-	}
+    def imported = importLine.substring("import ".length()).replace(";", "").trim()
+    if (imported.startsWith("static ")) {
+        imported = imported.substring("static ".length())
+    }
 
-	def matched = groups.find { group ->
-		group.prefixes.any { prefix -> imported.startsWith(prefix) }
-	}
-	matched ?: groups.find { group -> group.title == "Other" }
+    def matched = groups.find { group ->
+        group.prefixes.any { prefix -> imported.startsWith(prefix) }
+    }
+    matched ?: groups.find { group -> group.title == "Other" }
 }
 
 def rewriteJavaImports = { File sourceFile, List groups, boolean checkOnly ->
-	def original = sourceFile.getText("UTF-8")
-	def newline = original.contains("\r\n") ? "\r\n" : "\n"
-	List<String> lines = original.readLines()
-	List<Integer> importIndexes = []
+    def original = sourceFile.getText("UTF-8")
+    def newline = original.contains("\r\n") ? "\r\n" : "\n"
+    List<String> lines = original.readLines()
+    List<Integer> importIndexes = []
 
-	lines.eachWithIndex { line, index ->
-		if (line.startsWith("import ")) {
-			importIndexes << index
-		}
-	}
-	if (importIndexes.isEmpty()) {
-		return false
-	}
+    lines.eachWithIndex { line, index ->
+        if (line.startsWith("import ")) {
+            importIndexes << index
+        }
+    }
+    if (importIndexes.isEmpty()) {
+        return false
+    }
 
-	int start = importIndexes.first()
-	while (start > 0 && (lines[start - 1].trim().isEmpty() || lines[start - 1].startsWith("// "))) {
-		start--
-	}
-	if (start > 0 && lines[start].trim().isEmpty() && lines[start - 1].startsWith("package ")) {
-		start++
-	}
+    int start = importIndexes.first()
+    while (start > 0 && (lines[start - 1].trim().isEmpty() || lines[start - 1].startsWith("// "))) {
+        start--
+    }
+    if (start > 0 && lines[start].trim().isEmpty() && lines[start - 1].startsWith("package ")) {
+        start++
+    }
 
-	int end = importIndexes.last() + 1
-	while (end < lines.size() && (lines[end].trim().isEmpty() || lines[end].startsWith("// "))) {
-		if (lines[end].startsWith("// ")) {
-			end++
-		} else if (end + 1 < lines.size() && (lines[end + 1].startsWith("import ") || lines[end + 1].startsWith("// "))) {
-			end++
-		} else {
-			break
-		}
-	}
+    int end = importIndexes.last() + 1
+    while (end < lines.size() && (lines[end].trim().isEmpty() || lines[end].startsWith("// "))) {
+        if (lines[end].startsWith("// ")) {
+            end++
+        } else if (end + 1 < lines.size() && (lines[end + 1].startsWith("import ") || lines[end + 1].startsWith("// "))) {
+            end++
+        } else {
+            break
+        }
+    }
 
-	def imports = []
-	def seen = [] as Set
-	lines.subList(start, end).each { line ->
-		def stripped = line.trim()
-		if (stripped.startsWith("import ") && seen.add(stripped)) {
-			imports << stripped
-		}
-	}
+    def imports = []
+    def seen = [] as Set
+    lines.subList(start, end).each { line ->
+        def stripped = line.trim()
+        if (stripped.startsWith("import ") && seen.add(stripped)) {
+            imports << stripped
+        }
+    }
 
-	def grouped = groups.collectEntries { group -> [(group.title): []] }
-	imports.each { importLine ->
-		grouped[importGroupFor(importLine, groups).title] << importLine
-	}
+    def grouped = groups.collectEntries { group -> [(group.title): []] }
+    imports.each { importLine ->
+        grouped[importGroupFor(importLine, groups).title] << importLine
+    }
 
-	def block = []
-	groups.each { group ->
-		def importsInGroup = grouped[group.title]
-		if (!importsInGroup.isEmpty()) {
-			if (!block.isEmpty()) {
-				block << ""
-			}
-			block << "// ${group.title}"
-			block.addAll(importsInGroup)
-		}
-	}
+    def block = []
+    groups.each { group ->
+        def importsInGroup = grouped[group.title]
+        if (!importsInGroup.isEmpty()) {
+            if (!block.isEmpty()) {
+                block << ""
+            }
+            block << "// ${group.title}"
+            block.addAll(importsInGroup)
+        }
+    }
 
-	def rewrittenLines = []
-	rewrittenLines.addAll(lines.subList(0, start))
-	rewrittenLines.addAll(block)
-	rewrittenLines.addAll(lines.subList(end, lines.size()))
+    def rewrittenLines = []
+    rewrittenLines.addAll(lines.subList(0, start))
+    rewrittenLines.addAll(block)
+    rewrittenLines.addAll(lines.subList(end, lines.size()))
 
-	def rewritten = rewrittenLines.join(newline)
-	if (original.endsWith("\n") || original.endsWith("\r\n")) {
-		rewritten += newline
-	}
-	if (rewritten == original) {
-		return false
-	}
-	if (!checkOnly) {
-		sourceFile.write(rewritten, "UTF-8")
-	}
-	true
+    def rewritten = rewrittenLines.join(newline)
+    if (original.endsWith("\n") || original.endsWith("\r\n")) {
+        rewritten += newline
+    }
+    if (rewritten == original) {
+        return false
+    }
+    if (!checkOnly) {
+        sourceFile.write(rewritten, "UTF-8")
+    }
+    true
 }
 
 def parseCompleteAnnotationLine = { String line ->
-	def matcher = line =~ /^(\s*)(\S(?:.*\S)?)\s*$/
-	if (!matcher.matches()) {
-		return null
-	}
+    def matcher = line =~ /^(\s*)(\S(?:.*\S)?)\s*$/
+    if (!matcher.matches()) {
+        return null
+    }
 
-	def indent = matcher.group(1)
-	def text = matcher.group(2).trim()
-	def index = 0
-	def seenAnnotation = false
+    def indent = matcher.group(1)
+    def text = matcher.group(2).trim()
+    def index = 0
+    def seenAnnotation = false
 
-	while (true) {
-		while (index < text.length() && Character.isWhitespace(text.charAt(index))) {
-			index++
-		}
-		if (index >= text.length()) {
-			break
-		}
-		if (text.charAt(index) != '@' as char) {
-			return null
-		}
-		seenAnnotation = true
-		index++
+    while (true) {
+        while (index < text.length() && Character.isWhitespace(text.charAt(index))) {
+            index++
+        }
+        if (index >= text.length()) {
+            break
+        }
+        if (text.charAt(index) != '@' as char) {
+            return null
+        }
+        seenAnnotation = true
+        index++
 
-		def nameStart = index
-		while (index < text.length()) {
-			def c = text.charAt(index)
-			if (Character.isLetterOrDigit(c) || c == '_' as char || c == '.' as char || c == '$' as char) {
-				index++
-			} else {
-				break
-			}
-		}
-		if (index == nameStart) {
-			return null
-		}
+        def nameStart = index
+        while (index < text.length()) {
+            def c = text.charAt(index)
+            if (Character.isLetterOrDigit(c) || c == '_' as char || c == '.' as char || c == '$' as char) {
+                index++
+            } else {
+                break
+            }
+        }
+        if (index == nameStart) {
+            return null
+        }
 
-		while (index < text.length() && Character.isWhitespace(text.charAt(index))) {
-			index++
-		}
-		if (index < text.length() && text.charAt(index) == '(' as char) {
-			def depth = 0
-			def inString = false
-			def inChar = false
-			def escaping = false
-			while (index < text.length()) {
-				def c = text.charAt(index)
-				if (escaping) {
-					escaping = false
-				} else if (inString) {
-					if (c == '\\' as char) {
-						escaping = true
-					} else if (c == '"' as char) {
-						inString = false
-					}
-				} else if (inChar) {
-					if (c == '\\' as char) {
-						escaping = true
-					} else if (c == "'" as char) {
-						inChar = false
-					}
-				} else if (c == '"' as char) {
-					inString = true
-				} else if (c == "'" as char) {
-					inChar = true
-				} else if (c == '(' as char) {
-					depth++
-				} else if (c == ')' as char) {
-					depth--
-					if (depth == 0) {
-						index++
-						break
-					}
-					if (depth < 0) {
-						return null
-					}
-				}
-				index++
-			}
-			if (depth != 0 || inString || inChar) {
-				return null
-			}
-		}
+        while (index < text.length() && Character.isWhitespace(text.charAt(index))) {
+            index++
+        }
+        if (index < text.length() && text.charAt(index) == '(' as char) {
+            def depth = 0
+            def inString = false
+            def inChar = false
+            def escaping = false
+            while (index < text.length()) {
+                def c = text.charAt(index)
+                if (escaping) {
+                    escaping = false
+                } else if (inString) {
+                    if (c == '\\' as char) {
+                        escaping = true
+                    } else if (c == '"' as char) {
+                        inString = false
+                    }
+                } else if (inChar) {
+                    if (c == '\\' as char) {
+                        escaping = true
+                    } else if (c == "'" as char) {
+                        inChar = false
+                    }
+                } else if (c == '"' as char) {
+                    inString = true
+                } else if (c == "'" as char) {
+                    inChar = true
+                } else if (c == '(' as char) {
+                    depth++
+                } else if (c == ')' as char) {
+                    depth--
+                    if (depth == 0) {
+                        index++
+                        break
+                    }
+                    if (depth < 0) {
+                        return null
+                    }
+                }
+                index++
+            }
+            if (depth != 0 || inString || inChar) {
+                return null
+            }
+        }
 
-		while (index < text.length() && Character.isWhitespace(text.charAt(index))) {
-			index++
-		}
-		if (index >= text.length()) {
-			break
-		}
-		if (text.charAt(index) != '@' as char) {
-			return null
-		}
-	}
+        while (index < text.length() && Character.isWhitespace(text.charAt(index))) {
+            index++
+        }
+        if (index >= text.length()) {
+            break
+        }
+        if (text.charAt(index) != '@' as char) {
+            return null
+        }
+    }
 
-	seenAnnotation ? [indent: indent, text: text] : null
+    seenAnnotation ? [indent: indent, text: text] : null
 }
 
 def spdxHeaderText = """\
@@ -271,1042 +271,1053 @@ def spdxHeaderStartsWith = "/*\n * SPDX-License-Identifier: GPL-3.0-or-later"
 def initClassFileNames = ["Magnatour.java", "MagnatourClient.java"] as Set
 
 def ensureSpdxHeader = { File sourceFile ->
-	if (initClassFileNames.contains(sourceFile.name)) {
-		return false
-	}
+    if (initClassFileNames.contains(sourceFile.name)) {
+        return false
+    }
 
-	def original = sourceFile.getText("UTF-8")
-	def normalized = original.replace("\r\n", "\n")
-	if (normalized.startsWith(spdxHeaderStartsWith)) {
-		return false
-	}
+    def original = sourceFile.getText("UTF-8")
+    def normalized = original.replace("\r\n", "\n")
+    if (normalized.startsWith(spdxHeaderStartsWith)) {
+        return false
+    }
 
-	def newline = original.contains("\r\n") ? "\r\n" : "\n"
-	def header = spdxHeaderText.replace("\n", newline)
-	def rewritten = header + newline + original
+    def newline = original.contains("\r\n") ? "\r\n" : "\n"
+    def header = spdxHeaderText.replace("\n", newline)
+    def rewritten = header + newline + original
 
-	sourceFile.write(rewritten, "UTF-8")
-	return true
+    sourceFile.write(rewritten, "UTF-8")
+    return true
 }
 
 def rewriteJavaAnnotations = { File sourceFile, boolean checkOnly ->
-	def original = sourceFile.getText("UTF-8")
-	def newline = original.contains("\r\n") ? "\r\n" : "\n"
-	def lines = original.readLines()
-	def rewrittenLines = []
+    def original = sourceFile.getText("UTF-8")
+    def newline = original.contains("\r\n") ? "\r\n" : "\n"
+    def lines = original.readLines()
+    def rewrittenLines = []
 
-	for (def index = 0; index < lines.size();) {
-		def current = parseCompleteAnnotationLine(lines[index])
-		if (current == null) {
-			rewrittenLines << lines[index]
-			index++
-			continue
-		}
+    for (def index = 0; index < lines.size();) {
+        def current = parseCompleteAnnotationLine(lines[index])
+        if (current == null) {
+            rewrittenLines << lines[index]
+            index++
+            continue
+        }
 
-		def annotations = [current.text]
-		def nextIndex = index + 1
-		while (nextIndex < lines.size()) {
-			def next = parseCompleteAnnotationLine(lines[nextIndex])
-			if (next == null || next.indent != current.indent) {
-				break
-			}
-			annotations << next.text
-			nextIndex++
-		}
+        def annotations = [current.text]
+        def nextIndex = index + 1
+        while (nextIndex < lines.size()) {
+            def next = parseCompleteAnnotationLine(lines[nextIndex])
+            if (next == null || next.indent != current.indent) {
+                break
+            }
+            annotations << next.text
+            nextIndex++
+        }
 
-		if (annotations.size() > 1) {
-			rewrittenLines << "${current.indent}${annotations.join(" ")}"
-			index = nextIndex
-		} else {
-			rewrittenLines << lines[index]
-			index++
-		}
-	}
+        if (annotations.size() > 1) {
+            rewrittenLines << "${current.indent}${annotations.join(" ")}"
+            index = nextIndex
+        } else {
+            rewrittenLines << lines[index]
+            index++
+        }
+    }
 
-	def rewritten = rewrittenLines.join(newline)
-	if (original.endsWith("\n") || original.endsWith("\r\n")) {
-		rewritten += newline
-	}
-	if (rewritten == original) {
-		return false
-	}
-	if (!checkOnly) {
-		sourceFile.write(rewritten, "UTF-8")
-	}
-	true
+    def rewritten = rewrittenLines.join(newline)
+    if (original.endsWith("\n") || original.endsWith("\r\n")) {
+        rewritten += newline
+    }
+    if (rewritten == original) {
+        return false
+    }
+    if (!checkOnly) {
+        sourceFile.write(rewritten, "UTF-8")
+    }
+    true
 }
 
 def newStringJavaFileObject = { File sourceFile, String source ->
-	new SimpleJavaFileObject(sourceFile.toURI(), JavaFileObject.Kind.SOURCE) {
-		@Override
-		CharSequence getCharContent(boolean ignoreEncodingErrors) {
-			source
-		}
-	}
+    new SimpleJavaFileObject(sourceFile.toURI(), JavaFileObject.Kind.SOURCE) {
+        @Override
+        CharSequence getCharContent(boolean ignoreEncodingErrors) {
+            source
+        }
+    }
 }
 
 def parseJavaSource = { File sourceFile, String source ->
-	def compiler = ToolProvider.systemJavaCompiler
-	if (compiler == null) {
-		throw new GradleException("formatJavaDeclarations requires Gradle to run on a JDK, not a JRE.")
-	}
+    def compiler = ToolProvider.systemJavaCompiler
+    if (compiler == null) {
+        throw new GradleException("formatJavaDeclarations requires Gradle to run on a JDK, not a JRE.")
+    }
 
-	def diagnostics = new DiagnosticCollector<JavaFileObject>()
-	def task = compiler.getTask(
-			null,
-			null,
-			diagnostics,
-			["-proc:none"],
-			null,
-			[newStringJavaFileObject(sourceFile, source)]
-	) as JavacTask
-	def units = task.parse().toList()
-	def errors = diagnostics.diagnostics.findAll { it.kind == Diagnostic.Kind.ERROR }
-	if (!errors.isEmpty()) {
-		throw new GradleException("Unable to parse ${sourceFile}: ${errors.collect { it.getMessage(Locale.ROOT) }.join("; ")}")
-	}
-	if (units.isEmpty()) {
-		return null
-	}
+    def diagnostics = new DiagnosticCollector<JavaFileObject>()
+    def task = compiler.getTask(
+            null,
+            null,
+            diagnostics,
+            ["-proc:none"],
+            null,
+            [newStringJavaFileObject(sourceFile, source)]
+    ) as JavacTask
+    def units = task.parse().toList()
+    def errors = diagnostics.diagnostics.findAll { it.kind == Diagnostic.Kind.ERROR }
+    if (!errors.isEmpty()) {
+        throw new GradleException("Unable to parse ${sourceFile}: ${errors.collect { it.getMessage(Locale.ROOT) }.join("; ")}")
+    }
+    if (units.isEmpty()) {
+        return null
+    }
 
-	[unit: units.first(), positions: Trees.instance(task).sourcePositions]
+    [unit: units.first(), positions: Trees.instance(task).sourcePositions]
 }
 
 def lineStartAt = { String source, int index ->
-	int cursor = Math.max(0, Math.min(index, source.length()))
-	while (cursor > 0 && source.charAt(cursor - 1) != '\n' as char && source.charAt(cursor - 1) != '\r' as char) {
-		cursor--
-	}
-	cursor
+    int cursor = Math.max(0, Math.min(index, source.length()))
+    while (cursor > 0 && source.charAt(cursor - 1) != '\n' as char && source.charAt(cursor - 1) != '\r' as char) {
+        cursor--
+    }
+    cursor
 }
 
 def previousLineStart = { String source, int lineStart ->
-	if (lineStart <= 0) {
-		return 0
-	}
-	int cursor = lineStart - 1
-	if (cursor > 0 && source.charAt(cursor) == '\n' as char && source.charAt(cursor - 1) == '\r' as char) {
-		cursor--
-	}
-	while (cursor > 0 && source.charAt(cursor - 1) != '\n' as char && source.charAt(cursor - 1) != '\r' as char) {
-		cursor--
-	}
-	cursor
+    if (lineStart <= 0) {
+        return 0
+    }
+    int cursor = lineStart - 1
+    if (cursor > 0 && source.charAt(cursor) == '\n' as char && source.charAt(cursor - 1) == '\r' as char) {
+        cursor--
+    }
+    while (cursor > 0 && source.charAt(cursor - 1) != '\n' as char && source.charAt(cursor - 1) != '\r' as char) {
+        cursor--
+    }
+    cursor
 }
 
 def lineIndentAt = { String source, int index ->
-	int start = lineStartAt(source, index)
-	int cursor = start
-	while (cursor < source.length()) {
-		def c = source.charAt(cursor)
-		if (c != ' ' as char && c != '\t' as char) {
-			break
-		}
-		cursor++
-	}
-	source.substring(start, cursor)
+    int start = lineStartAt(source, index)
+    int cursor = start
+    while (cursor < source.length()) {
+        def c = source.charAt(cursor)
+        if (c != ' ' as char && c != '\t' as char) {
+            break
+        }
+        cursor++
+    }
+    source.substring(start, cursor)
 }
 
 def includeLeadingDeclarationTrivia = { String source, int lowerBound, int declarationStart ->
-	int cursor = lineStartAt(source, declarationStart)
-	while (cursor > lowerBound) {
-		int prevStart = previousLineStart(source, cursor)
-		def line = source.substring(prevStart, cursor)
-		def trimmed = line.trim()
-		if (trimmed.isEmpty()
-				|| trimmed.startsWith("//")
-				|| trimmed.startsWith("/*")
-				|| trimmed.startsWith("*")
-				|| trimmed.endsWith("*/")) {
-			cursor = prevStart
-			continue
-		}
-		break
-	}
-	Math.max(cursor, lowerBound)
+    int cursor = lineStartAt(source, declarationStart)
+    while (cursor > lowerBound) {
+        int prevStart = previousLineStart(source, cursor)
+        def line = source.substring(prevStart, cursor)
+        def trimmed = line.trim()
+        if (trimmed.isEmpty()
+                || trimmed.startsWith("//")
+                || trimmed.startsWith("/*")
+                || trimmed.startsWith("*")
+                || trimmed.endsWith("*/")) {
+            cursor = prevStart
+            continue
+        }
+        break
+    }
+    Math.max(cursor, lowerBound)
 }
 
 def trimBlankEdges = { String text ->
-	def lines = text.readLines()
-	int start = 0
-	int end = lines.size()
-	while (start < end && lines[start].trim().isEmpty()) {
-		start++
-	}
-	while (end > start && lines[end - 1].trim().isEmpty()) {
-		end--
-	}
-	lines.subList(start, end).join("\n")
+    def lines = text.readLines()
+    int start = 0
+    int end = lines.size()
+    while (start < end && lines[start].trim().isEmpty()) {
+        start++
+    }
+    while (end > start && lines[end - 1].trim().isEmpty()) {
+        end--
+    }
+    lines.subList(start, end).join("\n")
 }
 
 def findDeclarationMarker = { String text, int start, int end ->
-	boolean inLineComment = false
-	boolean inBlockComment = false
-	boolean inString = false
-	boolean inChar = false
-	boolean escaping = false
-	int parenDepth = 0
-	int bracketDepth = 0
+    boolean inLineComment = false
+    boolean inBlockComment = false
+    boolean inString = false
+    boolean inChar = false
+    boolean escaping = false
+    int parenDepth = 0
+    int bracketDepth = 0
 
-	for (int index = start; index < end; index++) {
-		char c = text.charAt(index)
-		char next = index + 1 < end ? text.charAt(index + 1) : (char) 0
+    for (int index = start; index < end; index++) {
+        char c = text.charAt(index)
+        char next = index + 1 < end ? text.charAt(index + 1) : (char) 0
 
-		if (inLineComment) {
-			if (c == '\n' as char || c == '\r' as char) {
-				inLineComment = false
-			}
-			continue
-		}
-		if (inBlockComment) {
-			if (c == '*' as char && next == '/' as char) {
-				inBlockComment = false
-				index++
-			}
-			continue
-		}
-		if (escaping) {
-			escaping = false
-			continue
-		}
-		if (inString) {
-			if (c == '\\' as char) {
-				escaping = true
-			} else if (c == '"' as char) {
-				inString = false
-			}
-			continue
-		}
-		if (inChar) {
-			if (c == '\\' as char) {
-				escaping = true
-			} else if (c == "'" as char) {
-				inChar = false
-			}
-			continue
-		}
+        if (inLineComment) {
+            if (c == '\n' as char || c == '\r' as char) {
+                inLineComment = false
+            }
+            continue
+        }
+        if (inBlockComment) {
+            if (c == '*' as char && next == '/' as char) {
+                inBlockComment = false
+                index++
+            }
+            continue
+        }
+        if (escaping) {
+            escaping = false
+            continue
+        }
+        if (inString) {
+            if (c == '\\' as char) {
+                escaping = true
+            } else if (c == '"' as char) {
+                inString = false
+            }
+            continue
+        }
+        if (inChar) {
+            if (c == '\\' as char) {
+                escaping = true
+            } else if (c == "'" as char) {
+                inChar = false
+            }
+            continue
+        }
 
-		if (c == '/' as char && next == '/' as char) {
-			inLineComment = true
-			index++
-		} else if (c == '/' as char && next == '*' as char) {
-			inBlockComment = true
-			index++
-		} else if (c == '"' as char) {
-			inString = true
-		} else if (c == "'" as char) {
-			inChar = true
-		} else if (c == '(' as char) {
-			parenDepth++
-		} else if (c == ')' as char) {
-			parenDepth = Math.max(0, parenDepth - 1)
-		} else if (c == '[' as char) {
-			bracketDepth++
-		} else if (c == ']' as char) {
-			bracketDepth = Math.max(0, bracketDepth - 1)
-		} else if ((c == '{' as char || c == ';' as char) && parenDepth == 0 && bracketDepth == 0) {
-			return [index: index, marker: c]
-		}
-	}
-	null
+        if (c == '/' as char && next == '/' as char) {
+            inLineComment = true
+            index++
+        } else if (c == '/' as char && next == '*' as char) {
+            inBlockComment = true
+            index++
+        } else if (c == '"' as char) {
+            inString = true
+        } else if (c == "'" as char) {
+            inChar = true
+        } else if (c == '(' as char) {
+            parenDepth++
+        } else if (c == ')' as char) {
+            parenDepth = Math.max(0, parenDepth - 1)
+        } else if (c == '[' as char) {
+            bracketDepth++
+        } else if (c == ']' as char) {
+            bracketDepth = Math.max(0, bracketDepth - 1)
+        } else if ((c == '{' as char || c == ';' as char) && parenDepth == 0 && bracketDepth == 0) {
+            return [index: index, marker: c]
+        }
+    }
+    null
 }
 
 def findLastTopLevelParenPair = { String text, int start, int end ->
-	boolean inLineComment = false
-	boolean inBlockComment = false
-	boolean inString = false
-	boolean inChar = false
-	boolean escaping = false
-	int depth = 0
-	int currentOpen = -1
-	def lastPair = null
+    boolean inLineComment = false
+    boolean inBlockComment = false
+    boolean inString = false
+    boolean inChar = false
+    boolean escaping = false
+    int depth = 0
+    int currentOpen = -1
+    def lastPair = null
 
-	for (int index = start; index < end; index++) {
-		char c = text.charAt(index)
-		char next = index + 1 < end ? text.charAt(index + 1) : (char) 0
+    for (int index = start; index < end; index++) {
+        char c = text.charAt(index)
+        char next = index + 1 < end ? text.charAt(index + 1) : (char) 0
 
-		if (inLineComment) {
-			if (c == '\n' as char || c == '\r' as char) {
-				inLineComment = false
-			}
-			continue
-		}
-		if (inBlockComment) {
-			if (c == '*' as char && next == '/' as char) {
-				inBlockComment = false
-				index++
-			}
-			continue
-		}
-		if (escaping) {
-			escaping = false
-			continue
-		}
-		if (inString) {
-			if (c == '\\' as char) {
-				escaping = true
-			} else if (c == '"' as char) {
-				inString = false
-			}
-			continue
-		}
-		if (inChar) {
-			if (c == '\\' as char) {
-				escaping = true
-			} else if (c == "'" as char) {
-				inChar = false
-			}
-			continue
-		}
+        if (inLineComment) {
+            if (c == '\n' as char || c == '\r' as char) {
+                inLineComment = false
+            }
+            continue
+        }
+        if (inBlockComment) {
+            if (c == '*' as char && next == '/' as char) {
+                inBlockComment = false
+                index++
+            }
+            continue
+        }
+        if (escaping) {
+            escaping = false
+            continue
+        }
+        if (inString) {
+            if (c == '\\' as char) {
+                escaping = true
+            } else if (c == '"' as char) {
+                inString = false
+            }
+            continue
+        }
+        if (inChar) {
+            if (c == '\\' as char) {
+                escaping = true
+            } else if (c == "'" as char) {
+                inChar = false
+            }
+            continue
+        }
 
-		if (c == '/' as char && next == '/' as char) {
-			inLineComment = true
-			index++
-		} else if (c == '/' as char && next == '*' as char) {
-			inBlockComment = true
-			index++
-		} else if (c == '"' as char) {
-			inString = true
-		} else if (c == "'" as char) {
-			inChar = true
-		} else if (c == '(' as char) {
-			if (depth == 0) {
-				currentOpen = index
-			}
-			depth++
-		} else if (c == ')' as char) {
-			depth--
-			if (depth == 0 && currentOpen >= 0) {
-				lastPair = [open: currentOpen, close: index]
-			}
-		}
-	}
-	lastPair
+        if (c == '/' as char && next == '/' as char) {
+            inLineComment = true
+            index++
+        } else if (c == '/' as char && next == '*' as char) {
+            inBlockComment = true
+            index++
+        } else if (c == '"' as char) {
+            inString = true
+        } else if (c == "'" as char) {
+            inChar = true
+        } else if (c == '(' as char) {
+            if (depth == 0) {
+                currentOpen = index
+            }
+            depth++
+        } else if (c == ')' as char) {
+            depth--
+            if (depth == 0 && currentOpen >= 0) {
+                lastPair = [open: currentOpen, close: index]
+            }
+        }
+    }
+    lastPair
 }
 
 def splitTopLevelCommaText = { String text ->
-	def parts = []
-	boolean inString = false
-	boolean inChar = false
-	boolean escaping = false
-	int parenDepth = 0
-	int angleDepth = 0
-	int bracketDepth = 0
-	int start = 0
+    def parts = []
+    boolean inString = false
+    boolean inChar = false
+    boolean escaping = false
+    int parenDepth = 0
+    int angleDepth = 0
+    int bracketDepth = 0
+    int start = 0
 
-	for (int index = 0; index < text.length(); index++) {
-		char c = text.charAt(index)
-		if (escaping) {
-			escaping = false
-			continue
-		}
-		if (inString) {
-			if (c == '\\' as char) {
-				escaping = true
-			} else if (c == '"' as char) {
-				inString = false
-			}
-			continue
-		}
-		if (inChar) {
-			if (c == '\\' as char) {
-				escaping = true
-			} else if (c == "'" as char) {
-				inChar = false
-			}
-			continue
-		}
+    for (int index = 0; index < text.length(); index++) {
+        char c = text.charAt(index)
+        if (escaping) {
+            escaping = false
+            continue
+        }
+        if (inString) {
+            if (c == '\\' as char) {
+                escaping = true
+            } else if (c == '"' as char) {
+                inString = false
+            }
+            continue
+        }
+        if (inChar) {
+            if (c == '\\' as char) {
+                escaping = true
+            } else if (c == "'" as char) {
+                inChar = false
+            }
+            continue
+        }
 
-		if (c == '"' as char) {
-			inString = true
-		} else if (c == "'" as char) {
-			inChar = true
-		} else if (c == '(' as char) {
-			parenDepth++
-		} else if (c == ')' as char) {
-			parenDepth = Math.max(0, parenDepth - 1)
-		} else if (c == '[' as char) {
-			bracketDepth++
-		} else if (c == ']' as char) {
-			bracketDepth = Math.max(0, bracketDepth - 1)
-		} else if (c == '<' as char) {
-			angleDepth++
-		} else if (c == '>' as char) {
-			angleDepth = Math.max(0, angleDepth - 1)
-		} else if (c == ',' as char && parenDepth == 0 && angleDepth == 0 && bracketDepth == 0) {
-			parts << text.substring(start, index)
-			start = index + 1
-		}
-	}
-	parts << text.substring(start)
-	parts
+        if (c == '"' as char) {
+            inString = true
+        } else if (c == "'" as char) {
+            inChar = true
+        } else if (c == '(' as char) {
+            parenDepth++
+        } else if (c == ')' as char) {
+            parenDepth = Math.max(0, parenDepth - 1)
+        } else if (c == '[' as char) {
+            bracketDepth++
+        } else if (c == ']' as char) {
+            bracketDepth = Math.max(0, bracketDepth - 1)
+        } else if (c == '<' as char) {
+            angleDepth++
+        } else if (c == '>' as char) {
+            angleDepth = Math.max(0, angleDepth - 1)
+        } else if (c == ',' as char && parenDepth == 0 && angleDepth == 0 && bracketDepth == 0) {
+            parts << text.substring(start, index)
+            start = index + 1
+        }
+    }
+    parts << text.substring(start)
+    parts
 }
 
 def singleLineDeclarationPart = { String text ->
-	text.readLines().collect { it.trim() }.findAll { !it.isEmpty() }.join(" ").replaceAll(/\s+/, " ")
+    text.readLines().collect { it.trim() }.findAll { !it.isEmpty() }.join(" ").replaceAll(/\s+/, " ")
+}
+
+def javaMemberIndent = "  "
+
+def indentFirstLine = { String text, String indent ->
+    if (indent.isEmpty() || text.isEmpty()) {
+        return text
+    }
+    "${indent}${text}"
 }
 
 def normalizeParameterizedDeclarationHeader = { String text ->
-	def markerInfo = findDeclarationMarker(text, 0, text.length())
-	if (markerInfo == null) {
-		return text
-	}
+    def markerInfo = findDeclarationMarker(text, 0, text.length())
+    if (markerInfo == null) {
+        return text
+    }
 
-	def markerIndex = markerInfo.index as int
-	def marker = markerInfo.marker as char
-	def pair = findLastTopLevelParenPair(text, 0, markerIndex)
-	if (pair == null) {
-		def header = text.substring(0, markerIndex).replaceAll(/[ \t]+$/, "")
-		return header + (marker == '{' as char ? " {" : ";") + text.substring(markerIndex + 1)
-	}
+    def markerIndex = markerInfo.index as int
+    def marker = markerInfo.marker as char
+    def pair = findLastTopLevelParenPair(text, 0, markerIndex)
+    if (pair == null) {
+        def header = text.substring(0, markerIndex).replaceAll(/[ \t]+$/, "")
+        return header + (marker == '{' as char ? " {" : ";") + text.substring(markerIndex + 1)
+    }
 
-	int open = pair.open as int
-	int close = pair.close as int
-	def prefix = text.substring(0, open).replaceAll(/[ \t\r\n]+$/, "")
-	def params = text.substring(open + 1, close)
-	def suffix = singleLineDeclarationPart(text.substring(close + 1, markerIndex))
-	def suffixText = suffix.isEmpty() ? "" : " ${suffix}"
-	def remainder = text.substring(markerIndex + 1)
-	def baseIndent = lineIndentAt(text, open)
+    int open = pair.open as int
+    int close = pair.close as int
+    def prefix = text.substring(0, open).replaceAll(/[ \t\r\n]+$/, "")
+    def params = text.substring(open + 1, close)
+    def suffix = singleLineDeclarationPart(text.substring(close + 1, markerIndex))
+    def suffixText = suffix.isEmpty() ? "" : " ${suffix}"
+    def remainder = text.substring(markerIndex + 1)
+    def baseIndent = lineIndentAt(text, open)
 
-	if (params.trim().isEmpty()) {
-		def header = "${prefix}()${suffixText}"
-		if (marker == ';' as char) {
-			return "${header};${remainder}"
-		}
-		if (remainder.trim() == "}") {
-			return "${header} {}"
-		}
-		return "${header} {${remainder}"
-	}
+    if (params.trim().isEmpty()) {
+        def header = "${prefix}()${suffixText}"
+        if (marker == ';' as char) {
+            return "${header};${remainder}"
+        }
+        if (remainder.trim() == "}") {
+            return "${header} {}"
+        }
+        return "${header} {${remainder}"
+    }
 
-	def paramIndent = "${baseIndent}    "
-	def paramLines = splitTopLevelCommaText(params).collect { singleLineDeclarationPart(it) }.findAll { !it.isEmpty() }
-	def rebuilt = new StringBuilder()
-	rebuilt << prefix << "(\n"
-	paramLines.eachWithIndex { param, index ->
-		rebuilt << paramIndent << param
-		if (index + 1 < paramLines.size()) {
-			rebuilt << ","
-		}
-		rebuilt << "\n"
-	}
-	rebuilt << baseIndent << ")" << suffixText
-	if (marker == ';' as char) {
-		rebuilt << ";" << remainder
-	} else if (remainder.trim() == "}") {
-		rebuilt << " {}"
-	} else {
-		rebuilt << " {" << remainder
-	}
-	rebuilt.toString()
+    def paramIndent = "${baseIndent}    "
+    def paramLines = splitTopLevelCommaText(params).collect { singleLineDeclarationPart(it) }.findAll { !it.isEmpty() }
+    def rebuilt = new StringBuilder()
+    rebuilt << prefix << "(\n"
+    paramLines.eachWithIndex { param, index ->
+        rebuilt << paramIndent << param
+        if (index + 1 < paramLines.size()) {
+            rebuilt << ","
+        }
+        rebuilt << "\n"
+    }
+    rebuilt << baseIndent << ")" << suffixText
+    if (marker == ';' as char) {
+        rebuilt << ";" << remainder
+    } else if (remainder.trim() == "}") {
+        rebuilt << " {}"
+    } else {
+        rebuilt << " {" << remainder
+    }
+    rebuilt.toString()
 }
 
 def parseAnnotationAt = { String text, int start ->
-	int index = start
-	if (index >= text.length() || text.charAt(index) != '@' as char) {
-		return null
-	}
-	index++
+    int index = start
+    if (index >= text.length() || text.charAt(index) != '@' as char) {
+        return null
+    }
+    index++
 
-	int nameStart = index
-	while (index < text.length()) {
-		def c = text.charAt(index)
-		if (Character.isLetterOrDigit(c) || c == '_' as char || c == '.' as char || c == '$' as char) {
-			index++
-		} else {
-			break
-		}
-	}
-	if (index == nameStart) {
-		return null
-	}
+    int nameStart = index
+    while (index < text.length()) {
+        def c = text.charAt(index)
+        if (Character.isLetterOrDigit(c) || c == '_' as char || c == '.' as char || c == '$' as char) {
+            index++
+        } else {
+            break
+        }
+    }
+    if (index == nameStart) {
+        return null
+    }
 
-	while (index < text.length() && Character.isWhitespace(text.charAt(index))) {
-		index++
-	}
-	if (index < text.length() && text.charAt(index) == '(' as char) {
-		boolean inString = false
-		boolean inChar = false
-		boolean escaping = false
-		int depth = 0
-		while (index < text.length()) {
-			char c = text.charAt(index)
-			if (escaping) {
-				escaping = false
-			} else if (inString) {
-				if (c == '\\' as char) {
-					escaping = true
-				} else if (c == '"' as char) {
-					inString = false
-				}
-			} else if (inChar) {
-				if (c == '\\' as char) {
-					escaping = true
-				} else if (c == "'" as char) {
-					inChar = false
-				}
-			} else if (c == '"' as char) {
-				inString = true
-			} else if (c == "'" as char) {
-				inChar = true
-			} else if (c == '(' as char) {
-				depth++
-			} else if (c == ')' as char) {
-				depth--
-				if (depth == 0) {
-					index++
-					break
-				}
-			}
-			index++
-		}
-		if (depth != 0 || inString || inChar) {
-			return null
-		}
-	}
+    while (index < text.length() && Character.isWhitespace(text.charAt(index))) {
+        index++
+    }
+    if (index < text.length() && text.charAt(index) == '(' as char) {
+        boolean inString = false
+        boolean inChar = false
+        boolean escaping = false
+        int depth = 0
+        while (index < text.length()) {
+            char c = text.charAt(index)
+            if (escaping) {
+                escaping = false
+            } else if (inString) {
+                if (c == '\\' as char) {
+                    escaping = true
+                } else if (c == '"' as char) {
+                    inString = false
+                }
+            } else if (inChar) {
+                if (c == '\\' as char) {
+                    escaping = true
+                } else if (c == "'" as char) {
+                    inChar = false
+                }
+            } else if (c == '"' as char) {
+                inString = true
+            } else if (c == "'" as char) {
+                inChar = true
+            } else if (c == '(' as char) {
+                depth++
+            } else if (c == ')' as char) {
+                depth--
+                if (depth == 0) {
+                    index++
+                    break
+                }
+            }
+            index++
+        }
+        if (depth != 0 || inString || inChar) {
+            return null
+        }
+    }
 
-	[start: start, end: index]
+    [start: start, end: index]
 }
 
 def normalizeAnnotationText = { String text ->
-	singleLineDeclarationPart(text)
-			.replace("( ", "(")
-			.replace(" )", ")")
-			.replaceAll(/\s*,\s*/, ", ")
+    singleLineDeclarationPart(text)
+            .replace("( ", "(")
+            .replace(" )", ")")
+            .replaceAll(/\s*,\s*/, ", ")
 }
 
-def normalizeClassDeclarationHeader = { String text ->
-	def markerInfo = findDeclarationMarker(text, 0, text.length())
-	if (markerInfo == null || markerInfo.marker != '{' as char) {
-		return text
-	}
+def normalizeClassDeclarationHeader = { String text, String declarationIndent ->
+    def markerInfo = findDeclarationMarker(text, 0, text.length())
+    if (markerInfo == null || markerInfo.marker != '{' as char) {
+        return text
+    }
 
-	int markerIndex = markerInfo.index as int
-	def prefix = text.substring(0, markerIndex)
-	def suffix = text.substring(markerIndex + 1)
-	def annotations = []
-	int cursor = 0
-	while (cursor < prefix.length()) {
-		while (cursor < prefix.length() && Character.isWhitespace(prefix.charAt(cursor))) {
-			cursor++
-		}
-		def annotation = parseAnnotationAt(prefix, cursor)
-		if (annotation == null) {
-			break
-		}
-		annotations << normalizeAnnotationText(prefix.substring(annotation.start as int, annotation.end as int))
-		cursor = annotation.end as int
-	}
+    int markerIndex = markerInfo.index as int
+    def prefix = text.substring(0, markerIndex)
+    def suffix = text.substring(markerIndex + 1)
+    def annotations = []
+    int cursor = 0
+    while (cursor < prefix.length()) {
+        while (cursor < prefix.length() && Character.isWhitespace(prefix.charAt(cursor))) {
+            cursor++
+        }
+        def annotation = parseAnnotationAt(prefix, cursor)
+        if (annotation == null) {
+            break
+        }
+        annotations << normalizeAnnotationText(prefix.substring(annotation.start as int, annotation.end as int))
+        cursor = annotation.end as int
+    }
 
-	def declarationPart = singleLineDeclarationPart(prefix.substring(cursor))
-	def normalizedDeclaration = normalizeParameterizedDeclarationHeader("${declarationPart} {")
-			.replaceAll(/\s+\{\s*$/, " {")
+    def declarationPart = singleLineDeclarationPart(prefix.substring(cursor))
+    def normalizedDeclaration = normalizeParameterizedDeclarationHeader("${declarationIndent}${declarationPart} {")
+            .replaceAll(/\s+\{\s*$/, " {")
 
-	def lines = []
-	if (!annotations.isEmpty()) {
-		lines << annotations.join(" ")
-	}
-	lines << normalizedDeclaration
-	lines.join("\n") + suffix
+    def lines = []
+    if (!annotations.isEmpty()) {
+        lines << "${declarationIndent}${annotations.join(" ")}"
+    }
+    lines << normalizedDeclaration
+    lines.join("\n") + suffix
 }
 
 def normalizeMethodOrConstructorBlock = { String text ->
-	normalizeParameterizedDeclarationHeader(trimBlankEdges(text))
+    normalizeParameterizedDeclarationHeader(trimBlankEdges(text))
 }
 
 def normalizeFieldOrInitializerBlock = { String text ->
-	trimBlankEdges(text)
+    trimBlankEdges(text)
 }
 
 def javaLangTypes = [
-		"Appendable", "AutoCloseable", "Boolean", "Byte", "Character", "CharSequence", "Class", "ClassLoader",
-		"Cloneable", "Comparable", "Double", "Enum", "Exception", "Float", "FunctionalInterface", "Integer",
-		"Iterable", "Long", "Math", "Number", "Object", "Override", "Package", "Process", "ProcessBuilder",
-		"Record", "Runnable", "Runtime", "RuntimeException", "Short", "StackTraceElement", "String",
-		"StringBuffer", "StringBuilder", "SuppressWarnings", "System", "Thread", "Throwable", "Void"
+        "Appendable", "AutoCloseable", "Boolean", "Byte", "Character", "CharSequence", "Class", "ClassLoader",
+        "Cloneable", "Comparable", "Double", "Enum", "Exception", "Float", "FunctionalInterface", "Integer",
+        "Iterable", "Long", "Math", "Number", "Object", "Override", "Package", "Process", "ProcessBuilder",
+        "Record", "Runnable", "Runtime", "RuntimeException", "Short", "StackTraceElement", "String",
+        "StringBuffer", "StringBuilder", "SuppressWarnings", "System", "Thread", "Throwable", "Void"
 ] as Set
 
 def extractImportMap = { String source ->
-	def imports = [:]
-	source.readLines().each { line ->
-		def matcher = line =~ /^\s*import\s+(?!static)([\w.]+)\.([A-Za-z_$][\w$]*);\s*$/
-		if (matcher.matches()) {
-			imports[matcher.group(2)] = "${matcher.group(1)}.${matcher.group(2)}"
-		}
-	}
-	imports
+    def imports = [:]
+    source.readLines().each { line ->
+        def matcher = line =~ /^\s*import\s+(?!static)([\w.]+)\.([A-Za-z_$][\w$]*);\s*$/
+        if (matcher.matches()) {
+            imports[matcher.group(2)] = "${matcher.group(1)}.${matcher.group(2)}"
+        }
+    }
+    imports
 }
 
 def normalizeTypeSortName = { Object typeTree, Map importMap ->
-	if (typeTree == null) {
-		return ""
-	}
-	def text = typeTree.toString()
-	text = text.replaceAll(/@\s*[\w.]+(\s*\([^)]*\))?\s*/, "")
-	text = text.replace("...", "[]")
-	text = text.replaceAll(/\s+/, "")
-	text.replaceAll(/\b([A-Z][A-Za-z0-9_$]*)\b/) { full, simpleName ->
-		if (importMap.containsKey(simpleName)) {
-			return importMap[simpleName]
-		}
-		if (javaLangTypes.contains(simpleName)) {
-			return "java.lang.${simpleName}"
-		}
-		simpleName
-	}
+    if (typeTree == null) {
+        return ""
+    }
+    def text = typeTree.toString()
+    text = text.replaceAll(/@\s*[\w.]+(\s*\([^)]*\))?\s*/, "")
+    text = text.replace("...", "[]")
+    text = text.replaceAll(/\s+/, "")
+    text.replaceAll(/\b([A-Z][A-Za-z0-9_$]*)\b/) { full, simpleName ->
+        if (importMap.containsKey(simpleName)) {
+            return importMap[simpleName]
+        }
+        if (javaLangTypes.contains(simpleName)) {
+            return "java.lang.${simpleName}"
+        }
+        simpleName
+    }
 }
 
 def parameterTypeKey = { MethodTree methodTree, Map importMap ->
-	methodTree.parameters.collect { parameter ->
-		normalizeTypeSortName(parameter.type, importMap)
-	}.join(",")
+    methodTree.parameters.collect { parameter ->
+        normalizeTypeSortName(parameter.type, importMap)
+    }.join(",")
 }
 
 def fieldTypeSortKey = { VariableTree variableTree, Map importMap ->
-	def typeName = normalizeTypeSortName(variableTree.type, importMap)
-	[typeName.length(), typeName]
+    def typeName = normalizeTypeSortName(variableTree.type, importMap)
+    [typeName.length(), typeName]
 }
 
 def hasModifier = { tree, Modifier modifier ->
-	tree.modifiers.flags.contains(modifier)
+    tree.modifiers.flags.contains(modifier)
 }
 
 def isUtilityRegistryPackage = { Object compilationUnit ->
-	def packageName = compilationUnit.packageName?.toString()
-	if (packageName == null) {
-		return false
-	}
+    def packageName = compilationUnit.packageName?.toString()
+    if (packageName == null) {
+        return false
+    }
 
-	packageName == "utility.registry"
-			|| packageName.endsWith(".utility.registry")
-			|| packageName.contains(".utility.registry.")
+    packageName == "utility.registry"
+            || packageName.endsWith(".utility.registry")
+            || packageName.contains(".utility.registry.")
 }
 
 def shouldSkipJavaDeclarationFormatting = { ClassTree classTree, Object compilationUnit ->
-	if (!isUtilityRegistryPackage(compilationUnit)) {
-		return false
-	}
+    if (!isUtilityRegistryPackage(compilationUnit)) {
+        return false
+    }
 
-	// Registry holders and packet records are hand-grouped; keep their member order untouched.
-	def kindName = classTree.kind.name()
-	boolean finalClass = kindName == "CLASS" && hasModifier(classTree, Modifier.FINAL)
-	boolean recordClass = kindName == "RECORD"
-	finalClass || recordClass
+    // Registry holders and packet records are hand-grouped; keep their member order untouched.
+    def kindName = classTree.kind.name()
+    boolean finalClass = kindName == "CLASS" && hasModifier(classTree, Modifier.FINAL)
+    boolean recordClass = kindName == "RECORD"
+    finalClass || recordClass
 }
 
 def declarationVisibilityRank = { tree ->
-	if (hasModifier(tree, Modifier.PUBLIC)) {
-		return 0
-	}
-	if (hasModifier(tree, Modifier.PROTECTED)) {
-		return 1
-	}
-	if (hasModifier(tree, Modifier.PRIVATE)) {
-		return 2
-	}
-	3
+    if (hasModifier(tree, Modifier.PUBLIC)) {
+        return 0
+    }
+    if (hasModifier(tree, Modifier.PROTECTED)) {
+        return 1
+    }
+    if (hasModifier(tree, Modifier.PRIVATE)) {
+        return 2
+    }
+    3
 }
 
 def fieldCategoryRank = { VariableTree tree ->
-	boolean staticMember = hasModifier(tree, Modifier.STATIC)
-	switch (declarationVisibilityRank(tree)) {
-		case 0:
-			return staticMember ? 0 : 1
-		case 1:
-			return staticMember ? 2 : 3
-		case 2:
-			return staticMember ? 4 : 5
-		default:
-			return staticMember ? 4 : 5
-	}
+    boolean staticMember = hasModifier(tree, Modifier.STATIC)
+    switch (declarationVisibilityRank(tree)) {
+        case 0:
+            return staticMember ? 0 : 1
+        case 1:
+            return staticMember ? 2 : 3
+        case 2:
+            return staticMember ? 4 : 5
+        default:
+            return staticMember ? 4 : 5
+    }
 }
 
 def methodCategoryRank = { MethodTree tree ->
-	boolean staticMember = hasModifier(tree, Modifier.STATIC)
-	switch (declarationVisibilityRank(tree)) {
-		case 0:
-			return staticMember ? 7 : 8
-		case 1:
-			return staticMember ? 9 : 10
-		case 2:
-			return staticMember ? 11 : 12
-		default:
-			return staticMember ? 11 : 12
-	}
+    boolean staticMember = hasModifier(tree, Modifier.STATIC)
+    switch (declarationVisibilityRank(tree)) {
+        case 0:
+            return staticMember ? 7 : 8
+        case 1:
+            return staticMember ? 9 : 10
+        case 2:
+            return staticMember ? 11 : 12
+        default:
+            return staticMember ? 11 : 12
+    }
 }
 
 def collectPrivateMethodCallOrder = { ClassTree classTree, Object positions, Object compilationUnit ->
-	def calls = [:]
-	int[] nextOrder = [0] as int[]
-	def scanner = new TreeScanner<Void, Void>() {
-		@Override
-		Void visitClass(ClassTree nestedClassTree, Void unused) {
-			if (nestedClassTree == classTree) {
-				super.visitClass(nestedClassTree, unused)
-			}
-			return null
-		}
+    def calls = [:]
+    int[] nextOrder = [0] as int[]
+    def scanner = new TreeScanner<Void, Void>() {
+        @Override
+        Void visitClass(ClassTree nestedClassTree, Void unused) {
+            if (nestedClassTree == classTree) {
+                super.visitClass(nestedClassTree, unused)
+            }
+            return null
+        }
 
-		@Override
-		Void visitMethodInvocation(MethodInvocationTree invocationTree, Void unused) {
-			def selected = invocationTree.methodSelect
-			def name = selected instanceof MemberSelectTree
-					? selected.identifier.toString()
-					: selected instanceof IdentifierTree ? selected.name.toString() : selected.toString()
-			if (!calls.containsKey(name)) {
-				calls[name] = nextOrder[0]++
-			}
-			super.visitMethodInvocation(invocationTree, unused)
-			return null
-		}
-	}
+        @Override
+        Void visitMethodInvocation(MethodInvocationTree invocationTree, Void unused) {
+            def selected = invocationTree.methodSelect
+            def name = selected instanceof MemberSelectTree
+                    ? selected.identifier.toString()
+                    : selected instanceof IdentifierTree ? selected.name.toString() : selected.toString()
+            if (!calls.containsKey(name)) {
+                calls[name] = nextOrder[0]++
+            }
+            super.visitMethodInvocation(invocationTree, unused)
+            return null
+        }
+    }
 
-	classTree.members.findAll { !(it instanceof ClassTree) }.each { scanner.scan(it, null) }
-	calls
+    classTree.members.findAll { !(it instanceof ClassTree) }.each { scanner.scan(it, null) }
+    calls
 }
 
 def compareSortKeys = { List left, List right ->
-	int max = Math.max(left.size(), right.size())
-	for (int index = 0; index < max; index++) {
-		def leftValue = index < left.size() ? left[index] : null
-		def rightValue = index < right.size() ? right[index] : null
-		if (leftValue == rightValue) {
-			continue
-		}
-		if (leftValue == null) {
-			return -1
-		}
-		if (rightValue == null) {
-			return 1
-		}
-		int compared = leftValue <=> rightValue
-		if (compared != 0) {
-			return compared
-		}
-	}
-	0
+    int max = Math.max(left.size(), right.size())
+    for (int index = 0; index < max; index++) {
+        def leftValue = index < left.size() ? left[index] : null
+        def rightValue = index < right.size() ? right[index] : null
+        if (leftValue == rightValue) {
+            continue
+        }
+        if (leftValue == null) {
+            return -1
+        }
+        if (rightValue == null) {
+            return 1
+        }
+        int compared = leftValue <=> rightValue
+        if (compared != 0) {
+            return compared
+        }
+    }
+    0
 }
 
 def collectFieldInitializerReferences = { unit ->
-	def references = [] as Set
-	def scanner = new TreeScanner<Void, Void>() {
-		@Override
-		Void visitIdentifier(IdentifierTree identifierTree, Void unused) {
-			references << identifierTree.name.toString()
-			super.visitIdentifier(identifierTree, unused)
-			return null
-		}
-	}
+    def references = [] as Set
+    def scanner = new TreeScanner<Void, Void>() {
+        @Override
+        Void visitIdentifier(IdentifierTree identifierTree, Void unused) {
+            references << identifierTree.name.toString()
+            super.visitIdentifier(identifierTree, unused)
+            return null
+        }
+    }
 
-	unit.trees.findAll { it instanceof VariableTree }.each { VariableTree variableTree ->
-		if (variableTree.initializer != null) {
-			scanner.scan(variableTree.initializer, null)
-		}
-	}
-	references
+    unit.trees.findAll { it instanceof VariableTree }.each { VariableTree variableTree ->
+        if (variableTree.initializer != null) {
+            scanner.scan(variableTree.initializer, null)
+        }
+    }
+    references
 }
 
 def sortMemberUnits = { List units, Closure memberSortKey ->
-	Map<String, Integer> fieldOwnerByName = [:]
-	units.eachWithIndex { unit, int index ->
-		if (unit.tree instanceof VariableTree) {
-			unit.trees.each { fieldOwnerByName[it.name.toString()] = index as Integer }
-		}
-	}
+    Map<String, Integer> fieldOwnerByName = [:]
+    units.eachWithIndex { unit, int index ->
+        if (unit.tree instanceof VariableTree) {
+            unit.trees.each { fieldOwnerByName[it.name.toString()] = index as Integer }
+        }
+    }
 
-	List<Integer> unitIndexes = (0..<units.size()).collect { it as Integer }
-	Map<Integer, Set<Integer>> outgoing = unitIndexes.collectEntries { Integer unitIndex ->
-		[(unitIndex): new LinkedHashSet<Integer>()]
-	} as Map<Integer, Set<Integer>>
-	Map<Integer, Integer> indegree = unitIndexes.collectEntries { Integer unitIndex -> [(unitIndex): 0] } as Map<Integer, Integer>
-	units.eachWithIndex { unit, int index ->
-		if (unit.tree instanceof VariableTree) {
-			collectFieldInitializerReferences.call(unit).each { name ->
-				Integer dependency = fieldOwnerByName[name as String]
-				if (dependency != null && dependency != index && outgoing[dependency].add(index as Integer)) {
-					indegree[index] = indegree[index] + 1
-				}
-			}
-		}
-	}
+    List<Integer> unitIndexes = (0..<units.size()).collect { it as Integer }
+    Map<Integer, Set<Integer>> outgoing = unitIndexes.collectEntries { Integer unitIndex ->
+        [(unitIndex): new LinkedHashSet<Integer>()]
+    } as Map<Integer, Set<Integer>>
+    Map<Integer, Integer> indegree = unitIndexes.collectEntries { Integer unitIndex -> [(unitIndex): 0] } as Map<Integer, Integer>
+    units.eachWithIndex { unit, int index ->
+        if (unit.tree instanceof VariableTree) {
+            collectFieldInitializerReferences.call(unit).each { name ->
+                Integer dependency = fieldOwnerByName[name as String]
+                if (dependency != null && dependency != index && outgoing[dependency].add(index as Integer)) {
+                    indegree[index] = indegree[index] + 1
+                }
+            }
+        }
+    }
 
-	List sorted = []
-	List<Integer> available = unitIndexes.findAll { Integer unitIndex -> indegree[unitIndex] == 0 }
-	Set<Integer> remaining = unitIndexes as Set<Integer>
-	while (!available.isEmpty()) {
-		available.sort { Integer left, Integer right ->
-			compareSortKeys.call(memberSortKey.call(units[left]) as List, memberSortKey.call(units[right]) as List) as int
-		}
-		Integer selected = available.remove(0)
-		if (!remaining.remove(selected)) {
-			continue
-		}
-		sorted << units[selected]
-		outgoing[selected].each { Integer next ->
-			indegree[next] = indegree[next] - 1
-			if (indegree[next] == 0 && remaining.contains(next)) {
-				available.add(next)
-			}
-		}
-	}
+    List sorted = []
+    List<Integer> available = unitIndexes.findAll { Integer unitIndex -> indegree[unitIndex] == 0 }
+    Set<Integer> remaining = unitIndexes as Set<Integer>
+    while (!available.isEmpty()) {
+        available.sort { Integer left, Integer right ->
+            compareSortKeys.call(memberSortKey.call(units[left]) as List, memberSortKey.call(units[right]) as List) as int
+        }
+        Integer selected = available.remove(0)
+        if (!remaining.remove(selected)) {
+            continue
+        }
+        sorted << units[selected]
+        outgoing[selected].each { Integer next ->
+            indegree[next] = indegree[next] - 1
+            if (indegree[next] == 0 && remaining.contains(next)) {
+                available.add(next)
+            }
+        }
+    }
 
-	if (!remaining.isEmpty()) {
-		sorted.addAll(remaining.collect { Integer unitIndex -> units[unitIndex] }.sort { left, right ->
-			compareSortKeys.call(memberSortKey.call(left) as List, memberSortKey.call(right) as List) as int
-		})
-	}
-	sorted
+    if (!remaining.isEmpty()) {
+        sorted.addAll(remaining.collect { Integer unitIndex -> units[unitIndex] }.sort { left, right ->
+            compareSortKeys.call(memberSortKey.call(left) as List, memberSortKey.call(right) as List) as int
+        })
+    }
+    sorted
 }
 
 def sameFieldGroup = { left, right, Map importMap ->
-	if (!(left.tree instanceof VariableTree) || !(right.tree instanceof VariableTree)) {
-		return false
-	}
-	if (fieldCategoryRank(left.tree) != fieldCategoryRank(right.tree)) {
-		return false
-	}
-	fieldTypeSortKey(left.tree, importMap) == fieldTypeSortKey(right.tree, importMap)
+    if (!(left.tree instanceof VariableTree) || !(right.tree instanceof VariableTree)) {
+        return false
+    }
+    if (fieldCategoryRank(left.tree) != fieldCategoryRank(right.tree)) {
+        return false
+    }
+    fieldTypeSortKey(left.tree, importMap) == fieldTypeSortKey(right.tree, importMap)
 }
 
 def joinFormattedMembers = { List sortedUnits, List formattedMembers, Map importMap ->
-	def joined = new StringBuilder()
-	formattedMembers.eachWithIndex { formattedMember, index ->
-		if (index > 0) {
-			joined << (sameFieldGroup(sortedUnits[index - 1], sortedUnits[index], importMap) ? "\n" : "\n\n")
-		}
-		joined << formattedMember
-	}
-	joined.toString()
+    def joined = new StringBuilder()
+    formattedMembers.eachWithIndex { formattedMember, index ->
+        if (index > 0) {
+            joined << (sameFieldGroup(sortedUnits[index - 1], sortedUnits[index], importMap) ? "\n" : "\n\n")
+        }
+        joined << formattedMember
+    }
+    joined.toString()
 }
 
 def formatJavaClassDeclaration
-formatJavaClassDeclaration = { ClassTree classTree, String source, Object compilationUnit, Object positions, Map importMap ->
-	int classStart = positions.getStartPosition(compilationUnit, classTree) as int
-	int classEnd = positions.getEndPosition(compilationUnit, classTree) as int
-	if (classStart < 0 || classEnd <= classStart) {
-		return source.substring(classStart, classEnd)
-	}
+formatJavaClassDeclaration = { ClassTree classTree, String source, Object compilationUnit, Object positions, Map importMap, String declarationIndent ->
+    int classStart = positions.getStartPosition(compilationUnit, classTree) as int
+    int classEnd = positions.getEndPosition(compilationUnit, classTree) as int
+    if (classStart < 0 || classEnd <= classStart) {
+        return source.substring(classStart, classEnd)
+    }
+    def classIndent = declarationIndent == null ? lineIndentAt(source, classStart) : declarationIndent
 
-	if (classTree.kind.name() == "ENUM") {
-		return trimBlankEdges(source.substring(classStart, classEnd))
-	}
+    if (classTree.kind.name() == "ENUM") {
+        return indentFirstLine(trimBlankEdges(source.substring(classStart, classEnd)), classIndent)
+    }
 
-	def marker = findDeclarationMarker(source, classStart, classEnd)
-	if (marker == null || marker.marker != '{' as char) {
-		return trimBlankEdges(source.substring(classStart, classEnd))
-	}
+    def marker = findDeclarationMarker(source, classStart, classEnd)
+    if (marker == null || marker.marker != '{' as char) {
+        return indentFirstLine(trimBlankEdges(source.substring(classStart, classEnd)), classIndent)
+    }
 
-	int openBrace = marker.index as int
-	def classIndent = lineIndentAt(source, classStart)
-	def header = normalizeClassDeclarationHeader(source.substring(classStart, openBrace + 1))
+    int openBrace = marker.index as int
+    def header = normalizeClassDeclarationHeader(source.substring(classStart, openBrace + 1), classIndent)
 
-	def rawMembers = []
-	classTree.members.eachWithIndex { memberTree, originalIndex ->
-		int start = positions.getStartPosition(compilationUnit, memberTree) as int
-		int end = positions.getEndPosition(compilationUnit, memberTree) as int
-		if (start > openBrace && end > start) {
-			rawMembers << [tree: memberTree, trees: [memberTree], start: start, end: end, originalIndex: originalIndex]
-		}
-	}
-	rawMembers.sort { left, right -> left.start <=> right.start }
+    def rawMembers = []
+    classTree.members.eachWithIndex { memberTree, originalIndex ->
+        int start = positions.getStartPosition(compilationUnit, memberTree) as int
+        int end = positions.getEndPosition(compilationUnit, memberTree) as int
+        if (start > openBrace && end > start) {
+            rawMembers << [tree: memberTree, trees: [memberTree], start: start, end: end, originalIndex: originalIndex]
+        }
+    }
+    rawMembers.sort { left, right -> left.start <=> right.start }
 
-	def units = []
-	rawMembers.each { member ->
-		def previous = units.isEmpty() ? null : units.last()
-		if (previous != null
-				&& member.tree instanceof VariableTree
-				&& previous.tree instanceof VariableTree
-				&& member.start < previous.end) {
-			previous.trees << member.tree
-			previous.end = Math.max(previous.end as int, member.end as int)
-		} else {
-			units << member
-		}
-	}
+    def units = []
+    rawMembers.each { member ->
+        def previous = units.isEmpty() ? null : units.last()
+        if (previous != null
+                && member.tree instanceof VariableTree
+                && previous.tree instanceof VariableTree
+                && member.start < previous.end) {
+            previous.trees << member.tree
+            previous.end = Math.max(previous.end as int, member.end as int)
+        } else {
+            units << member
+        }
+    }
 
-	if (units.isEmpty()) {
-		return "${header.substring(0, header.length() - 1)}{}"
-	}
+    if (units.isEmpty()) {
+        return "${header.substring(0, header.length() - 1)}{}"
+    }
 
-	Map callOrder = collectPrivateMethodCallOrder.call(classTree, positions, compilationUnit) as Map
-	def memberSortKey = { unit ->
-		def tree = unit.tree
-		if (tree instanceof VariableTree) {
-			def names = unit.trees.collect { it.name.toString() }
-			def typeKey = fieldTypeSortKey(tree, importMap)
-			return [fieldCategoryRank(tree), 0, typeKey[0], typeKey[1], names.first(), names.join(","), unit.originalIndex]
-		}
-		if (tree instanceof MethodTree) {
-			def name = tree.name.toString()
-			if (name == "<init>") {
-				return [6, 1, tree.parameters.size(), parameterTypeKey(tree, importMap), unit.originalIndex]
-			}
-			List<Object> base = new ArrayList<Object>([methodCategoryRank(tree), 0])
-			if (hasModifier(tree, Modifier.PRIVATE) || declarationVisibilityRank(tree) == 3) {
-				base.add(callOrder.containsKey(name) ? callOrder[name] : Integer.MAX_VALUE)
-			}
-			base.addAll([name, tree.parameters.size(), parameterTypeKey(tree, importMap), unit.originalIndex])
-			return base
-		}
-		if (tree instanceof ClassTree) {
-			return [13, 0, tree.simpleName.toString(), unit.originalIndex]
-		}
-		[6, 0, unit.originalIndex]
-	}
+    Map callOrder = collectPrivateMethodCallOrder.call(classTree, positions, compilationUnit) as Map
+    def memberSortKey = { unit ->
+        def tree = unit.tree
+        if (tree instanceof VariableTree) {
+            def names = unit.trees.collect { it.name.toString() }
+            def typeKey = fieldTypeSortKey(tree, importMap)
+            return [fieldCategoryRank(tree), 0, typeKey[0], typeKey[1], names.first(), names.join(","), unit.originalIndex]
+        }
+        if (tree instanceof MethodTree) {
+            def name = tree.name.toString()
+            if (name == "<init>") {
+                return [6, 1, tree.parameters.size(), parameterTypeKey(tree, importMap), unit.originalIndex]
+            }
+            List<Object> base = new ArrayList<Object>([methodCategoryRank(tree), 0])
+            if (hasModifier(tree, Modifier.PRIVATE) || declarationVisibilityRank(tree) == 3) {
+                base.add(callOrder.containsKey(name) ? callOrder[name] : Integer.MAX_VALUE)
+            }
+            base.addAll([name, tree.parameters.size(), parameterTypeKey(tree, importMap), unit.originalIndex])
+            return base
+        }
+        if (tree instanceof ClassTree) {
+            return [13, 0, tree.simpleName.toString(), unit.originalIndex]
+        }
+        [6, 0, unit.originalIndex]
+    }
 
-	def sortedUnits = sortMemberUnits.call(units, memberSortKey)
-	int lowerBound = openBrace + 1
-	def formattedMembers = sortedUnits.collect { unit ->
-		int leadingStart = includeLeadingDeclarationTrivia(source, lowerBound, unit.start as int)
-		def tree = unit.tree
-		if (tree instanceof ClassTree) {
-			return formatJavaClassDeclaration.call(tree as ClassTree, source, compilationUnit, positions, importMap)
-		}
-		def block = source.substring(leadingStart, unit.end as int)
-		if (tree instanceof MethodTree) {
-			return normalizeMethodOrConstructorBlock(block)
-		}
-		normalizeFieldOrInitializerBlock(block)
-	}
+    def sortedUnits = sortMemberUnits.call(units, memberSortKey)
+    int lowerBound = openBrace + 1
+    def formattedMembers = sortedUnits.collect { unit ->
+        int leadingStart = includeLeadingDeclarationTrivia(source, lowerBound, unit.start as int)
+        def tree = unit.tree
+        if (tree instanceof ClassTree) {
+            return formatJavaClassDeclaration.call(
+                    tree as ClassTree, source, compilationUnit, positions, importMap, "${classIndent}${javaMemberIndent}"
+            )
+        }
+        def block = source.substring(leadingStart, unit.end as int)
+        if (tree instanceof MethodTree) {
+            return normalizeMethodOrConstructorBlock(block)
+        }
+        normalizeFieldOrInitializerBlock(block)
+    }
 
-	"${header}\n\n${joinFormattedMembers(sortedUnits, formattedMembers, importMap)}\n\n${classIndent}}"
+    "${header}\n\n${joinFormattedMembers(sortedUnits, formattedMembers, importMap)}\n\n${classIndent}}"
 }
 
 def formatJavaDeclarations = { File sourceFile, boolean checkOnly ->
-	def original = sourceFile.getText("UTF-8")
-	def newline = original.contains("\r\n") ? "\r\n" : "\n"
-	def normalizedOriginal = original.replace("\r\n", "\n")
-	def parsed = parseJavaSource(sourceFile, normalizedOriginal)
-	if (parsed == null) {
-		return false
-	}
+    def original = sourceFile.getText("UTF-8")
+    def newline = original.contains("\r\n") ? "\r\n" : "\n"
+    def normalizedOriginal = original.replace("\r\n", "\n")
+    def parsed = parseJavaSource(sourceFile, normalizedOriginal)
+    if (parsed == null) {
+        return false
+    }
 
-	def importMap = extractImportMap(normalizedOriginal)
-	def replacements = []
-	// Leave selected utility.registry declarations out of member sorting.
-	List<ClassTree> typeDeclsToFormat = parsed.unit.typeDecls.findAll { typeDecl ->
-		typeDecl instanceof ClassTree && !shouldSkipJavaDeclarationFormatting(typeDecl, parsed.unit)
-	}.collect { it as ClassTree }
-	typeDeclsToFormat.each { ClassTree classTree ->
-		int start = parsed.positions.getStartPosition(parsed.unit, classTree) as int
-		int end = parsed.positions.getEndPosition(parsed.unit, classTree) as int
-		if (start >= 0 && end > start) {
-			replacements << [
-					start: start,
-					end: end,
-					text: formatJavaClassDeclaration.call(classTree, normalizedOriginal, parsed.unit, parsed.positions, importMap)
-			]
-		}
-	}
+    def importMap = extractImportMap(normalizedOriginal)
+    def replacements = []
+    // Leave selected utility.registry declarations out of member sorting.
+    List<ClassTree> typeDeclsToFormat = parsed.unit.typeDecls.findAll { typeDecl ->
+        typeDecl instanceof ClassTree && !shouldSkipJavaDeclarationFormatting(typeDecl, parsed.unit)
+    }.collect { it as ClassTree }
+    typeDeclsToFormat.each { ClassTree classTree ->
+        int start = parsed.positions.getStartPosition(parsed.unit, classTree) as int
+        int end = parsed.positions.getEndPosition(parsed.unit, classTree) as int
+        if (start >= 0 && end > start) {
+            replacements << [
+                    start: start,
+                    end: end,
+                    text: formatJavaClassDeclaration.call(classTree, normalizedOriginal, parsed.unit, parsed.positions, importMap, null)
+            ]
+        }
+    }
 
-	def rewrittenNormalized = new StringBuilder(normalizedOriginal)
-	replacements.sort { left, right -> right.start <=> left.start }.each { replacement ->
-		rewrittenNormalized.replace(replacement.start as int, replacement.end as int, replacement.text as String)
-	}
+    def rewrittenNormalized = new StringBuilder(normalizedOriginal)
+    replacements.sort { left, right -> right.start <=> left.start }.each { replacement ->
+        rewrittenNormalized.replace(replacement.start as int, replacement.end as int, replacement.text as String)
+    }
 
-	def rewritten = rewrittenNormalized.toString().replace("\n", newline)
-	if (original.endsWith("\n") || original.endsWith("\r\n")) {
-		rewritten = rewritten.replaceAll(/(\r?\n)*$/, "") + newline
-	}
-	if (rewritten == original) {
-		return false
-	}
-	if (!checkOnly) {
-		sourceFile.write(rewritten, "UTF-8")
-	}
-	true
+    def rewritten = rewrittenNormalized.toString().replace("\n", newline)
+    if (original.endsWith("\n") || original.endsWith("\r\n")) {
+        rewritten = rewritten.replaceAll(/(\r?\n)*$/, "") + newline
+    }
+    if (rewritten == original) {
+        return false
+    }
+    if (!checkOnly) {
+        sourceFile.write(rewritten, "UTF-8")
+    }
+    true
 }
 
 tasks.register("formatJavaImports") {
-	group = "formatting"
-	description = "Normalizes Java import comment groups under src."
-	inputs.files(javaSourceFiles)
-	inputs.file(importGroupConfigFile)
-	outputs.upToDateWhen { false }
+    group = "formatting"
+    description = "Normalizes Java import comment groups under src."
+    inputs.files(javaSourceFiles)
+    inputs.file(importGroupConfigFile)
+    outputs.upToDateWhen { false }
 
-	doLast {
-		List groups = loadImportGroups() as List
-		javaSourceFiles.each { File sourceFile ->
-			rewriteJavaImports(sourceFile, groups, false)
-			ensureSpdxHeader(sourceFile)
-		}
-	}
+    doLast {
+        List groups = loadImportGroups() as List
+        javaSourceFiles.each { File sourceFile ->
+            rewriteJavaImports(sourceFile, groups, false)
+            ensureSpdxHeader(sourceFile)
+        }
+    }
 }
 
 tasks.register("formatJavaAnnotations") {
-	group = "formatting"
-	description = "Merges consecutive Java annotation lines under src."
-	inputs.files(javaSourceFiles)
-	outputs.upToDateWhen { false }
+    group = "formatting"
+    description = "Merges consecutive Java annotation lines under src."
+    inputs.files(javaSourceFiles)
+    outputs.upToDateWhen { false }
 
-	doLast {
-		javaSourceFiles.each { File sourceFile ->
-			rewriteJavaAnnotations(sourceFile, false)
-		}
-	}
+    doLast {
+        javaSourceFiles.each { File sourceFile ->
+            rewriteJavaAnnotations(sourceFile, false)
+        }
+    }
 }
 
 tasks.register("formatJavaDeclarations") {
-	group = "formatting"
-	description = "Sorts and normalizes Java declarations under src."
-	inputs.files(javaSourceFiles)
-	outputs.upToDateWhen { false }
+    group = "formatting"
+    description = "Sorts and normalizes Java declarations under src."
+    inputs.files(javaSourceFiles)
+    outputs.upToDateWhen { false }
 
-	doLast {
-		javaSourceFiles.each { File sourceFile ->
-			formatJavaDeclarations(sourceFile, false)
-		}
-	}
+    doLast {
+        javaSourceFiles.each { File sourceFile ->
+            formatJavaDeclarations(sourceFile, false)
+        }
+    }
 }
 
 tasks.register("checkJavaImportGroups") {
-	group = "verification"
-	description = "Checks Java import comment groups under src."
-	inputs.files(javaSourceFiles)
-	inputs.file(importGroupConfigFile)
+    group = "verification"
+    description = "Checks Java import comment groups under src."
+    inputs.files(javaSourceFiles)
+    inputs.file(importGroupConfigFile)
 
-	doLast {
-		List groups = loadImportGroups() as List
-		def changed = javaSourceFiles.findAll { File sourceFile ->
-			rewriteJavaImports(sourceFile, groups, true)
-		}
-		if (!changed.isEmpty()) {
-			throw new GradleException("Java import groups are not normalized. Run ./gradlew formatJavaImports. Files: ${changed.join(", ")}")
-		}
-	}
+    doLast {
+        List groups = loadImportGroups() as List
+        def changed = javaSourceFiles.findAll { File sourceFile ->
+            rewriteJavaImports(sourceFile, groups, true)
+        }
+        if (!changed.isEmpty()) {
+            throw new GradleException("Java import groups are not normalized. Run ./gradlew formatJavaImports. Files: ${changed.join(", ")}")
+        }
+    }
 }
 
 tasks.withType(JavaCompile).configureEach {
-	it.dependsOn(tasks.named("formatJavaImports"))
-	it.dependsOn(tasks.named("formatJavaAnnotations"))
-	it.dependsOn(tasks.named("formatJavaDeclarations"))
+    it.dependsOn(tasks.named("formatJavaImports"))
+    it.dependsOn(tasks.named("formatJavaAnnotations"))
+    it.dependsOn(tasks.named("formatJavaDeclarations"))
 }
 
 java {
-	withSourcesJar()
-	sourceCompatibility = JavaVersion.VERSION_25
-	targetCompatibility = JavaVersion.VERSION_25
+    withSourcesJar()
+    sourceCompatibility = JavaVersion.VERSION_25
+    targetCompatibility = JavaVersion.VERSION_25
 }
 
 jar {
-	inputs.property "projectName", project.name
-	from("LICENSE") {
-		rename { "${it}_${project.name}"}
-	}
+    inputs.property "projectName", project.name
+    from("LICENSE") {
+        rename { "${it}_${project.name}"}
+    }
 }
 
 publishing {
-	publications {
-		create("mavenJava", MavenPublication) {
-			from components.java
-		}
-	}
-	// See https://docs.gradle.org/current/userguide/publishing_maven.html for information on how to set up publishing.
-	repositories {
-		// Add repositories to publish to here.
-		// Notice: This block does NOT have the same function as the block in the top level.
-		// The repositories here will be used for publishing your artifact, not for
-		// retrieving dependencies.
-	}
+    publications {
+        create("mavenJava", MavenPublication) {
+            from components.java
+        }
+    }
+    // See https://docs.gradle.org/current/userguide/publishing_maven.html for information on how to set up publishing.
+    repositories {
+        // Add repositories to publish to here.
+        // Notice: This block does NOT have the same function as the block in the top level.
+        // The repositories here will be used for publishing your artifact, not for
+        // retrieving dependencies.
+    }
 }

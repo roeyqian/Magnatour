@@ -321,13 +321,13 @@ public final class HarvestContinentMobSpawner {
         && !state.isSignalSource();
   }
 
-private record BiomeSpawnProfile(
-    ResourceKey<Biome> biomeKey,
-    int targetPopulation,
-    int maxSpawnPerCycle,
-    Predicate<BlockState> floorPredicate,
-    List<WeightedAnimalType> animalTypes
-) {
+  private record BiomeSpawnProfile(
+      ResourceKey<Biome> biomeKey,
+      int targetPopulation,
+      int maxSpawnPerCycle,
+      Predicate<BlockState> floorPredicate,
+      List<WeightedAnimalType> animalTypes
+  ) {
 
     private boolean acceptsFloor(
         BlockState state
@@ -372,9 +372,9 @@ private record BiomeSpawnProfile(
 
   }
 
-private record WeightedAnimalType(
-    EntityType<? extends Animal> entityType,
-    int weight
-) {}
+  private record WeightedAnimalType(
+      EntityType<? extends Animal> entityType,
+      int weight
+  ) {}
 
 }

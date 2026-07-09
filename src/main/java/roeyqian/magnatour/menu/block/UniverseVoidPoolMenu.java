@@ -106,7 +106,7 @@ public class UniverseVoidPoolMenu extends AbstractContainerMenu {
     return this.inventory.stillValid(player);
   }
 
-private static class OutputSlot extends Slot {
+  private static class OutputSlot extends Slot {
 
     public OutputSlot(
         Container inventory,
