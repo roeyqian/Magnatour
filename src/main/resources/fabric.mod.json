@@ -8,8 +8,9 @@
     "RoeyQian"
   ],
   "contact": {
-    "homepage": "https://fabricmc.net/",
-    "sources": "https://github.com/roeyqian/Magnatour"
+    "homepage": "https://www.curseforge.com/minecraft/mc-mods/magnatour",
+    "sources": "https://github.com/roeyqian/Magnatour",
+    "issues": "https://github.com/roeyqian/Magnatour/issues"
   },
   "license": "GPL-3.0-only",
   "icon": "assets/magnatour/icon.png",
