@@ -767,7 +767,7 @@ public class SculkBehemoth extends Mob implements Enemy, CustomBossEntity {
     return false;
   }
 
-public enum Phase {
+  public enum Phase {
 
     IDLE(0), CHARGE(1), SONIC_BOOM(2), SMASH(3);
 
@@ -794,7 +794,7 @@ public enum Phase {
 
   }
 
-private enum SmashState {
+  private enum SmashState {
     JUMPING, FALLING, LANDING, COOLDOWN
   }
 

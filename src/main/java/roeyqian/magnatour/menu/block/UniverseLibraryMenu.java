@@ -9,8 +9,6 @@ package roeyqian.magnatour.menu.block;
 
 // Minecraft
 import net.minecraft.core.NonNullList;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.SimpleContainer;
@@ -20,7 +18,6 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.DataSlot;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
 
 // JSpecify
 import org.jspecify.annotations.NonNull;
@@ -54,6 +51,7 @@ public class UniverseLibraryMenu extends AbstractContainerMenu {
     this.sourceInventory = inventory;
     this.liveSourceInventory = inventory instanceof UniverseLibraryEntity;
     this.addDataSlot(this.scrollOffset);
+    inventory.startOpen(playerInventory.player);
 
     for (int row = 0; row < 6; row++) {
       for (int col = 0; col < 9; col++) {
@@ -134,7 +132,7 @@ public class UniverseLibraryMenu extends AbstractContainerMenu {
       if (index < 54) {
         if (!this.moveItemStackTo(original, 54, 90, true)) return ItemStack.EMPTY;
       } else {
-        if (!this.moveItemStackTo(original, 0, 54, false)) return ItemStack.EMPTY;
+        if (!this.moveItemStackToSourceInventory(original)) return ItemStack.EMPTY;
       }
 
       if (original.isEmpty()) slot.setByPlayer(ItemStack.EMPTY);
@@ -153,39 +151,75 @@ public class UniverseLibraryMenu extends AbstractContainerMenu {
       @NonNull Player player
   ) {
     super.removed(player);
-
-    if (!player.level().isClientSide()
-        && this.sourceInventory instanceof UniverseLibraryEntity libraryBe) {
-      libraryBe.setOpened(false);
-      Level world = libraryBe.getLevel();
-      if (world == null) return;
-
-      world.blockEvent(
-          libraryBe.getBlockPos(),
-          libraryBe.getBlockState().getBlock(),
-          1,
-          0
-      );
-      world.playSound(
-          null,
-          libraryBe.getBlockPos(),
-          SoundEvents.ENDER_CHEST_CLOSE,
-          SoundSource.BLOCKS,
-          0.5f,
-          world.getRandom().nextFloat() * 0.1f + 0.9f
-      );
-    }
+    this.sourceInventory.stopOpen(player);
   }
 
   @Override
   public boolean stillValid(
       @NonNull Player player
   ) {
-    return true;
+    return this.sourceInventory.stillValid(player);
   }
 
   private void refreshDisplay() {
     super.broadcastFullState();
+  }
+
+  private boolean moveItemStackToSourceInventory(
+      ItemStack stack
+  ) {
+    if (stack.isEmpty()) return false;
+
+    int originalCount = stack.getCount();
+    mergeIntoExistingSourceStacks(stack);
+    fillEmptySourceSlots(stack);
+
+    return stack.getCount() < originalCount;
+  }
+
+  private void mergeIntoExistingSourceStacks(
+      ItemStack stack
+  ) {
+    for (int slotIndex = 0; slotIndex < this.sourceInventory.getContainerSize(); slotIndex++) {
+      if (stack.isEmpty()) return;
+      if (!this.sourceInventory.canPlaceItem(slotIndex, stack)) continue;
+
+      ItemStack existing = this.sourceInventory.getItem(slotIndex);
+      if (existing.isEmpty()) continue;
+      if (!ItemStack.isSameItemSameComponents(existing, stack)) continue;
+
+      int maxStackSize = Math.min(
+          existing.getMaxStackSize(),
+          this.sourceInventory.getMaxStackSize(existing)
+      );
+      int space = maxStackSize - existing.getCount();
+      if (space <= 0) continue;
+
+      int moved = Math.min(space, stack.getCount());
+      existing.grow(moved);
+      stack.shrink(moved);
+      this.sourceInventory.setChanged();
+    }
+  }
+
+  private void fillEmptySourceSlots(
+      ItemStack stack
+  ) {
+    for (int slotIndex = 0; slotIndex < this.sourceInventory.getContainerSize(); slotIndex++) {
+      if (stack.isEmpty()) return;
+      if (!this.sourceInventory.canPlaceItem(slotIndex, stack)) continue;
+      if (!this.sourceInventory.getItem(slotIndex).isEmpty()) continue;
+
+      int maxStackSize = Math.min(
+          stack.getMaxStackSize(),
+          this.sourceInventory.getMaxStackSize(stack)
+      );
+      int moved = Math.min(maxStackSize, stack.getCount());
+
+      ItemStack movedStack = stack.copyWithCount(moved);
+      stack.shrink(moved);
+      this.sourceInventory.setItem(slotIndex, movedStack);
+    }
   }
 
   private int getRealIndex(
@@ -194,7 +228,7 @@ public class UniverseLibraryMenu extends AbstractContainerMenu {
     return displayIndex + (this.scrollOffset.get() * 9);
   }
 
-private class DisplayInventory implements Container {
+  private class DisplayInventory implements Container {
 
     private final NonNullList<ItemStack> clientItems = NonNullList.withSize(54, ItemStack.EMPTY);
 
@@ -315,9 +349,9 @@ private class DisplayInventory implements Container {
       return true;
     }
 
-}
+  }
 
-private class DisplaySlot extends Slot {
+  private class DisplaySlot extends Slot {
 
     public DisplaySlot(
         Container inventory,
@@ -351,6 +385,6 @@ private class DisplaySlot extends Slot {
       return UniverseLibraryMenu.this.getRealIndex(this.getContainerSlot());
     }
 
-}
+  }
 
 }

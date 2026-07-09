@@ -152,7 +152,7 @@ public class BellSoul extends Monster {
     );
   }
 
-class BellSoulMoveControl extends MoveControl {
+  class BellSoulMoveControl extends MoveControl {
 
     private static final double ACCELERATION = 0.12;
 
@@ -189,9 +189,9 @@ class BellSoulMoveControl extends MoveControl {
       BellSoul.this.yBodyRot = BellSoul.this.getYRot();
     }
 
-}
+  }
 
-class RandomMoveGoal extends Goal {
+  class RandomMoveGoal extends Goal {
 
     public RandomMoveGoal() {
       this.setFlags(EnumSet.of(Flag.MOVE));
@@ -228,9 +228,9 @@ class RandomMoveGoal extends Goal {
       }
     }
 
-}
+  }
 
-class SimpleMeleeAttackGoal extends Goal {
+  class SimpleMeleeAttackGoal extends Goal {
 
     private static final int ATTACK_INTERVAL_TICKS = 20;
 
@@ -282,6 +282,6 @@ class SimpleMeleeAttackGoal extends Goal {
       }
     }
 
-}
+  }
 
 }

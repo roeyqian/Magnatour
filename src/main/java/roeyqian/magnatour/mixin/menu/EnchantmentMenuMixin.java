@@ -23,7 +23,7 @@ import roeyqian.magnatour.utility.mixin.menu.MenuHelperForEquipment;
 @Mixin(value = EnchantmentMenu.class, priority = 3600000)
 public class EnchantmentMenuMixin {
 
-  /* Universe Armors: Unenchantable
+  /* Universe Equipment: Unenchantable
    */
   @Inject(method = "slotsChanged", at = @At("HEAD"), cancellable = true)
   private void inSlotsChanged(

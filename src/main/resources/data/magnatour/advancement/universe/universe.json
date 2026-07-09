@@ -1,10 +1,10 @@
 {
   "criteria": {
-    "universe_primary_fragment": {
+    "universe_workstation": {
       "conditions": {
         "items": [
           {
-            "items": "magnatour:universe_primary_fragment"
+            "items": "magnatour:universe_workstation"
           }
         ]
       },
@@ -19,7 +19,7 @@
     },
     "frame": "challenge",
     "icon": {
-      "id": "magnatour:universe_primary_fragment"
+      "id": "magnatour:universe_workstation"
     },
     "show_toast": true,
     "title": {
@@ -28,7 +28,7 @@
   },
   "requirements": [
     [
-      "universe_primary_fragment"
+      "universe_workstation"
     ]
   ],
   "sends_telemetry_event": false
