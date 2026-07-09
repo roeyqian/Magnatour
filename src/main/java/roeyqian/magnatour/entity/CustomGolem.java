@@ -426,6 +426,6 @@ private static final class FasterMeleeAttackGoal extends MeleeAttackGoal {
       }
     }
 
-}
+  }
 
 }

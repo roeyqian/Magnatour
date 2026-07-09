@@ -8,8 +8,10 @@
 package roeyqian.magnatour.block;
 
 // Java Standard
+import java.util.Arrays;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.function.Consumer;
 
 // Fabric
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
@@ -46,32 +48,33 @@ import roeyqian.magnatour.utility.registry.entity.RegLiveEntities;
 
 public final class SummonStructureHelper {
 
-  private static final int NETHERITE_GOLEM_HEIGHT = 3;
-  private static final int NETHERITE_GOLEM_HORIZONTAL_SEARCH_RADIUS = 1;
-  private static final int NETHERITE_GOLEM_WIDTH = 3;
-  private static final int OBSIDIAN_GOLEM_HEIGHT = 3;
-  private static final int OBSIDIAN_GOLEM_HORIZONTAL_SEARCH_RADIUS = 1;
-  private static final int OBSIDIAN_GOLEM_WIDTH = 3;
-  private static final int PALE_LORD_HEIGHT = 3;
-  private static final int PALE_LORD_WIDTH = 3;
-  private static final int PALE_LORD_HORIZONTAL_SEARCH_RADIUS = PALE_LORD_WIDTH - 1;
-  private static final int SCULK_BEHEMOTH_DEPTH = 4;
-  private static final int SCULK_BEHEMOTH_HEIGHT = 3;
-  private static final int SCULK_BEHEMOTH_WIDTH = 3;
-  private static final int SCULK_BEHEMOTH_HORIZONTAL_SEARCH_RADIUS =
-      Math.max(SCULK_BEHEMOTH_WIDTH, SCULK_BEHEMOTH_DEPTH) - 1;
+  private static final String[][] NETHERITE_GOLEM_AISLES = {
+      {"~P~", "###", "~#~"}
+  };
+  private static final String[][] OBSIDIAN_GOLEM_AISLES = {
+      {"~P~", "###", "~#~"}
+  };
+  private static final String[][] PALE_LORD_AISLES = {
+      {"~#~", "#C#", "~#~"}
+  };
+  private static final String[][] SCULK_BEHEMOTH_AISLES = {
+      {"~~~", "###", "C~C"},
+      {"~~~", "###", "~~~"},
+      {"~~~", "###", "C~C"},
+      {"~S~", "~S~", "~~~"}
+  };
 
   private static final Queue<ScheduledSummonCheck> SCHEDULED_SUMMON_CHECKS =
       new ConcurrentLinkedQueue<>();
 
   @Nullable
-  private static BlockPattern netheriteGolemPattern;
+  private static BlockPattern[] netheriteGolemPatterns;
   @Nullable
-  private static BlockPattern obsidianGolemPattern;
+  private static BlockPattern[] obsidianGolemPatterns;
   @Nullable
-  private static BlockPattern paleLordPattern;
+  private static BlockPattern[] paleLordPatterns;
   @Nullable
-  private static BlockPattern sculkBehemothPattern;
+  private static BlockPattern[] sculkBehemothPatterns;
 
   private SummonStructureHelper() {}
 
@@ -125,9 +128,7 @@ public final class SummonStructureHelper {
 
     BlockPattern.BlockPatternMatch match = findMatchingPattern(
         level, pos,
-        getOrCreateNetheriteGolemPattern(),
-        NETHERITE_GOLEM_HORIZONTAL_SEARCH_RADIUS,
-        NETHERITE_GOLEM_HEIGHT
+        getOrCreateNetheriteGolemPatterns()
     );
     if (match == null) return;
 
@@ -152,9 +153,7 @@ public final class SummonStructureHelper {
 
     BlockPattern.BlockPatternMatch match = findMatchingPattern(
         level, pos,
-        getOrCreateObsidianGolemPattern(),
-        OBSIDIAN_GOLEM_HORIZONTAL_SEARCH_RADIUS,
-        OBSIDIAN_GOLEM_HEIGHT
+        getOrCreateObsidianGolemPatterns()
     );
     if (match == null) return;
 
@@ -179,9 +178,7 @@ public final class SummonStructureHelper {
 
     BlockPattern.BlockPatternMatch match = findMatchingPattern(
         level, pos,
-        getOrCreatePaleLordPattern(),
-        PALE_LORD_HORIZONTAL_SEARCH_RADIUS,
-        PALE_LORD_HEIGHT
+        getOrCreatePaleLordPatterns()
     );
     if (match == null) return;
 
@@ -205,9 +202,7 @@ public final class SummonStructureHelper {
 
     BlockPattern.BlockPatternMatch match = findMatchingPattern(
         level, pos,
-        getOrCreateSculkBehemothPattern(),
-        SCULK_BEHEMOTH_HORIZONTAL_SEARCH_RADIUS,
-        SCULK_BEHEMOTH_HEIGHT
+        getOrCreateSculkBehemothPatterns()
     );
     if (match == null) return;
 
@@ -233,34 +228,38 @@ public final class SummonStructureHelper {
   private static BlockPattern.BlockPatternMatch findMatchingPattern(
       Level level,
       BlockPos placedPos,
-      BlockPattern pattern,
-      int horizontalSearchRadius,
-      int height
+      BlockPattern... patterns
   ) {
-    for (BlockPos origin : BlockPos.betweenClosed(
-        placedPos.offset(-horizontalSearchRadius, -height + 1, -horizontalSearchRadius),
-        placedPos.offset(horizontalSearchRadius, height - 1, horizontalSearchRadius)
-    )) {
-      for (Direction forwards : Direction.Plane.HORIZONTAL) {
-        BlockPattern.BlockPatternMatch match = pattern.matches(level, origin, forwards, Direction.UP);
-        if (match != null && containsPosition(match, placedPos)) return match;
+    for (BlockPattern pattern : patterns) {
+      int horizontalSearchRadius = Math.max(pattern.getWidth(), pattern.getDepth()) - 1;
+      int verticalSearchRadius = pattern.getHeight() - 1;
+
+      for (BlockPos origin : BlockPos.betweenClosed(
+          placedPos.offset(-horizontalSearchRadius, -verticalSearchRadius, -horizontalSearchRadius),
+          placedPos.offset(horizontalSearchRadius, verticalSearchRadius, horizontalSearchRadius)
+      )) {
+        for (Direction forwards : Direction.Plane.HORIZONTAL) {
+          BlockPattern.BlockPatternMatch match = pattern.matches(level, origin, forwards, Direction.UP);
+          if (match != null && containsPosition(match, placedPos)) return match;
+        }
       }
     }
 
     return null;
   }
 
-  private static BlockPattern getOrCreateNetheriteGolemPattern() {
-    if (netheriteGolemPattern == null) {
-      netheriteGolemPattern = BlockPatternBuilder.start()
-          .aisle("~P~", "###", "~#~")
+  private static BlockPattern[] getOrCreateNetheriteGolemPatterns() {
+    if (netheriteGolemPatterns == null) {
+      netheriteGolemPatterns = createHorizontalPatternVariants(
+          NETHERITE_GOLEM_AISLES,
+          builder -> builder
           .where('#', BlockInWorld.hasState(BlockStatePredicate.forBlock(Blocks.NETHERITE_BLOCK)))
           .where('P', BlockInWorld.hasState(BlockStatePredicate.forBlock(RegInsertBlocks.SUPREME_PUMPKIN_HEAD)))
           .where('~', BlockInWorld.hasState(BlockBehaviour.BlockStateBase::isAir))
-          .build();
+      );
     }
 
-    return netheriteGolemPattern;
+    return netheriteGolemPatterns;
   }
 
   private static void clearPatternBlocks(
@@ -327,17 +326,18 @@ public final class SummonStructureHelper {
         || state.is(Blocks.CRYING_OBSIDIAN);
   }
 
-  private static BlockPattern getOrCreateObsidianGolemPattern() {
-    if (obsidianGolemPattern == null) {
-      obsidianGolemPattern = BlockPatternBuilder.start()
-          .aisle("~P~", "###", "~#~")
+  private static BlockPattern[] getOrCreateObsidianGolemPatterns() {
+    if (obsidianGolemPatterns == null) {
+      obsidianGolemPatterns = createHorizontalPatternVariants(
+          OBSIDIAN_GOLEM_AISLES,
+          builder -> builder
           .where('#', BlockInWorld.hasState(BlockStatePredicate.forBlock(Blocks.CRYING_OBSIDIAN)))
           .where('P', BlockInWorld.hasState(BlockStatePredicate.forBlock(RegInsertBlocks.SUPREME_PUMPKIN_HEAD)))
           .where('~', BlockInWorld.hasState(BlockBehaviour.BlockStateBase::isAir))
-          .build();
+      );
     }
 
-    return obsidianGolemPattern;
+    return obsidianGolemPatterns;
   }
 
   private static boolean isPaleLordTriggerBlock(
@@ -347,17 +347,18 @@ public final class SummonStructureHelper {
         || state.is(Blocks.CREAKING_HEART);
   }
 
-  private static BlockPattern getOrCreatePaleLordPattern() {
-    if (paleLordPattern == null) {
-      paleLordPattern = BlockPatternBuilder.start()
-          .aisle("~#~", "#C#", "~#~")
+  private static BlockPattern[] getOrCreatePaleLordPatterns() {
+    if (paleLordPatterns == null) {
+      paleLordPatterns = createHorizontalPatternVariants(
+          PALE_LORD_AISLES,
+          builder -> builder
           .where('#', BlockInWorld.hasState(BlockStatePredicate.forBlock(RegInsertBlocks.SUPREME_FODDER_BLOCK)))
           .where('C', BlockInWorld.hasState(BlockStatePredicate.forBlock(Blocks.CREAKING_HEART)))
           .where('~', BlockInWorld.hasState(BlockBehaviour.BlockStateBase::isAir))
-          .build();
+      );
     }
 
-    return paleLordPattern;
+    return paleLordPatterns;
   }
 
   private static boolean isSculkBehemothTriggerBlock(
@@ -368,21 +369,19 @@ public final class SummonStructureHelper {
         || state.is(Blocks.SCULK);
   }
 
-  private static BlockPattern getOrCreateSculkBehemothPattern() {
-    if (sculkBehemothPattern == null) {
-      sculkBehemothPattern = BlockPatternBuilder.start()
-          .aisle("~~~", "###", "#~#")
-          .aisle("~~~", "###", "~~~")
-          .aisle("~~~", "###", "#~#")
-          .aisle("~S~", "~C~", "~~~")
+  private static BlockPattern[] getOrCreateSculkBehemothPatterns() {
+    if (sculkBehemothPatterns == null) {
+      sculkBehemothPatterns = createHorizontalPatternVariants(
+          SCULK_BEHEMOTH_AISLES,
+          builder -> builder
           .where('#', BlockInWorld.hasState(BlockStatePredicate.forBlock(RegInsertBlocks.SUPREME_GEM_BLOCK)))
           .where('C', BlockInWorld.hasState(BlockStatePredicate.forBlock(Blocks.SCULK_CATALYST)))
           .where('S', BlockInWorld.hasState(BlockStatePredicate.forBlock(Blocks.SCULK)))
           .where('~', BlockInWorld.hasState(BlockBehaviour.BlockStateBase::isAir))
-          .build();
+      );
     }
 
-    return sculkBehemothPattern;
+    return sculkBehemothPatterns;
   }
 
   private static boolean containsPosition(
@@ -398,6 +397,50 @@ public final class SummonStructureHelper {
     }
 
     return false;
+  }
+
+  private static BlockPattern[] createHorizontalPatternVariants(
+      String[][] aisles,
+      Consumer<BlockPatternBuilder> builderConsumer
+  ) {
+    String[][] mirroredAisles = mirrorAislesHorizontally(aisles);
+
+    if (Arrays.deepEquals(aisles, mirroredAisles)) {
+      return new BlockPattern[] {buildPattern(aisles, builderConsumer)};
+    }
+
+    return new BlockPattern[] {
+        buildPattern(aisles, builderConsumer),
+        buildPattern(mirroredAisles, builderConsumer)
+    };
+  }
+
+  // Mirror the width axis so non-symmetrical summons can be built in either handedness.
+  private static String[][] mirrorAislesHorizontally(
+      String[][] aisles
+  ) {
+    String[][] mirroredAisles = new String[aisles.length][];
+
+    for (int depth = 0; depth < aisles.length; depth++) {
+      mirroredAisles[depth] = new String[aisles[depth].length];
+      for (int row = 0; row < aisles[depth].length; row++) {
+        mirroredAisles[depth][row] = new StringBuilder(aisles[depth][row]).reverse().toString();
+      }
+    }
+
+    return mirroredAisles;
+  }
+
+  private static BlockPattern buildPattern(
+      String[][] aisles,
+      Consumer<BlockPatternBuilder> builderConsumer
+  ) {
+    BlockPatternBuilder builder = BlockPatternBuilder.start();
+    for (String[] aisle : aisles) {
+      builder.aisle(aisle);
+    }
+    builderConsumer.accept(builder);
+    return builder.build();
   }
 
 private record ScheduledSummonCheck(

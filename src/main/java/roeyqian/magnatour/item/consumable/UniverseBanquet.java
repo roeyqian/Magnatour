@@ -13,6 +13,8 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.FoodProperties;
@@ -35,6 +37,7 @@ import roeyqian.magnatour.item.CustomItemSetting;
 public class UniverseBanquet extends Item {
 
   private static final int CONSUME_CHANCE = 9;
+  private static final int REGENERATION_DURATION_TICKS = 10 * 60 * 20;
 
   public UniverseBanquet(
       Item.Properties settings
@@ -48,6 +51,8 @@ public class UniverseBanquet extends Item {
       @NonNull Level world,
       @NonNull LivingEntity user
   ) {
+    applyRegeneration(world, user);
+
     if (!shouldConsume(user.getRandom())) {
       if (user instanceof Player player) {
         var food = stack.get(DataComponents.FOOD);
@@ -103,6 +108,19 @@ public class UniverseBanquet extends Item {
             DataComponents.LORE,
             CustomItemSetting.universeLore("universe_banquet", 2)
         );
+  }
+
+  private static void applyRegeneration(
+      Level world,
+      LivingEntity user
+  ) {
+    if (!world.isClientSide()) {
+      user.addEffect(new MobEffectInstance(
+          MobEffects.REGENERATION,
+          REGENERATION_DURATION_TICKS,
+          6
+      ));
+    }
   }
 
   private static boolean shouldConsume(

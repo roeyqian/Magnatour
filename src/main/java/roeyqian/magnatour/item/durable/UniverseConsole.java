@@ -241,7 +241,7 @@ public record BoundBlockList(
       return new BoundBlockList(newList);
     }
 
-}
+  }
 
 public record BoundBlocks(
     BlockPos pos,
@@ -269,6 +269,6 @@ public record BoundBlocks(
             BoundBlocks::new
         );
 
-}
+  }
 
 }

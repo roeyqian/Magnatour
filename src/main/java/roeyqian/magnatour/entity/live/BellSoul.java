@@ -189,7 +189,7 @@ class BellSoulMoveControl extends MoveControl {
       BellSoul.this.yBodyRot = BellSoul.this.getYRot();
     }
 
-}
+  }
 
 class RandomMoveGoal extends Goal {
 
@@ -228,7 +228,7 @@ class RandomMoveGoal extends Goal {
       }
     }
 
-}
+  }
 
 class SimpleMeleeAttackGoal extends Goal {
 
@@ -282,6 +282,6 @@ class SimpleMeleeAttackGoal extends Goal {
       }
     }
 
-}
+  }
 
 }

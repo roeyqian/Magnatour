@@ -92,11 +92,15 @@ public final class RegInsertBlocks {
   public static final Block EVER_WATER_GRASS_BLOCK = BlockRegHelper.registerGrass(
       "ever_water_grass_block", supreme,
       properties -> new EverWaterGrassBlock(properties, EVER_WATER_SOIL_KEY),
-      BlockBehaviour.Properties.of().strength(0.6F)
+      BlockBehaviour.Properties.of()
+          .strength(0.6F)
+          .isValidSpawn((state, level, pos, type) -> type.getCategory().isFriendly())
   );
   public static final Block GOLDEN_GRASS_BLOCK = BlockRegHelper.registerGrass(
       "golden_grass_block", supreme, Block::new,
-      BlockBehaviour.Properties.of().strength(0.6F)
+      BlockBehaviour.Properties.of()
+          .strength(0.6F)
+          .isValidSpawn((state, level, pos, type) -> type.getCategory().isFriendly())
   );
   public static final Block EVER_WATER_SOIL = BlockRegHelper.registerGravel(
       "ever_water_soil", supreme, Block::new,
@@ -104,7 +108,10 @@ public final class RegInsertBlocks {
   );
   public static final Block EVER_WATER_FARMLAND = BlockRegHelper.registerGravel(
       "ever_water_farmland", supreme,
-      EverWaterFarmland::new, BlockBehaviour.Properties.of().strength(0.6F)
+      EverWaterFarmland::new,
+      BlockBehaviour.Properties.of()
+          .strength(0.6F)
+          .isValidSpawn((state, level, pos, type) -> type.getCategory().isFriendly())
   );
   public static final Block SUPREME_FODDER_BLOCK = BlockRegHelper.registerGrass(
       "supreme_fodder_block", supreme, SupremeFodderBlock::new,

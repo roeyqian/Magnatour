@@ -21,6 +21,8 @@ import roeyqian.magnatour.item.durable.UniverseBoots;
 import roeyqian.magnatour.item.durable.UniverseChestplate;
 import roeyqian.magnatour.item.durable.UniverseHelmet;
 import roeyqian.magnatour.item.durable.UniverseLeggings;
+import roeyqian.magnatour.item.durable.UniverseOmniBlade;
+import roeyqian.magnatour.item.durable.UniverseUltimaSword;
 
 public final class MenuHelperForEquipment {
 
@@ -41,7 +43,9 @@ public final class MenuHelperForEquipment {
     if (itemStack.getItem() instanceof UniverseHelmet
         || itemStack.getItem() instanceof UniverseChestplate
         || itemStack.getItem() instanceof UniverseLeggings
-        || itemStack.getItem() instanceof UniverseBoots) {
+        || itemStack.getItem() instanceof UniverseBoots
+        || itemStack.getItem() instanceof UniverseUltimaSword
+        || itemStack.getItem() instanceof UniverseOmniBlade) {
       ci.cancel();
     }
   }

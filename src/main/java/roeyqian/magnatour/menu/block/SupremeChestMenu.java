@@ -211,7 +211,7 @@ public record OpeningData(
 
         };
 
-}
+  }
 
 private class SupremeChestSlot extends Slot {
 
@@ -262,6 +262,6 @@ private class SupremeChestSlot extends Slot {
       if (isActive()) super.setByPlayer(stack);
     }
 
-}
+  }
 
 }

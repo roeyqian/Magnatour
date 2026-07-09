@@ -14,16 +14,22 @@ import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.ContainerUser;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.ItemContainerContents;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.ChestLidController;
+import net.minecraft.world.level.block.entity.ContainerOpenersCounter;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
@@ -38,9 +44,61 @@ import roeyqian.magnatour.utility.registry.block.RegBlockEntities;
 
 public class UniverseLibraryEntity extends BlockEntity implements MenuProvider, CustomContainer {
 
-  private boolean opened = false;
-
   private final ChestLidController lidAnimator = new ChestLidController();
+
+  private final ContainerOpenersCounter openersCounter = new ContainerOpenersCounter() {
+
+    @Override
+    protected void onOpen(
+        @NonNull Level level,
+        @NonNull BlockPos pos,
+        @NonNull BlockState blockState
+    ) {
+      level.playSound(
+          null,
+          pos,
+          SoundEvents.ENDER_CHEST_OPEN,
+          SoundSource.BLOCKS,
+          0.5F,
+          level.getRandom().nextFloat() * 0.1F + 0.9F
+      );
+    }
+
+    @Override
+    protected void onClose(
+        @NonNull Level level,
+        @NonNull BlockPos pos,
+        @NonNull BlockState blockState
+    ) {
+      level.playSound(
+          null,
+          pos,
+          SoundEvents.ENDER_CHEST_CLOSE,
+          SoundSource.BLOCKS,
+          0.5F,
+          level.getRandom().nextFloat() * 0.1F + 0.9F
+      );
+    }
+
+    @Override
+    protected void openerCountChanged(
+        @NonNull Level level,
+        @NonNull BlockPos pos,
+        @NonNull BlockState blockState,
+        int previous,
+        int current
+    ) {
+      level.blockEvent(pos, blockState.getBlock(), 1, current);
+    }
+
+    @Override
+    public boolean isOwnContainer(
+        Player player
+    ) {
+      return player.containerMenu instanceof UniverseLibraryMenu menu && menu.isFor(UniverseLibraryEntity.this);
+    }
+
+  };
 
   private final NonNullList<ItemStack> inventory = NonNullList.withSize(252, ItemStack.EMPTY);
 
@@ -87,8 +145,14 @@ public class UniverseLibraryEntity extends BlockEntity implements MenuProvider, 
     return this.inventory;
   }
 
-  public boolean isOpened() {
-    return this.opened;
+  public void recheckOpen() {
+    if (!this.remove) {
+      this.openersCounter.recheckOpeners(
+          this.getLevel(),
+          this.getBlockPos(),
+          this.getBlockState()
+      );
+    }
   }
 
   @Override
@@ -106,11 +170,40 @@ public class UniverseLibraryEntity extends BlockEntity implements MenuProvider, 
     }
   }
 
-  public void setOpened(
-      boolean opened
+  @Override
+  public void startOpen(
+      @NonNull ContainerUser containerUser
   ) {
-    this.opened = opened;
-    this.setChanged();
+    if (!this.remove && !containerUser.getLivingEntity().isSpectator()) {
+      this.openersCounter.incrementOpeners(
+          containerUser.getLivingEntity(),
+          this.getLevel(),
+          this.getBlockPos(),
+          this.getBlockState(),
+          containerUser.getContainerInteractionRange()
+      );
+    }
+  }
+
+  @Override
+  public boolean stillValid(
+      @NonNull Player player
+  ) {
+    return Container.stillValidBlockEntity(this, player);
+  }
+
+  @Override
+  public void stopOpen(
+      @NonNull ContainerUser containerUser
+  ) {
+    if (!this.remove && !containerUser.getLivingEntity().isSpectator()) {
+      this.openersCounter.decrementOpeners(
+          containerUser.getLivingEntity(),
+          this.getLevel(),
+          this.getBlockPos(),
+          this.getBlockState()
+      );
+    }
   }
 
   @Override

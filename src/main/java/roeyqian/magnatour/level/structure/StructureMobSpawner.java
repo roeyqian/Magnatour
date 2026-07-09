@@ -427,7 +427,7 @@ private interface MobCounter {
         AABB box
     );
 
-}
+  }
 
 @FunctionalInterface
 private interface MobSpawner {
@@ -440,7 +440,7 @@ private interface MobSpawner {
         int currentCount
     );
 
-}
+  }
 
 private static final class SpawnState {
 
@@ -455,7 +455,7 @@ private static final class SpawnState {
       this.lastSpawnTick = lastSpawnTick;
     }
 
-}
+  }
 
 private record StructureInstanceKey(
     ResourceKey<Level> dimensionKey,

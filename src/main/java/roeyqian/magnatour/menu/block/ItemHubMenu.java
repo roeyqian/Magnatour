@@ -170,6 +170,6 @@ public record OpeningData(
             OpeningData::new
         );
 
-}
+  }
 
 }

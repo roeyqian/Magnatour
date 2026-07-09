@@ -23,6 +23,7 @@
     "minecraft:cave_extra_underground",
     "minecraft:canyon"
   ],
+  "creature_spawn_probability": 0.25,
   "downfall": 0.4,
   "effects": {
     "water_color": "#3f76e4"
@@ -61,7 +62,32 @@
   "spawners": {
     "ambient": [],
     "axolotls": [],
-    "creature": [],
+    "creature": [
+      {
+        "type": "minecraft:sheep",
+        "maxCount": 6,
+        "minCount": 4,
+        "weight": 16
+      },
+      {
+        "type": "minecraft:pig",
+        "maxCount": 6,
+        "minCount": 4,
+        "weight": 20
+      },
+      {
+        "type": "minecraft:chicken",
+        "maxCount": 6,
+        "minCount": 4,
+        "weight": 26
+      },
+      {
+        "type": "minecraft:cow",
+        "maxCount": 5,
+        "minCount": 4,
+        "weight": 14
+      }
+    ],
     "misc": [],
     "monster": [],
     "underground_water_creature": [],

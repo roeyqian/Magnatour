@@ -106,6 +106,6 @@ public static class RainbowFactory implements ParticleProvider<SimpleParticleTyp
       );
     }
 
-}
+  }
 
 }

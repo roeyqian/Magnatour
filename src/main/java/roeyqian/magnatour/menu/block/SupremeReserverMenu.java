@@ -525,6 +525,6 @@ private static class DisplaySlot extends Slot {
       return false;
     }
 
-}
+  }
 
 }

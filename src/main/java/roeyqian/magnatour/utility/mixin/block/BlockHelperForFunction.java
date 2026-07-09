@@ -243,6 +243,6 @@ public interface AchievementConsumer {
         ItemStack stack
     );
 
-}
+  }
 
 }

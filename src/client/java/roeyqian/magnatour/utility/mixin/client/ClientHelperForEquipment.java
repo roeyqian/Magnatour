@@ -143,6 +143,6 @@ private static final class MouseRestoreState {
       this.mouseY = mouseY;
     }
 
-}
+  }
 
 }

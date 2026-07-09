@@ -231,7 +231,7 @@ public static final class UniverseGlintBridge {
       return value;
     }
 
-}
+  }
 
 public interface UniverseGlintHolder {
 
@@ -241,6 +241,6 @@ public interface UniverseGlintHolder {
 
     GlintType universeGlintType();
 
-}
+  }
 
 }

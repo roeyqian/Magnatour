@@ -11,6 +11,7 @@ package roeyqian.magnatour.mixin.screen;
 import java.util.List;
 
 // Minecraft
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.CycleButton;
 import net.minecraft.client.gui.components.EditBox;
@@ -27,10 +28,14 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 // Magnatour
+import roeyqian.magnatour.screen.recipe.UniverseCraftingBookComponent;
 import roeyqian.magnatour.utility.mixin.screen.ScreenHelperForRecipe;
 
 @Mixin(value = RecipeBookComponent.class, priority = 3600000)
 public class RecipeBookComponentMixin {
+
+  @Shadow
+  protected Minecraft minecraft;
 
   @Shadow
   protected CycleButton<Boolean> filterButton;
@@ -41,6 +46,9 @@ public class RecipeBookComponentMixin {
   private int width;
   @Shadow
   private int xOffset;
+
+  @Shadow
+  private float time;
 
   @Shadow
   private boolean visible;
@@ -64,6 +72,10 @@ public class RecipeBookComponentMixin {
       float delta,
       CallbackInfo ci
   ) {
+    if ((Object) this instanceof UniverseCraftingBookComponent && this.visible && !this.minecraft.hasControlDown()) {
+      this.time += delta;
+    }
+
     ScreenHelperForRecipe.handleExtractRenderState(
         (RecipeBookComponent<?>) (Object) this,
         this.visible,

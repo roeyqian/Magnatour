@@ -1,0 +1,16 @@
+{
+  "type": "magnatour:universe_crafting",
+  "category": "misc",
+  "group": "magnatour:items",
+  "pattern": [
+    "AAA"
+  ],
+  "key": {
+    "A": "magnatour:universe_star"
+  },
+  "result": {
+    "count": 1,
+    "id": "magnatour:universe_banquet"
+  },
+  "show_notification": true
+}
