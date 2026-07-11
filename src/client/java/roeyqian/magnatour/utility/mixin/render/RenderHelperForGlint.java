@@ -163,13 +163,13 @@ public final class RenderHelperForGlint {
     return GlintRenderTypes.ARMOR_ENTITY_GLINT;
   }
 
-public enum GlintType {
+  public enum GlintType {
     NONE,
     UNIVERSE,
     SUPREME
   }
 
-public static final class UniverseGlintBridge {
+  public static final class UniverseGlintBridge {
 
     private static GlintType currentFoil = GlintType.NONE;
     private static GlintType pending = GlintType.NONE;
@@ -198,9 +198,9 @@ public static final class UniverseGlintBridge {
       return currentFoil;
     }
 
-}
+  }
 
-public interface UniverseGlintHolder {
+  public interface UniverseGlintHolder {
 
     void setUniverseGlint(
         GlintType glintType
@@ -208,6 +208,6 @@ public interface UniverseGlintHolder {
 
     GlintType universeGlintType();
 
-}
+  }
 
 }

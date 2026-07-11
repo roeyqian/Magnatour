@@ -1,0 +1,17 @@
+{
+  "type": "magnatour:universe_crafting",
+  "category": "equipment",
+  "group": "magnatour:items",
+  "pattern": [
+    "A A",
+    "AAA"
+  ],
+  "key": {
+    "A": "magnatour:universe_star"
+  },
+  "result": {
+    "count": 1,
+    "id": "magnatour:universe_bucket"
+  },
+  "show_notification": true
+}

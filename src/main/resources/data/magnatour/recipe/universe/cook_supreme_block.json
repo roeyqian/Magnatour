@@ -1,0 +1,13 @@
+{
+  "type": "magnatour:universe_cooking",
+  "category": "misc",
+  "cookingtime": 1000000,
+  "experience": 200000,
+  "ingredient": [
+    "magnatour:universe_light",
+    "magnatour:universe_dark"
+  ],
+  "result": {
+    "id": "magnatour:supreme_block"
+  }
+}

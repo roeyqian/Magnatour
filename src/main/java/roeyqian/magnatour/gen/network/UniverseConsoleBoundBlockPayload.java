@@ -50,6 +50,6 @@ public record UniverseConsoleBoundBlockPayload(
     return ID;
   }
 
-public enum Action {OPEN, REMOVE}
+  public enum Action {OPEN, REMOVE}
 
 }

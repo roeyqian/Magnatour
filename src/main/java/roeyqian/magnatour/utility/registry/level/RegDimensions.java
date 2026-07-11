@@ -14,6 +14,7 @@ import net.minecraft.world.level.Level;
 
 // Magnatour
 import roeyqian.magnatour.Magnatour;
+import roeyqian.magnatour.level.HarvestContinentMobSpawner;
 
 /*
  * Supreme Group: Dimension
@@ -30,6 +31,7 @@ public final class RegDimensions {
   private RegDimensions() {}
 
   public static void init() {
+    HarvestContinentMobSpawner.registerTickEvent();
     Magnatour.LOGGER.info("[Server] Initializing 'RegDimensions'");
   }
 

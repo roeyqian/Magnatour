@@ -19,6 +19,7 @@
     "minecraft:visual/sky_color": "#fff078"
   },
   "carvers": [],
+  "creature_spawn_probability": 0.3,
   "downfall": 0.4,
   "effects": {
     "water_color": "#3f76e4"
@@ -55,7 +56,44 @@
   "spawners": {
     "ambient": [],
     "axolotls": [],
-    "creature": [],
+    "creature": [
+      {
+        "type": "minecraft:sheep",
+        "maxCount": 6,
+        "minCount": 4,
+        "weight": 24
+      },
+      {
+        "type": "minecraft:pig",
+        "maxCount": 6,
+        "minCount": 4,
+        "weight": 20
+      },
+      {
+        "type": "minecraft:chicken",
+        "maxCount": 6,
+        "minCount": 4,
+        "weight": 20
+      },
+      {
+        "type": "minecraft:cow",
+        "maxCount": 6,
+        "minCount": 4,
+        "weight": 16
+      },
+      {
+        "type": "minecraft:horse",
+        "maxCount": 4,
+        "minCount": 2,
+        "weight": 8
+      },
+      {
+        "type": "minecraft:donkey",
+        "maxCount": 2,
+        "minCount": 1,
+        "weight": 2
+      }
+    ],
     "misc": [],
     "monster": [],
     "underground_water_creature": [],

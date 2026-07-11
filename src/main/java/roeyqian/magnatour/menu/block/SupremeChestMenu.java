@@ -187,9 +187,9 @@ public class SupremeChestMenu extends AbstractContainerMenu {
     return this.sourceInventory.stillValid(player);
   }
 
-public record OpeningData(
-    int inventorySize
-) {
+  public record OpeningData(
+      int inventorySize
+  ) {
 
     public static final StreamCodec<RegistryFriendlyByteBuf, OpeningData> PACKET_CODEC =
         new StreamCodec<>() {
@@ -211,9 +211,9 @@ public record OpeningData(
 
         };
 
-}
+  }
 
-private class SupremeChestSlot extends Slot {
+  private class SupremeChestSlot extends Slot {
 
     public SupremeChestSlot(
         Container inventory,
@@ -262,6 +262,6 @@ private class SupremeChestSlot extends Slot {
       if (isActive()) super.setByPlayer(stack);
     }
 
-}
+  }
 
 }

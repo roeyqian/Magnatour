@@ -52,6 +52,6 @@ public record UniverseTeleportPointPayload(
     return ID;
   }
 
-public enum Action {ADD, DELETE, TELEPORT}
+  public enum Action {ADD, DELETE, TELEPORT}
 
 }

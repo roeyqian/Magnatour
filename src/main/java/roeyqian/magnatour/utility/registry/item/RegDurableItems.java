@@ -61,29 +61,29 @@ public final class RegDurableItems {
   );
   public static final Item SUPREME_MOBILE = ItemRegHelper.registerDurableItem(
       "supreme_mobile",
-      SupremeMobile::new, CustomItemSetting.applySupremeDefaults(new Item.Properties()).enchantable(50)
+      SupremeMobile::new, CustomItemSetting.applySupremeDefaults(new Item.Properties())
   );
 
   // Supreme Group: Armor
   public static final Item SUPREME_HELMET = ItemRegHelper.registerDurableItem(
       "supreme_helmet", Item::new,
       CustomItemSetting.applySupremeDefaults(new Item.Properties())
-          .humanoidArmor(CustomArmorMaterial.SUPREME_ARMOR, ArmorType.HELMET).enchantable(50)
+          .humanoidArmor(CustomArmorMaterial.SUPREME_ARMOR, ArmorType.HELMET).enchantable(100)
   );
   public static final Item SUPREME_CHESTPLATE = ItemRegHelper.registerDurableItem(
       "supreme_chestplate", Item::new,
       CustomItemSetting.applySupremeDefaults(new Item.Properties())
-          .humanoidArmor(CustomArmorMaterial.SUPREME_ARMOR, ArmorType.CHESTPLATE).enchantable(50)
+          .humanoidArmor(CustomArmorMaterial.SUPREME_ARMOR, ArmorType.CHESTPLATE).enchantable(100)
   );
   public static final Item SUPREME_LEGGINGS = ItemRegHelper.registerDurableItem(
       "supreme_leggings", Item::new,
       CustomItemSetting.applySupremeDefaults(new Item.Properties())
-          .humanoidArmor(CustomArmorMaterial.SUPREME_ARMOR, ArmorType.LEGGINGS).enchantable(50)
+          .humanoidArmor(CustomArmorMaterial.SUPREME_ARMOR, ArmorType.LEGGINGS).enchantable(100)
   );
   public static final Item SUPREME_BOOTS = ItemRegHelper.registerDurableItem(
       "supreme_boots", Item::new,
       CustomItemSetting.applySupremeDefaults(new Item.Properties())
-          .humanoidArmor(CustomArmorMaterial.SUPREME_ARMOR, ArmorType.BOOTS).enchantable(50)
+          .humanoidArmor(CustomArmorMaterial.SUPREME_ARMOR, ArmorType.BOOTS).enchantable(100)
   );
 
   // Universe Group: Handheld

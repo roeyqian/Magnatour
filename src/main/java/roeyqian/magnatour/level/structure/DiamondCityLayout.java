@@ -370,19 +370,19 @@ final class DiamondCityLayout {
     }
   }
 
-private record Building(
-    BuildingType type,
-    int offsetX,
-    int offsetZ,
-    int levels
-) {}
+  private record Building(
+      BuildingType type,
+      int offsetX,
+      int offsetZ,
+      int levels
+  ) {}
 
-private record BuildingPlan(
-    BuildingType type,
-    int levels
-) {}
+  private record BuildingPlan(
+      BuildingType type,
+      int levels
+  ) {}
 
-private enum BuildingType {
+  private enum BuildingType {
     HOUSE_I,
     HOUSE_II,
     HOUSE_III

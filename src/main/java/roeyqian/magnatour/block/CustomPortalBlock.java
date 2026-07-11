@@ -45,6 +45,12 @@ import roeyqian.magnatour.utility.registry.level.RegDimensions;
 
 public interface CustomPortalBlock {
 
+  int MAX_PORTAL_INNER_HEIGHT = 21;
+  int MAX_PORTAL_INNER_WIDTH = 21;
+  int MIN_PORTAL_FRAME_HEIGHT = 4;
+  int MIN_PORTAL_FRAME_WIDTH = 3;
+  int MIN_PORTAL_INNER_HEIGHT = MIN_PORTAL_FRAME_HEIGHT - 2;
+  int MIN_PORTAL_INNER_WIDTH = MIN_PORTAL_FRAME_WIDTH - 2;
   int TELEPORT_TICKS = 80;
 
   VoxelShape X_SHAPE = Block.box(
@@ -72,7 +78,7 @@ public interface CustomPortalBlock {
   ) {
     BlockPos.MutableBlockPos mutable = new BlockPos.MutableBlockPos();
 
-    for (int width = 0; width <= 21; width++) {
+    for (int width = 0; width <= MAX_PORTAL_INNER_WIDTH; width++) {
       mutable.set(pos).move(direction, width);
       BlockState state = world.getBlockState(mutable);
       if (!isEmpty(state, portalBlock)) {
@@ -97,7 +103,7 @@ public interface CustomPortalBlock {
       Block frameBlock,
       Block portalBlock
   ) {
-    for (int height = 0; height < 21; height++) {
+    for (int height = 0; height < MAX_PORTAL_INNER_HEIGHT; height++) {
       mutable.set(bottomLeft).move(Direction.UP, height).move(rightDir, -1);
       if (!world.getBlockState(mutable).is(frameBlock)) return height;
 
@@ -112,7 +118,7 @@ public interface CustomPortalBlock {
       }
     }
 
-    return 21;
+    return MAX_PORTAL_INNER_HEIGHT;
   }
 
   private static boolean hasTopFrame(
@@ -138,7 +144,7 @@ public interface CustomPortalBlock {
       Block frameBlock,
       Block portalBlock
   ) {
-    int minY = Math.max(world.getMinY(), pos.getY() - 21);
+    int minY = Math.max(world.getMinY(), pos.getY() - MAX_PORTAL_INNER_HEIGHT);
 
     while (pos.getY() > minY && isEmpty(world.getBlockState(pos.below()), portalBlock)) {
       pos = pos.below();
@@ -161,7 +167,7 @@ public interface CustomPortalBlock {
     int width = getDistanceUntilEdgeAboveFrame(
         world, bottomLeft, rightDir, frameBlock, portalBlock
     );
-    return width >= 2 && width <= 21 ? width : 0;
+    return width >= MIN_PORTAL_INNER_WIDTH && width <= MAX_PORTAL_INNER_WIDTH ? width : 0;
   }
 
   private static int calculateHeight(
@@ -177,7 +183,7 @@ public interface CustomPortalBlock {
     int height = getDistanceUntilTop(
         world, bottomLeft, rightDir, mutable, width, portalBlockCount, frameBlock, portalBlock
     );
-    return height >= 3 && height <= 21
+    return height >= MIN_PORTAL_INNER_HEIGHT && height <= MAX_PORTAL_INNER_HEIGHT
         && hasTopFrame(world, bottomLeft, rightDir, mutable, width, height, frameBlock)
         ? height
         : 0;
@@ -207,89 +213,6 @@ public interface CustomPortalBlock {
     );
     return new CustomPortalShape(
         axis, rightDir, bottomLeft, width, height, portalBlockCount[0], portalBlock
-    );
-  }
-
-  private static BlockPos findExistingPortal(
-      ServerLevel world,
-      int centerX,
-      int centerZ,
-      Block portalBlock
-  ) {
-    BlockPos.MutableBlockPos mutable = new BlockPos.MutableBlockPos();
-    for (int x = -16; x <= 16; x++) {
-      for (int z = -16; z <= 16; z++) {
-        for (int y = world.getMinY(); y <= world.getMaxY(); y++) {
-          mutable.set(centerX + x, y, centerZ + z);
-          if (world.getBlockState(mutable).getBlock() == portalBlock) return mutable.immutable();
-        }
-      }
-    }
-    return null;
-  }
-
-  static BlockPos buildPortalAt(
-      ServerLevel world,
-      BlockPos groundPos,
-      Direction.Axis axis,
-      Block frameBlock,
-      Block portalBlock
-  ) {
-    for (int y = 0; y < 5; y++) {
-      for (int i = -1; i <= 2; i++) {
-        BlockPos current = (axis == Direction.Axis.X)
-            ? groundPos.offset(i, y, 0)
-            : groundPos.offset(0, y, i);
-        if (y == 0 || y == 4 || i == -1 || i == 2) {
-          world.setBlockAndUpdate(current, frameBlock.defaultBlockState());
-        } else {
-          world.setBlockAndUpdate(current, Blocks.AIR.defaultBlockState());
-        }
-      }
-    }
-
-    List<BlockPos> portalPositions = new ArrayList<>();
-    for (int y = 1; y <= 3; y++) {
-      for (int i = 0; i <= 1; i++) {
-        BlockPos pos = (axis == Direction.Axis.X)
-            ? groundPos.offset(i, y, 0)
-            : groundPos.offset(0, y, i);
-        portalPositions.add(pos);
-        world.setBlock(pos, portalBlock.defaultBlockState().setValue(AXIS, axis), 18);
-      }
-    }
-
-    for (int y = 0; y < 5; y++) {
-      for (int i = 0; i <= 1; i++) {
-        BlockPos front = (axis == Direction.Axis.X)
-            ? groundPos.offset(i, y, 1)
-            : groundPos.offset(1, y, i);
-        BlockPos back = (axis == Direction.Axis.X)
-            ? groundPos.offset(i, y, -1)
-            : groundPos.offset(-1, y, i);
-        if (!world.getBlockState(front).isAir())
-          world.setBlockAndUpdate(front, Blocks.AIR.defaultBlockState());
-        if (!world.getBlockState(back).isAir())
-          world.setBlockAndUpdate(back, Blocks.AIR.defaultBlockState());
-      }
-    }
-
-    for (BlockPos pos : portalPositions) world.updateNeighborsAt(pos, portalBlock);
-    return groundPos.above(1);
-  }
-
-  private static List<PortalSpec> portalSpecs() {
-    return List.of(
-        new PortalSpec(
-            RegInsertBlocks.SUPREME_GEM_BLOCK,
-            RegInsertBlocks.ORE_CONTINENT_PORTAL,
-            RegDimensions.ORE_CONTINENT
-        ),
-        new PortalSpec(
-            RegInsertBlocks.SUPREME_FODDER_BLOCK,
-            RegInsertBlocks.HARVEST_CONTINENT_PORTAL,
-            RegDimensions.HARVEST_CONTINENT
-        )
     );
   }
 
@@ -326,6 +249,129 @@ public interface CustomPortalBlock {
     ).filter(isValid);
   }
 
+  private static BlockPos findExistingPortal(
+      ServerLevel world,
+      int centerX,
+      int centerZ,
+      Block portalBlock
+  ) {
+    BlockPos.MutableBlockPos mutable = new BlockPos.MutableBlockPos();
+    for (int x = -16; x <= 16; x++) {
+      for (int z = -16; z <= 16; z++) {
+        for (int y = world.getMinY(); y <= world.getMaxY(); y++) {
+          mutable.set(centerX + x, y, centerZ + z);
+          if (world.getBlockState(mutable).getBlock() == portalBlock) return mutable.immutable();
+        }
+      }
+    }
+    return null;
+  }
+
+  static BlockPos buildPortalAt(
+      ServerLevel world,
+      BlockPos groundPos,
+      Direction.Axis axis,
+      Block frameBlock,
+      Block portalBlock
+  ) {
+    int frameWidth = MIN_PORTAL_FRAME_WIDTH;
+    int frameHeight = MIN_PORTAL_FRAME_HEIGHT;
+    int innerWidth = MIN_PORTAL_INNER_WIDTH;
+    int innerHeight = MIN_PORTAL_INNER_HEIGHT;
+
+    // Auto-created portals use the smallest legal frame size.
+    for (int y = 0; y < frameHeight; y++) {
+      for (int i = -1; i <= innerWidth; i++) {
+        BlockPos current = (axis == Direction.Axis.X)
+            ? groundPos.offset(i, y, 0)
+            : groundPos.offset(0, y, i);
+        if (y == 0 || y == frameHeight - 1 || i == -1 || i == innerWidth) {
+          world.setBlockAndUpdate(current, frameBlock.defaultBlockState());
+        } else {
+          world.setBlockAndUpdate(current, Blocks.AIR.defaultBlockState());
+        }
+      }
+    }
+
+    List<BlockPos> portalPositions = new ArrayList<>();
+    for (int y = 1; y <= innerHeight; y++) {
+      for (int i = 0; i < innerWidth; i++) {
+        BlockPos pos = (axis == Direction.Axis.X)
+            ? groundPos.offset(i, y, 0)
+            : groundPos.offset(0, y, i);
+        portalPositions.add(pos);
+        world.setBlock(pos, portalBlock.defaultBlockState().setValue(AXIS, axis), 18);
+      }
+    }
+
+    for (int y = 0; y < frameHeight; y++) {
+      for (int i = 0; i < innerWidth; i++) {
+        BlockPos front = (axis == Direction.Axis.X)
+            ? groundPos.offset(i, y, 1)
+            : groundPos.offset(1, y, i);
+        BlockPos back = (axis == Direction.Axis.X)
+            ? groundPos.offset(i, y, -1)
+            : groundPos.offset(-1, y, i);
+        if (!world.getBlockState(front).isAir())
+          world.setBlockAndUpdate(front, Blocks.AIR.defaultBlockState());
+        if (!world.getBlockState(back).isAir())
+          world.setBlockAndUpdate(back, Blocks.AIR.defaultBlockState());
+      }
+    }
+
+    for (BlockPos pos : portalPositions) world.updateNeighborsAt(pos, portalBlock);
+    return groundPos.above(1);
+  }
+
+  private static List<PortalSpec> portalSpecs() {
+    return List.of(
+        new PortalSpec(
+            RegInsertBlocks.SUPREME_GEM_BLOCK,
+            RegInsertBlocks.ORE_CONTINENT_PORTAL,
+            RegDimensions.ORE_CONTINENT
+        ),
+        new PortalSpec(
+            RegInsertBlocks.SUPREME_FODDER_BLOCK,
+            RegInsertBlocks.HARVEST_CONTINENT_PORTAL,
+            RegDimensions.HARVEST_CONTINENT
+        )
+    );
+  }
+
+  private static Optional<CustomPortalShape> findNearbyEmptyPortalShape(
+      LevelAccessor world,
+      BlockPos origin,
+      Direction.Axis preferredAxis,
+      PortalSpec spec
+  ) {
+    BlockPos.MutableBlockPos mutable = new BlockPos.MutableBlockPos();
+
+    // One-block-tall interiors such as a 4x3 frame are sensitive to which
+    // interior cell the fire happens to occupy, so probe a tight neighborhood.
+    for (int x = -1; x <= 1; x++) {
+      for (int y = -1; y <= 1; y++) {
+        for (int z = -1; z <= 1; z++) {
+          mutable.set(origin.getX() + x, origin.getY() + y, origin.getZ() + z);
+          if (!isEmpty(world.getBlockState(mutable), spec.portalBlock())) continue;
+          if (!hasAdjacentFrame(world, mutable, spec.frameBlock())) continue;
+
+          Optional<CustomPortalShape> shape = findPortalShape(
+              world,
+              mutable.immutable(),
+              customPortalShape -> customPortalShape.isValid()
+                  && customPortalShape.numPortalBlocks() == 0,
+              preferredAxis,
+              spec.frameBlock(),
+              spec.portalBlock()
+          );
+          if (shape.isPresent()) return shape;
+        }
+      }
+    }
+
+    return Optional.empty();
+  }
+
   static BlockPos findOrCreatePortal(
       ServerLevel targetWorld,
       BlockPos sourcePos,
@@ -356,15 +402,11 @@ public interface CustomPortalBlock {
   ) {
     for (PortalSpec spec : portalSpecs()) {
       if (!spec.canIgniteIn(world)) continue;
-      if (!hasAdjacentFrame(world, pos, spec.frameBlock())) continue;
-      Optional<CustomPortalShape> shape = findPortalShape(
+      Optional<CustomPortalShape> shape = findNearbyEmptyPortalShape(
           world,
           pos,
-          customPortalShape -> customPortalShape.isValid()
-              && customPortalShape.numPortalBlocks() == 0,
           preferredAxis,
-          spec.frameBlock(),
-          spec.portalBlock()
+          spec
       );
       if (shape.isPresent()) return shape;
     }
@@ -536,19 +578,19 @@ public interface CustomPortalBlock {
     return true;
   }
 
-record CustomPortalShape(
-    Direction.Axis axis,
-    Direction rightDir,
-    BlockPos bottomLeft,
-    int width,
-    int height,
-    int numPortalBlocks,
-    Block portalBlock
-) {
+  record CustomPortalShape(
+      Direction.Axis axis,
+      Direction rightDir,
+      BlockPos bottomLeft,
+      int width,
+      int height,
+      int numPortalBlocks,
+      Block portalBlock
+  ) {
 
     boolean isValid() {
-      return this.width >= 2 && this.width <= 21
-          && this.height >= 3 && this.height <= 21;
+      return this.width >= MIN_PORTAL_INNER_WIDTH && this.width <= MAX_PORTAL_INNER_WIDTH
+          && this.height >= MIN_PORTAL_INNER_HEIGHT && this.height <= MAX_PORTAL_INNER_HEIGHT;
     }
 
     void createPortalBlocks(
@@ -566,13 +608,13 @@ record CustomPortalShape(
       return this.isValid() && this.numPortalBlocks == this.width * this.height;
     }
 
-}
+  }
 
-record PortalSpec(
-    Block frameBlock,
-    Block portalBlock,
-    ResourceKey<Level> portalDimension
-) {
+  record PortalSpec(
+      Block frameBlock,
+      Block portalBlock,
+      ResourceKey<Level> portalDimension
+  ) {
 
     boolean canIgniteIn(
         LevelAccessor world
@@ -581,6 +623,6 @@ record PortalSpec(
       return level.dimension() == Level.OVERWORLD || level.dimension() == this.portalDimension;
     }
 
-}
+  }
 
 }

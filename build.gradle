@@ -646,6 +646,15 @@ def singleLineDeclarationPart = { String text ->
 	text.readLines().collect { it.trim() }.findAll { !it.isEmpty() }.join(" ").replaceAll(/\s+/, " ")
 }
 
+def javaMemberIndent = "  "
+
+def indentFirstLine = { String text, String indent ->
+	if (indent.isEmpty() || text.isEmpty()) {
+		return text
+	}
+	"${indent}${text}"
+}
+
 def normalizeParameterizedDeclarationHeader = { String text ->
 	def markerInfo = findDeclarationMarker(text, 0, text.length())
 	if (markerInfo == null) {
@@ -776,7 +785,7 @@ def normalizeAnnotationText = { String text ->
 			.replaceAll(/\s*,\s*/, ", ")
 }
 
-def normalizeClassDeclarationHeader = { String text ->
+def normalizeClassDeclarationHeader = { String text, String declarationIndent ->
 	def markerInfo = findDeclarationMarker(text, 0, text.length())
 	if (markerInfo == null || markerInfo.marker != '{' as char) {
 		return text
@@ -800,12 +809,12 @@ def normalizeClassDeclarationHeader = { String text ->
 	}
 
 	def declarationPart = singleLineDeclarationPart(prefix.substring(cursor))
-	def normalizedDeclaration = normalizeParameterizedDeclarationHeader("${declarationPart} {")
+	def normalizedDeclaration = normalizeParameterizedDeclarationHeader("${declarationIndent}${declarationPart} {")
 			.replaceAll(/\s+\{\s*$/, " {")
 
 	def lines = []
 	if (!annotations.isEmpty()) {
-		lines << annotations.join(" ")
+		lines << "${declarationIndent}${annotations.join(" ")}"
 	}
 	lines << normalizedDeclaration
 	lines.join("\n") + suffix
@@ -1081,25 +1090,25 @@ def joinFormattedMembers = { List sortedUnits, List formattedMembers, Map import
 }
 
 def formatJavaClassDeclaration
-formatJavaClassDeclaration = { ClassTree classTree, String source, Object compilationUnit, Object positions, Map importMap ->
+formatJavaClassDeclaration = { ClassTree classTree, String source, Object compilationUnit, Object positions, Map importMap, String declarationIndent ->
 	int classStart = positions.getStartPosition(compilationUnit, classTree) as int
 	int classEnd = positions.getEndPosition(compilationUnit, classTree) as int
 	if (classStart < 0 || classEnd <= classStart) {
 		return source.substring(classStart, classEnd)
 	}
+	def classIndent = declarationIndent == null ? lineIndentAt(source, classStart) : declarationIndent
 
 	if (classTree.kind.name() == "ENUM") {
-		return trimBlankEdges(source.substring(classStart, classEnd))
+		return indentFirstLine(trimBlankEdges(source.substring(classStart, classEnd)), classIndent)
 	}
 
 	def marker = findDeclarationMarker(source, classStart, classEnd)
 	if (marker == null || marker.marker != '{' as char) {
-		return trimBlankEdges(source.substring(classStart, classEnd))
+		return indentFirstLine(trimBlankEdges(source.substring(classStart, classEnd)), classIndent)
 	}
 
 	int openBrace = marker.index as int
-	def classIndent = lineIndentAt(source, classStart)
-	def header = normalizeClassDeclarationHeader(source.substring(classStart, openBrace + 1))
+	def header = normalizeClassDeclarationHeader(source.substring(classStart, openBrace + 1), classIndent)
 
 	def rawMembers = []
 	classTree.members.eachWithIndex { memberTree, originalIndex ->
@@ -1161,7 +1170,9 @@ formatJavaClassDeclaration = { ClassTree classTree, String source, Object compil
 		int leadingStart = includeLeadingDeclarationTrivia(source, lowerBound, unit.start as int)
 		def tree = unit.tree
 		if (tree instanceof ClassTree) {
-			return formatJavaClassDeclaration.call(tree as ClassTree, source, compilationUnit, positions, importMap)
+			return formatJavaClassDeclaration.call(
+					tree as ClassTree, source, compilationUnit, positions, importMap, "${classIndent}${javaMemberIndent}"
+			)
 		}
 		def block = source.substring(leadingStart, unit.end as int)
 		if (tree instanceof MethodTree) {
@@ -1195,7 +1206,7 @@ def formatJavaDeclarations = { File sourceFile, boolean checkOnly ->
 			replacements << [
 					start: start,
 					end: end,
-					text: formatJavaClassDeclaration.call(classTree, normalizedOriginal, parsed.unit, parsed.positions, importMap)
+					text: formatJavaClassDeclaration.call(classTree, normalizedOriginal, parsed.unit, parsed.positions, importMap, null)
 			]
 		}
 	}

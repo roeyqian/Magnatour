@@ -236,13 +236,13 @@ public final class BlockHelperForFunction {
     }
   }
 
-@FunctionalInterface
-public interface AchievementConsumer {
+  @FunctionalInterface
+  public interface AchievementConsumer {
 
     void accept(
         ItemStack stack
     );
 
-}
+  }
 
 }

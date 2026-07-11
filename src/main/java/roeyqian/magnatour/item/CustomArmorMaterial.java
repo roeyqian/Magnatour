@@ -29,7 +29,7 @@ import roeyqian.magnatour.Magnatour;
 
 public interface CustomArmorMaterial extends ArmorMaterials {
 
-  int supreme = 10000;
+  int supreme = 2400;
   int universe = 3600000;
 
   ArmorMaterial SUPREME_ARMOR = new ArmorMaterial(

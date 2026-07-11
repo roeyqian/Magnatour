@@ -183,7 +183,7 @@ public class RedstoneTriggerEntity extends BlockEntity {
     }
   }
 
-public enum TriggerMode {
+  public enum TriggerMode {
 
     NORMAL(0),
     PULSE(1);
