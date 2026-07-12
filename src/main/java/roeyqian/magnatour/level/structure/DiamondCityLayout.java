@@ -32,7 +32,7 @@ final class DiamondCityLayout {
   private static final int BUILDING_PADDING = 8;
   private static final int HOUSE_III_COLUMNS = 4;
   private static final int HOUSE_II_COLUMNS = 2;
-  private static final int MAX_BUILDINGS = 16;
+  private static final int MAX_BUILDINGS = 12;
   private static final int MAX_COLUMNS = 4;
   private static final int MIN_BUILDINGS = 8;
   private static final int MIN_COLUMNS = 3;
@@ -158,15 +158,9 @@ final class DiamondCityLayout {
   }
 
   private static BuildingPlan createPlan(
-      BuildingType type,
-      Random random
+      BuildingType type
   ) {
-    int levels = switch (type) {
-      case HOUSE_I -> 2 + random.nextInt(3);
-      case HOUSE_II -> 1 + random.nextInt(3);
-      case HOUSE_III -> 1;
-    };
-    return new BuildingPlan(type, levels);
+    return new BuildingPlan(type, 1);
   }
 
   private static BuildingType randomBuildingType(
@@ -251,11 +245,11 @@ final class DiamondCityLayout {
     int columns = MIN_COLUMNS + random.nextInt(MAX_COLUMNS - MIN_COLUMNS + 1);
 
     List<BuildingPlan> plans = new ArrayList<>(buildingCount);
-    plans.add(createPlan(BuildingType.HOUSE_I, random));
-    plans.add(createPlan(BuildingType.HOUSE_II, random));
-    plans.add(createPlan(BuildingType.HOUSE_III, random));
+    plans.add(createPlan(BuildingType.HOUSE_I));
+    plans.add(createPlan(BuildingType.HOUSE_II));
+    plans.add(createPlan(BuildingType.HOUSE_III));
     while (plans.size() < buildingCount) {
-      plans.add(createPlan(randomBuildingType(random), random));
+      plans.add(createPlan(randomBuildingType(random)));
     }
     Collections.shuffle(plans, random);
 
