@@ -8,6 +8,7 @@
 package roeyqian.magnatour.level.structure;
 
 // Java Standard
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -19,6 +20,7 @@ import java.util.function.Predicate;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 
 // Minecraft
+import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -46,6 +48,7 @@ public final class StructureMobSpawner {
   private static final int DIAMOND_CITY_SCAN_RADIUS_CHUNKS = 12;
   private static final int DIAMOND_CITY_SHARED_SPAWN_DIVISOR = 3;
   private static final int DIAMOND_CITY_SITE_CEILING_SCAN_DISTANCE = 4;
+  private static final int DIAMOND_CITY_SPAWN_SITE_CHUNK_SCAN_BUDGET = 8;
   private static final int DIAMOND_CITY_TARGET_OBSIDIAN_GOLEMS = 64;
   private static final int GOLD_BELL_TOWER_MAX_POPULATION = 64;
   private static final int GOLD_BELL_TOWER_SCAN_RADIUS_CHUNKS = 6;
@@ -243,7 +246,8 @@ public final class StructureMobSpawner {
         level.getRandom(),
         structureBox,
         profile,
-        currentCount
+        currentCount,
+        state
     );
     if (spawned > 0) {
       state.lastSpawnTick = currentTick;
@@ -297,7 +301,8 @@ public final class StructureMobSpawner {
       RandomSource random,
       BoundingBox structureBox,
       StructureSpawnProfile profile,
-      int currentCount
+      int currentCount,
+      SpawnState state
   ) {
     if (currentCount >= profile.maxPopulation()) return 0;
 
@@ -311,39 +316,48 @@ public final class StructureMobSpawner {
         ? Math.min(indoorTarget, spawnBatch - indoorTarget)
         : 0;
 
+    DiamondCitySpawnSites spawnSites = state.diamondCitySpawnSites(structureBox);
+    spawnSites.scanLoadedChunks(
+        level,
+        indoorTarget,
+        outdoorTarget,
+        DIAMOND_CITY_TARGET_OBSIDIAN_GOLEMS * 2
+    );
+
     int spawned = 0;
     if (indoorTarget > 0) {
-      spawned += StructureMobHelper.spawnPersistentGroundMobsUnderCoverDistributedByFloor(
+      spawned += StructureMobHelper.spawnPersistentGroundMobsFromCandidates(
           level,
           random,
-          structureBox,
           RegLiveEntities.OBSIDIAN_GOLEM,
           indoorTarget,
-          DIAMOND_CITY_INTERIOR_FLOOR,
-          DIAMOND_CITY_SITE_CEILING_SCAN_DISTANCE
+          spawnSites.underCoverInterior,
+          true,
+          pos -> spawnSites.isLoaded(level, pos)
       );
     }
     if (outdoorTarget > 0) {
-      spawned += StructureMobHelper.spawnPersistentGroundMobsOpenAir(
+      spawned += StructureMobHelper.spawnPersistentGroundMobsFromCandidates(
           level,
           random,
-          structureBox,
           RegLiveEntities.OBSIDIAN_GOLEM,
           outdoorTarget,
-          _ -> true,
-          DIAMOND_CITY_SITE_CEILING_SCAN_DISTANCE
+          spawnSites.openAir,
+          false,
+          pos -> spawnSites.isLoaded(level, pos)
       );
     }
 
     int remaining = spawnBatch - spawned;
     if (remaining > 0) {
-      spawned += StructureMobHelper.spawnPersistentGroundMobs(
+      spawned += StructureMobHelper.spawnPersistentGroundMobsFromCandidates(
           level,
           random,
-          structureBox,
           RegLiveEntities.OBSIDIAN_GOLEM,
           remaining,
-          _ -> true
+          spawnSites.fallback,
+          false,
+          pos -> spawnSites.isLoaded(level, pos)
       );
     }
 
@@ -355,7 +369,8 @@ public final class StructureMobSpawner {
       RandomSource random,
       BoundingBox structureBox,
       StructureSpawnProfile profile,
-      int currentCount
+      int currentCount,
+      SpawnState state
   ) {
     int remainingCapacity = profile.maxPopulation() - currentCount;
     if (remainingCapacity <= 0) return 0;
@@ -419,6 +434,139 @@ public final class StructureMobSpawner {
     return spawned;
   }
 
+  private static final class DiamondCitySpawnSites {
+
+    private final Set<Long> scannedChunks = new HashSet<>();
+
+    private final List<BlockPos> fallback = new ArrayList<>();
+    private final List<BlockPos> openAir = new ArrayList<>();
+    private final List<BlockPos> underCoverInterior = new ArrayList<>();
+
+    private final BoundingBox structureBox;
+
+    private DiamondCitySpawnSites(
+        BoundingBox structureBox
+    ) {
+      this.structureBox = structureBox;
+    }
+
+    private boolean isLoaded(
+        ServerLevel level,
+        BlockPos pos
+    ) {
+      int chunkX = Math.floorDiv(pos.getX(), 16);
+      int chunkZ = Math.floorDiv(pos.getZ(), 16);
+      return this.scannedChunks.contains(ChunkPos.pack(chunkX, chunkZ))
+          && level.getChunkSource().hasChunk(chunkX, chunkZ);
+    }
+
+    private int loadedCandidateCount(
+        ServerLevel level,
+        List<BlockPos> candidates,
+        int target
+    ) {
+      if (target <= 0) return 0;
+
+      int count = 0;
+      for (BlockPos candidate : candidates) {
+        if (!isLoaded(level, candidate)) continue;
+
+        count++;
+        if (count >= target) return count;
+      }
+
+      return count;
+    }
+
+    private boolean hasCachedCandidates(
+        ServerLevel level,
+        int targetUnderCoverInterior,
+        int targetOpenAir,
+        int targetFallback
+    ) {
+      return loadedCandidateCount(level, this.underCoverInterior, targetUnderCoverInterior)
+              >= targetUnderCoverInterior
+          && loadedCandidateCount(level, this.openAir, targetOpenAir) >= targetOpenAir
+          && loadedCandidateCount(level, this.fallback, targetFallback) >= targetFallback;
+    }
+
+    private void scanChunk(
+        ServerLevel level,
+        int chunkX,
+        int chunkZ
+    ) {
+      int chunkMinX = chunkX << 4;
+      int chunkMinZ = chunkZ << 4;
+      BoundingBox chunkBox = new BoundingBox(
+          Math.max(this.structureBox.minX(), chunkMinX),
+          this.structureBox.minY(),
+          Math.max(this.structureBox.minZ(), chunkMinZ),
+          Math.min(this.structureBox.maxX(), chunkMinX + 15),
+          this.structureBox.maxY(),
+          Math.min(this.structureBox.maxZ(), chunkMinZ + 15)
+      );
+
+      StructureMobHelper.GroundSpawnCandidates candidates =
+          StructureMobHelper.findGroundSpawnCandidatesByCeiling(
+              level,
+              chunkBox,
+              RegLiveEntities.OBSIDIAN_GOLEM,
+              DIAMOND_CITY_INTERIOR_FLOOR,
+              DIAMOND_CITY_SITE_CEILING_SCAN_DISTANCE
+          );
+      this.underCoverInterior.addAll(candidates.underCoverInterior());
+      this.openAir.addAll(candidates.openAir());
+      this.fallback.addAll(candidates.fallback());
+    }
+
+    private boolean matches(
+        BoundingBox other
+    ) {
+      return this.structureBox.minX() == other.minX()
+          && this.structureBox.minY() == other.minY()
+          && this.structureBox.minZ() == other.minZ()
+          && this.structureBox.maxX() == other.maxX()
+          && this.structureBox.maxY() == other.maxY()
+          && this.structureBox.maxZ() == other.maxZ();
+    }
+
+    private void scanLoadedChunks(
+        ServerLevel level,
+        int targetUnderCoverInterior,
+        int targetOpenAir,
+        int targetFallback
+    ) {
+      if (hasCachedCandidates(level, targetUnderCoverInterior, targetOpenAir, targetFallback)) {
+        return;
+      }
+
+      int minChunkX = Math.floorDiv(this.structureBox.minX(), 16);
+      int maxChunkX = Math.floorDiv(this.structureBox.maxX(), 16);
+      int minChunkZ = Math.floorDiv(this.structureBox.minZ(), 16);
+      int maxChunkZ = Math.floorDiv(this.structureBox.maxZ(), 16);
+      int scannedThisCall = 0;
+
+      for (int chunkX = minChunkX; chunkX <= maxChunkX; chunkX++) {
+        for (int chunkZ = minChunkZ; chunkZ <= maxChunkZ; chunkZ++) {
+          long packedChunk = ChunkPos.pack(chunkX, chunkZ);
+          if (this.scannedChunks.contains(packedChunk)
+              || !level.getChunkSource().hasChunk(chunkX, chunkZ)) {
+            continue;
+          }
+
+          scanChunk(level, chunkX, chunkZ);
+          this.scannedChunks.add(packedChunk);
+          scannedThisCall++;
+          if (hasCachedCandidates(level, targetUnderCoverInterior, targetOpenAir, targetFallback)
+              || scannedThisCall >= DIAMOND_CITY_SPAWN_SITE_CHUNK_SCAN_BUDGET) {
+            return;
+          }
+        }
+      }
+    }
+
+  }
+
   @FunctionalInterface
   private interface MobCounter {
 
@@ -437,7 +585,8 @@ public final class StructureMobSpawner {
         RandomSource random,
         BoundingBox structureBox,
         StructureSpawnProfile profile,
-        int currentCount
+        int currentCount,
+        SpawnState state
     );
 
   }
@@ -447,12 +596,25 @@ public final class StructureMobSpawner {
     private long lastSeenTick;
     private long lastSpawnTick;
 
+    private DiamondCitySpawnSites diamondCitySpawnSites;
+
     private SpawnState(
         long lastSeenTick,
         long lastSpawnTick
     ) {
       this.lastSeenTick = lastSeenTick;
       this.lastSpawnTick = lastSpawnTick;
+    }
+
+    private DiamondCitySpawnSites diamondCitySpawnSites(
+        BoundingBox structureBox
+    ) {
+      if (this.diamondCitySpawnSites == null
+          || !this.diamondCitySpawnSites.matches(structureBox)) {
+        this.diamondCitySpawnSites = new DiamondCitySpawnSites(structureBox);
+      }
+
+      return this.diamondCitySpawnSites;
     }
 
   }

@@ -245,6 +245,20 @@ final class StructureMobHelper {
     return min + random.nextInt(max - min + 1);
   }
 
+  private static boolean hasCeilingNearby(
+      WorldGenLevel level,
+      BlockPos pos,
+      int maxDistance
+  ) {
+    for (int offset = 1; offset <= maxDistance; offset++) {
+      if (!level.getBlockState(pos.above(offset)).isAir()) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
   private static <T extends Mob> @Nullable BlockPos findAirSpawnPos(
       WorldGenLevel level,
       RandomSource random,
@@ -342,18 +356,75 @@ final class StructureMobHelper {
     return null;
   }
 
-  private static boolean hasCeilingNearby(
+  static <T extends Mob> GroundSpawnCandidates findGroundSpawnCandidatesByCeiling(
       WorldGenLevel level,
-      BlockPos pos,
-      int maxDistance
+      BoundingBox box,
+      EntityType<T> entityType,
+      Predicate<BlockState> interiorFloorPredicate,
+      int maxCeilingDistance
   ) {
-    for (int offset = 1; offset <= maxDistance; offset++) {
-      if (!level.getBlockState(pos.above(offset)).isAir()) {
-        return true;
+    T probeMob = entityType.create(level.getLevel(), EntitySpawnReason.STRUCTURE);
+    if (probeMob == null) return GroundSpawnCandidates.empty();
+
+    List<BlockPos> underCoverInterior = new ArrayList<>();
+    List<BlockPos> openAir = new ArrayList<>();
+    List<BlockPos> fallback = new ArrayList<>();
+
+    int minX = box.minX() + 1;
+    int maxX = box.maxX() - 1;
+    int minZ = box.minZ() + 1;
+    int maxZ = box.maxZ() - 1;
+    if (minX > maxX) {
+      minX = box.minX();
+      maxX = box.maxX();
+    }
+    if (minZ > maxZ) {
+      minZ = box.minZ();
+      maxZ = box.maxZ();
+    }
+
+    int minFloorY = box.minY() - 1;
+    int maxFloorY = box.maxY() - 1;
+    BlockPos.MutableBlockPos mutablePos = new BlockPos.MutableBlockPos();
+
+    for (int x = minX; x <= maxX; x++) {
+      for (int z = minZ; z <= maxZ; z++) {
+        for (int y = maxFloorY; y >= minFloorY; y--) {
+          mutablePos.set(x, y, z);
+          BlockState floorState = level.getBlockState(mutablePos);
+          if (floorState.isAir()
+              || !floorState.isFaceSturdy(level, mutablePos, Direction.UP)) {
+            continue;
+          }
+
+          BlockPos spawnPos = mutablePos.above().immutable();
+          if (!hasAirColumn(level, spawnPos)) {
+            continue;
+          }
+
+          probeMob.snapTo(
+              spawnPos.getX() + 0.5D,
+              spawnPos.getY(),
+              spawnPos.getZ() + 0.5D,
+              0.0F,
+              0.0F
+          );
+          if (!probeMob.checkSpawnObstruction(level)) {
+            continue;
+          }
+
+          boolean underCover = hasCeilingNearby(level, spawnPos, maxCeilingDistance);
+          fallback.add(spawnPos);
+          if (underCover && interiorFloorPredicate.test(floorState)) {
+            underCoverInterior.add(spawnPos);
+          } else if (!underCover) {
+            openAir.add(spawnPos);
+          }
+        }
       }
     }
 
-    return false;
+    return new GroundSpawnCandidates(underCoverInterior, openAir, fallback);
   }
 
   static <T extends Mob> int spawnPersistentAirMobs(
@@ -446,6 +517,51 @@ final class StructureMobHelper {
     );
   }
 
+  static <T extends Mob> int spawnPersistentGroundMobsFromCandidates(
+      WorldGenLevel level,
+      RandomSource random,
+      EntityType<T> entityType,
+      int count,
+      List<BlockPos> candidates,
+      boolean distributeByFloor,
+      Predicate<BlockPos> spawnSitePredicate
+  ) {
+    if (count <= 0 || candidates.isEmpty()) return 0;
+
+    java.util.Random shuffleRandom = new java.util.Random(random.nextLong());
+    List<BlockPos> spawnOrder = new ArrayList<>(candidates);
+    Collections.shuffle(spawnOrder, shuffleRandom);
+    if (distributeByFloor) {
+      spawnOrder = distributeCandidatesByFloor(spawnOrder, spawnOrder.size(), shuffleRandom);
+    }
+
+    int spawned = 0;
+    for (BlockPos spawnPos : spawnOrder) {
+      if (spawned >= count) return spawned;
+      if (!spawnSitePredicate.test(spawnPos)) continue;
+
+      T mob = entityType.create(level.getLevel(), EntitySpawnReason.STRUCTURE);
+      if (mob == null) return spawned;
+
+      mob.snapTo(
+          spawnPos.getX() + 0.5D,
+          spawnPos.getY(),
+          spawnPos.getZ() + 0.5D,
+          0.0F,
+          0.0F
+      );
+      if (!mob.checkSpawnObstruction(level)) {
+        continue;
+      }
+
+      prepareMob(level, random, mob, spawnPos);
+      level.addFreshEntityWithPassengers(mob);
+      spawned++;
+    }
+
+    return spawned;
+  }
+
   static <T extends Mob> int spawnPersistentGroundMobsOpenAir(
       WorldGenLevel level,
       RandomSource random,
@@ -486,6 +602,18 @@ final class StructureMobHelper {
         true,
         spawnPos -> hasCeilingNearby(level, spawnPos, maxCeilingDistance)
     );
+  }
+
+  record GroundSpawnCandidates(
+      List<BlockPos> underCoverInterior,
+      List<BlockPos> openAir,
+      List<BlockPos> fallback
+  ) {
+
+    private static GroundSpawnCandidates empty() {
+      return new GroundSpawnCandidates(List.of(), List.of(), List.of());
+    }
+
   }
 
 }
