@@ -16,7 +16,6 @@ import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.Difficulty;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.StructureManager;
 import net.minecraft.world.level.WorldGenLevel;
@@ -41,7 +40,6 @@ import org.jspecify.annotations.NonNull;
 // Magnatour
 import roeyqian.magnatour.Magnatour;
 import roeyqian.magnatour.utility.registry.block.RegInsertBlocks;
-import roeyqian.magnatour.utility.registry.entity.RegLiveEntities;
 
 public final class GoldBellTowerPiece extends StructurePiece {
 
@@ -115,7 +113,6 @@ public final class GoldBellTowerPiece extends StructurePiece {
     upper.placeInWorld(level, upperPos, upperPos, settings, random, 2);
 
     replaceGrassBelow(level, box);
-    spawnStructureMobs(level, random, chunkPos);
   }
 
   @Override
@@ -190,13 +187,6 @@ public final class GoldBellTowerPiece extends StructurePiece {
     tag.put(key, sizeTag);
   }
 
-  private static boolean isSpawnFloor(
-      BlockState floorState
-  ) {
-    return floorState.is(Blocks.POLISHED_BLACKSTONE)
-        || floorState.is(Blocks.GILDED_BLACKSTONE);
-  }
-
   private void replaceGrassBelow(
       WorldGenLevel level,
       BoundingBox box
@@ -224,49 +214,6 @@ public final class GoldBellTowerPiece extends StructurePiece {
         }
       }
     }
-  }
-
-  private void spawnStructureMobs(
-      WorldGenLevel level,
-      RandomSource random,
-      ChunkPos chunkPos
-  ) {
-    if (!ChunkPos.containing(this.lowerPos).equals(chunkPos)) return;
-    if (level.getLevel().getDifficulty() == Difficulty.PEACEFUL) return;
-
-    BoundingBox spawnBox = chunkSpawnBox(chunkPos);
-    StructureMobHelper.spawnPersistentGroundMobsDistributedByFloor(
-        level,
-        random,
-        spawnBox,
-        RegLiveEntities.BELL_RINGER,
-        12,
-        GoldBellTowerPiece::isSpawnFloor
-    );
-    StructureMobHelper.spawnPersistentAirMobsAboveFloors(
-        level,
-        random,
-        spawnBox,
-        RegLiveEntities.BELL_SOUL,
-        14,
-        GoldBellTowerPiece::isSpawnFloor,
-        1,
-        3
-    );
-  }
-
-  private BoundingBox chunkSpawnBox(
-      ChunkPos chunkPos
-  ) {
-    BoundingBox structureBox = this.getBoundingBox();
-    return new BoundingBox(
-        Math.max(structureBox.minX(), chunkPos.getMinBlockX()),
-        structureBox.minY(),
-        Math.max(structureBox.minZ(), chunkPos.getMinBlockZ()),
-        Math.min(structureBox.maxX(), chunkPos.getMaxBlockX()),
-        structureBox.maxY(),
-        Math.min(structureBox.maxZ(), chunkPos.getMaxBlockZ())
-    );
   }
 
 }

@@ -5,7 +5,7 @@
  * This file is part of Universe Mod.
  * Full license text available in the LICENSE file in the project root.
  */
-package roeyqian.magnatour.level;
+package roeyqian.magnatour.level.biome;
 
 // Java Standard
 import java.util.List;
@@ -42,7 +42,7 @@ import roeyqian.magnatour.Magnatour;
 import roeyqian.magnatour.utility.registry.block.RegInsertBlocks;
 import roeyqian.magnatour.utility.registry.level.RegDimensions;
 
-public final class HarvestContinentMobSpawner {
+public final class BiomeMobSpawner {
 
   private static final int COUNT_HORIZONTAL_RADIUS = 48;
   private static final int COUNT_VERTICAL_RADIUS = 20;
@@ -113,7 +113,7 @@ public final class HarvestContinentMobSpawner {
       )
   );
 
-  private HarvestContinentMobSpawner() {}
+  private BiomeMobSpawner() {}
 
   public static void registerTickEvent() {
     if (tickEventRegistered) return;
