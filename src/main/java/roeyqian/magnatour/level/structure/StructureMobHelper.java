@@ -14,6 +14,7 @@ import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 // Minecraft
@@ -23,6 +24,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
@@ -356,10 +358,48 @@ final class StructureMobHelper {
     return null;
   }
 
+  private static List<BlockPos> distributeCandidatesByChunk(
+      List<BlockPos> candidates,
+      int targetCount,
+      java.util.Random random
+  ) {
+    Map<Long, List<BlockPos>> byChunk = new LinkedHashMap<>();
+    for (BlockPos candidate : candidates) {
+      long chunk = ChunkPos.pack(
+          Math.floorDiv(candidate.getX(), 16),
+          Math.floorDiv(candidate.getZ(), 16)
+      );
+      byChunk.computeIfAbsent(chunk, _ -> new ArrayList<>()).add(candidate);
+    }
+
+    List<List<BlockPos>> chunks = new ArrayList<>(byChunk.values());
+    for (List<BlockPos> chunkCandidates : chunks) {
+      Collections.shuffle(chunkCandidates, random);
+    }
+    Collections.shuffle(chunks, random);
+
+    List<BlockPos> distributed = new ArrayList<>(Math.min(targetCount, candidates.size()));
+    while (distributed.size() < targetCount) {
+      boolean addedThisRound = false;
+
+      for (List<BlockPos> chunkCandidates : chunks) {
+        if (chunkCandidates.isEmpty() || distributed.size() >= targetCount) continue;
+
+        distributed.add(chunkCandidates.removeLast());
+        addedThisRound = true;
+      }
+
+      if (!addedThisRound) break;
+    }
+
+    return distributed;
+  }
+
   static <T extends Mob> GroundSpawnCandidates findGroundSpawnCandidatesByCeiling(
       WorldGenLevel level,
       BoundingBox box,
       EntityType<T> entityType,
+      Predicate<BlockState> spawnFloorPredicate,
       Predicate<BlockState> interiorFloorPredicate,
       int maxCeilingDistance
   ) {
@@ -393,6 +433,7 @@ final class StructureMobHelper {
           mutablePos.set(x, y, z);
           BlockState floorState = level.getBlockState(mutablePos);
           if (floorState.isAir()
+              || !spawnFloorPredicate.test(floorState)
               || !floorState.isFaceSturdy(level, mutablePos, Direction.UP)) {
             continue;
           }
@@ -523,16 +564,17 @@ final class StructureMobHelper {
       EntityType<T> entityType,
       int count,
       List<BlockPos> candidates,
-      boolean distributeByFloor,
-      Predicate<BlockPos> spawnSitePredicate
+      boolean distributeByChunk,
+      Predicate<BlockPos> spawnSitePredicate,
+      Consumer<BlockPos> onSpawn
   ) {
     if (count <= 0 || candidates.isEmpty()) return 0;
 
     java.util.Random shuffleRandom = new java.util.Random(random.nextLong());
     List<BlockPos> spawnOrder = new ArrayList<>(candidates);
     Collections.shuffle(spawnOrder, shuffleRandom);
-    if (distributeByFloor) {
-      spawnOrder = distributeCandidatesByFloor(spawnOrder, spawnOrder.size(), shuffleRandom);
+    if (distributeByChunk) {
+      spawnOrder = distributeCandidatesByChunk(spawnOrder, spawnOrder.size(), shuffleRandom);
     }
 
     int spawned = 0;
@@ -556,6 +598,7 @@ final class StructureMobHelper {
 
       prepareMob(level, random, mob, spawnPos);
       level.addFreshEntityWithPassengers(mob);
+      onSpawn.accept(spawnPos);
       spawned++;
     }
 

@@ -18,7 +18,6 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.StructureManager;
 import net.minecraft.world.level.WorldGenLevel;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.chunk.ChunkGenerator;
@@ -36,12 +35,8 @@ import org.jspecify.annotations.NonNull;
 
 // Magnatour
 import roeyqian.magnatour.Magnatour;
-import roeyqian.magnatour.utility.registry.entity.RegLiveEntities;
 
 public final class DiamondCityPiece extends StructurePiece {
-
-  private static final int MOB_SHARED_SPAWN_DIVISOR = 3;
-  private static final int MOB_SITE_CEILING_SCAN_DISTANCE = 4;
 
   private final long layoutSeed;
 
@@ -112,7 +107,6 @@ public final class DiamondCityPiece extends StructurePiece {
         settings,
         this.cityPos
     );
-    spawnStructureMobs(level, random, chunkPos);
   }
 
   @Override
@@ -183,80 +177,6 @@ public final class DiamondCityPiece extends StructurePiece {
     sizeTag.putInt("Y", vec.getY());
     sizeTag.putInt("Z", vec.getZ());
     tag.put(key, sizeTag);
-  }
-
-  private void spawnStructureMobs(
-      WorldGenLevel level,
-      RandomSource random,
-      ChunkPos chunkPos
-  ) {
-    if (!ChunkPos.containing(this.cityPos).equals(chunkPos)) return;
-
-    spawnDiamondCityMobs(level, random, chunkSpawnBox(chunkPos), 18);
-  }
-
-  private void spawnDiamondCityMobs(
-      WorldGenLevel level,
-      RandomSource random,
-      BoundingBox spawnBox,
-      int requestedCount
-  ) {
-    int indoorTarget = requestedCount >= 2
-        ? Math.max(1, requestedCount / MOB_SHARED_SPAWN_DIVISOR)
-        : requestedCount;
-    int outdoorTarget = requestedCount - indoorTarget >= 1
-        ? Math.min(indoorTarget, requestedCount - indoorTarget)
-        : 0;
-
-    int spawned = 0;
-    if (indoorTarget > 0) {
-      spawned += StructureMobHelper.spawnPersistentGroundMobsUnderCoverDistributedByFloor(
-          level,
-          random,
-          spawnBox,
-          RegLiveEntities.OBSIDIAN_GOLEM,
-          indoorTarget,
-          floorState -> floorState.is(Blocks.OBSIDIAN),
-          MOB_SITE_CEILING_SCAN_DISTANCE
-      );
-    }
-    if (outdoorTarget > 0) {
-      spawned += StructureMobHelper.spawnPersistentGroundMobsOpenAir(
-          level,
-          random,
-          spawnBox,
-          RegLiveEntities.OBSIDIAN_GOLEM,
-          outdoorTarget,
-          _ -> true,
-          MOB_SITE_CEILING_SCAN_DISTANCE
-      );
-    }
-
-    int remaining = requestedCount - spawned;
-    if (remaining > 0) {
-      StructureMobHelper.spawnPersistentGroundMobs(
-          level,
-          random,
-          spawnBox,
-          RegLiveEntities.OBSIDIAN_GOLEM,
-          remaining,
-          _ -> true
-      );
-    }
-  }
-
-  private BoundingBox chunkSpawnBox(
-      ChunkPos chunkPos
-  ) {
-    BoundingBox structureBox = this.getBoundingBox();
-    return new BoundingBox(
-        Math.max(structureBox.minX(), chunkPos.getMinBlockX()),
-        structureBox.minY(),
-        Math.max(structureBox.minZ(), chunkPos.getMinBlockZ()),
-        Math.min(structureBox.maxX(), chunkPos.getMaxBlockX()),
-        structureBox.maxY(),
-        Math.min(structureBox.maxZ(), chunkPos.getMaxBlockZ())
-    );
   }
 
 }

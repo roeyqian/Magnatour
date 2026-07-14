@@ -190,6 +190,13 @@ public final class GoldBellTowerPiece extends StructurePiece {
     tag.put(key, sizeTag);
   }
 
+  private static boolean isSpawnFloor(
+      BlockState floorState
+  ) {
+    return floorState.is(Blocks.POLISHED_BLACKSTONE)
+        || floorState.is(Blocks.GILDED_BLACKSTONE);
+  }
+
   private void replaceGrassBelow(
       WorldGenLevel level,
       BoundingBox box
@@ -234,7 +241,7 @@ public final class GoldBellTowerPiece extends StructurePiece {
         spawnBox,
         RegLiveEntities.BELL_RINGER,
         12,
-        floorState -> floorState.is(Blocks.GOLD_BLOCK)
+        GoldBellTowerPiece::isSpawnFloor
     );
     StructureMobHelper.spawnPersistentAirMobsAboveFloors(
         level,
@@ -242,7 +249,7 @@ public final class GoldBellTowerPiece extends StructurePiece {
         spawnBox,
         RegLiveEntities.BELL_SOUL,
         14,
-        floorState -> floorState.is(Blocks.GOLD_BLOCK),
+        GoldBellTowerPiece::isSpawnFloor,
         1,
         3
     );

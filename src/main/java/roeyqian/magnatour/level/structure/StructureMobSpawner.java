@@ -61,6 +61,7 @@ public final class StructureMobSpawner {
 
   private static final double DIAMOND_CITY_COUNT_HORIZONTAL_PADDING = 6.0D;
   private static final double DIAMOND_CITY_COUNT_VERTICAL_PADDING = 6.0D;
+  private static final double DIAMOND_CITY_SPAWN_SEPARATION = 8.0D;
   private static final double GOLD_BELL_TOWER_COUNT_HORIZONTAL_PADDING = 8.0D;
   private static final double GOLD_BELL_TOWER_COUNT_VERTICAL_PADDING = 12.0D;
 
@@ -104,8 +105,11 @@ public final class StructureMobSpawner {
 
   private static final Predicate<BlockState> DIAMOND_CITY_INTERIOR_FLOOR =
       floorState -> floorState.is(Blocks.OBSIDIAN);
+  private static final Predicate<BlockState> DIAMOND_CITY_SPAWN_FLOOR =
+      floorState -> !floorState.is(Blocks.POLISHED_DEEPSLATE);
   private static final Predicate<BlockState> GOLD_BELL_TOWER_SPAWN_FLOOR =
-      floorState -> floorState.is(Blocks.GOLD_BLOCK);
+      floorState -> floorState.is(Blocks.POLISHED_BLACKSTONE)
+          || floorState.is(Blocks.GILDED_BLACKSTONE);
 
   private StructureMobSpawner() {}
 
@@ -273,6 +277,40 @@ public final class StructureMobSpawner {
     return level.getEntities((Entity) null, box, predicate).size();
   }
 
+  private static boolean isDiamondCitySpawnSiteAvailable(
+      ServerLevel level,
+      DiamondCitySpawnSites spawnSites,
+      Set<BlockPos> reservedSpawnSites,
+      BlockPos pos
+  ) {
+    if (!spawnSites.isLoaded(level, pos)) return false;
+    for (BlockPos reservedSpawnSite : reservedSpawnSites) {
+      double xDistance = pos.getX() - reservedSpawnSite.getX();
+      double yDistance = pos.getY() - reservedSpawnSite.getY();
+      double zDistance = pos.getZ() - reservedSpawnSite.getZ();
+      if (xDistance * xDistance
+              + yDistance * yDistance
+              + zDistance * zDistance
+          < DIAMOND_CITY_SPAWN_SEPARATION * DIAMOND_CITY_SPAWN_SEPARATION) {
+        return false;
+      }
+    }
+
+    AABB separationBox = new AABB(
+        pos.getX() - DIAMOND_CITY_SPAWN_SEPARATION,
+        pos.getY() - DIAMOND_CITY_SPAWN_SEPARATION,
+        pos.getZ() - DIAMOND_CITY_SPAWN_SEPARATION,
+        pos.getX() + 1.0D + DIAMOND_CITY_SPAWN_SEPARATION,
+        pos.getY() + 1.0D + DIAMOND_CITY_SPAWN_SEPARATION,
+        pos.getZ() + 1.0D + DIAMOND_CITY_SPAWN_SEPARATION
+    );
+    return level.getEntities(
+        (Entity) null,
+        separationBox,
+        entity -> entity.isAlive() && entity.getType() == RegLiveEntities.OBSIDIAN_GOLEM
+    ).isEmpty();
+  }
+
   private static int countDiamondCityMobs(
       ServerLevel level,
       AABB box
@@ -325,6 +363,7 @@ public final class StructureMobSpawner {
     );
 
     int spawned = 0;
+    Set<BlockPos> reservedSpawnSites = new HashSet<>();
     if (indoorTarget > 0) {
       spawned += StructureMobHelper.spawnPersistentGroundMobsFromCandidates(
           level,
@@ -333,7 +372,8 @@ public final class StructureMobSpawner {
           indoorTarget,
           spawnSites.underCoverInterior,
           true,
-          pos -> spawnSites.isLoaded(level, pos)
+          pos -> isDiamondCitySpawnSiteAvailable(level, spawnSites, reservedSpawnSites, pos),
+          reservedSpawnSites::add
       );
     }
     if (outdoorTarget > 0) {
@@ -343,8 +383,9 @@ public final class StructureMobSpawner {
           RegLiveEntities.OBSIDIAN_GOLEM,
           outdoorTarget,
           spawnSites.openAir,
-          false,
-          pos -> spawnSites.isLoaded(level, pos)
+          true,
+          pos -> isDiamondCitySpawnSiteAvailable(level, spawnSites, reservedSpawnSites, pos),
+          reservedSpawnSites::add
       );
     }
 
@@ -356,8 +397,9 @@ public final class StructureMobSpawner {
           RegLiveEntities.OBSIDIAN_GOLEM,
           remaining,
           spawnSites.fallback,
-          false,
-          pos -> spawnSites.isLoaded(level, pos)
+          true,
+          pos -> isDiamondCitySpawnSiteAvailable(level, spawnSites, reservedSpawnSites, pos),
+          reservedSpawnSites::add
       );
     }
 
@@ -438,6 +480,8 @@ public final class StructureMobSpawner {
 
     private final Set<Long> scannedChunks = new HashSet<>();
 
+    private final List<Long> chunkScanOrder = new ArrayList<>();
+
     private final List<BlockPos> fallback = new ArrayList<>();
     private final List<BlockPos> openAir = new ArrayList<>();
     private final List<BlockPos> underCoverInterior = new ArrayList<>();
@@ -448,6 +492,20 @@ public final class StructureMobSpawner {
         BoundingBox structureBox
     ) {
       this.structureBox = structureBox;
+
+      int minChunkX = Math.floorDiv(this.structureBox.minX(), 16);
+      int maxChunkX = Math.floorDiv(this.structureBox.maxX(), 16);
+      int minChunkZ = Math.floorDiv(this.structureBox.minZ(), 16);
+      int maxChunkZ = Math.floorDiv(this.structureBox.maxZ(), 16);
+      for (int chunkX = minChunkX; chunkX <= maxChunkX; chunkX++) {
+        for (int chunkZ = minChunkZ; chunkZ <= maxChunkZ; chunkZ++) {
+          this.chunkScanOrder.add(ChunkPos.pack(chunkX, chunkZ));
+        }
+      }
+      java.util.Collections.shuffle(
+          this.chunkScanOrder,
+          new java.util.Random(ChunkPos.pack(minChunkX, minChunkZ))
+      );
     }
 
     private boolean isLoaded(
@@ -511,6 +569,7 @@ public final class StructureMobSpawner {
               level,
               chunkBox,
               RegLiveEntities.OBSIDIAN_GOLEM,
+              DIAMOND_CITY_SPAWN_FLOOR,
               DIAMOND_CITY_INTERIOR_FLOOR,
               DIAMOND_CITY_SITE_CEILING_SCAN_DISTANCE
           );
@@ -540,27 +599,22 @@ public final class StructureMobSpawner {
         return;
       }
 
-      int minChunkX = Math.floorDiv(this.structureBox.minX(), 16);
-      int maxChunkX = Math.floorDiv(this.structureBox.maxX(), 16);
-      int minChunkZ = Math.floorDiv(this.structureBox.minZ(), 16);
-      int maxChunkZ = Math.floorDiv(this.structureBox.maxZ(), 16);
       int scannedThisCall = 0;
 
-      for (int chunkX = minChunkX; chunkX <= maxChunkX; chunkX++) {
-        for (int chunkZ = minChunkZ; chunkZ <= maxChunkZ; chunkZ++) {
-          long packedChunk = ChunkPos.pack(chunkX, chunkZ);
-          if (this.scannedChunks.contains(packedChunk)
-              || !level.getChunkSource().hasChunk(chunkX, chunkZ)) {
-            continue;
-          }
+      for (long packedChunk : this.chunkScanOrder) {
+        int chunkX = ChunkPos.getX(packedChunk);
+        int chunkZ = ChunkPos.getZ(packedChunk);
+        if (this.scannedChunks.contains(packedChunk)
+            || !level.getChunkSource().hasChunk(chunkX, chunkZ)) {
+          continue;
+        }
 
-          scanChunk(level, chunkX, chunkZ);
-          this.scannedChunks.add(packedChunk);
-          scannedThisCall++;
-          if (hasCachedCandidates(level, targetUnderCoverInterior, targetOpenAir, targetFallback)
-              || scannedThisCall >= DIAMOND_CITY_SPAWN_SITE_CHUNK_SCAN_BUDGET) {
-            return;
-          }
+        scanChunk(level, chunkX, chunkZ);
+        this.scannedChunks.add(packedChunk);
+        scannedThisCall++;
+        if (hasCachedCandidates(level, targetUnderCoverInterior, targetOpenAir, targetFallback)
+            || scannedThisCall >= DIAMOND_CITY_SPAWN_SITE_CHUNK_SCAN_BUDGET) {
+          return;
         }
       }
     }
