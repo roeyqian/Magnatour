@@ -6,7 +6,9 @@
     "biome_source": {
       "type": "magnatour:harvest_continent",
       "seed": 0,
-      "cell_size": 256,
+      "cell_size": 1024,
+      "land_cell_size": 512,
+      "island_cell_size": 128,
       "jitter": 0.35,
       "wheat_plain": "magnatour:wheat_plain",
       "big_lake": "magnatour:big_lake",
