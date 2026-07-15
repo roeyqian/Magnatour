@@ -282,171 +282,6 @@ public final class StructureMobSpawner {
     );
   }
 
-  private static List<BlockPos> distributeCandidatesByChunk(
-      List<BlockPos> candidates,
-      int targetCount,
-      java.util.Random random
-  ) {
-    Map<Long, List<BlockPos>> byChunk = new LinkedHashMap<>();
-    for (BlockPos candidate : candidates) {
-      long chunk = ChunkPos.pack(
-          Math.floorDiv(candidate.getX(), 16),
-          Math.floorDiv(candidate.getZ(), 16)
-      );
-      byChunk.computeIfAbsent(chunk, _ -> new ArrayList<>()).add(candidate);
-    }
-
-    List<List<BlockPos>> chunks = new ArrayList<>(byChunk.values());
-    for (List<BlockPos> chunkCandidates : chunks) {
-      Collections.shuffle(chunkCandidates, random);
-    }
-    Collections.shuffle(chunks, random);
-
-    List<BlockPos> distributed = new ArrayList<>(Math.min(targetCount, candidates.size()));
-    while (distributed.size() < targetCount) {
-      boolean addedThisRound = false;
-      for (List<BlockPos> chunkCandidates : chunks) {
-        if (chunkCandidates.isEmpty() || distributed.size() >= targetCount) continue;
-
-        distributed.add(chunkCandidates.removeLast());
-        addedThisRound = true;
-      }
-      if (!addedThisRound) break;
-    }
-
-    return distributed;
-  }
-
-  private static <T extends Mob> void prepareMob(
-      WorldGenLevel level,
-      RandomSource random,
-      T mob,
-      BlockPos spawnPos
-  ) {
-    mob.snapTo(
-        spawnPos.getX() + 0.5D,
-        spawnPos.getY(),
-        spawnPos.getZ() + 0.5D,
-        random.nextFloat() * 360.0F,
-        0.0F
-    );
-    mob.setYBodyRot(mob.getYRot());
-    mob.finalizeSpawn(
-        level,
-        level.getCurrentDifficultyAt(spawnPos),
-        EntitySpawnReason.STRUCTURE,
-        null
-    );
-    mob.setPersistenceRequired();
-  }
-
-  private static <T extends Mob> int spawnPersistentGroundMobs(
-      WorldGenLevel level,
-      RandomSource random,
-      BoundingBox box,
-      EntityType<T> entityType,
-      int count,
-      Predicate<BlockState> floorPredicate,
-      boolean distributeByFloor,
-      Predicate<BlockPos> spawnSitePredicate
-  ) {
-    T probeMob = entityType.create(level.getLevel(), EntitySpawnReason.STRUCTURE);
-    if (probeMob == null) return 0;
-
-    List<BlockPos> candidates = findGroundSpawnCandidates(
-        level,
-        box,
-        probeMob,
-        floorPredicate,
-        spawnSitePredicate
-    );
-    if (candidates.isEmpty()) return 0;
-
-    java.util.Random shuffleRandom = new java.util.Random(random.nextLong());
-    Collections.shuffle(candidates, shuffleRandom);
-    if (distributeByFloor) {
-      candidates = distributeCandidatesByFloor(candidates, count, shuffleRandom);
-    }
-
-    int spawned = 0;
-    for (int index = 0; index < count && index < candidates.size(); index++) {
-      T mob = entityType.create(level.getLevel(), EntitySpawnReason.STRUCTURE);
-      if (mob == null) return spawned;
-
-      BlockPos spawnPos = candidates.get(index);
-      prepareMob(level, random, mob, spawnPos);
-      level.addFreshEntityWithPassengers(mob);
-      spawned++;
-    }
-
-    return spawned;
-  }
-
-  private static <T extends Mob> @Nullable BlockPos findAirSpawnPosAboveFloor(
-      WorldGenLevel level,
-      RandomSource random,
-      BoundingBox box,
-      T mob,
-      Predicate<BlockState> floorPredicate,
-      int minYOffset,
-      int maxYOffset
-  ) {
-    int minX = box.minX() + 1;
-    int maxX = box.maxX() - 1;
-    int minZ = box.minZ() + 1;
-    int maxZ = box.maxZ() - 1;
-    if (minX > maxX) {
-      minX = box.minX();
-      maxX = box.maxX();
-    }
-    if (minZ > maxZ) {
-      minZ = box.minZ();
-      maxZ = box.maxZ();
-    }
-
-    int minFloorY = box.minY() - 1;
-    int maxFloorY = box.maxY() - 1;
-    BlockPos.MutableBlockPos floorPos = new BlockPos.MutableBlockPos();
-    BlockPos.MutableBlockPos spawnPos = new BlockPos.MutableBlockPos();
-
-    for (int attempt = 0; attempt < 48; attempt++) {
-      int x = randomBetween(random, minX, maxX);
-      int z = randomBetween(random, minZ, maxZ);
-      for (int y = maxFloorY; y >= minFloorY; y--) {
-        floorPos.set(x, y, z);
-        BlockState floorState = level.getBlockState(floorPos);
-        if (floorState.isAir() || !floorPredicate.test(floorState)) continue;
-
-        int spawnY = y + randomBetween(random, minYOffset, maxYOffset);
-        spawnPos.set(x, spawnY, z);
-        mob.snapTo(x + 0.5D, spawnY, z + 0.5D, 0.0F, 0.0F);
-        if (hasAirColumn(level, spawnPos)
-            && mob.checkSpawnObstruction(level)) {
-          return spawnPos.immutable();
-        }
-      }
-    }
-
-    return null;
-  }
-
-  private static boolean hasAirColumn(
-      WorldGenLevel level,
-      BlockPos pos
-  ) {
-    return level.getBlockState(pos).isAir()
-        && level.getBlockState(pos.above()).isAir();
-  }
-
-  private static int randomBetween(
-      RandomSource random,
-      int min,
-      int max
-  ) {
-    if (min >= max) return min;
-    return min + random.nextInt(max - min + 1);
-  }
-
   private static <T extends Mob> List<BlockPos> findGroundSpawnCandidates(
       WorldGenLevel level,
       BoundingBox box,
@@ -539,6 +374,171 @@ public final class StructureMobSpawner {
     }
 
     return distributed;
+  }
+
+  private static <T extends Mob> void prepareMob(
+      WorldGenLevel level,
+      RandomSource random,
+      T mob,
+      BlockPos spawnPos
+  ) {
+    mob.snapTo(
+        spawnPos.getX() + 0.5D,
+        spawnPos.getY(),
+        spawnPos.getZ() + 0.5D,
+        random.nextFloat() * 360.0F,
+        0.0F
+    );
+    mob.setYBodyRot(mob.getYRot());
+    mob.finalizeSpawn(
+        level,
+        level.getCurrentDifficultyAt(spawnPos),
+        EntitySpawnReason.STRUCTURE,
+        null
+    );
+    mob.setPersistenceRequired();
+  }
+
+  private static int randomBetween(
+      RandomSource random,
+      int min,
+      int max
+  ) {
+    if (min >= max) return min;
+    return min + random.nextInt(max - min + 1);
+  }
+
+  private static boolean hasAirColumn(
+      WorldGenLevel level,
+      BlockPos pos
+  ) {
+    return level.getBlockState(pos).isAir()
+        && level.getBlockState(pos.above()).isAir();
+  }
+
+  private static List<BlockPos> distributeCandidatesByChunk(
+      List<BlockPos> candidates,
+      int targetCount,
+      java.util.Random random
+  ) {
+    Map<Long, List<BlockPos>> byChunk = new LinkedHashMap<>();
+    for (BlockPos candidate : candidates) {
+      long chunk = ChunkPos.pack(
+          Math.floorDiv(candidate.getX(), 16),
+          Math.floorDiv(candidate.getZ(), 16)
+      );
+      byChunk.computeIfAbsent(chunk, _ -> new ArrayList<>()).add(candidate);
+    }
+
+    List<List<BlockPos>> chunks = new ArrayList<>(byChunk.values());
+    for (List<BlockPos> chunkCandidates : chunks) {
+      Collections.shuffle(chunkCandidates, random);
+    }
+    Collections.shuffle(chunks, random);
+
+    List<BlockPos> distributed = new ArrayList<>(Math.min(targetCount, candidates.size()));
+    while (distributed.size() < targetCount) {
+      boolean addedThisRound = false;
+      for (List<BlockPos> chunkCandidates : chunks) {
+        if (chunkCandidates.isEmpty() || distributed.size() >= targetCount) continue;
+
+        distributed.add(chunkCandidates.removeLast());
+        addedThisRound = true;
+      }
+      if (!addedThisRound) break;
+    }
+
+    return distributed;
+  }
+
+  private static <T extends Mob> int spawnPersistentGroundMobs(
+      WorldGenLevel level,
+      RandomSource random,
+      BoundingBox box,
+      EntityType<T> entityType,
+      int count,
+      Predicate<BlockState> floorPredicate,
+      boolean distributeByFloor,
+      Predicate<BlockPos> spawnSitePredicate
+  ) {
+    T probeMob = entityType.create(level.getLevel(), EntitySpawnReason.STRUCTURE);
+    if (probeMob == null) return 0;
+
+    List<BlockPos> candidates = findGroundSpawnCandidates(
+        level,
+        box,
+        probeMob,
+        floorPredicate,
+        spawnSitePredicate
+    );
+    if (candidates.isEmpty()) return 0;
+
+    java.util.Random shuffleRandom = new java.util.Random(random.nextLong());
+    Collections.shuffle(candidates, shuffleRandom);
+    if (distributeByFloor) {
+      candidates = distributeCandidatesByFloor(candidates, count, shuffleRandom);
+    }
+
+    int spawned = 0;
+    for (int index = 0; index < count && index < candidates.size(); index++) {
+      T mob = entityType.create(level.getLevel(), EntitySpawnReason.STRUCTURE);
+      if (mob == null) return spawned;
+
+      BlockPos spawnPos = candidates.get(index);
+      prepareMob(level, random, mob, spawnPos);
+      level.addFreshEntityWithPassengers(mob);
+      spawned++;
+    }
+
+    return spawned;
+  }
+
+  private static <T extends Mob> @Nullable BlockPos findAirSpawnPosAboveFloor(
+      WorldGenLevel level,
+      RandomSource random,
+      BoundingBox box,
+      T mob,
+      Predicate<BlockState> floorPredicate,
+      int minYOffset,
+      int maxYOffset
+  ) {
+    int minX = box.minX() + 1;
+    int maxX = box.maxX() - 1;
+    int minZ = box.minZ() + 1;
+    int maxZ = box.maxZ() - 1;
+    if (minX > maxX) {
+      minX = box.minX();
+      maxX = box.maxX();
+    }
+    if (minZ > maxZ) {
+      minZ = box.minZ();
+      maxZ = box.maxZ();
+    }
+
+    int minFloorY = box.minY() - 1;
+    int maxFloorY = box.maxY() - 1;
+    BlockPos.MutableBlockPos floorPos = new BlockPos.MutableBlockPos();
+    BlockPos.MutableBlockPos spawnPos = new BlockPos.MutableBlockPos();
+
+    for (int attempt = 0; attempt < 48; attempt++) {
+      int x = randomBetween(random, minX, maxX);
+      int z = randomBetween(random, minZ, maxZ);
+      for (int y = maxFloorY; y >= minFloorY; y--) {
+        floorPos.set(x, y, z);
+        BlockState floorState = level.getBlockState(floorPos);
+        if (floorState.isAir() || !floorPredicate.test(floorState)) continue;
+
+        int spawnY = y + randomBetween(random, minYOffset, maxYOffset);
+        spawnPos.set(x, spawnY, z);
+        mob.snapTo(x + 0.5D, spawnY, z + 0.5D, 0.0F, 0.0F);
+        if (hasAirColumn(level, spawnPos)
+            && mob.checkSpawnObstruction(level)) {
+          return spawnPos.immutable();
+        }
+      }
+    }
+
+    return null;
   }
 
   private static int countEntities(
