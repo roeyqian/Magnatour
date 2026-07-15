@@ -44,6 +44,8 @@ public final class WorldHelperForDimension {
   private static final int BLEND_RANGE_WHEAT = 20;
   private static final int CENTER_BIOME_BONUS = 8;
   private static final int CONSTRAINT_PASSES_CENTER = 1;
+  private static final int HARVEST_LAKE_BLEND_RANGE = 24;
+  private static final int HARVEST_LAKE_BORDER_MAX_ADJUST_FULL = 128;
   private static final int LOCAL_SAMPLE_RADIUS = 10;
   private static final int MAX_DELTA_DIFF_BIOME = 2;
   private static final int MAX_DELTA_GORGE_INTERNAL = 7;
@@ -61,7 +63,7 @@ public final class WorldHelperForDimension {
   private static final int WHEAT_BOUNDARY_EXTRA_MAX = 96;
   private static final int WHEAT_INTERNAL_MAX = MAX_HEIGHT + 2;
   private static final int WHEAT_MIN_HEIGHT = SEA_LEVEL - 1;
-  private static final int WINDOW_RADIUS = 16;
+  private static final int WINDOW_RADIUS = HARVEST_LAKE_BLEND_RANGE;
 
   private static final ResourceKey<Biome> BIG_LAKE = ResourceKey.create(
       Registries.BIOME,
@@ -514,6 +516,29 @@ public final class WorldHelperForDimension {
           continue;
         }
 
+        if (usesSharedLakeBlend(stable)) {
+          int interior = sharedLandInteriorHeight(seed, stable, worldX, worldZ, originalHeight);
+          long lakePacked = findNearestBoundaryBiomeGoalPacked(
+              seed, gen, region, noiseConfig, trackedBiome, stable,
+              gx, gz, r, startX, startZ, originalSurfaces16,
+              heightCache, HARVEST_LAKE_BLEND_RANGE, BIG_LAKE
+          );
+
+          int lakeGoalHeight = (int) (lakePacked >>> 32);
+          float lakeBoundaryFactor = Float.intBitsToFloat((int) (lakePacked & 0xffffffffL));
+
+          if (lakeBoundaryFactor > 0.0f) {
+            outTargetHeights16[x][z] = blendSharedLakeHeight(
+                stable,
+                interior,
+                lakeGoalHeight,
+                lakeBoundaryFactor
+            );
+            boundaryMask[x][z] = lakeBoundaryFactor;
+            continue;
+          }
+        }
+
         if (stable.equals(PUMPKIN_GORGE)) {
           outTargetHeights16[x][z] = pumpkinGorgeFinalHeight(seed, worldX, worldZ);
           boundaryMask[x][z] = 0.0f;
@@ -615,7 +640,7 @@ public final class WorldHelperForDimension {
           } else if (b.equals(PUMPKIN_GORGE)) {
             outTargetHeights16[x][z] = Mth.clamp(
                 outTargetHeights16[x][z],
-                SEA_LEVEL + 2, MAX_HEIGHT + 44
+                SEA_LEVEL + 1, MAX_HEIGHT + 44
             );
           }
         }
@@ -790,6 +815,109 @@ public final class WorldHelperForDimension {
     return WHEAT_PLAIN;
   }
 
+  private boolean usesSharedLakeBlend(
+      ResourceKey<Biome> biome
+  ) {
+    return biome.equals(PUMPKIN_GORGE)
+        || biome.equals(MELON_JUNGLE)
+        || biome.equals(WHEAT_PLAIN);
+  }
+
+  private int sharedLandInteriorHeight(
+      long seed,
+      ResourceKey<Biome> biome,
+      int worldX,
+      int worldZ,
+      int originalHeight
+  ) {
+    if (biome.equals(PUMPKIN_GORGE)) return pumpkinGorgeFinalHeight(seed, worldX, worldZ);
+    if (biome.equals(WHEAT_PLAIN)) return generateWheatPlainInteriorHeight(seed, worldX, worldZ);
+    return originalHeight;
+  }
+
+  private long findNearestBoundaryBiomeGoalPacked(
+      long seed,
+      NoiseBasedChunkGenerator gen,
+      WorldGenRegion region,
+      RandomState noiseConfig,
+      ResourceKey<Biome>[][] trackedBiome,
+      ResourceKey<Biome> centerBiome,
+      int cx,
+      int cz,
+      int windowRadius,
+      int chunkStartX,
+      int chunkStartZ,
+      int[][] originalSurfaces16,
+      Long2IntOpenHashMap heightCache,
+      int blendRange,
+      ResourceKey<Biome> targetBiome
+  ) {
+    int sizeX = trackedBiome.length;
+    int sizeZ = trackedBiome[0].length;
+
+    if (blendRange <= 0) return packGoal(0, 0.0f);
+
+    for (int d = 1; d <= blendRange; d++) {
+      long sum = 0;
+      int count = 0;
+      boolean foundDifferentBiome = false;
+
+      for (int dx = -d; dx <= d; dx++) {
+        for (int dz = -d; dz <= d; dz++) {
+          if (Math.max(Math.abs(dx), Math.abs(dz)) != d) continue;
+
+          int gx = cx + dx;
+          int gz = cz + dz;
+          if (gx < 0 || gx >= sizeX || gz < 0 || gz >= sizeZ) continue;
+
+          ResourceKey<Biome> nb = trackedBiome[gx][gz];
+          if (nb.equals(centerBiome)) continue;
+          foundDifferentBiome = true;
+          if (!nb.equals(targetBiome)) continue;
+
+          int worldX = chunkStartX + (gx - windowRadius);
+          int worldZ = chunkStartZ + (gz - windowRadius);
+
+          int h = baseHeightForBiome(
+              seed, gen, region, noiseConfig,
+              nb, worldX, worldZ,
+              chunkStartX, chunkStartZ, originalSurfaces16,
+              heightCache
+          );
+
+          sum += h;
+          count++;
+        }
+      }
+
+      if (count > 0) {
+        int goal = Math.round(sum / (float) count);
+        float boundaryFactor = boundaryFactorFromDist(d, blendRange);
+        return packGoal(goal, boundaryFactor);
+      }
+      if (foundDifferentBiome) return packGoal(0, 0.0f);
+    }
+
+    return packGoal(0, 0.0f);
+  }
+
+  private int blendSharedLakeHeight(
+      ResourceKey<Biome> biome,
+      int interior,
+      int goalHeight,
+      float boundaryFactor
+  ) {
+    if (boundaryFactor <= 0.0f) {
+      return clampSharedLakeHeight(biome, interior, 0.0f);
+    }
+
+    float t = boundaryFactor * boundaryFactor * (3.0f - 2.0f * boundaryFactor);
+    int desired = Math.round(Mth.lerpInt(t, interior, goalHeight));
+    int cap = Math.round(boundaryFactor * HARVEST_LAKE_BORDER_MAX_ADJUST_FULL);
+    desired = Mth.clamp(desired, interior - cap, interior + cap);
+    return clampSharedLakeHeight(biome, desired, boundaryFactor);
+  }
+
   private int pumpkinGorgeFinalHeight(
       long seed,
       int worldX,
@@ -836,7 +964,7 @@ public final class WorldHelperForDimension {
 
           ResourceKey<Biome> nb = trackedBiome[gx][gz];
           if (nb.equals(centerBiome)) continue;
-          if (!(!centerBiome.equals(MELON_JUNGLE) || !nb.equals(WHEAT_PLAIN))) continue;
+          if (centerBiome.equals(MELON_JUNGLE) && nb.equals(WHEAT_PLAIN)) continue;
 
           int worldX = chunkStartX + (gx - windowRadius);
           int worldZ = chunkStartZ + (gz - windowRadius);
@@ -953,31 +1081,6 @@ public final class WorldHelperForDimension {
     return chunk.getBlockState(pos);
   }
 
-  private int calculatePumpkinGorgeHeight(
-      int worldX,
-      int worldZ
-  ) {
-    double macro = Math.sin(worldX * 0.035D) + Math.cos(worldZ * 0.032D);
-    double ridges = Math.abs(Math.sin((worldX + worldZ) * 0.08D)) * 24.0D;
-    double spikes = Math.abs(Math.sin(worldX * 0.19D) * Math.cos(worldZ * 0.17D)) * 14.0D;
-    int target = (int) Math.round(SEA_LEVEL + 8 + macro * 6.0D + ridges + spikes);
-    return Mth.clamp(target, SEA_LEVEL + 2, MAX_HEIGHT + 44);
-  }
-
-  private float computePumpkinGorgeDetail(
-      long seed,
-      int worldX,
-      int worldZ
-  ) {
-    double rough = fbmPerlin(seed ^ 0x3C6EF372FE94F82BL, worldX, worldZ, 0.040, 4);
-    double ridged = 1.0 - Math.abs(rough);
-    ridged = ridged * ridged;
-
-    double spikes = fbmPerlin(seed ^ 0x510E527FADE682D1L, worldX, worldZ, 0.085, 3);
-
-    return (float) ((ridged * 22.0 - 10.0) + spikes * 8.0);
-  }
-
   private long packGoal(
       int goalHeight,
       float boundaryFactor
@@ -1020,6 +1123,41 @@ public final class WorldHelperForDimension {
     if (dist > range) return 0.0f;
     float t = 1.0f - (dist - 1) / (float) range;
     return Mth.clamp(t, 0.0f, 1.0f);
+  }
+
+  private int clampSharedLakeHeight(
+      ResourceKey<Biome> biome,
+      int height,
+      float boundaryFactor
+  ) {
+    if (biome.equals(WHEAT_PLAIN)) return clampWheatAdaptive(height, boundaryFactor);
+    if (biome.equals(PUMPKIN_GORGE)) return Mth.clamp(height, SEA_LEVEL + 1, MAX_HEIGHT + 44);
+    return height;
+  }
+
+  private int calculatePumpkinGorgeHeight(
+      int worldX,
+      int worldZ
+  ) {
+    double macro = Math.sin(worldX * 0.035D) + Math.cos(worldZ * 0.032D);
+    double ridges = Math.abs(Math.sin((worldX + worldZ) * 0.08D)) * 24.0D;
+    double spikes = Math.abs(Math.sin(worldX * 0.19D) * Math.cos(worldZ * 0.17D)) * 14.0D;
+    int target = (int) Math.round(SEA_LEVEL + 8 + macro * 6.0D + ridges + spikes);
+    return Mth.clamp(target, SEA_LEVEL + 2, MAX_HEIGHT + 44);
+  }
+
+  private float computePumpkinGorgeDetail(
+      long seed,
+      int worldX,
+      int worldZ
+  ) {
+    double rough = fbmPerlin(seed ^ 0x3C6EF372FE94F82BL, worldX, worldZ, 0.040, 4);
+    double ridged = 1.0 - Math.abs(rough);
+    ridged = ridged * ridged;
+
+    double spikes = fbmPerlin(seed ^ 0x510E527FADE682D1L, worldX, worldZ, 0.085, 3);
+
+    return (float) ((ridged * 22.0 - 10.0) + spikes * 8.0);
   }
 
   private int getPairMaxDelta(
