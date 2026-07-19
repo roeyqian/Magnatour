@@ -282,6 +282,14 @@ public final class StructureMobSpawner {
     );
   }
 
+  private static boolean hasAirColumn(
+      WorldGenLevel level,
+      BlockPos pos
+  ) {
+    return level.getBlockState(pos).isAir()
+        && level.getBlockState(pos.above()).isAir();
+  }
+
   private static <T extends Mob> List<BlockPos> findGroundSpawnCandidates(
       WorldGenLevel level,
       BoundingBox box,
@@ -406,14 +414,6 @@ public final class StructureMobSpawner {
   ) {
     if (min >= max) return min;
     return min + random.nextInt(max - min + 1);
-  }
-
-  private static boolean hasAirColumn(
-      WorldGenLevel level,
-      BlockPos pos
-  ) {
-    return level.getBlockState(pos).isAir()
-        && level.getBlockState(pos.above()).isAir();
   }
 
   private static List<BlockPos> distributeCandidatesByChunk(

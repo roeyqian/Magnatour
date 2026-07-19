@@ -41,9 +41,11 @@ import roeyqian.magnatour.utility.registry.block.RegActiveBlocks;
 import roeyqian.magnatour.utility.registry.block.RegInsertBlocks;
 import roeyqian.magnatour.utility.registry.entity.RegLiveEntities;
 import roeyqian.magnatour.utility.registry.level.RegBiomeSources;
+import roeyqian.magnatour.utility.registry.level.RegChunkGenerators;
 import roeyqian.magnatour.utility.registry.gen.RegComponentTypes;
 import roeyqian.magnatour.utility.registry.gen.RegNetworks;
 import roeyqian.magnatour.utility.registry.level.RegDimensions;
+import roeyqian.magnatour.utility.registry.level.RegFeatures;
 import roeyqian.magnatour.utility.registry.level.RegStructures;
 import roeyqian.magnatour.utility.registry.gen.RegParticles;
 import roeyqian.magnatour.utility.registry.gen.RegRecipes;
@@ -90,8 +92,10 @@ public class Magnatour implements ModInitializer {
     RegParticles.init();
     RegComponentTypes.init();
 
+    RegFeatures.init();
     RegDimensions.init();
     RegBiomeSources.init();
+    RegChunkGenerators.init();
     RegStructures.init();
 
     registerSupremeItemTab();

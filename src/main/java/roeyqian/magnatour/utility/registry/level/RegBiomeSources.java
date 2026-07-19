@@ -13,6 +13,7 @@ import net.minecraft.resources.Identifier;
 // Magnatour
 import roeyqian.magnatour.Magnatour;
 import roeyqian.magnatour.level.biome.HarvestContinentBiomeSource;
+import roeyqian.magnatour.level.biome.OreContinentBiomeSource;
 
 /*
  * Supreme Group: Biome Source
@@ -22,6 +23,7 @@ public final class RegBiomeSources {
 
   // Supreme Group: Biome Source
   public static final Identifier HARVEST_CONTINENT = LevelRegHelper.id("harvest_continent");
+  public static final Identifier ORE_CONTINENT = LevelRegHelper.id("ore_continent");
 
   private RegBiomeSources() {}
 
@@ -29,6 +31,10 @@ public final class RegBiomeSources {
     LevelRegHelper.registerBiomeSource(
         HARVEST_CONTINENT.getPath(),
         HarvestContinentBiomeSource.CODEC
+    );
+    LevelRegHelper.registerBiomeSource(
+        ORE_CONTINENT.getPath(),
+        OreContinentBiomeSource.CODEC
     );
     Magnatour.LOGGER.info("[Server] Initializing 'RegBiomeSources'");
   }

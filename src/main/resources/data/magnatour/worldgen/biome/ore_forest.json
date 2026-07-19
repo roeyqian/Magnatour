@@ -46,7 +46,11 @@
       "magnatour:ore_continent_gold_nether",
       "magnatour:ore_continent_ancient_debris"
     ],
-    [], [], [], []
+    [], [],
+    [
+      "magnatour:ore_forest_trees"
+    ],
+    []
   ],
   "has_precipitation": false,
   "spawn_costs": {},
@@ -62,3 +66,4 @@
   },
   "temperature": 0.8
 }
+

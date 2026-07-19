@@ -15,6 +15,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.biome.BiomeSource;
+import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
 import net.minecraft.world.level.levelgen.structure.Structure;
@@ -39,6 +40,18 @@ public interface LevelRegHelper {
   ) {
     Registry.register(
         (Registry) BuiltInRegistries.BIOME_SOURCE,
+        id(path),
+        codec
+    );
+  }
+
+  @SuppressWarnings({"rawtypes", "unchecked"})
+  static void registerChunkGenerator(
+      String path,
+      MapCodec<? extends ChunkGenerator> codec
+  ) {
+    Registry.register(
+        (Registry) BuiltInRegistries.CHUNK_GENERATOR,
         id(path),
         codec
     );

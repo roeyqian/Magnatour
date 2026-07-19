@@ -1,0 +1,44 @@
+{
+  "type": "minecraft:simple_random_selector",
+  "config": {
+    "features": [
+      {
+        "feature": "magnatour:ore_forest_coal_tree",
+        "placement": []
+      },
+      {
+        "feature": "magnatour:ore_forest_iron_tree",
+        "placement": []
+      },
+      {
+        "feature": "magnatour:ore_forest_copper_tree",
+        "placement": []
+      },
+      {
+        "feature": "magnatour:ore_forest_gold_tree",
+        "placement": []
+      },
+      {
+        "feature": "magnatour:ore_forest_lapis_tree",
+        "placement": []
+      },
+      {
+        "feature": "magnatour:ore_forest_redstone_tree",
+        "placement": []
+      },
+      {
+        "feature": "magnatour:ore_forest_emerald_tree",
+        "placement": []
+      },
+      {
+        "feature": "magnatour:ore_forest_diamond_tree",
+        "placement": []
+      },
+      {
+        "feature": "magnatour:ore_forest_quartz_tree",
+        "placement": []
+      }
+    ]
+  }
+}
+

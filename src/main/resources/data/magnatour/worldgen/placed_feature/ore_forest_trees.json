@@ -1,0 +1,42 @@
+{
+  "feature": "magnatour:ore_forest_trees",
+  "placement": [
+    {
+      "type": "minecraft:count",
+      "count": 7
+    },
+    {
+      "type": "minecraft:in_square"
+    },
+    {
+      "type": "minecraft:heightmap",
+      "heightmap": "MOTION_BLOCKING"
+    },
+    {
+      "type": "minecraft:block_predicate_filter",
+      "predicate": {
+        "type": "minecraft:matching_blocks",
+        "offset": [
+          0,
+          -1,
+          0
+        ],
+        "blocks": [
+          "minecraft:stone",
+          "minecraft:coal_ore",
+          "minecraft:iron_ore",
+          "minecraft:copper_ore",
+          "minecraft:gold_ore",
+          "minecraft:lapis_ore",
+          "minecraft:redstone_ore",
+          "minecraft:emerald_ore",
+          "minecraft:diamond_ore",
+          "minecraft:nether_quartz_ore"
+        ]
+      }
+    },
+    {
+      "type": "minecraft:biome"
+    }
+  ]
+}
