@@ -22,7 +22,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 // Magnatour
-import roeyqian.magnatour.utility.mixin.block.BlockHelperForFunction;
+import roeyqian.magnatour.mixinhelper.block.BlockHelperForFunction;
 
 @Mixin(value = BaseFireBlock.class, priority = 3600000)
 public class BaseFireBlockMixin {

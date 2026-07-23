@@ -24,10 +24,10 @@ import org.jspecify.annotations.NonNull;
 
 // Magnatour
 import roeyqian.magnatour.Magnatour;
-import roeyqian.magnatour.entity.live.BellSoul;
+import roeyqian.magnatour.entity.supreme.BellSoul;
 import roeyqian.magnatour.render.entity.model.BellSoulModel;
 import roeyqian.magnatour.render.entity.state.BellSoulRenderState;
-import roeyqian.magnatour.utility.registry.output.RegEntityLayers;
+import roeyqian.magnatour.registry.output.RegEntityLayers;
 
 @Environment(EnvType.CLIENT)
 public final class BellSoulRenderer extends MobRenderer<BellSoul, BellSoulRenderState, BellSoulModel> {

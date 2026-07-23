@@ -1,0 +1,18 @@
+{
+  "placement": {
+    "type": "minecraft:random_spread",
+    "exclusion_zone": {
+      "chunk_count": 10,
+      "other_set": "magnatour:diamond_city"
+    },
+    "salt": 64018473,
+    "separation": 6,
+    "spacing": 20
+  },
+  "structures": [
+    {
+      "structure": "magnatour:town_of_fortune",
+      "weight": 1
+    }
+  ]
+}

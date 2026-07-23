@@ -30,7 +30,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 // Magnatour
-import roeyqian.magnatour.utility.mixin.render.RenderHelperForGlint;
+import roeyqian.magnatour.mixinhelper.render.RenderHelperForGlint;
 
 @Environment(EnvType.CLIENT) @Mixin(value = EquipmentLayerRenderer.class, priority = 3600000)
 public class EquipmentLayerRendererMixin {

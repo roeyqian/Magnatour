@@ -25,7 +25,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 // Magnatour
-import roeyqian.magnatour.utility.mixin.entity.EntityHelperForEquipment;
+import roeyqian.magnatour.mixinhelper.entity.EntityHelperForEquipment;
 
 @Mixin(value = Player.class, priority = 3600000)
 public class PlayerMixin {

@@ -22,7 +22,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 // Magnatour
-import roeyqian.magnatour.utility.mixin.world.WorldHelperForBlock;
+import roeyqian.magnatour.mixinhelper.world.WorldHelperForBlock;
 
 @Mixin(value = BlockLightEngine.class, priority = 3600000)
 public abstract class BlockLightEngineMixin {

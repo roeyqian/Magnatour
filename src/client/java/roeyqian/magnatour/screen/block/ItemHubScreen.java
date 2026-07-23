@@ -25,9 +25,9 @@ import net.minecraft.world.entity.player.Inventory;
 import org.jspecify.annotations.NonNull;
 
 // Magnatour
-import roeyqian.magnatour.block.active.entity.ItemHubEntity;
-import roeyqian.magnatour.gen.network.ItemHubPayload;
-import roeyqian.magnatour.menu.block.ItemHubMenu;
+import roeyqian.magnatour.blockentity.supreme.ItemHubEntity;
+import roeyqian.magnatour.level.network.ItemHubPayload;
+import roeyqian.magnatour.menu.supreme.ItemHubMenu;
 
 public class ItemHubScreen extends AbstractContainerScreen<ItemHubMenu> {
 

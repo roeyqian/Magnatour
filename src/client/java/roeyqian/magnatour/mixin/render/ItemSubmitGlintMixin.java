@@ -19,7 +19,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 
 // Magnatour
-import roeyqian.magnatour.utility.mixin.render.RenderHelperForGlint;
+import roeyqian.magnatour.mixinhelper.render.RenderHelperForGlint;
 
 @Environment(EnvType.CLIENT) @Mixin(value = ItemFeatureRenderer.Submit.class, priority = 3600000)
 public class ItemSubmitGlintMixin implements RenderHelperForGlint.UniverseGlintHolder {

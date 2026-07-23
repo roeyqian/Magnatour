@@ -21,7 +21,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 // Magnatour
-import roeyqian.magnatour.utility.mixin.world.WorldHelperForBossFight;
+import roeyqian.magnatour.mixinhelper.world.WorldHelperForBossFight;
 
 @Mixin(value = EnderDragonFight.class, priority = 3600000)
 public abstract class EnderDragonFightMixin {

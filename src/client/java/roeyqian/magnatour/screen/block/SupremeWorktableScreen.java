@@ -17,7 +17,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 
 // Magnatour
-import roeyqian.magnatour.menu.block.SupremeWorktableMenu;
+import roeyqian.magnatour.menu.supreme.SupremeWorktableMenu;
 import roeyqian.magnatour.screen.recipe.SupremeCraftingBookComponent;
 
 public class SupremeWorktableScreen extends AbstractRecipeBookScreen<SupremeWorktableMenu> {

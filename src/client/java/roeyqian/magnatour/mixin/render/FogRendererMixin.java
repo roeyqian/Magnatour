@@ -21,7 +21,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 // Magnatour
-import roeyqian.magnatour.utility.mixin.render.RenderHelperForEquipment;
+import roeyqian.magnatour.mixinhelper.render.RenderHelperForEquipment;
 
 @Mixin(value = FogRenderer.class, priority = 3600000)
 public class FogRendererMixin {

@@ -20,7 +20,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 // Magnatour
-import roeyqian.magnatour.utility.mixin.block.BlockHelperForFarming;
+import roeyqian.magnatour.mixinhelper.block.BlockHelperForFarming;
 
 @Mixin(value = CropBlock.class, priority = 3600000)
 public class CropBlockMixin {

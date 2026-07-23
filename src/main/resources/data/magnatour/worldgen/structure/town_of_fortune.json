@@ -1,0 +1,7 @@
+{
+  "type": "magnatour:town_of_fortune",
+  "biomes": "#magnatour:has_structure/town_of_fortune",
+  "spawn_overrides": {},
+  "step": "surface_structures",
+  "terrain_adaptation": "beard_thin"
+}

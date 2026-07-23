@@ -21,10 +21,10 @@ import org.jspecify.annotations.NonNull;
 
 // Magnatour
 import roeyqian.magnatour.Magnatour;
-import roeyqian.magnatour.entity.live.SculkBehemoth;
+import roeyqian.magnatour.entity.supreme.SculkBehemoth;
 import roeyqian.magnatour.render.entity.model.SculkBehemothModel;
 import roeyqian.magnatour.render.entity.state.SculkBehemothRenderState;
-import roeyqian.magnatour.utility.registry.output.RegEntityLayers;
+import roeyqian.magnatour.registry.output.RegEntityLayers;
 
 @Environment(EnvType.CLIENT)
 public final class SculkBehemothRenderer extends MobRenderer<SculkBehemoth, SculkBehemothRenderState, SculkBehemothModel> {

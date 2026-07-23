@@ -23,7 +23,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.objectweb.asm.Opcodes;
 
 // Magnatour
-import roeyqian.magnatour.utility.mixin.render.RenderHelperForFunction;
+import roeyqian.magnatour.mixinhelper.render.RenderHelperForFunction;
 
 @Mixin(value = GameRenderer.class, priority = 3600000)
 public class GameRendererMixin {

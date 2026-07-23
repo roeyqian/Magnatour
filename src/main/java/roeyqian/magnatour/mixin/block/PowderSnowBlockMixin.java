@@ -18,7 +18,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 // Magnatour
-import roeyqian.magnatour.utility.mixin.block.BlockHelperForEquipment;
+import roeyqian.magnatour.mixinhelper.block.BlockHelperForEquipment;
 
 @Mixin(value = PowderSnowBlock.class, priority = 3600000)
 public class PowderSnowBlockMixin {

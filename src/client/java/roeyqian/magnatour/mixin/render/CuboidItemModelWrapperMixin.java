@@ -30,7 +30,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.jspecify.annotations.Nullable;
 
 // Magnatour
-import roeyqian.magnatour.utility.mixin.render.RenderHelperForGlint;
+import roeyqian.magnatour.mixinhelper.render.RenderHelperForGlint;
 
 @Environment(EnvType.CLIENT) @Mixin(value = CuboidItemModelWrapper.class, priority = 3600000)
 public class CuboidItemModelWrapperMixin {

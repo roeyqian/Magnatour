@@ -19,7 +19,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 // Magnatour
-import roeyqian.magnatour.utility.mixin.entity.EntityClientHelperForFunction;
+import roeyqian.magnatour.mixinhelper.entity.EntityClientHelperForFunction;
 
 @Mixin(value = LivingEntity.class, priority = 3600000)
 public class LivingEntityClientMixin {

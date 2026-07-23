@@ -27,7 +27,7 @@ import net.minecraft.world.item.component.ItemLore;
 
 // Magnatour
 import roeyqian.magnatour.Magnatour;
-import roeyqian.magnatour.utility.registry.gen.RegComponentTypes;
+import roeyqian.magnatour.registry.logic.RegComponentTypes;
 
 public interface CustomItemSetting {
 

@@ -20,7 +20,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 // Magnatour
-import roeyqian.magnatour.utility.mixin.entity.EntityHelperForCreature;
+import roeyqian.magnatour.mixinhelper.entity.EntityHelperForCreature;
 
 @Mixin(value = RangedAttribute.class, priority = 3600000)
 public abstract class RangedAttributeMixin {

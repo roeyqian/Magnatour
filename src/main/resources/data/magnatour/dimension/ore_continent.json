@@ -33,7 +33,8 @@
         }
       ],
       "structure_overrides": [
-        "magnatour:diamond_city"
+        "magnatour:diamond_city",
+        "magnatour:town_of_fortune"
       ]
     }
   }

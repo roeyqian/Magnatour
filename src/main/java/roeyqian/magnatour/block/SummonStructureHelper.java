@@ -39,12 +39,12 @@ import net.minecraft.world.level.block.state.predicate.BlockStatePredicate;
 import org.jspecify.annotations.Nullable;
 
 // Magnatour
-import roeyqian.magnatour.entity.live.NetheriteGolem;
-import roeyqian.magnatour.entity.live.ObsidianGolem;
-import roeyqian.magnatour.entity.live.PaleLord;
-import roeyqian.magnatour.entity.live.SculkBehemoth;
-import roeyqian.magnatour.utility.registry.block.RegInsertBlocks;
-import roeyqian.magnatour.utility.registry.entity.RegLiveEntities;
+import roeyqian.magnatour.entity.supreme.NetheriteGolem;
+import roeyqian.magnatour.entity.supreme.ObsidianGolem;
+import roeyqian.magnatour.entity.supreme.PaleLord;
+import roeyqian.magnatour.entity.supreme.SculkBehemoth;
+import roeyqian.magnatour.registry.content.RegInsertBlocks;
+import roeyqian.magnatour.registry.content.RegLiveEntities;
 
 public final class SummonStructureHelper {
 

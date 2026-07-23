@@ -20,8 +20,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 // Magnatour
-import roeyqian.magnatour.block.SummonStructureHelper;
-import roeyqian.magnatour.utility.mixin.block.BlockHelperForFunction;
+import roeyqian.magnatour.mixinhelper.block.BlockHelperForFunction;
 
 @Mixin(value = BlockBehaviour.class, priority = 3600000)
 public class BlockBehaviorMixin {

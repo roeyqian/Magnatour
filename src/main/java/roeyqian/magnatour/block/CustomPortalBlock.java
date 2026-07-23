@@ -40,8 +40,8 @@ import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 // Magnatour
-import roeyqian.magnatour.utility.registry.block.RegInsertBlocks;
-import roeyqian.magnatour.utility.registry.level.RegDimensions;
+import roeyqian.magnatour.registry.content.RegInsertBlocks;
+import roeyqian.magnatour.registry.worldgen.RegDimensions;
 
 public interface CustomPortalBlock {
 

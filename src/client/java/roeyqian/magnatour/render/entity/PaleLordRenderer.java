@@ -24,7 +24,7 @@ import org.jspecify.annotations.NonNull;
 import roeyqian.magnatour.Magnatour;
 import roeyqian.magnatour.render.entity.model.PaleLordModel;
 import roeyqian.magnatour.render.entity.state.PaleLordRenderState;
-import roeyqian.magnatour.utility.registry.output.RegEntityLayers;
+import roeyqian.magnatour.registry.output.RegEntityLayers;
 
 @Environment(EnvType.CLIENT)
 public final class PaleLordRenderer extends MobRenderer<Monster, PaleLordRenderState, PaleLordModel> {

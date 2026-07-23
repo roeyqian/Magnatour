@@ -24,10 +24,10 @@ import org.jspecify.annotations.NonNull;
 
 // Magnatour
 import roeyqian.magnatour.Magnatour;
-import roeyqian.magnatour.entity.live.TheUnnameableThing;
+import roeyqian.magnatour.entity.supreme.TheUnnameableThing;
 import roeyqian.magnatour.render.entity.model.TheUnnameableThingModel;
 import roeyqian.magnatour.render.entity.state.TheUnnameableThingRenderState;
-import roeyqian.magnatour.utility.registry.output.RegEntityLayers;
+import roeyqian.magnatour.registry.output.RegEntityLayers;
 
 @Environment(EnvType.CLIENT)
 public final class TheUnnameableThingRenderer extends MobRenderer<TheUnnameableThing, TheUnnameableThingRenderState, TheUnnameableThingModel> {

@@ -21,10 +21,10 @@ import org.jspecify.annotations.NonNull;
 
 // Magnatour
 import roeyqian.magnatour.Magnatour;
-import roeyqian.magnatour.entity.live.UniverseGuardian;
+import roeyqian.magnatour.entity.universe.UniverseGuardian;
 import roeyqian.magnatour.render.entity.model.UniverseGuardianModel;
 import roeyqian.magnatour.render.entity.state.UniverseGuardianRenderState;
-import roeyqian.magnatour.utility.registry.output.RegEntityLayers;
+import roeyqian.magnatour.registry.output.RegEntityLayers;
 
 @Environment(EnvType.CLIENT)
 public final class UniverseGuardianRenderer extends MobRenderer<UniverseGuardian, UniverseGuardianRenderState, UniverseGuardianModel> {

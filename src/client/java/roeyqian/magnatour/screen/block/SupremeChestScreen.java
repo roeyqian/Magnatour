@@ -17,7 +17,7 @@ import net.minecraft.world.entity.player.Inventory;
 
 // Magnatour
 import roeyqian.magnatour.Magnatour;
-import roeyqian.magnatour.menu.block.SupremeChestMenu;
+import roeyqian.magnatour.menu.supreme.SupremeChestMenu;
 
 public class SupremeChestScreen extends AbstractContainerScreen<SupremeChestMenu> {
 

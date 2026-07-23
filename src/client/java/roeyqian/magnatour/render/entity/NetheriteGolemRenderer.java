@@ -29,7 +29,7 @@ import org.jspecify.annotations.NonNull;
 
 // Magnatour
 import roeyqian.magnatour.Magnatour;
-import roeyqian.magnatour.entity.live.NetheriteGolem;
+import roeyqian.magnatour.entity.supreme.NetheriteGolem;
 import roeyqian.magnatour.render.entity.model.CustomGolemModel;
 import roeyqian.magnatour.render.entity.state.CustomGolemRenderState;
 

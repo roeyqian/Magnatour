@@ -22,7 +22,7 @@ import org.jspecify.annotations.NonNull;
 
 // Magnatour
 import roeyqian.magnatour.Magnatour;
-import roeyqian.magnatour.menu.block.UniverseLibraryMenu;
+import roeyqian.magnatour.menu.universe.UniverseLibraryMenu;
 
 public class UniverseLibraryScreen extends AbstractContainerScreen<UniverseLibraryMenu> {
 

@@ -43,10 +43,10 @@ import org.jspecify.annotations.Nullable;
 
 // Magnatour
 import roeyqian.magnatour.Magnatour;
-import roeyqian.magnatour.block.active.SupremeChest;
-import roeyqian.magnatour.block.active.entity.SupremeChestEntity;
+import roeyqian.magnatour.block.supreme.SupremeChest;
+import roeyqian.magnatour.blockentity.supreme.SupremeChestEntity;
 import roeyqian.magnatour.render.block.state.SupremeChestRenderState;
-import roeyqian.magnatour.utility.registry.output.RegEntityLayers;
+import roeyqian.magnatour.registry.output.RegEntityLayers;
 
 @Environment(EnvType.CLIENT)
 public final class SupremeChestRenderer implements BlockEntityRenderer<SupremeChestEntity, SupremeChestRenderState> {

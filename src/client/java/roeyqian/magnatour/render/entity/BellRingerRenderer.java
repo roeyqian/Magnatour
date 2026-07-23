@@ -22,9 +22,9 @@ import org.jspecify.annotations.NonNull;
 
 // Magnatour
 import roeyqian.magnatour.Magnatour;
-import roeyqian.magnatour.entity.live.BellRinger;
+import roeyqian.magnatour.entity.supreme.BellRinger;
 import roeyqian.magnatour.render.entity.model.BellRingerModel;
-import roeyqian.magnatour.utility.registry.output.RegEntityLayers;
+import roeyqian.magnatour.registry.output.RegEntityLayers;
 
 @Environment(EnvType.CLIENT)
 public final class BellRingerRenderer extends HumanoidMobRenderer<BellRinger, HumanoidRenderState, BellRingerModel> {

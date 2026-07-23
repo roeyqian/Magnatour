@@ -38,8 +38,8 @@ import org.jspecify.annotations.Nullable;
 
 // Magnatour
 import roeyqian.magnatour.Magnatour;
-import roeyqian.magnatour.block.active.UniverseLibrary;
-import roeyqian.magnatour.block.active.entity.UniverseLibraryEntity;
+import roeyqian.magnatour.block.universe.UniverseLibrary;
+import roeyqian.magnatour.blockentity.universe.UniverseLibraryEntity;
 import roeyqian.magnatour.render.block.state.UniverseLibraryRenderState;
 
 @Environment(EnvType.CLIENT)

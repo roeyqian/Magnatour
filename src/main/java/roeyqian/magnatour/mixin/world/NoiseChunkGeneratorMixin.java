@@ -21,7 +21,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 // Magnatour
-import roeyqian.magnatour.utility.mixin.world.WorldHelperForDimension;
+import roeyqian.magnatour.mixinhelper.world.WorldHelperForDimension;
 
 @Mixin(value = NoiseBasedChunkGenerator.class, priority = 3600000)
 public class NoiseChunkGeneratorMixin {

@@ -21,7 +21,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 // Magnatour
-import roeyqian.magnatour.utility.mixin.client.ClientHelperForEquipment;
+import roeyqian.magnatour.mixinhelper.client.ClientHelperForEquipment;
 
 @Mixin(value = Gui.class, priority = 3600000)
 public class GuiMixin {

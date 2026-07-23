@@ -22,7 +22,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 // Magnatour
-import roeyqian.magnatour.utility.mixin.item.ItemHelperForEnchantment;
+import roeyqian.magnatour.mixinhelper.item.ItemHelperForEnchantment;
 
 @Mixin(value = ItemStack.class, priority = 3600000)
 public class ItemStackMixin {

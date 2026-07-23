@@ -31,9 +31,9 @@ import org.jspecify.annotations.NonNull;
 
 // Magnatour
 import roeyqian.magnatour.Magnatour;
-import roeyqian.magnatour.gen.network.UniverseConsoleBoundBlockPayload;
-import roeyqian.magnatour.item.durable.UniverseConsole;
-import roeyqian.magnatour.menu.item.UniverseConsoleMenu;
+import roeyqian.magnatour.level.network.UniverseConsoleBoundBlockPayload;
+import roeyqian.magnatour.item.universe.UniverseConsole;
+import roeyqian.magnatour.menu.universe.UniverseConsoleMenu;
 
 public class UniverseConsoleScreen extends AbstractContainerScreen<UniverseConsoleMenu> {
 

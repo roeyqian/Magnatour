@@ -24,7 +24,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 // Magnatour
-import roeyqian.magnatour.utility.mixin.server.ServerHelperForEquipment;
+import roeyqian.magnatour.mixinhelper.server.ServerHelperForEquipment;
 
 @Mixin(value = ServerPlayerGameMode.class, priority = 3600000)
 public class ServerPlayerGameModeMixin {

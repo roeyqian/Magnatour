@@ -31,9 +31,9 @@ import org.jspecify.annotations.NonNull;
 
 // Magnatour
 import roeyqian.magnatour.mixin.screen.GhostSlotsInvoker;
-import roeyqian.magnatour.utility.registry.item.RegConsumableItems;
-import roeyqian.magnatour.utility.registry.gen.RegRecipes;
-import roeyqian.magnatour.menu.block.UniverseRefineryMenu;
+import roeyqian.magnatour.registry.content.RegConsumableItems;
+import roeyqian.magnatour.registry.logic.RegRecipes;
+import roeyqian.magnatour.menu.universe.UniverseRefineryMenu;
 
 public final class UniverseCookingBookComponent extends RecipeBookComponent<UniverseRefineryMenu> {
 

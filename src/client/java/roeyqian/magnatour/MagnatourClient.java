@@ -22,12 +22,12 @@ import net.fabricmc.api.Environment;
 import net.fabricmc.api.ClientModInitializer;
 
 // Magnatour
-import roeyqian.magnatour.utility.registry.input.RegKeyBindings;
-import roeyqian.magnatour.utility.registry.output.RegEntityLayers;
-import roeyqian.magnatour.utility.registry.output.RegBlockLayers;
-import roeyqian.magnatour.utility.registry.output.RegParticles;
-import roeyqian.magnatour.utility.registry.output.RegScreens;
-import roeyqian.magnatour.utility.registry.input.RegUniverseBootsFlashing;
+import roeyqian.magnatour.registry.input.RegKeyBindings;
+import roeyqian.magnatour.registry.output.RegEntityLayers;
+import roeyqian.magnatour.registry.output.RegBlockLayers;
+import roeyqian.magnatour.registry.output.RegParticles;
+import roeyqian.magnatour.registry.output.RegScreens;
+import roeyqian.magnatour.registry.input.RegUniverseBootsFlashing;
 
 @Environment(EnvType.CLIENT)
 public class MagnatourClient implements ClientModInitializer {

@@ -30,10 +30,10 @@ import net.minecraft.world.item.crafting.display.RecipeDisplay;
 import org.jspecify.annotations.NonNull;
 
 // Magnatour
-import roeyqian.magnatour.menu.block.SupremeFurnaceMenu;
+import roeyqian.magnatour.menu.supreme.SupremeFurnaceMenu;
 import roeyqian.magnatour.mixin.screen.GhostSlotsInvoker;
-import roeyqian.magnatour.utility.registry.gen.RegRecipes;
-import roeyqian.magnatour.utility.registry.item.RegConsumableItems;
+import roeyqian.magnatour.registry.logic.RegRecipes;
+import roeyqian.magnatour.registry.content.RegConsumableItems;
 
 public final class SupremeCookingBookComponent extends RecipeBookComponent<SupremeFurnaceMenu> {
 

@@ -29,10 +29,10 @@ import net.minecraft.world.item.crafting.display.RecipeDisplay;
 import org.jspecify.annotations.NonNull;
 
 // Magnatour
-import roeyqian.magnatour.utility.registry.item.RegConsumableItems;
+import roeyqian.magnatour.registry.content.RegConsumableItems;
 import roeyqian.magnatour.mixin.screen.GhostSlotsInvoker;
-import roeyqian.magnatour.utility.registry.gen.RegRecipes;
-import roeyqian.magnatour.menu.block.SupremeWorktableMenu;
+import roeyqian.magnatour.registry.logic.RegRecipes;
+import roeyqian.magnatour.menu.supreme.SupremeWorktableMenu;
 import roeyqian.magnatour.screen.CustomRecipeDisplay;
 
 public final class SupremeCraftingBookComponent extends RecipeBookComponent<SupremeWorktableMenu> {

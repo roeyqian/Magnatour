@@ -36,23 +36,23 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 // Magnatour
-import roeyqian.magnatour.utility.registry.block.RegBlockEntities;
-import roeyqian.magnatour.utility.registry.block.RegActiveBlocks;
-import roeyqian.magnatour.utility.registry.block.RegInsertBlocks;
-import roeyqian.magnatour.utility.registry.entity.RegLiveEntities;
-import roeyqian.magnatour.utility.registry.level.RegBiomeSources;
-import roeyqian.magnatour.utility.registry.level.RegChunkGenerators;
-import roeyqian.magnatour.utility.registry.gen.RegComponentTypes;
-import roeyqian.magnatour.utility.registry.gen.RegNetworks;
-import roeyqian.magnatour.utility.registry.level.RegDimensions;
-import roeyqian.magnatour.utility.registry.level.RegFeatures;
-import roeyqian.magnatour.utility.registry.level.RegStructures;
-import roeyqian.magnatour.utility.registry.gen.RegParticles;
-import roeyqian.magnatour.utility.registry.gen.RegRecipes;
-import roeyqian.magnatour.utility.registry.item.RegConsumableItems;
-import roeyqian.magnatour.utility.registry.item.RegDurableItems;
-import roeyqian.magnatour.utility.registry.menu.RegBlockMenus;
-import roeyqian.magnatour.utility.registry.menu.RegItemMenus;
+import roeyqian.magnatour.registry.content.RegBlockEntities;
+import roeyqian.magnatour.registry.content.RegActiveBlocks;
+import roeyqian.magnatour.registry.content.RegInsertBlocks;
+import roeyqian.magnatour.registry.content.RegLiveEntities;
+import roeyqian.magnatour.registry.worldgen.RegBiomeSources;
+import roeyqian.magnatour.registry.worldgen.RegChunkGenerators;
+import roeyqian.magnatour.registry.logic.RegComponentTypes;
+import roeyqian.magnatour.registry.logic.RegNetworks;
+import roeyqian.magnatour.registry.worldgen.RegDimensions;
+import roeyqian.magnatour.registry.worldgen.RegFeatures;
+import roeyqian.magnatour.registry.worldgen.RegStructures;
+import roeyqian.magnatour.registry.logic.RegParticles;
+import roeyqian.magnatour.registry.logic.RegRecipes;
+import roeyqian.magnatour.registry.content.RegConsumableItems;
+import roeyqian.magnatour.registry.content.RegDurableItems;
+import roeyqian.magnatour.registry.content.RegBlockMenus;
+import roeyqian.magnatour.registry.content.RegItemMenus;
 
 public class Magnatour implements ModInitializer {
 

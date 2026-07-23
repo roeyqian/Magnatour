@@ -15,7 +15,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 
 // Magnatour
-import roeyqian.magnatour.entity.live.PaleLordClone;
+import roeyqian.magnatour.entity.supreme.PaleLordClone;
 
 public final class PaleLordCommon {
 

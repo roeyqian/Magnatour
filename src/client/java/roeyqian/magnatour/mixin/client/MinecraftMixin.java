@@ -17,7 +17,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 // Magnatour
-import roeyqian.magnatour.utility.mixin.client.ClientHelperForEquipment;
+import roeyqian.magnatour.mixinhelper.client.ClientHelperForEquipment;
 
 @Mixin(value = Minecraft.class, priority = 3600000)
 public class MinecraftMixin {

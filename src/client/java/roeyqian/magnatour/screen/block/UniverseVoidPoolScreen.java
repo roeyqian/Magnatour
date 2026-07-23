@@ -17,7 +17,7 @@ import net.minecraft.world.entity.player.Inventory;
 
 // Magnatour
 import roeyqian.magnatour.Magnatour;
-import roeyqian.magnatour.menu.block.UniverseVoidPoolMenu;
+import roeyqian.magnatour.menu.universe.UniverseVoidPoolMenu;
 
 public class UniverseVoidPoolScreen extends AbstractContainerScreen<UniverseVoidPoolMenu> {
 

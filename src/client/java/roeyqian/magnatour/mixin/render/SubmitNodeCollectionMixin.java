@@ -29,7 +29,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 // Magnatour
-import roeyqian.magnatour.utility.mixin.render.RenderHelperForGlint;
+import roeyqian.magnatour.mixinhelper.render.RenderHelperForGlint;
 
 @Environment(EnvType.CLIENT) @Mixin(value = SubmitNodeCollection.class, priority = 3600000)
 public class SubmitNodeCollectionMixin {

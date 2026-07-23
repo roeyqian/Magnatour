@@ -38,9 +38,9 @@ import org.jspecify.annotations.NonNull;
 
 // Magnatour
 import roeyqian.magnatour.Magnatour;
-import roeyqian.magnatour.block.active.entity.UniverseTeleportPointEntity;
-import roeyqian.magnatour.gen.network.UniverseTeleportPointPayload;
-import roeyqian.magnatour.menu.block.UniverseTeleportPointMenu;
+import roeyqian.magnatour.blockentity.universe.UniverseTeleportPointEntity;
+import roeyqian.magnatour.level.network.UniverseTeleportPointPayload;
+import roeyqian.magnatour.menu.universe.UniverseTeleportPointMenu;
 
 public class UniverseTeleportPointScreen extends AbstractContainerScreen<UniverseTeleportPointMenu> {
 

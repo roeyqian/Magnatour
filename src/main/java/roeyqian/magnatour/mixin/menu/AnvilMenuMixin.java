@@ -17,7 +17,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 // Magnatour
-import roeyqian.magnatour.utility.mixin.menu.MenuHelperForEnchantment;
+import roeyqian.magnatour.mixinhelper.menu.MenuHelperForEnchantment;
 
 @Mixin(value = AnvilMenu.class, priority = 3600000)
 public class AnvilMenuMixin {
