@@ -14,7 +14,7 @@ import net.fabricmc.fabric.api.client.particle.v1.ParticleProviderRegistry;
 
 // Magnatour
 import roeyqian.magnatour.Magnatour;
-import roeyqian.magnatour.render.particle.UniverseSonicBoomParticle;
+import roeyqian.magnatour.particle.UniverseSonicBoomParticle;
 
 @Environment(EnvType.CLIENT)
 public final class RegParticles {

@@ -25,7 +25,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 // Magnatour
 import roeyqian.magnatour.Magnatour;
-import roeyqian.magnatour.screen.recipe.UniverseCraftingBookComponent;
+import roeyqian.magnatour.screen.universe.UniverseCraftingBookComponent;
 
 public final class ScreenHelperForRecipe {
 

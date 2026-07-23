@@ -27,7 +27,7 @@ import net.minecraft.world.item.ItemStack;
 
 // Magnatour
 import roeyqian.magnatour.mixin.render.ItemStackRenderStateAccessor;
-import roeyqian.magnatour.render.type.GlintRenderTypes;
+import roeyqian.magnatour.renderer.GlintRenderTypes;
 import roeyqian.magnatour.registry.logic.RegComponentTypes;
 
 @Environment(EnvType.CLIENT)

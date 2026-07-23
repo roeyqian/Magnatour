@@ -20,22 +20,22 @@ import net.minecraft.resources.Identifier;
 
 // Magnatour
 import roeyqian.magnatour.Magnatour;
-import roeyqian.magnatour.render.entity.model.BellRingerModel;
-import roeyqian.magnatour.render.entity.model.BellSoulModel;
-import roeyqian.magnatour.render.entity.model.CustomGolemModel;
-import roeyqian.magnatour.render.entity.model.PaleLordModel;
-import roeyqian.magnatour.render.entity.model.SupremeChestModel;
-import roeyqian.magnatour.render.entity.model.SculkBehemothModel;
-import roeyqian.magnatour.render.entity.model.TheUnnameableThingModel;
-import roeyqian.magnatour.render.entity.model.UniverseGuardianModel;
-import roeyqian.magnatour.render.entity.BellRingerRenderer;
-import roeyqian.magnatour.render.entity.BellSoulRenderer;
-import roeyqian.magnatour.render.entity.NetheriteGolemRenderer;
-import roeyqian.magnatour.render.entity.PaleLordRenderer;
-import roeyqian.magnatour.render.entity.SculkBehemothRenderer;
-import roeyqian.magnatour.render.entity.TheUnnameableThingRenderer;
-import roeyqian.magnatour.render.entity.UniverseGuardianRenderer;
-import roeyqian.magnatour.render.entity.ObsidianGolemRenderer;
+import roeyqian.magnatour.model.supreme.BellRingerModel;
+import roeyqian.magnatour.model.supreme.BellSoulModel;
+import roeyqian.magnatour.model.supreme.CustomGolemModel;
+import roeyqian.magnatour.model.supreme.PaleLordModel;
+import roeyqian.magnatour.model.supreme.SupremeChestModel;
+import roeyqian.magnatour.model.supreme.SculkBehemothModel;
+import roeyqian.magnatour.model.supreme.TheUnnameableThingModel;
+import roeyqian.magnatour.model.universe.UniverseGuardianModel;
+import roeyqian.magnatour.renderer.supreme.BellRingerRenderer;
+import roeyqian.magnatour.renderer.supreme.BellSoulRenderer;
+import roeyqian.magnatour.renderer.supreme.NetheriteGolemRenderer;
+import roeyqian.magnatour.renderer.supreme.PaleLordRenderer;
+import roeyqian.magnatour.renderer.supreme.SculkBehemothRenderer;
+import roeyqian.magnatour.renderer.supreme.TheUnnameableThingRenderer;
+import roeyqian.magnatour.renderer.universe.UniverseGuardianRenderer;
+import roeyqian.magnatour.renderer.supreme.ObsidianGolemRenderer;
 import roeyqian.magnatour.registry.content.RegLiveEntities;
 
 @Environment(EnvType.CLIENT)

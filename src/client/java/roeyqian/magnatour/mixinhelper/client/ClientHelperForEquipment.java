@@ -42,7 +42,7 @@ import org.lwjgl.glfw.GLFW;
 import roeyqian.magnatour.level.network.UniverseBucketPickupPayload;
 import roeyqian.magnatour.item.universe.UniverseBucket;
 import roeyqian.magnatour.mixin.screen.WindowAccessor;
-import roeyqian.magnatour.screen.item.UniverseConsoleScreen;
+import roeyqian.magnatour.screen.universe.UniverseConsoleScreen;
 
 @Environment(EnvType.CLIENT)
 public final class ClientHelperForEquipment {
