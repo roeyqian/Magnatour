@@ -21,8 +21,6 @@ import roeyqian.magnatour.item.CustomItemSetting;
 import roeyqian.magnatour.item.supreme.StrangeLingeringPotion;
 import roeyqian.magnatour.item.supreme.StrangePotion;
 import roeyqian.magnatour.item.supreme.StrangeSplashPotion;
-import roeyqian.magnatour.item.universe.UniverseBanquet;
-import roeyqian.magnatour.item.universe.UniverseGuardianSpawnEgg;
 import roeyqian.magnatour.item.universe.UniverseStar;
 import roeyqian.magnatour.registry.ItemRegHelper;
 
@@ -124,8 +122,10 @@ public final class RegConsumableItems {
   );
   // Universe Group: Tonic
   public static final Item UNIVERSE_BANQUET = ItemRegHelper.registerConsumableItem(
-      "universe_banquet", 16,
-      UniverseBanquet::new, new Item.Properties()
+      "universe_banquet", 64, Item::new,
+      CustomItemSetting.applyUniverseDefaults(
+          new Item.Properties().food(new FoodProperties(100000, 10000000.0F, true))
+      )
   );
   public static final Item UNIVERSE_DARK = ItemRegHelper.registerConsumableItem(
       "universe_dark", 64, Item::new,
@@ -158,8 +158,10 @@ public final class RegConsumableItems {
   );
   // Universe Group: Spawn Egg
   public static final Item UNIVERSE_GUARDIAN_SPAWN_EGG = ItemRegHelper.registerConsumableItem(
-      "universe_guardian_spawn_egg", 16,
-      UniverseGuardianSpawnEgg::new, new Item.Properties()
+      "universe_guardian_spawn_egg", 64, SpawnEggItem::new,
+      CustomItemSetting.applyUniverseDefaults(
+          new Item.Properties().spawnEgg(RegLiveEntities.UNIVERSE_GUARDIAN)
+      )
   );
   public static final Item UNIVERSE_LIGHT = ItemRegHelper.registerConsumableItem(
       "universe_light", 64, Item::new,
