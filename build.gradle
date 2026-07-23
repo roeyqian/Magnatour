@@ -881,19 +881,19 @@ def hasModifier = { tree, Modifier modifier ->
 	tree.modifiers.flags.contains(modifier)
 }
 
-def isUtilityRegistryPackage = { Object compilationUnit ->
+def isRegistryPackage = { Object compilationUnit ->
 	def packageName = compilationUnit.packageName?.toString()
 	if (packageName == null) {
 		return false
 	}
 
-	packageName == "utility.registry"
-			|| packageName.endsWith(".utility.registry")
-			|| packageName.contains(".utility.registry.")
+	packageName == "registry"
+			|| packageName.endsWith(".registry")
+			|| packageName.contains(".registry.")
 }
 
 def shouldSkipJavaDeclarationFormatting = { ClassTree classTree, Object compilationUnit ->
-	if (!isUtilityRegistryPackage(compilationUnit)) {
+	if (!isRegistryPackage(compilationUnit)) {
 		return false
 	}
 
