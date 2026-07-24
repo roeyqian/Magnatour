@@ -40,7 +40,7 @@ import org.jspecify.annotations.NonNull;
 // Magnatour
 import roeyqian.magnatour.block.CustomContainer;
 import roeyqian.magnatour.menu.universe.UniverseLibraryMenu;
-import roeyqian.magnatour.registry.content.RegBlockEntities;
+import roeyqian.magnatour.registry.content.UniverseBlockEntities;
 
 public class UniverseLibraryEntity extends BlockEntity implements MenuProvider, CustomContainer {
 
@@ -106,7 +106,7 @@ public class UniverseLibraryEntity extends BlockEntity implements MenuProvider, 
       BlockPos pos,
       BlockState state
   ) {
-    super(RegBlockEntities.UNIVERSE_LIBRARY_ENTITY, pos, state);
+    super(UniverseBlockEntities.UNIVERSE_LIBRARY_ENTITY, pos, state);
   }
 
   public static void tick(

@@ -25,8 +25,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 // Magnatour
 import roeyqian.magnatour.item.universe.UniverseOmniBlade;
-import roeyqian.magnatour.registry.logic.RegComponentTypes;
-import roeyqian.magnatour.registry.content.RegDurableItems;
+import roeyqian.magnatour.registry.content.UniverseItems;
+import roeyqian.magnatour.registry.logic.CustomComponents;
 
 public final class BlockHelperForEquipment {
 
@@ -45,7 +45,7 @@ public final class BlockHelperForEquipment {
     }
 
     ItemStack boots = player.getItemBySlot(EquipmentSlot.FEET);
-    if (boots.is(RegDurableItems.UNIVERSE_BOOTS)) {
+    if (boots.is(UniverseItems.UNIVERSE_BOOTS)) {
       cir.setReturnValue(true);
     }
   }
@@ -55,16 +55,16 @@ public final class BlockHelperForEquipment {
       CallbackInfoReturnable<Float> cir
   ) {
     ItemStack stack = player.getItemInHand(player.getUsedItemHand());
-    if (stack.is(RegDurableItems.UNIVERSE_ULTIMA_SWORD)) {
+    if (stack.is(UniverseItems.UNIVERSE_ULTIMA_SWORD)) {
       cir.setReturnValue(UNIVERSE_ULTIMA_SWORD_DESTROY_PROGRESS);
       return;
     }
 
-    if (!stack.is(RegDurableItems.UNIVERSE_OMNI_BLADE)) {
+    if (!stack.is(UniverseItems.UNIVERSE_OMNI_BLADE)) {
       return;
     }
 
-    int mode = stack.getOrDefault(RegComponentTypes.UNIVERSE_OMNI_BLADE_MODE, 0);
+    int mode = stack.getOrDefault(CustomComponents.UNIVERSE_OMNI_BLADE_MODE, 0);
     if (mode == 0) {
       cir.setReturnValue(UNIVERSE_OMNI_BLADE_MODE_0_DESTROY_PROGRESS);
       return;

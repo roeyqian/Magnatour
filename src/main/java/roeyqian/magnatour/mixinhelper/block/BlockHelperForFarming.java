@@ -14,7 +14,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 // Magnatour
-import roeyqian.magnatour.registry.content.RegInsertBlocks;
+import roeyqian.magnatour.registry.content.SupremeBlocks;
 
 public final class BlockHelperForFarming {
 
@@ -24,7 +24,7 @@ public final class BlockHelperForFarming {
       BlockState floor,
       CallbackInfoReturnable<Boolean> cir
   ) {
-    if (floor.is(RegInsertBlocks.EVER_WATER_FARMLAND)) {
+    if (floor.is(SupremeBlocks.EVER_WATER_FARMLAND)) {
       cir.setReturnValue(true);
     }
   }
@@ -33,7 +33,7 @@ public final class BlockHelperForFarming {
       BlockState floor,
       CallbackInfoReturnable<Boolean> cir
   ) {
-    if (floor.is(RegInsertBlocks.EVER_WATER_FARMLAND)) {
+    if (floor.is(SupremeBlocks.EVER_WATER_FARMLAND)) {
       cir.setReturnValue(true);
     }
   }

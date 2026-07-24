@@ -34,8 +34,8 @@ import it.unimi.dsi.fastutil.longs.Long2IntOpenHashMap;
 // Magnatour
 import roeyqian.magnatour.Magnatour;
 import roeyqian.magnatour.mixin.world.WorldGenRegionAccessor;
-import roeyqian.magnatour.registry.content.RegInsertBlocks;
-import roeyqian.magnatour.registry.worldgen.RegDimensions;
+import roeyqian.magnatour.registry.content.SupremeBlocks;
+import roeyqian.magnatour.registry.worldgen.CustomDimensions;
 
 public final class WorldHelperForDimension {
 
@@ -225,7 +225,7 @@ public final class WorldHelperForDimension {
       ChunkAccess chunk
   ) {
     ServerLevel world = ((WorldGenRegionAccessor) region).getWorld();
-    if (world.dimension() != RegDimensions.HARVEST_CONTINENT) return;
+    if (world.dimension() != CustomDimensions.HARVEST_CONTINENT) return;
 
     long seed = world.getSeed();
 
@@ -317,9 +317,9 @@ public final class WorldHelperForDimension {
     boolean treeClearing = isInTreeClearing(worldX, worldZ);
 
     BlockState topLandState = treeClearing
-        ? RegInsertBlocks.EVER_WATER_GRASS_BLOCK.defaultBlockState()
-        : RegInsertBlocks.EVER_WATER_FARMLAND.defaultBlockState();
-    BlockState soil = RegInsertBlocks.EVER_WATER_SOIL.defaultBlockState();
+        ? SupremeBlocks.EVER_WATER_GRASS_BLOCK.defaultBlockState()
+        : SupremeBlocks.EVER_WATER_FARMLAND.defaultBlockState();
+    BlockState soil = SupremeBlocks.EVER_WATER_SOIL.defaultBlockState();
 
     int originalSurfaceY = originalSurfaces[localX][localZ];
 
@@ -361,14 +361,14 @@ public final class WorldHelperForDimension {
     reshapeColumnHeight(
         chunk, localX, localZ,
         originalSurfaceY, targetSurfaceY,
-        RegInsertBlocks.EVER_WATER_SOIL.defaultBlockState(),
+        SupremeBlocks.EVER_WATER_SOIL.defaultBlockState(),
         Blocks.AIR.defaultBlockState()
     );
 
     enforceNoWaterColumn(
         chunk, localX, localZ,
-        RegInsertBlocks.EVER_WATER_GRASS_BLOCK.defaultBlockState(),
-        RegInsertBlocks.EVER_WATER_SOIL.defaultBlockState()
+        SupremeBlocks.EVER_WATER_GRASS_BLOCK.defaultBlockState(),
+        SupremeBlocks.EVER_WATER_SOIL.defaultBlockState()
     );
   }
 
@@ -380,8 +380,8 @@ public final class WorldHelperForDimension {
       int targetSurfaceY
   ) {
     int originalSurfaceY = originalSurfaces[localX][localZ];
-    BlockState top = RegInsertBlocks.EVER_WATER_GRASS_BLOCK.defaultBlockState();
-    BlockState soil = RegInsertBlocks.EVER_WATER_SOIL.defaultBlockState();
+    BlockState top = SupremeBlocks.EVER_WATER_GRASS_BLOCK.defaultBlockState();
+    BlockState soil = SupremeBlocks.EVER_WATER_SOIL.defaultBlockState();
 
     reshapeColumnHeight(
         chunk, localX, localZ,
@@ -633,7 +633,7 @@ public final class WorldHelperForDimension {
 
     for (int y = maxY; y >= chunk.getMinY(); y--) {
       pos.setY(y);
-      if (chunk.getBlockState(pos).is(RegInsertBlocks.EVER_WATER_FARMLAND)) return y;
+      if (chunk.getBlockState(pos).is(SupremeBlocks.EVER_WATER_FARMLAND)) return y;
     }
     return -1;
   }

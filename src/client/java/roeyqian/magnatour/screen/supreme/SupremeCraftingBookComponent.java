@@ -29,9 +29,9 @@ import net.minecraft.world.item.crafting.display.RecipeDisplay;
 import org.jspecify.annotations.NonNull;
 
 // Magnatour
-import roeyqian.magnatour.registry.content.RegConsumableItems;
+import roeyqian.magnatour.registry.content.SupremeItems;
 import roeyqian.magnatour.mixin.screen.GhostSlotsInvoker;
-import roeyqian.magnatour.registry.logic.RegRecipes;
+import roeyqian.magnatour.registry.logic.CustomRecipes;
 import roeyqian.magnatour.menu.supreme.SupremeWorktableMenu;
 import roeyqian.magnatour.screen.CustomRecipeDisplay;
 
@@ -53,7 +53,7 @@ public final class SupremeCraftingBookComponent extends RecipeBookComponent<Supr
       new RecipeBookComponent.TabInfo(Items.BRICKS, RecipeBookCategories.CRAFTING_BUILDING_BLOCKS),
       new RecipeBookComponent.TabInfo(Items.LAVA_BUCKET, Items.APPLE, RecipeBookCategories.CRAFTING_MISC),
       new RecipeBookComponent.TabInfo(Items.REDSTONE, RecipeBookCategories.CRAFTING_REDSTONE),
-      new RecipeBookComponent.TabInfo(RegConsumableItems.SUPREME_CORE, RegRecipes.SUPREME_CRAFTING)
+      new RecipeBookComponent.TabInfo(SupremeItems.SUPREME_CORE, CustomRecipes.SUPREME_CRAFTING)
   );
 
   public SupremeCraftingBookComponent(

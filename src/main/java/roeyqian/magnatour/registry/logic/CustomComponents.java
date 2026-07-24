@@ -20,13 +20,13 @@ import net.minecraft.network.codec.ByteBufCodecs;
 // Magnatour
 import roeyqian.magnatour.Magnatour;
 import roeyqian.magnatour.item.universe.UniverseConsole;
-import roeyqian.magnatour.registry.GenRegHelper;
+import roeyqian.magnatour.registry.LogicRegHelper;
 
 /*
  * Supreme Group: Item, Render
  * Universe Group: Item, Render
  */
-public final class RegComponentTypes {
+public final class CustomComponents {
 
   public static final DataComponentType<String> SUPREME_MOBILE_BLOCK_ID = register(
       "supreme_mobile_block_id",
@@ -92,17 +92,17 @@ public final class RegComponentTypes {
           .networkSynchronized(UniverseConsole.BoundBlockList.PACKET_CODEC)
   );
 
-  private RegComponentTypes() {}
+  private CustomComponents() {}
 
   public static void init() {
-    Magnatour.LOGGER.info("[Server] Initializing 'RegComponentTypes'");
+    Magnatour.LOGGER.info("[Server] Initializing 'CustomComponents'");
   }
 
   private static <T> DataComponentType<T> register(
       String id,
       UnaryOperator<DataComponentType.Builder<T>> builderOperator
   ) {
-    return GenRegHelper.registerDataComponentType(id, builderOperator);
+    return LogicRegHelper.registerDataComponentType(id, builderOperator);
   }
 
 }

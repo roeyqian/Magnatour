@@ -25,7 +25,7 @@ import org.jspecify.annotations.Nullable;
 
 // Magnatour
 import roeyqian.magnatour.block.supreme.RedstoneTrigger;
-import roeyqian.magnatour.registry.content.RegBlockEntities;
+import roeyqian.magnatour.registry.content.SupremeBlockEntities;
 
 public class RedstoneTriggerEntity extends BlockEntity {
 
@@ -48,7 +48,7 @@ public class RedstoneTriggerEntity extends BlockEntity {
       BlockPos pos,
       BlockState state
   ) {
-    super(RegBlockEntities.REDSTONE_TRIGGER_ENTITY, pos, state);
+    super(SupremeBlockEntities.REDSTONE_TRIGGER_ENTITY, pos, state);
   }
 
   public static void tick(

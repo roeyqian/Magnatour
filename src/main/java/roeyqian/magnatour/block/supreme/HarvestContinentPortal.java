@@ -41,8 +41,8 @@ import org.jspecify.annotations.NonNull;
 
 // Magnatour
 import roeyqian.magnatour.block.CustomPortalBlock;
-import roeyqian.magnatour.registry.content.RegInsertBlocks;
-import roeyqian.magnatour.registry.worldgen.RegDimensions;
+import roeyqian.magnatour.registry.content.SupremeBlocks;
+import roeyqian.magnatour.registry.worldgen.CustomDimensions;
 
 public class HarvestContinentPortal extends Block {
 
@@ -108,8 +108,8 @@ public class HarvestContinentPortal extends Block {
     CustomPortalBlock.handleEntityCollision(
         world, pos, entity,
         PORTAL_TICKS, IN_PORTAL_THIS_TICK, clientFlag,
-        RegInsertBlocks.SUPREME_FODDER_BLOCK, RegInsertBlocks.HARVEST_CONTINENT_PORTAL,
-        RegDimensions.HARVEST_CONTINENT, Level.OVERWORLD
+        SupremeBlocks.SUPREME_FODDER_BLOCK, SupremeBlocks.HARVEST_CONTINENT_PORTAL,
+        CustomDimensions.HARVEST_CONTINENT, Level.OVERWORLD
     );
     clientInPortal = clientFlag[0];
   }
@@ -126,7 +126,7 @@ public class HarvestContinentPortal extends Block {
       @NonNull RandomSource random
   ) {
     if (CustomPortalBlock.shouldBreakPortal(
-        RegInsertBlocks.HARVEST_CONTINENT_PORTAL, RegInsertBlocks.SUPREME_FODDER_BLOCK,
+        SupremeBlocks.HARVEST_CONTINENT_PORTAL, SupremeBlocks.SUPREME_FODDER_BLOCK,
         state, neighborState, pos, direction, world
     )) {
       return Blocks.AIR.defaultBlockState();

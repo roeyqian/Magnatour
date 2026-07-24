@@ -27,7 +27,7 @@ import net.minecraft.world.item.crafting.RecipeType;
 // Magnatour
 import roeyqian.magnatour.Magnatour;
 
-public interface GenRegHelper {
+public interface LogicRegHelper {
 
   static Identifier id(
       String path

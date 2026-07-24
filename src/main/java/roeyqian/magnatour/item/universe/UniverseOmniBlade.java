@@ -46,8 +46,8 @@ import org.jspecify.annotations.NonNull;
 import roeyqian.magnatour.Magnatour;
 import roeyqian.magnatour.item.CustomItemSetting;
 import roeyqian.magnatour.item.CustomToolMaterial;
-import roeyqian.magnatour.registry.content.RegInsertBlocks;
-import roeyqian.magnatour.registry.logic.RegComponentTypes;
+import roeyqian.magnatour.registry.content.SupremeBlocks;
+import roeyqian.magnatour.registry.logic.CustomComponents;
 
 public class UniverseOmniBlade extends Item {
 
@@ -57,8 +57,8 @@ public class UniverseOmniBlade extends Item {
       Map.entry(Blocks.DIRT, tillToFarmland()),
       Map.entry(Blocks.COARSE_DIRT, tillToDirt()),
       Map.entry(Blocks.ROOTED_DIRT, tillToDirt()),
-      Map.entry(RegInsertBlocks.EVER_WATER_GRASS_BLOCK, tillToEverWaterFarmland()),
-      Map.entry(RegInsertBlocks.EVER_WATER_SOIL, tillToEverWaterFarmland())
+      Map.entry(SupremeBlocks.EVER_WATER_GRASS_BLOCK, tillToEverWaterFarmland()),
+      Map.entry(SupremeBlocks.EVER_WATER_SOIL, tillToEverWaterFarmland())
   );
 
   public UniverseOmniBlade(
@@ -98,7 +98,7 @@ public class UniverseOmniBlade extends Item {
     player.swing(player.getUsedItemHand());
     if (world.isClientSide()) return InteractionResult.PASS;
 
-    int mode = context.getItemInHand().getOrDefault(RegComponentTypes.UNIVERSE_OMNI_BLADE_MODE, 0);
+    int mode = context.getItemInHand().getOrDefault(CustomComponents.UNIVERSE_OMNI_BLADE_MODE, 0);
     return mode == 0 ? execTilling(context, world, blockPos) : execChainBreak(world, blockPos, player);
   }
 
@@ -119,7 +119,7 @@ public class UniverseOmniBlade extends Item {
   private static TillBehavior tillToEverWaterFarmland() {
     return new TillBehavior(
         HoeItem::onlyIfAirAbove,
-        HoeItem.changeIntoState(RegInsertBlocks.EVER_WATER_FARMLAND.defaultBlockState())
+        HoeItem.changeIntoState(SupremeBlocks.EVER_WATER_FARMLAND.defaultBlockState())
     );
   }
 

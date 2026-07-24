@@ -42,7 +42,7 @@ import org.jspecify.annotations.NonNull;
 // Magnatour
 import roeyqian.magnatour.blockentity.supreme.RedstoneTriggerEntity;
 import roeyqian.magnatour.menu.supreme.RedstoneTriggerMenu;
-import roeyqian.magnatour.registry.content.RegBlockEntities;
+import roeyqian.magnatour.registry.content.SupremeBlockEntities;
 
 public class RedstoneTrigger extends BaseEntityBlock {
 
@@ -76,7 +76,7 @@ public class RedstoneTrigger extends BaseEntityBlock {
   ) {
     return createTickerHelper(
         type,
-        RegBlockEntities.REDSTONE_TRIGGER_ENTITY,
+        SupremeBlockEntities.REDSTONE_TRIGGER_ENTITY,
         RedstoneTriggerEntity::tick
     );
   }

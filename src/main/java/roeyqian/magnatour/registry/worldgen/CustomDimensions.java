@@ -15,25 +15,25 @@ import net.minecraft.world.level.Level;
 // Magnatour
 import roeyqian.magnatour.Magnatour;
 import roeyqian.magnatour.levelgen.biome.BiomeMobSpawner;
-import roeyqian.magnatour.registry.LevelRegHelper;
+import roeyqian.magnatour.registry.WorldgenRegHelper;
 
 /*
  * Supreme Group: Dimension
  * Universe Group: Dimension
  */
-public final class RegDimensions {
+public final class CustomDimensions {
 
   // Supreme Group: Dimension
   public static final ResourceKey<Level> HARVEST_CONTINENT =
-      ResourceKey.create(Registries.DIMENSION, LevelRegHelper.id("harvest_continent"));
+      ResourceKey.create(Registries.DIMENSION, WorldgenRegHelper.id("harvest_continent"));
   public static final ResourceKey<Level> ORE_CONTINENT =
-      ResourceKey.create(Registries.DIMENSION, LevelRegHelper.id("ore_continent"));
+      ResourceKey.create(Registries.DIMENSION, WorldgenRegHelper.id("ore_continent"));
 
-  private RegDimensions() {}
+  private CustomDimensions() {}
 
   public static void init() {
     BiomeMobSpawner.registerTickEvent();
-    Magnatour.LOGGER.info("[Server] Initializing 'RegDimensions'");
+    Magnatour.LOGGER.info("[Server] Initializing 'CustomDimensions'");
   }
 
 }

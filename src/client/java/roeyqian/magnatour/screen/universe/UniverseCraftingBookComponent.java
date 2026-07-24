@@ -30,8 +30,9 @@ import org.jspecify.annotations.NonNull;
 
 // Magnatour
 import roeyqian.magnatour.mixin.screen.GhostSlotsInvoker;
-import roeyqian.magnatour.registry.content.RegConsumableItems;
-import roeyqian.magnatour.registry.logic.RegRecipes;
+import roeyqian.magnatour.registry.content.SupremeItems;
+import roeyqian.magnatour.registry.content.UniverseItems;
+import roeyqian.magnatour.registry.logic.CustomRecipes;
 import roeyqian.magnatour.menu.universe.UniverseWorkstationMenu;
 import roeyqian.magnatour.screen.CustomRecipeDisplay;
 
@@ -53,8 +54,8 @@ public final class UniverseCraftingBookComponent extends RecipeBookComponent<Uni
       new RecipeBookComponent.TabInfo(Items.BRICKS, RecipeBookCategories.CRAFTING_BUILDING_BLOCKS),
       new RecipeBookComponent.TabInfo(Items.LAVA_BUCKET, Items.APPLE, RecipeBookCategories.CRAFTING_MISC),
       new RecipeBookComponent.TabInfo(Items.REDSTONE, RecipeBookCategories.CRAFTING_REDSTONE),
-      new RecipeBookComponent.TabInfo(RegConsumableItems.SUPREME_CORE, RegRecipes.SUPREME_CRAFTING),
-      new RecipeBookComponent.TabInfo(RegConsumableItems.UNIVERSE_STAR, RegRecipes.UNIVERSE_CRAFTING)
+      new RecipeBookComponent.TabInfo(SupremeItems.SUPREME_CORE, CustomRecipes.SUPREME_CRAFTING),
+      new RecipeBookComponent.TabInfo(UniverseItems.UNIVERSE_STAR, CustomRecipes.UNIVERSE_CRAFTING)
   );
 
   public UniverseCraftingBookComponent(

@@ -26,9 +26,9 @@ import net.minecraft.world.item.crafting.SingleRecipeInput;
 import org.jspecify.annotations.NonNull;
 
 // Magnatour
-import roeyqian.magnatour.registry.content.RegActiveBlocks;
-import roeyqian.magnatour.registry.logic.RegRecipes;
-import roeyqian.magnatour.registry.content.RegBlockMenus;
+import roeyqian.magnatour.registry.content.UniverseBlocks;
+import roeyqian.magnatour.registry.logic.CustomRecipes;
+import roeyqian.magnatour.registry.content.UniverseMenus;
 
 public class UniverseRefineryMenu extends AbstractFurnaceMenu {
 
@@ -60,7 +60,7 @@ public class UniverseRefineryMenu extends AbstractFurnaceMenu {
       ContainerData propertyDelegate
   ) {
     super(
-        RegBlockMenus.UNIVERSE_REFINERY_HANDLER,
+        UniverseMenus.UNIVERSE_REFINERY_HANDLER,
         RecipePropertySet.FURNACE_INPUT,
         RecipeBookType.FURNACE,
         syncId,
@@ -98,7 +98,7 @@ public class UniverseRefineryMenu extends AbstractFurnaceMenu {
   public boolean stillValid(
       @NonNull Player player
   ) {
-    return stillValid(this.context, player, RegActiveBlocks.UNIVERSE_REFINERY);
+    return stillValid(this.context, player, UniverseBlocks.UNIVERSE_REFINERY);
   }
 
   @Override
@@ -111,12 +111,12 @@ public class UniverseRefineryMenu extends AbstractFurnaceMenu {
       SingleRecipeInput input = new SingleRecipeInput(itemStack);
       var recipes = serverWorld.recipeAccess().getSynchronizedRecipes();
 
-      if (recipes.getFirstMatch(RegRecipes.SUPREME_COOKING_TYPE, input, serverWorld).isPresent()) {
+      if (recipes.getFirstMatch(CustomRecipes.SUPREME_COOKING_TYPE, input, serverWorld).isPresent()) {
         return true;
       }
 
       return recipes
-          .getFirstMatch(RegRecipes.UNIVERSE_COOKING_TYPE, input, serverWorld)
+          .getFirstMatch(CustomRecipes.UNIVERSE_COOKING_TYPE, input, serverWorld)
           .isPresent();
     } else {
       return false;

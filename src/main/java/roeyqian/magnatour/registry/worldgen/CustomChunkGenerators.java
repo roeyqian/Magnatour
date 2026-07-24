@@ -13,25 +13,25 @@ import net.minecraft.resources.Identifier;
 // Magnatour
 import roeyqian.magnatour.Magnatour;
 import roeyqian.magnatour.levelgen.OreContinentChunkGenerator;
-import roeyqian.magnatour.registry.LevelRegHelper;
+import roeyqian.magnatour.registry.WorldgenRegHelper;
 
 /*
  * Supreme Group: Chunk Generator
  * Universe Group: Chunk Generator
  */
-public final class RegChunkGenerators {
+public final class CustomChunkGenerators {
 
   // Supreme Group: Chunk Generator
-  public static final Identifier ORE_CONTINENT = LevelRegHelper.id("ore_continent");
+  public static final Identifier ORE_CONTINENT = WorldgenRegHelper.id("ore_continent");
 
-  private RegChunkGenerators() {}
+  private CustomChunkGenerators() {}
 
   public static void init() {
-    LevelRegHelper.registerChunkGenerator(
+    WorldgenRegHelper.registerChunkGenerator(
         ORE_CONTINENT.getPath(),
         OreContinentChunkGenerator.CODEC
     );
-    Magnatour.LOGGER.info("[Server] Initializing 'RegChunkGenerators'");
+    Magnatour.LOGGER.info("[Server] Initializing 'CustomChunkGenerators'");
   }
 
 }

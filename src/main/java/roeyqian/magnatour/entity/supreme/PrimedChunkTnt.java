@@ -29,8 +29,8 @@ import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 // Magnatour
-import roeyqian.magnatour.registry.content.RegInsertBlocks;
-import roeyqian.magnatour.registry.content.RegLiveEntities;
+import roeyqian.magnatour.registry.content.SupremeBlocks;
+import roeyqian.magnatour.registry.content.SupremeEntities;
 
 public class PrimedChunkTnt extends PrimedTnt {
 
@@ -44,7 +44,7 @@ public class PrimedChunkTnt extends PrimedTnt {
   ) {
     super(type, level);
     this.blocksBuilding = true;
-    this.setBlockState(RegInsertBlocks.PRIMED_CHUNK_TNT_VISUAL.defaultBlockState());
+    this.setBlockState(SupremeBlocks.PRIMED_CHUNK_TNT_VISUAL.defaultBlockState());
   }
 
   public static PrimedChunkTnt prime(
@@ -53,7 +53,7 @@ public class PrimedChunkTnt extends PrimedTnt {
       @Nullable LivingEntity igniter
   ) {
     PrimedChunkTnt entity = new PrimedChunkTnt(
-        RegLiveEntities.PRIMED_CHUNK_TNT, level
+        SupremeEntities.PRIMED_CHUNK_TNT, level
     );
     double x = pos.getX() + 0.5;
     double y = pos.getY();

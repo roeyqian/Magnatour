@@ -49,8 +49,8 @@ import roeyqian.magnatour.item.universe.UniverseConsole;
 import roeyqian.magnatour.item.universe.UniverseOmniBlade;
 import roeyqian.magnatour.item.universe.UniverseUltimaSword;
 import roeyqian.magnatour.mixinhelper.server.ServerHelperForEquipment;
-import roeyqian.magnatour.registry.logic.RegComponentTypes;
-import roeyqian.magnatour.registry.content.RegDurableItems;
+import roeyqian.magnatour.registry.logic.CustomComponents;
+import roeyqian.magnatour.registry.content.UniverseItems;
 
 public final class NetworkManagerForBlock {
 
@@ -77,23 +77,23 @@ public final class NetworkManagerForBlock {
           switch (item) {
             case SupremeMobile _ -> execTogglingMode(
                 player, stack,
-                RegComponentTypes.SUPREME_MOBILE_MODE, "msg.magnatour.supreme_mobile"
+                CustomComponents.SUPREME_MOBILE_MODE, "msg.magnatour.supreme_mobile"
             );
             case UniverseUltimaSword _ -> execTogglingMode(
                 player, stack,
-                RegComponentTypes.UNIVERSE_ULTIMA_SWORD_MODE, "msg.magnatour.universe_ultima_sword"
+                CustomComponents.UNIVERSE_ULTIMA_SWORD_MODE, "msg.magnatour.universe_ultima_sword"
             );
             case UniverseOmniBlade _ -> execTogglingMode(
                 player, stack,
-                RegComponentTypes.UNIVERSE_OMNI_BLADE_MODE, "msg.magnatour.universe_omni_blade"
+                CustomComponents.UNIVERSE_OMNI_BLADE_MODE, "msg.magnatour.universe_omni_blade"
             );
             case UniverseConsole _ -> execTogglingMode(
                 player, stack,
-                RegComponentTypes.UNIVERSE_CONSOLE_MODE, "msg.magnatour.universe_console"
+                CustomComponents.UNIVERSE_CONSOLE_MODE, "msg.magnatour.universe_console"
             );
             case UniverseBucket _ -> execTogglingMode(
                 player, stack,
-                RegComponentTypes.UNIVERSE_BUCKET_MODE, "msg.magnatour.universe_bucket"
+                CustomComponents.UNIVERSE_BUCKET_MODE, "msg.magnatour.universe_bucket"
             );
             default -> {}
           }
@@ -115,7 +115,7 @@ public final class NetworkManagerForBlock {
           context.server().execute(() -> {
             if (dir < 0 || dir > 3) return;
             if (!player.isShiftKeyDown()) return;
-            if (!(player.getItemBySlot(EquipmentSlot.FEET).is(RegDurableItems.UNIVERSE_BOOTS))) {
+            if (!(player.getItemBySlot(EquipmentSlot.FEET).is(UniverseItems.UNIVERSE_BOOTS))) {
               return;
             }
 
@@ -295,14 +295,14 @@ public final class NetworkManagerForBlock {
     if (!(consoleStack.getItem() instanceof UniverseConsole)) return;
 
     UniverseConsole.BoundBlockList currentList = consoleStack.getOrDefault(
-        RegComponentTypes.UNIVERSE_CONSOLE_BOUND_LIST,
+        CustomComponents.UNIVERSE_CONSOLE_BOUND_LIST,
         UniverseConsole.BoundBlockList.EMPTY
     );
     UniverseConsole.BoundBlockList newList = currentList.withRemoved(
         payload.pos(), payload.dimension()
     );
 
-    consoleStack.set(RegComponentTypes.UNIVERSE_CONSOLE_BOUND_LIST, newList);
+    consoleStack.set(CustomComponents.UNIVERSE_CONSOLE_BOUND_LIST, newList);
     player.sendOverlayMessage(
         Component.translatable("msg.magnatour.universe_console.remove")
             .withStyle(ChatFormatting.GREEN)

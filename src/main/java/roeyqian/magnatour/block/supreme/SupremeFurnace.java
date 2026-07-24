@@ -30,7 +30,7 @@ import org.jspecify.annotations.NonNull;
 
 // Magnatour
 import roeyqian.magnatour.blockentity.supreme.SupremeFurnaceEntity;
-import roeyqian.magnatour.registry.content.RegBlockEntities;
+import roeyqian.magnatour.registry.content.SupremeBlockEntities;
 
 public class SupremeFurnace extends AbstractFurnaceBlock {
 
@@ -99,7 +99,7 @@ public class SupremeFurnace extends AbstractFurnaceBlock {
       BlockEntityType<A> givenType,
       BlockEntityTicker<? super E> ticker
   ) {
-    return RegBlockEntities.SUPREME_FURNACE_ENTITY == givenType ? (BlockEntityTicker<A>) ticker : null;
+    return SupremeBlockEntities.SUPREME_FURNACE_ENTITY == givenType ? (BlockEntityTicker<A>) ticker : null;
   }
 
 }

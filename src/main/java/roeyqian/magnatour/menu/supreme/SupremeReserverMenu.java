@@ -42,8 +42,8 @@ import org.jspecify.annotations.NonNull;
 // Magnatour
 import roeyqian.magnatour.mixin.world.IngredientAccessor;
 import roeyqian.magnatour.mixin.world.ShapelessRecipeAccessor;
-import roeyqian.magnatour.registry.content.RegActiveBlocks;
-import roeyqian.magnatour.registry.content.RegBlockMenus;
+import roeyqian.magnatour.registry.content.SupremeBlocks;
+import roeyqian.magnatour.registry.content.SupremeMenus;
 
 public class SupremeReserverMenu extends AbstractContainerMenu {
 
@@ -96,7 +96,7 @@ public class SupremeReserverMenu extends AbstractContainerMenu {
       ContainerLevelAccess context,
       ContainerData propertyDelegate
   ) {
-    super(RegBlockMenus.SUPREME_RESERVER_HANDLER, syncId);
+    super(SupremeMenus.SUPREME_RESERVER_HANDLER, syncId);
     this.context = context;
     this.player = playerInventory.player;
     this.propertyDelegate = propertyDelegate;
@@ -313,7 +313,7 @@ public class SupremeReserverMenu extends AbstractContainerMenu {
   public boolean stillValid(
       @NonNull Player player
   ) {
-    return stillValid(this.context, player, RegActiveBlocks.SUPREME_RESERVER);
+    return stillValid(this.context, player, SupremeBlocks.SUPREME_RESERVER);
   }
 
   private void setCurrentRecipeIndex(

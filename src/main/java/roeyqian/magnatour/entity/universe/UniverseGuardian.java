@@ -43,8 +43,8 @@ import org.jspecify.annotations.Nullable;
 // Magnatour
 import roeyqian.magnatour.entity.EntityLootTableHelper;
 import roeyqian.magnatour.item.universe.UniverseUltimaSword;
-import roeyqian.magnatour.registry.logic.RegComponentTypes;
-import roeyqian.magnatour.registry.logic.RegParticles;
+import roeyqian.magnatour.registry.logic.CustomComponents;
+import roeyqian.magnatour.registry.logic.CustomParticles;
 
 public class UniverseGuardian extends TamableAnimal {
 
@@ -107,7 +107,7 @@ public class UniverseGuardian extends TamableAnimal {
       if (!(attacker instanceof Player)) return false;
 
       if (stack.getItem() instanceof UniverseUltimaSword
-          && stack.getOrDefault(RegComponentTypes.UNIVERSE_ULTIMA_SWORD_MODE, 0) == 1) {
+          && stack.getOrDefault(CustomComponents.UNIVERSE_ULTIMA_SWORD_MODE, 0) == 1) {
         return super.hurtServer(world, source, amount);
       }
     }
@@ -308,7 +308,7 @@ public class UniverseGuardian extends TamableAnimal {
 
       for (int i = 1; i < (int) distance; ++i) {
         serverWorld.sendParticles(
-            RegParticles.UNIVERSE_SONIC_BOOM,
+            CustomParticles.UNIVERSE_SONIC_BOOM,
             startX + dX * i, startY + dY * i, startZ + dZ * i,
             1, 0.0F, 0.0F, 0.0F, 0.0F
         );

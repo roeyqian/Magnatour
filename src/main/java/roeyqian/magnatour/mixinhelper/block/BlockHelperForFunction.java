@@ -35,7 +35,7 @@ import roeyqian.magnatour.block.supreme.ChunkTntBlock;
 import roeyqian.magnatour.level.recipe.CraftingResultHelper;
 import roeyqian.magnatour.level.recipe.SupremeCraftingRecipe;
 import roeyqian.magnatour.level.recipe.UniverseCraftingRecipe;
-import roeyqian.magnatour.registry.logic.RegRecipes;
+import roeyqian.magnatour.registry.logic.CustomRecipes;
 
 public final class BlockHelperForFunction {
 
@@ -180,10 +180,10 @@ public final class BlockHelperForFunction {
       return null;
     }
 
-    var supremeMatch = recipeManager.getFirstMatch(RegRecipes.SUPREME_CRAFTING_TYPE, recipeInput, world);
+    var supremeMatch = recipeManager.getFirstMatch(CustomRecipes.SUPREME_CRAFTING_TYPE, recipeInput, world);
     if (supremeMatch.isPresent()) return supremeMatch.get();
 
-    var universeMatch = recipeManager.getFirstMatch(RegRecipes.UNIVERSE_CRAFTING_TYPE, recipeInput, world);
+    var universeMatch = recipeManager.getFirstMatch(CustomRecipes.UNIVERSE_CRAFTING_TYPE, recipeInput, world);
     return universeMatch.orElse(null);
   }
 

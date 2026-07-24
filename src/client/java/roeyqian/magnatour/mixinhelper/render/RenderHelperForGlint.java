@@ -27,8 +27,8 @@ import net.minecraft.world.item.ItemStack;
 
 // Magnatour
 import roeyqian.magnatour.mixin.render.ItemStackRenderStateAccessor;
+import roeyqian.magnatour.registry.logic.CustomComponents;
 import roeyqian.magnatour.renderer.GlintRenderTypes;
-import roeyqian.magnatour.registry.logic.RegComponentTypes;
 
 @Environment(EnvType.CLIENT)
 public final class RenderHelperForGlint {
@@ -145,10 +145,10 @@ public final class RenderHelperForGlint {
   private static GlintType glintType(
       ItemStack itemStack
   ) {
-    if (Boolean.TRUE.equals(itemStack.get(RegComponentTypes.UNIVERSE_GLINT_OVERRIDE))) {
+    if (Boolean.TRUE.equals(itemStack.get(CustomComponents.UNIVERSE_GLINT_OVERRIDE))) {
       return GlintType.UNIVERSE;
     }
-    if (Boolean.TRUE.equals(itemStack.get(RegComponentTypes.SUPREME_GLINT_OVERRIDE))) {
+    if (Boolean.TRUE.equals(itemStack.get(CustomComponents.SUPREME_GLINT_OVERRIDE))) {
       return GlintType.SUPREME;
     }
     return GlintType.NONE;

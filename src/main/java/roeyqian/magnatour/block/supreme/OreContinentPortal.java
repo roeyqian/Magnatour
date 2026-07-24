@@ -41,8 +41,8 @@ import org.jspecify.annotations.NonNull;
 
 // Magnatour
 import roeyqian.magnatour.block.CustomPortalBlock;
-import roeyqian.magnatour.registry.content.RegInsertBlocks;
-import roeyqian.magnatour.registry.worldgen.RegDimensions;
+import roeyqian.magnatour.registry.content.SupremeBlocks;
+import roeyqian.magnatour.registry.worldgen.CustomDimensions;
 
 public class OreContinentPortal extends Block {
 
@@ -107,8 +107,8 @@ public class OreContinentPortal extends Block {
     boolean[] clientFlag = new boolean[]{clientInPortal};
     CustomPortalBlock.handleEntityCollision(world, pos, entity,
         PORTAL_TICKS, IN_PORTAL_THIS_TICK, clientFlag,
-        RegInsertBlocks.SUPREME_GEM_BLOCK, RegInsertBlocks.ORE_CONTINENT_PORTAL,
-        RegDimensions.ORE_CONTINENT, Level.OVERWORLD);
+        SupremeBlocks.SUPREME_GEM_BLOCK, SupremeBlocks.ORE_CONTINENT_PORTAL,
+        CustomDimensions.ORE_CONTINENT, Level.OVERWORLD);
     clientInPortal = clientFlag[0];
   }
 
@@ -124,7 +124,7 @@ public class OreContinentPortal extends Block {
       @NonNull RandomSource random
   ) {
     if (CustomPortalBlock.shouldBreakPortal(
-        RegInsertBlocks.ORE_CONTINENT_PORTAL, RegInsertBlocks.SUPREME_GEM_BLOCK,
+        SupremeBlocks.ORE_CONTINENT_PORTAL, SupremeBlocks.SUPREME_GEM_BLOCK,
         state, neighborState, pos, direction, world
     )) {
       return Blocks.AIR.defaultBlockState();

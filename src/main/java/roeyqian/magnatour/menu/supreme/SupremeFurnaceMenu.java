@@ -26,9 +26,9 @@ import net.minecraft.world.item.crafting.SingleRecipeInput;
 import org.jspecify.annotations.NonNull;
 
 // Magnatour
-import roeyqian.magnatour.registry.content.RegActiveBlocks;
-import roeyqian.magnatour.registry.logic.RegRecipes;
-import roeyqian.magnatour.registry.content.RegBlockMenus;
+import roeyqian.magnatour.registry.content.SupremeBlocks;
+import roeyqian.magnatour.registry.content.SupremeMenus;
+import roeyqian.magnatour.registry.logic.CustomRecipes;
 
 public class SupremeFurnaceMenu extends AbstractFurnaceMenu {
 
@@ -60,7 +60,7 @@ public class SupremeFurnaceMenu extends AbstractFurnaceMenu {
       ContainerData propertyDelegate
   ) {
     super(
-        RegBlockMenus.SUPREME_FURNACE_HANDLER,
+        SupremeMenus.SUPREME_FURNACE_HANDLER,
         RecipePropertySet.FURNACE_INPUT,
         RecipeBookType.FURNACE,
         syncId,
@@ -98,7 +98,7 @@ public class SupremeFurnaceMenu extends AbstractFurnaceMenu {
   public boolean stillValid(
       @NonNull Player player
   ) {
-    return stillValid(this.context, player, RegActiveBlocks.SUPREME_FURNACE);
+    return stillValid(this.context, player, SupremeBlocks.SUPREME_FURNACE);
   }
 
   @Override
@@ -112,7 +112,7 @@ public class SupremeFurnaceMenu extends AbstractFurnaceMenu {
       return serverWorld
           .recipeAccess()
           .getSynchronizedRecipes()
-          .getFirstMatch(RegRecipes.SUPREME_COOKING_TYPE, input, serverWorld)
+          .getFirstMatch(CustomRecipes.SUPREME_COOKING_TYPE, input, serverWorld)
           .isPresent();
     } else {
       return false;

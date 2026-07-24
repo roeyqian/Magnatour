@@ -25,7 +25,7 @@ import org.jspecify.annotations.NonNull;
 
 // Magnatour
 import roeyqian.magnatour.blockentity.supreme.RedstoneTriggerEntity;
-import roeyqian.magnatour.registry.content.RegBlockMenus;
+import roeyqian.magnatour.registry.content.SupremeMenus;
 
 public class RedstoneTriggerMenu extends AbstractContainerMenu {
 
@@ -81,7 +81,7 @@ public class RedstoneTriggerMenu extends AbstractContainerMenu {
       boolean enabled,
       int intervalTicks
   ) {
-    super(RegBlockMenus.REDSTONE_TRIGGER_HANDLER, syncId);
+    super(SupremeMenus.REDSTONE_TRIGGER_HANDLER, syncId);
     this.blockPos = blockPos;
     this.dimension = dimension;
     this.mode = mode;

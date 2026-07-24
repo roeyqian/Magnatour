@@ -45,7 +45,7 @@ import org.jspecify.annotations.NonNull;
 
 // Magnatour
 import roeyqian.magnatour.blockentity.universe.UniverseLibraryEntity;
-import roeyqian.magnatour.registry.content.RegBlockEntities;
+import roeyqian.magnatour.registry.content.UniverseBlockEntities;
 
 public class UniverseLibrary extends BaseEntityBlock {
 
@@ -78,7 +78,7 @@ public class UniverseLibrary extends BaseEntityBlock {
     return world.isClientSide()
         ? createTickerHelper(
             type,
-            RegBlockEntities.UNIVERSE_LIBRARY_ENTITY,
+            UniverseBlockEntities.UNIVERSE_LIBRARY_ENTITY,
             (_, _, _, be) -> UniverseLibraryEntity.tick(be)
         )
         : null;

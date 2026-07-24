@@ -14,25 +14,25 @@ import net.minecraft.world.level.levelgen.feature.Feature;
 import roeyqian.magnatour.Magnatour;
 import roeyqian.magnatour.levelgen.tree.OreTreeConfiguration;
 import roeyqian.magnatour.levelgen.tree.OreTreeFeature;
-import roeyqian.magnatour.registry.LevelRegHelper;
+import roeyqian.magnatour.registry.WorldgenRegHelper;
 
 /*
  * Supreme Group: Feature
  * Universe Group: Feature
  */
-public final class RegFeatures {
+public final class CustomFeatures {
 
   // Supreme Group: Ore Continent
   public static final Feature<OreTreeConfiguration> ORE_TREE =
-      LevelRegHelper.registerFeature(
+      WorldgenRegHelper.registerFeature(
           "ore_tree",
           new OreTreeFeature(OreTreeConfiguration.CODEC)
       );
 
-  private RegFeatures() {}
+  private CustomFeatures() {}
 
   public static void init() {
-    Magnatour.LOGGER.info("[Server] Initializing 'RegFeatures'");
+    Magnatour.LOGGER.info("[Server] Initializing 'CustomFeatures'");
   }
 
 }

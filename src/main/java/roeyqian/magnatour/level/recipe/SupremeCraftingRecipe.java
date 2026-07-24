@@ -38,8 +38,8 @@ import net.minecraft.world.level.Level;
 import org.jspecify.annotations.NonNull;
 
 // Magnatour
-import roeyqian.magnatour.registry.content.RegActiveBlocks;
-import roeyqian.magnatour.registry.logic.RegRecipes;
+import roeyqian.magnatour.registry.content.SupremeBlocks;
+import roeyqian.magnatour.registry.logic.CustomRecipes;
 
 public class SupremeCraftingRecipe implements CraftingRecipe {
 
@@ -120,7 +120,7 @@ public class SupremeCraftingRecipe implements CraftingRecipe {
 
     SlotDisplay resultDisplay = new SlotDisplay.ItemStackSlotDisplay(this.resultStack);
     SlotDisplay craftingStationDisplay = new SlotDisplay.ItemSlotDisplay(
-        RegActiveBlocks.SUPREME_WORKTABLE.asItem()
+        SupremeBlocks.SUPREME_WORKTABLE.asItem()
     );
 
     return List.of(
@@ -149,7 +149,7 @@ public class SupremeCraftingRecipe implements CraftingRecipe {
 
   @Override @NonNull
   public RecipeType<CraftingRecipe> getType() {
-    return RegRecipes.SUPREME_CRAFTING_TYPE;
+    return CustomRecipes.SUPREME_CRAFTING_TYPE;
   }
 
   public int getWidth() {
@@ -176,7 +176,7 @@ public class SupremeCraftingRecipe implements CraftingRecipe {
 
   @Override @NonNull
   public RecipeBookCategory recipeBookCategory() {
-    return RegRecipes.SUPREME_CRAFTING;
+    return CustomRecipes.SUPREME_CRAFTING;
   }
 
   @Override

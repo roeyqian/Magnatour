@@ -35,8 +35,8 @@ import org.jspecify.annotations.NonNull;
 import roeyqian.magnatour.level.recipe.SupremeCookingRecipe;
 import roeyqian.magnatour.menu.supreme.SupremeFurnaceMenu;
 import roeyqian.magnatour.mixin.block.AbstractFurnaceBlockEntityAccessor;
-import roeyqian.magnatour.registry.content.RegBlockEntities;
-import roeyqian.magnatour.registry.logic.RegRecipes;
+import roeyqian.magnatour.registry.content.SupremeBlockEntities;
+import roeyqian.magnatour.registry.logic.CustomRecipes;
 
 public class SupremeFurnaceEntity extends AbstractFurnaceBlockEntity {
 
@@ -48,8 +48,8 @@ public class SupremeFurnaceEntity extends AbstractFurnaceBlockEntity {
       BlockPos pos,
       BlockState state
   ) {
-    super(RegBlockEntities.SUPREME_FURNACE_ENTITY, pos, state, RecipeType.SMELTING);
-    this.supremeMatchGetter = RecipeManager.createCheck(RegRecipes.SUPREME_COOKING_TYPE);
+    super(SupremeBlockEntities.SUPREME_FURNACE_ENTITY, pos, state, RecipeType.SMELTING);
+    this.supremeMatchGetter = RecipeManager.createCheck(CustomRecipes.SUPREME_COOKING_TYPE);
   }
 
   public static void tick(

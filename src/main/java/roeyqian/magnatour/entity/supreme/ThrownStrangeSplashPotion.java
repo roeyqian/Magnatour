@@ -24,7 +24,7 @@ import net.minecraft.world.phys.HitResult;
 
 // Magnatour
 import roeyqian.magnatour.item.StrangePotionEffect;
-import roeyqian.magnatour.registry.content.RegConsumableItems;
+import roeyqian.magnatour.registry.content.SupremeItems;
 
 public class ThrownStrangeSplashPotion extends ThrownSplashPotion {
 
@@ -57,7 +57,7 @@ public class ThrownStrangeSplashPotion extends ThrownSplashPotion {
 
   @Override
   protected Item getDefaultItem() {
-    return RegConsumableItems.STRANGE_SPLASH_POTION;
+    return SupremeItems.STRANGE_SPLASH_POTION;
   }
 
   @Override

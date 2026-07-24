@@ -12,9 +12,9 @@ import roeyqian.magnatour.Magnatour;
 import roeyqian.magnatour.level.NetworkManagerForItem;
 import roeyqian.magnatour.level.NetworkManagerForBlock;
 
-public final class RegNetworks {
+public final class CustomNetworks {
 
-  private RegNetworks() {}
+  private CustomNetworks() {}
 
   public static void init() {
     NetworkManagerForBlock.registerDurableItemModeNetworking();
@@ -26,7 +26,7 @@ public final class RegNetworks {
     NetworkManagerForItem.registerUniverseTeleportPointNetworking();
     NetworkManagerForItem.registerRedstoneTriggerNetworking();
 
-    Magnatour.LOGGER.info("[Server] Initializing 'RegNetworks'");
+    Magnatour.LOGGER.info("[Server] Initializing 'CustomNetworks'");
   }
 
 }

@@ -26,8 +26,9 @@ import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.feature.EndPodiumFeature;
 
 // Magnatour
-import roeyqian.magnatour.registry.content.RegActiveBlocks;
-import roeyqian.magnatour.registry.content.RegConsumableItems;
+import roeyqian.magnatour.registry.content.SupremeBlocks;
+import roeyqian.magnatour.registry.content.UniverseBlocks;
+import roeyqian.magnatour.registry.content.UniverseItems;
 
 public final class WorldHelperForBossFight {
 
@@ -80,10 +81,10 @@ public final class WorldHelperForBossFight {
   ) {
     Player player = dragon.getLastHurtByPlayer();
     if (player != null && hasAllUniverseGems(player)) {
-      return RegActiveBlocks.UNIVERSE_WORKSTATION;
+      return UniverseBlocks.UNIVERSE_WORKSTATION;
     }
 
-    return RegActiveBlocks.SUPREME_WORKTABLE;
+    return SupremeBlocks.SUPREME_WORKTABLE;
   }
 
   private static BlockPos findWorktablePos(
@@ -109,12 +110,12 @@ public final class WorldHelperForBossFight {
   private static boolean hasAllUniverseGems(
       Player player
   ) {
-    return player.getInventory().contains(new ItemStack(RegConsumableItems.UNIVERSE_GEMRED))
-        && player.getInventory().contains(new ItemStack(RegConsumableItems.UNIVERSE_GEMBLUE))
-        && player.getInventory().contains(new ItemStack(RegConsumableItems.UNIVERSE_GEMYELLOW))
-        && player.getInventory().contains(new ItemStack(RegConsumableItems.UNIVERSE_GEMGREEN))
-        && player.getInventory().contains(new ItemStack(RegConsumableItems.UNIVERSE_GEMBLACK))
-        && player.getInventory().contains(new ItemStack(RegConsumableItems.UNIVERSE_GEMWHITE));
+    return player.getInventory().contains(new ItemStack(UniverseItems.UNIVERSE_GEMRED))
+        && player.getInventory().contains(new ItemStack(UniverseItems.UNIVERSE_GEMBLUE))
+        && player.getInventory().contains(new ItemStack(UniverseItems.UNIVERSE_GEMYELLOW))
+        && player.getInventory().contains(new ItemStack(UniverseItems.UNIVERSE_GEMGREEN))
+        && player.getInventory().contains(new ItemStack(UniverseItems.UNIVERSE_GEMBLACK))
+        && player.getInventory().contains(new ItemStack(UniverseItems.UNIVERSE_GEMWHITE));
   }
 
   private static boolean canPlaceWorktable(

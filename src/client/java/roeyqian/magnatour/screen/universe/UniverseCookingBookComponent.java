@@ -31,8 +31,9 @@ import org.jspecify.annotations.NonNull;
 
 // Magnatour
 import roeyqian.magnatour.mixin.screen.GhostSlotsInvoker;
-import roeyqian.magnatour.registry.content.RegConsumableItems;
-import roeyqian.magnatour.registry.logic.RegRecipes;
+import roeyqian.magnatour.registry.content.SupremeItems;
+import roeyqian.magnatour.registry.content.UniverseItems;
+import roeyqian.magnatour.registry.logic.CustomRecipes;
 import roeyqian.magnatour.menu.universe.UniverseRefineryMenu;
 
 public final class UniverseCookingBookComponent extends RecipeBookComponent<UniverseRefineryMenu> {
@@ -53,8 +54,8 @@ public final class UniverseCookingBookComponent extends RecipeBookComponent<Univ
       new RecipeBookComponent.TabInfo(Items.PORKCHOP, RecipeBookCategories.FURNACE_FOOD),
       new RecipeBookComponent.TabInfo(Items.STONE, RecipeBookCategories.FURNACE_BLOCKS),
       new RecipeBookComponent.TabInfo(Items.LAVA_BUCKET, Items.EMERALD, RecipeBookCategories.FURNACE_MISC),
-      new RecipeBookComponent.TabInfo(RegConsumableItems.SUPREME_CORE, RegRecipes.SUPREME_COOKING),
-      new RecipeBookComponent.TabInfo(RegConsumableItems.UNIVERSE_STAR, RegRecipes.UNIVERSE_COOKING)
+      new RecipeBookComponent.TabInfo(SupremeItems.SUPREME_CORE, CustomRecipes.SUPREME_COOKING),
+      new RecipeBookComponent.TabInfo(UniverseItems.UNIVERSE_STAR, CustomRecipes.UNIVERSE_COOKING)
   );
 
   public UniverseCookingBookComponent(

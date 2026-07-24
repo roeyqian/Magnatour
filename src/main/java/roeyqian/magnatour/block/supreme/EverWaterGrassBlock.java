@@ -39,7 +39,7 @@ import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import org.jspecify.annotations.NonNull;
 
 // Magnatour
-import roeyqian.magnatour.registry.content.RegInsertBlocks;
+import roeyqian.magnatour.registry.content.SupremeBlocks;
 
 public class EverWaterGrassBlock extends SpreadingSnowyBlock implements BonemealableBlock {
 
@@ -147,7 +147,7 @@ public class EverWaterGrassBlock extends SpreadingSnowyBlock implements Bonemeal
       @NonNull RandomSource random
   ) {
     if (cannotSurvive(world, pos)) {
-      world.setBlockAndUpdate(pos, RegInsertBlocks.EVER_WATER_SOIL.defaultBlockState());
+      world.setBlockAndUpdate(pos, SupremeBlocks.EVER_WATER_SOIL.defaultBlockState());
       return;
     }
     execSpread(world, pos);
@@ -178,7 +178,7 @@ public class EverWaterGrassBlock extends SpreadingSnowyBlock implements Bonemeal
         )
         .forEach(targetPos -> {
           BlockState target = world.getBlockState(targetPos);
-          if (!target.is(RegInsertBlocks.EVER_WATER_SOIL) && !target.is(Blocks.DIRT)) return;
+          if (!target.is(SupremeBlocks.EVER_WATER_SOIL) && !target.is(Blocks.DIRT)) return;
           if (cannotSurvive(world, targetPos)) return;
 
           world.setBlockAndUpdate(

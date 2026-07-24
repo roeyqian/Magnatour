@@ -54,7 +54,7 @@ import org.jspecify.annotations.Nullable;
 
 // Magnatour
 import roeyqian.magnatour.menu.supreme.ItemHubMenu;
-import roeyqian.magnatour.registry.content.RegBlockEntities;
+import roeyqian.magnatour.registry.content.SupremeBlockEntities;
 
 public class ItemHubEntity extends RandomizableContainerBlockEntity implements Hopper {
 
@@ -86,7 +86,7 @@ public class ItemHubEntity extends RandomizableContainerBlockEntity implements H
       BlockPos pos,
       BlockState state
   ) {
-    super(RegBlockEntities.ITEM_HUB_ENTITY, pos, state);
+    super(SupremeBlockEntities.ITEM_HUB_ENTITY, pos, state);
   }
 
   public static boolean addItem(

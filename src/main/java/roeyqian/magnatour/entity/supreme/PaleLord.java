@@ -48,7 +48,7 @@ import org.jspecify.annotations.NonNull;
 import roeyqian.magnatour.entity.CustomBossEntity;
 import roeyqian.magnatour.entity.EntityLootTableHelper;
 import roeyqian.magnatour.entity.PaleLordCommon;
-import roeyqian.magnatour.registry.content.RegLiveEntities;
+import roeyqian.magnatour.registry.content.SupremeEntities;
 
 public class PaleLord extends Monster implements CustomBossEntity {
 
@@ -329,7 +329,7 @@ public class PaleLord extends Monster implements CustomBossEntity {
   private void transferConsciousness(
       ServerLevel world
   ) {
-    PaleLord newBody = new PaleLord(RegLiveEntities.PALE_LORD, world);
+    PaleLord newBody = new PaleLord(SupremeEntities.PALE_LORD, world);
 
     Vec3 newPos = randomSpawnPosition(world);
     newBody.setPos(newPos.x, newPos.y, newPos.z);
@@ -353,7 +353,7 @@ public class PaleLord extends Monster implements CustomBossEntity {
       ServerLevel world,
       Vec3 position
   ) {
-    PaleLordClone clone = new PaleLordClone(RegLiveEntities.PALE_LORD_CLONE, world);
+    PaleLordClone clone = new PaleLordClone(SupremeEntities.PALE_LORD_CLONE, world);
 
     clone.setPos(position.x, position.y, position.z);
     clone.setYRot(this.getYRot());

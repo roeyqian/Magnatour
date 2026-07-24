@@ -29,9 +29,9 @@ import org.jspecify.annotations.NonNull;
 
 // Magnatour
 import roeyqian.magnatour.block.CustomCraftingBlock;
-import roeyqian.magnatour.registry.content.RegActiveBlocks;
-import roeyqian.magnatour.registry.logic.RegRecipes;
-import roeyqian.magnatour.registry.content.RegBlockMenus;
+import roeyqian.magnatour.registry.content.UniverseBlocks;
+import roeyqian.magnatour.registry.content.UniverseMenus;
+import roeyqian.magnatour.registry.logic.CustomRecipes;
 
 public class UniverseWorkstationMenu extends AbstractCraftingMenu implements CustomCraftingBlock {
 
@@ -62,7 +62,7 @@ public class UniverseWorkstationMenu extends AbstractCraftingMenu implements Cus
       Inventory playerInventory,
       ContainerLevelAccess context
   ) {
-    super(RegBlockMenus.UNIVERSE_WORKSTATION_HANDLER, syncId, 3, 3);
+    super(UniverseMenus.UNIVERSE_WORKSTATION_HANDLER, syncId, 3, 3);
     this.context = context;
     this.player = playerInventory.player;
 
@@ -92,11 +92,11 @@ public class UniverseWorkstationMenu extends AbstractCraftingMenu implements Cus
     var supremeMatch = world
         .recipeAccess()
         .getSynchronizedRecipes()
-        .getFirstMatch(RegRecipes.SUPREME_CRAFTING_TYPE, input, world);
+        .getFirstMatch(CustomRecipes.SUPREME_CRAFTING_TYPE, input, world);
     var universeMatch = world
         .recipeAccess()
         .getSynchronizedRecipes()
-        .getFirstMatch(RegRecipes.UNIVERSE_CRAFTING_TYPE, input, world);
+        .getFirstMatch(CustomRecipes.UNIVERSE_CRAFTING_TYPE, input, world);
 
     return supremeMatch.map(
         (craftingRecipeRecipeHolder) -> craftingRecipeRecipeHolder.value().assemble(input)
@@ -226,7 +226,7 @@ public class UniverseWorkstationMenu extends AbstractCraftingMenu implements Cus
   public boolean stillValid(
       @NonNull Player player
   ) {
-    return stillValid(this.context, player, RegActiveBlocks.UNIVERSE_WORKSTATION);
+    return stillValid(this.context, player, UniverseBlocks.UNIVERSE_WORKSTATION);
   }
 
   @Override @NonNull

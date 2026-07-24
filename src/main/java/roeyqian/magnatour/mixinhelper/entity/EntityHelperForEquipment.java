@@ -38,8 +38,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 // Magnatour
 import roeyqian.magnatour.Magnatour;
 import roeyqian.magnatour.item.RemoteAccessManager;
-import roeyqian.magnatour.registry.logic.RegComponentTypes;
-import roeyqian.magnatour.registry.content.RegDurableItems;
+import roeyqian.magnatour.registry.content.SupremeItems;
+import roeyqian.magnatour.registry.content.UniverseItems;
+import roeyqian.magnatour.registry.logic.CustomComponents;
 
 public final class EntityHelperForEquipment {
 
@@ -95,7 +96,7 @@ public final class EntityHelperForEquipment {
       return flightTicks;
     }
 
-    if (player.getItemBySlot(EquipmentSlot.CHEST).is(RegDurableItems.UNIVERSE_CHESTPLATE)) {
+    if (player.getItemBySlot(EquipmentSlot.CHEST).is(UniverseItems.UNIVERSE_CHESTPLATE)) {
       return handleUniverseFlight(player, flightTicks);
     }
 
@@ -129,7 +130,7 @@ public final class EntityHelperForEquipment {
       Player player,
       CallbackInfo ci
   ) {
-    if (player.getItemBySlot(EquipmentSlot.CHEST).is(RegDurableItems.UNIVERSE_CHESTPLATE)) {
+    if (player.getItemBySlot(EquipmentSlot.CHEST).is(UniverseItems.UNIVERSE_CHESTPLATE)) {
       ci.cancel();
     }
   }
@@ -144,10 +145,10 @@ public final class EntityHelperForEquipment {
       if (!slot.isArmor() || armorStack.isEmpty()) {
         continue;
       }
-      if (armorStack.is(RegDurableItems.SUPREME_HELMET)
-          || armorStack.is(RegDurableItems.SUPREME_CHESTPLATE)
-          || armorStack.is(RegDurableItems.SUPREME_LEGGINGS)
-          || armorStack.is(RegDurableItems.SUPREME_BOOTS)) {
+      if (armorStack.is(SupremeItems.SUPREME_HELMET)
+          || armorStack.is(SupremeItems.SUPREME_CHESTPLATE)
+          || armorStack.is(SupremeItems.SUPREME_LEGGINGS)
+          || armorStack.is(SupremeItems.SUPREME_BOOTS)) {
         count++;
       }
     }
@@ -158,7 +159,7 @@ public final class EntityHelperForEquipment {
       Player player,
       Vec3 movementInput
   ) {
-    if (!player.getItemBySlot(EquipmentSlot.LEGS).is(RegDurableItems.UNIVERSE_LEGGINGS)) return;
+    if (!player.getItemBySlot(EquipmentSlot.LEGS).is(UniverseItems.UNIVERSE_LEGGINGS)) return;
     if (player.getAbilities().flying || movementInput.lengthSqr() <= 0) return;
 
     if (player.isInWater()) {
@@ -181,10 +182,10 @@ public final class EntityHelperForEquipment {
       if (!slot.isArmor() || armorStack.isEmpty()) {
         continue;
       }
-      if (armorStack.is(RegDurableItems.UNIVERSE_CHESTPLATE)
-          || armorStack.is(RegDurableItems.UNIVERSE_HELMET)
-          || armorStack.is(RegDurableItems.UNIVERSE_LEGGINGS)
-          || armorStack.is(RegDurableItems.UNIVERSE_BOOTS)) {
+      if (armorStack.is(UniverseItems.UNIVERSE_CHESTPLATE)
+          || armorStack.is(UniverseItems.UNIVERSE_HELMET)
+          || armorStack.is(UniverseItems.UNIVERSE_LEGGINGS)
+          || armorStack.is(UniverseItems.UNIVERSE_BOOTS)) {
         count++;
       }
     }
@@ -199,7 +200,7 @@ public final class EntityHelperForEquipment {
       CallbackInfoReturnable<Boolean> cir
   ) {
     ItemStack boots = player.getItemBySlot(EquipmentSlot.FEET);
-    if (!boots.is(RegDurableItems.UNIVERSE_BOOTS)) return;
+    if (!boots.is(UniverseItems.UNIVERSE_BOOTS)) return;
     if (player.isShiftKeyDown()) return;
 
     Level level = player.level();
@@ -216,7 +217,7 @@ public final class EntityHelperForEquipment {
       Player player
   ) {
     ItemStack boots = player.getItemBySlot(EquipmentSlot.FEET);
-    if (!boots.is(RegDurableItems.UNIVERSE_BOOTS)) return;
+    if (!boots.is(UniverseItems.UNIVERSE_BOOTS)) return;
     if (player.isShiftKeyDown()) return;
     if (player.getAbilities().flying || player.isSpectator()) return;
 
@@ -254,7 +255,7 @@ public final class EntityHelperForEquipment {
       DamageSource source,
       CallbackInfoReturnable<Boolean> cir
   ) {
-    if (player.getItemBySlot(EquipmentSlot.CHEST).is(RegDurableItems.UNIVERSE_CHESTPLATE)
+    if (player.getItemBySlot(EquipmentSlot.CHEST).is(UniverseItems.UNIVERSE_CHESTPLATE)
         && (source.is(DamageTypeTags.IS_FIRE) || source.is(DamageTypeTags.IS_FREEZING))) {
       cir.setReturnValue(true);
     }
@@ -271,7 +272,7 @@ public final class EntityHelperForEquipment {
 
     float baseSpeed = player.isSprinting() ? 0.2F : 0.08F;
     float targetSpeed = baseSpeed;
-    boolean allowSpeedUp = player.getItemBySlot(EquipmentSlot.LEGS).is(RegDurableItems.UNIVERSE_LEGGINGS);
+    boolean allowSpeedUp = player.getItemBySlot(EquipmentSlot.LEGS).is(UniverseItems.UNIVERSE_LEGGINGS);
 
     if (allowSpeedUp && player.getAbilities().flying && player.isSprinting()) {
       flightTicks++;
@@ -306,7 +307,7 @@ public final class EntityHelperForEquipment {
       FoodData foodData
   ) {
     ItemStack head = player.getItemBySlot(EquipmentSlot.HEAD);
-    if (!head.is(RegDurableItems.UNIVERSE_HELMET)) {
+    if (!head.is(UniverseItems.UNIVERSE_HELMET)) {
       return;
     }
 
@@ -323,7 +324,7 @@ public final class EntityHelperForEquipment {
       CallbackInfo ci
   ) {
     ItemStack headStack = player.getItemBySlot(EquipmentSlot.HEAD);
-    if (!headStack.is(RegDurableItems.UNIVERSE_HELMET)) {
+    if (!headStack.is(UniverseItems.UNIVERSE_HELMET)) {
       return;
     }
 
@@ -346,9 +347,9 @@ public final class EntityHelperForEquipment {
     if (!(source.getEntity() instanceof Player player)) return;
 
     ItemStack weaponStack = player.getMainHandItem();
-    if (!weaponStack.is(RegDurableItems.UNIVERSE_ULTIMA_SWORD)) return;
+    if (!weaponStack.is(UniverseItems.UNIVERSE_ULTIMA_SWORD)) return;
 
-    if (weaponStack.getOrDefault(RegComponentTypes.UNIVERSE_ULTIMA_SWORD_MODE, 0) == 1) {
+    if (weaponStack.getOrDefault(CustomComponents.UNIVERSE_ULTIMA_SWORD_MODE, 0) == 1) {
       target.hurtTime = 0;
       target.invulnerableTime = 0;
     }
@@ -370,7 +371,7 @@ public final class EntityHelperForEquipment {
         Magnatour.MOD_ID, "universe_leggings_jump_boost"
     );
 
-    if (legStack.is(RegDurableItems.UNIVERSE_LEGGINGS)) {
+    if (legStack.is(UniverseItems.UNIVERSE_LEGGINGS)) {
       if (stepAttr != null && !stepAttr.hasModifier(stepId)) {
         stepAttr.addTransientModifier(
             new AttributeModifier(stepId, 0.5, AttributeModifier.Operation.ADD_VALUE)

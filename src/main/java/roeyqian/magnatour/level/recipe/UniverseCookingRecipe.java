@@ -21,8 +21,8 @@ import net.minecraft.world.item.crafting.RecipeType;
 import org.jspecify.annotations.NonNull;
 
 // Magnatour
-import roeyqian.magnatour.registry.content.RegActiveBlocks;
-import roeyqian.magnatour.registry.logic.RegRecipes;
+import roeyqian.magnatour.registry.content.UniverseBlocks;
+import roeyqian.magnatour.registry.logic.CustomRecipes;
 
 public class UniverseCookingRecipe extends AbstractCookingRecipe {
 
@@ -50,17 +50,17 @@ public class UniverseCookingRecipe extends AbstractCookingRecipe {
 
   @Override @NonNull
   public RecipeType<? extends UniverseCookingRecipe> getType() {
-    return RegRecipes.UNIVERSE_COOKING_TYPE;
+    return CustomRecipes.UNIVERSE_COOKING_TYPE;
   }
 
   @Override @NonNull
   public RecipeBookCategory recipeBookCategory() {
-    return RegRecipes.UNIVERSE_COOKING;
+    return CustomRecipes.UNIVERSE_COOKING;
   }
 
   @Override @NonNull
   protected Item furnaceIcon() {
-    return RegActiveBlocks.UNIVERSE_REFINERY.asItem();
+    return UniverseBlocks.UNIVERSE_REFINERY.asItem();
   }
 
 }

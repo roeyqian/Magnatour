@@ -30,7 +30,7 @@ import org.jspecify.annotations.NonNull;
 
 // Magnatour
 import roeyqian.magnatour.blockentity.universe.UniverseRefineryEntity;
-import roeyqian.magnatour.registry.content.RegBlockEntities;
+import roeyqian.magnatour.registry.content.UniverseBlockEntities;
 
 public class UniverseRefinery extends AbstractFurnaceBlock {
 
@@ -99,7 +99,7 @@ public class UniverseRefinery extends AbstractFurnaceBlock {
       BlockEntityType<A> givenType,
       BlockEntityTicker<? super E> ticker
   ) {
-    return RegBlockEntities.UNIVERSE_REFINERY_ENTITY == givenType ? (BlockEntityTicker<A>) ticker : null;
+    return UniverseBlockEntities.UNIVERSE_REFINERY_ENTITY == givenType ? (BlockEntityTicker<A>) ticker : null;
   }
 
 }

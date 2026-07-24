@@ -19,13 +19,13 @@ import roeyqian.magnatour.levelgen.structure.GoldBellTowerPiece;
 import roeyqian.magnatour.levelgen.structure.GoldBellTowerStructure;
 import roeyqian.magnatour.levelgen.structure.StructureMobSpawner;
 import roeyqian.magnatour.levelgen.structure.TownOfFortuneStructure;
-import roeyqian.magnatour.registry.LevelRegHelper;
+import roeyqian.magnatour.registry.WorldgenRegHelper;
 
 /*
  * Supreme Group: Harvest Continent, Ore Continent
  * Universe Group: Structure
  */
-public final class RegStructures {
+public final class CustomStructures {
 
   // Supreme Group: Ore Continent
   public static final StructurePieceType DIAMOND_CITY_PIECE =
@@ -35,33 +35,33 @@ public final class RegStructures {
       registerGoldBellTowerPiece();
 
   public static final StructureType<DiamondCityStructure> DIAMOND_CITY =
-      LevelRegHelper.registerStructureType(
+      WorldgenRegHelper.registerStructureType(
           "diamond_city",
           () -> DiamondCityStructure.CODEC
       );
 
   public static final StructureType<GoldBellTowerStructure> GOLD_BELL_TOWER =
-      LevelRegHelper.registerStructureType(
+      WorldgenRegHelper.registerStructureType(
           "gold_bell_tower",
           () -> GoldBellTowerStructure.CODEC
       );
 
   public static final StructureType<TownOfFortuneStructure> TOWN_OF_FORTUNE =
-      LevelRegHelper.registerStructureType(
+      WorldgenRegHelper.registerStructureType(
           "town_of_fortune",
           () -> TownOfFortuneStructure.CODEC
       );
 
-  private RegStructures() {}
+  private CustomStructures() {}
 
   public static void init() {
     StructureMobSpawner.registerTickEvent();
-    Magnatour.LOGGER.info("[Server] Initializing 'RegStructures'");
+    Magnatour.LOGGER.info("[Server] Initializing 'CustomStructures'");
   }
 
   private static StructurePieceType registerDiamondCityPiece() {
     StructurePieceType[] pieceHolder = new StructurePieceType[1];
-    pieceHolder[0] = LevelRegHelper.registerStructurePiece(
+    pieceHolder[0] = WorldgenRegHelper.registerStructurePiece(
         "diamond_city",
         (_, tag) -> new DiamondCityPiece(pieceHolder[0], tag)
     );
@@ -70,7 +70,7 @@ public final class RegStructures {
 
   private static StructurePieceType registerGoldBellTowerPiece() {
     StructurePieceType[] pieceHolder = new StructurePieceType[1];
-    pieceHolder[0] = LevelRegHelper.registerStructurePiece(
+    pieceHolder[0] = WorldgenRegHelper.registerStructurePiece(
         "gold_bell_tower",
         (_, tag) -> new GoldBellTowerPiece(pieceHolder[0], tag)
     );

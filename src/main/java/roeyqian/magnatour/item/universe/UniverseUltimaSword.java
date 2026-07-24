@@ -46,7 +46,7 @@ import roeyqian.magnatour.Magnatour;
 import roeyqian.magnatour.item.CustomToolMaterial;
 import roeyqian.magnatour.entity.universe.UniverseFireball;
 import roeyqian.magnatour.item.CustomItemSetting;
-import roeyqian.magnatour.registry.logic.RegComponentTypes;
+import roeyqian.magnatour.registry.logic.CustomComponents;
 
 public class UniverseUltimaSword extends Item {
 
@@ -65,7 +65,7 @@ public class UniverseUltimaSword extends Item {
     if (!(user instanceof Player player)) return;
     if (!(player.level() instanceof ServerLevel world)) return;
 
-    int mode = stack.getOrDefault(RegComponentTypes.UNIVERSE_ULTIMA_SWORD_MODE, 0);
+    int mode = stack.getOrDefault(CustomComponents.UNIVERSE_ULTIMA_SWORD_MODE, 0);
     target.igniteForTicks(100);
     if (mode == 1) execUniverseKill(world, target);
   }
@@ -84,7 +84,7 @@ public class UniverseUltimaSword extends Item {
       Player player,
       @NonNull InteractionHand hand
   ) {
-    int mode = player.getItemInHand(hand).getOrDefault(RegComponentTypes.UNIVERSE_ULTIMA_SWORD_MODE, 0);
+    int mode = player.getItemInHand(hand).getOrDefault(CustomComponents.UNIVERSE_ULTIMA_SWORD_MODE, 0);
     return mode == 1 ? execFireballMode(world, player) : InteractionResult.PASS;
   }
 
@@ -92,7 +92,7 @@ public class UniverseUltimaSword extends Item {
   public InteractionResult useOn(
       UseOnContext context
   ) {
-    int mode = context.getItemInHand().getOrDefault(RegComponentTypes.UNIVERSE_ULTIMA_SWORD_MODE, 1);
+    int mode = context.getItemInHand().getOrDefault(CustomComponents.UNIVERSE_ULTIMA_SWORD_MODE, 1);
     return mode == 0 ? execFlintMode(context) : InteractionResult.PASS;
   }
 

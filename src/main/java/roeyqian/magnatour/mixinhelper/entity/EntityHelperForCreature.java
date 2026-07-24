@@ -21,7 +21,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 // Magnatour
-import roeyqian.magnatour.registry.content.RegInsertBlocks;
+import roeyqian.magnatour.registry.content.SupremeBlocks;
 
 public final class EntityHelperForCreature {
 
@@ -59,7 +59,7 @@ public final class EntityHelperForCreature {
     }
 
     BlockPos blockPos = mob.blockPosition();
-    if (level.getBlockState(blockPos.below()).is(RegInsertBlocks.EVER_WATER_GRASS_BLOCK)) {
+    if (level.getBlockState(blockPos.below()).is(SupremeBlocks.EVER_WATER_GRASS_BLOCK)) {
       cir.setReturnValue(true);
     }
   }
@@ -79,12 +79,12 @@ public final class EntityHelperForCreature {
     boolean vanillaHandled = level.getBlockState(blockPos).is(BlockTags.EDIBLE_FOR_SHEEP)
         || level.getBlockState(downPos).is(Blocks.GRASS_BLOCK);
 
-    if (!vanillaHandled && downState.is(RegInsertBlocks.EVER_WATER_GRASS_BLOCK)) {
+    if (!vanillaHandled && downState.is(SupremeBlocks.EVER_WATER_GRASS_BLOCK)) {
       if (level instanceof ServerLevel serverWorld
           && serverWorld.getGameRules().get(net.minecraft.world.level.gamerules.GameRules.MOB_GRIEFING)
       ) {
         level.levelEvent(2001, downPos, Block.getId(Blocks.GRASS_BLOCK.defaultBlockState()));
-        level.setBlock(downPos, RegInsertBlocks.EVER_WATER_SOIL.defaultBlockState(), 2);
+        level.setBlock(downPos, SupremeBlocks.EVER_WATER_SOIL.defaultBlockState(), 2);
       }
       mob.ate();
     }

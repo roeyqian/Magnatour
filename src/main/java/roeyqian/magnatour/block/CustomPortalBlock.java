@@ -40,8 +40,8 @@ import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 // Magnatour
-import roeyqian.magnatour.registry.content.RegInsertBlocks;
-import roeyqian.magnatour.registry.worldgen.RegDimensions;
+import roeyqian.magnatour.registry.content.SupremeBlocks;
+import roeyqian.magnatour.registry.worldgen.CustomDimensions;
 
 public interface CustomPortalBlock {
 
@@ -326,14 +326,14 @@ public interface CustomPortalBlock {
   private static List<PortalSpec> portalSpecs() {
     return List.of(
         new PortalSpec(
-            RegInsertBlocks.SUPREME_GEM_BLOCK,
-            RegInsertBlocks.ORE_CONTINENT_PORTAL,
-            RegDimensions.ORE_CONTINENT
+            SupremeBlocks.SUPREME_GEM_BLOCK,
+            SupremeBlocks.ORE_CONTINENT_PORTAL,
+            CustomDimensions.ORE_CONTINENT
         ),
         new PortalSpec(
-            RegInsertBlocks.SUPREME_FODDER_BLOCK,
-            RegInsertBlocks.HARVEST_CONTINENT_PORTAL,
-            RegDimensions.HARVEST_CONTINENT
+            SupremeBlocks.SUPREME_FODDER_BLOCK,
+            SupremeBlocks.HARVEST_CONTINENT_PORTAL,
+            CustomDimensions.HARVEST_CONTINENT
         )
     );
   }

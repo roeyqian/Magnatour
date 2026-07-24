@@ -27,7 +27,7 @@ import net.minecraft.world.level.Level;
 import org.jspecify.annotations.NonNull;
 
 // Magnatour
-import roeyqian.magnatour.registry.content.RegBlockMenus;
+import roeyqian.magnatour.registry.content.SupremeMenus;
 
 public class ItemHubMenu extends AbstractContainerMenu {
 
@@ -76,7 +76,7 @@ public class ItemHubMenu extends AbstractContainerMenu {
       ResourceKey<Level> dimension,
       String filterItemId
   ) {
-    super(RegBlockMenus.ITEM_HUB_HANDLER, containerId);
+    super(SupremeMenus.ITEM_HUB_HANDLER, containerId);
     this.hopper = hopper;
     this.blockPos = blockPos;
     this.dimension = dimension;

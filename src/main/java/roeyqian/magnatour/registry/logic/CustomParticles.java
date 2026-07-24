@@ -12,22 +12,22 @@ import net.minecraft.core.particles.SimpleParticleType;
 
 // Magnatour
 import roeyqian.magnatour.Magnatour;
-import roeyqian.magnatour.registry.GenRegHelper;
+import roeyqian.magnatour.registry.LogicRegHelper;
 
 /*
  * Supreme Group: Particle
  * Universe Group: Particle
  */
-public final class RegParticles {
+public final class CustomParticles {
 
   // Universe Group: Particle
   public static final SimpleParticleType UNIVERSE_SONIC_BOOM =
-      GenRegHelper.registerSimpleParticle("universe_sonic_boom");
+      LogicRegHelper.registerSimpleParticle("universe_sonic_boom");
 
-  private RegParticles() {}
+  private CustomParticles() {}
 
   public static void init() {
-    Magnatour.LOGGER.info("[Server] Initializing 'RegParticles'");
+    Magnatour.LOGGER.info("[Server] Initializing 'CustomParticles'");
   }
 
 }

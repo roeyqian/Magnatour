@@ -33,7 +33,7 @@ import org.jspecify.annotations.NonNull;
 // Magnatour
 import roeyqian.magnatour.Magnatour;
 import roeyqian.magnatour.mixinhelper.world.WorldHelperForDimension;
-import roeyqian.magnatour.registry.worldgen.RegStructures;
+import roeyqian.magnatour.registry.worldgen.CustomStructures;
 
 public final class GoldBellTowerStructure extends Structure {
 
@@ -111,7 +111,7 @@ public final class GoldBellTowerStructure extends Structure {
     }
 
     GoldBellTowerPiece piece = new GoldBellTowerPiece(
-        RegStructures.GOLD_BELL_TOWER_PIECE,
+        CustomStructures.GOLD_BELL_TOWER_PIECE,
         lowerPos,
         lowerSize,
         upperSize
@@ -125,7 +125,7 @@ public final class GoldBellTowerStructure extends Structure {
 
   @Override @NonNull
   public StructureType<?> type() {
-    return RegStructures.GOLD_BELL_TOWER;
+    return CustomStructures.GOLD_BELL_TOWER;
   }
 
   private static long mix(

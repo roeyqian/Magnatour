@@ -35,7 +35,7 @@ import org.jspecify.annotations.NonNull;
 
 // Magnatour
 import roeyqian.magnatour.item.CustomItemSetting;
-import roeyqian.magnatour.registry.logic.RegComponentTypes;
+import roeyqian.magnatour.registry.logic.CustomComponents;
 
 public class UniverseBucket extends Item {
 
@@ -70,7 +70,7 @@ public class UniverseBucket extends Item {
     Level level = context.getLevel();
     InteractionHand hand = context.getHand();
     ItemStack stack = context.getItemInHand();
-    int mode = stack.getOrDefault(RegComponentTypes.UNIVERSE_BUCKET_MODE, 0);
+    int mode = stack.getOrDefault(CustomComponents.UNIVERSE_BUCKET_MODE, 0);
 
     Fluid fluidToPlace;
     SoundEvent placeSound;

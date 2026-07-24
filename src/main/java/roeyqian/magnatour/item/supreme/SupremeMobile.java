@@ -35,7 +35,7 @@ import org.jspecify.annotations.NonNull;
 // Magnatour
 import roeyqian.magnatour.item.CustomItemSetting;
 import roeyqian.magnatour.menu.supreme.SupremeMobileMenuAccess;
-import roeyqian.magnatour.registry.logic.RegComponentTypes;
+import roeyqian.magnatour.registry.logic.CustomComponents;
 
 public class SupremeMobile extends Item {
 
@@ -56,10 +56,10 @@ public class SupremeMobile extends Item {
     user.swing(hand);
     if (world.isClientSide()) return InteractionResult.PASS;
 
-    int mode = stack.getOrDefault(RegComponentTypes.SUPREME_MOBILE_MODE, 0);
+    int mode = stack.getOrDefault(CustomComponents.SUPREME_MOBILE_MODE, 0);
     if (mode != 0) return InteractionResult.PASS;
 
-    String blockId = stack.getOrDefault(RegComponentTypes.SUPREME_MOBILE_BLOCK_ID, "");
+    String blockId = stack.getOrDefault(CustomComponents.SUPREME_MOBILE_BLOCK_ID, "");
 
     if (blockId.isEmpty()) {
       user.sendOverlayMessage(
@@ -86,7 +86,7 @@ public class SupremeMobile extends Item {
     Player player = context.getPlayer();
     ItemStack stack = context.getItemInHand();
 
-    int mode = stack.getOrDefault(RegComponentTypes.SUPREME_MOBILE_MODE, 0);
+    int mode = stack.getOrDefault(CustomComponents.SUPREME_MOBILE_MODE, 0);
     if (mode != 1) return InteractionResult.PASS;
 
     if (player == null) return InteractionResult.PASS;
@@ -112,7 +112,7 @@ public class SupremeMobile extends Item {
     }
 
     String blockId = BuiltInRegistries.BLOCK.getKey(blockState.getBlock()).toString();
-    stack.set(RegComponentTypes.SUPREME_MOBILE_BLOCK_ID, blockId);
+    stack.set(CustomComponents.SUPREME_MOBILE_BLOCK_ID, blockId);
 
     Component blockName = Component.translatable(blockState.getBlock().getDescriptionId());
     player.sendOverlayMessage(
@@ -128,8 +128,8 @@ public class SupremeMobile extends Item {
   ) {
     return CustomItemSetting.applySupremeDefaults(settings)
         .component(DataComponents.LORE, CustomItemSetting.supremeLore("supreme_mobile", 1))
-        .component(RegComponentTypes.SUPREME_MOBILE_MODE, 0)
-        .component(RegComponentTypes.SUPREME_MOBILE_BLOCK_ID, "");
+        .component(CustomComponents.SUPREME_MOBILE_MODE, 0)
+        .component(CustomComponents.SUPREME_MOBILE_BLOCK_ID, "");
   }
 
   private static MenuProvider getNamedScreenHandlerFactory(

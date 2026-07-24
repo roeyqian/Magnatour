@@ -32,8 +32,8 @@ import org.jspecify.annotations.NonNull;
 // Magnatour
 import roeyqian.magnatour.menu.supreme.SupremeFurnaceMenu;
 import roeyqian.magnatour.mixin.screen.GhostSlotsInvoker;
-import roeyqian.magnatour.registry.logic.RegRecipes;
-import roeyqian.magnatour.registry.content.RegConsumableItems;
+import roeyqian.magnatour.registry.logic.CustomRecipes;
+import roeyqian.magnatour.registry.content.SupremeItems;
 
 public final class SupremeCookingBookComponent extends RecipeBookComponent<SupremeFurnaceMenu> {
 
@@ -53,7 +53,7 @@ public final class SupremeCookingBookComponent extends RecipeBookComponent<Supre
       new RecipeBookComponent.TabInfo(Items.PORKCHOP, RecipeBookCategories.FURNACE_FOOD),
       new RecipeBookComponent.TabInfo(Items.STONE, RecipeBookCategories.FURNACE_BLOCKS),
       new RecipeBookComponent.TabInfo(Items.LAVA_BUCKET, Items.EMERALD, RecipeBookCategories.FURNACE_MISC),
-      new RecipeBookComponent.TabInfo(RegConsumableItems.SUPREME_CORE, RegRecipes.SUPREME_COOKING)
+      new RecipeBookComponent.TabInfo(SupremeItems.SUPREME_CORE, CustomRecipes.SUPREME_COOKING)
   );
 
   public SupremeCookingBookComponent(

@@ -28,7 +28,7 @@ import org.jspecify.annotations.NonNull;
 
 // Magnatour
 import roeyqian.magnatour.blockentity.universe.UniverseTeleportPointEntity;
-import roeyqian.magnatour.registry.content.RegBlockMenus;
+import roeyqian.magnatour.registry.content.UniverseMenus;
 
 public class UniverseTeleportPointMenu extends AbstractContainerMenu {
 
@@ -58,7 +58,7 @@ public class UniverseTeleportPointMenu extends AbstractContainerMenu {
       BlockPos blockPos,
       ResourceKey<Level> dimension
   ) {
-    super(RegBlockMenus.UNIVERSE_TELEPORT_POINT_HANDLER, syncId);
+    super(UniverseMenus.UNIVERSE_TELEPORT_POINT_HANDLER, syncId);
     this.destinations = List.copyOf(destinations);
     this.blockPos = blockPos;
     this.dimension = dimension;

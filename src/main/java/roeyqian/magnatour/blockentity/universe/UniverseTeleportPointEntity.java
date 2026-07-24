@@ -41,7 +41,7 @@ import org.jspecify.annotations.NonNull;
 
 // Magnatour
 import roeyqian.magnatour.menu.universe.UniverseTeleportPointMenu;
-import roeyqian.magnatour.registry.content.RegBlockEntities;
+import roeyqian.magnatour.registry.content.UniverseBlockEntities;
 
 public class UniverseTeleportPointEntity extends BlockEntity implements MenuProvider {
 
@@ -55,7 +55,7 @@ public class UniverseTeleportPointEntity extends BlockEntity implements MenuProv
       BlockPos pos,
       BlockState state
   ) {
-    super(RegBlockEntities.UNIVERSE_TELEPORT_POINT_ENTITY, pos, state);
+    super(UniverseBlockEntities.UNIVERSE_TELEPORT_POINT_ENTITY, pos, state);
   }
 
   public boolean addDestination(

@@ -18,7 +18,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.HitResult;
 
 // Magnatour
-import roeyqian.magnatour.registry.content.RegConsumableItems;
+import roeyqian.magnatour.registry.content.SupremeItems;
 
 public class ThrownStrangeLingeringPotion extends ThrownLingeringPotion {
 
@@ -51,7 +51,7 @@ public class ThrownStrangeLingeringPotion extends ThrownLingeringPotion {
 
   @Override
   protected Item getDefaultItem() {
-    return RegConsumableItems.STRANGE_LINGERING_POTION;
+    return SupremeItems.STRANGE_LINGERING_POTION;
   }
 
   @Override

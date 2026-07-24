@@ -43,8 +43,8 @@ import roeyqian.magnatour.entity.supreme.NetheriteGolem;
 import roeyqian.magnatour.entity.supreme.ObsidianGolem;
 import roeyqian.magnatour.entity.supreme.PaleLord;
 import roeyqian.magnatour.entity.supreme.SculkBehemoth;
-import roeyqian.magnatour.registry.content.RegInsertBlocks;
-import roeyqian.magnatour.registry.content.RegLiveEntities;
+import roeyqian.magnatour.registry.content.SupremeBlocks;
+import roeyqian.magnatour.registry.content.SupremeEntities;
 
 public final class SummonStructureHelper {
 
@@ -97,7 +97,7 @@ public final class SummonStructureHelper {
     return state.is(Blocks.SCULK_CATALYST)
         || state.is(Blocks.SCULK)
         || state.is(Blocks.CREAKING_HEART)
-        || state.is(RegInsertBlocks.SUPREME_PUMPKIN_HEAD)
+        || state.is(SupremeBlocks.SUPREME_PUMPKIN_HEAD)
         || state.is(Blocks.CRYING_OBSIDIAN)
         || state.is(Blocks.NETHERITE_BLOCK);
   }
@@ -132,7 +132,7 @@ public final class SummonStructureHelper {
     );
     if (match == null) return;
 
-    NetheriteGolem netheriteGolem = RegLiveEntities.NETHERITE_GOLEM.create(level, EntitySpawnReason.TRIGGERED);
+    NetheriteGolem netheriteGolem = SupremeEntities.NETHERITE_GOLEM.create(level, EntitySpawnReason.TRIGGERED);
     if (netheriteGolem == null) return;
 
     netheriteGolem.setPlayerCreated(true);
@@ -157,7 +157,7 @@ public final class SummonStructureHelper {
     );
     if (match == null) return;
 
-    ObsidianGolem obsidianGolem = RegLiveEntities.OBSIDIAN_GOLEM.create(level, EntitySpawnReason.TRIGGERED);
+    ObsidianGolem obsidianGolem = SupremeEntities.OBSIDIAN_GOLEM.create(level, EntitySpawnReason.TRIGGERED);
     if (obsidianGolem == null) return;
 
     obsidianGolem.setPlayerCreated(true);
@@ -182,7 +182,7 @@ public final class SummonStructureHelper {
     );
     if (match == null) return;
 
-    PaleLord paleLord = RegLiveEntities.PALE_LORD.create(level, EntitySpawnReason.TRIGGERED);
+    PaleLord paleLord = SupremeEntities.PALE_LORD.create(level, EntitySpawnReason.TRIGGERED);
     if (paleLord == null) return;
 
     clearPatternBlocks(level, match);
@@ -206,7 +206,7 @@ public final class SummonStructureHelper {
     );
     if (match == null) return;
 
-    SculkBehemoth sculkBehemoth = RegLiveEntities.SCULK_BEHEMOTH.create(
+    SculkBehemoth sculkBehemoth = SupremeEntities.SCULK_BEHEMOTH.create(
         level, EntitySpawnReason.TRIGGERED
     );
     if (sculkBehemoth == null) return;
@@ -221,7 +221,7 @@ public final class SummonStructureHelper {
   private static boolean isNetheriteGolemTriggerBlock(
       BlockState state
   ) {
-    return state.is(RegInsertBlocks.SUPREME_PUMPKIN_HEAD)
+    return state.is(SupremeBlocks.SUPREME_PUMPKIN_HEAD)
         || state.is(Blocks.NETHERITE_BLOCK);
   }
 
@@ -254,7 +254,7 @@ public final class SummonStructureHelper {
           NETHERITE_GOLEM_AISLES,
           builder -> builder
           .where('#', BlockInWorld.hasState(BlockStatePredicate.forBlock(Blocks.NETHERITE_BLOCK)))
-          .where('P', BlockInWorld.hasState(BlockStatePredicate.forBlock(RegInsertBlocks.SUPREME_PUMPKIN_HEAD)))
+          .where('P', BlockInWorld.hasState(BlockStatePredicate.forBlock(SupremeBlocks.SUPREME_PUMPKIN_HEAD)))
           .where('~', BlockInWorld.hasState(BlockBehaviour.BlockStateBase::isAir))
       );
     }
@@ -322,7 +322,7 @@ public final class SummonStructureHelper {
   private static boolean isObsidianGolemTriggerBlock(
       BlockState state
   ) {
-    return state.is(RegInsertBlocks.SUPREME_PUMPKIN_HEAD)
+    return state.is(SupremeBlocks.SUPREME_PUMPKIN_HEAD)
         || state.is(Blocks.CRYING_OBSIDIAN);
   }
 
@@ -332,7 +332,7 @@ public final class SummonStructureHelper {
           OBSIDIAN_GOLEM_AISLES,
           builder -> builder
           .where('#', BlockInWorld.hasState(BlockStatePredicate.forBlock(Blocks.CRYING_OBSIDIAN)))
-          .where('P', BlockInWorld.hasState(BlockStatePredicate.forBlock(RegInsertBlocks.SUPREME_PUMPKIN_HEAD)))
+          .where('P', BlockInWorld.hasState(BlockStatePredicate.forBlock(SupremeBlocks.SUPREME_PUMPKIN_HEAD)))
           .where('~', BlockInWorld.hasState(BlockBehaviour.BlockStateBase::isAir))
       );
     }
@@ -343,7 +343,7 @@ public final class SummonStructureHelper {
   private static boolean isPaleLordTriggerBlock(
       BlockState state
   ) {
-    return state.is(RegInsertBlocks.SUPREME_FODDER_BLOCK)
+    return state.is(SupremeBlocks.SUPREME_FODDER_BLOCK)
         || state.is(Blocks.CREAKING_HEART);
   }
 
@@ -352,7 +352,7 @@ public final class SummonStructureHelper {
       paleLordPatterns = createHorizontalPatternVariants(
           PALE_LORD_AISLES,
           builder -> builder
-          .where('#', BlockInWorld.hasState(BlockStatePredicate.forBlock(RegInsertBlocks.SUPREME_FODDER_BLOCK)))
+          .where('#', BlockInWorld.hasState(BlockStatePredicate.forBlock(SupremeBlocks.SUPREME_FODDER_BLOCK)))
           .where('C', BlockInWorld.hasState(BlockStatePredicate.forBlock(Blocks.CREAKING_HEART)))
           .where('~', BlockInWorld.hasState(BlockBehaviour.BlockStateBase::isAir))
       );
@@ -364,7 +364,7 @@ public final class SummonStructureHelper {
   private static boolean isSculkBehemothTriggerBlock(
       BlockState state
   ) {
-    return state.is(RegInsertBlocks.SUPREME_GEM_BLOCK)
+    return state.is(SupremeBlocks.SUPREME_GEM_BLOCK)
         || state.is(Blocks.SCULK_CATALYST)
         || state.is(Blocks.SCULK);
   }
@@ -374,7 +374,7 @@ public final class SummonStructureHelper {
       sculkBehemothPatterns = createHorizontalPatternVariants(
           SCULK_BEHEMOTH_AISLES,
           builder -> builder
-          .where('#', BlockInWorld.hasState(BlockStatePredicate.forBlock(RegInsertBlocks.SUPREME_GEM_BLOCK)))
+          .where('#', BlockInWorld.hasState(BlockStatePredicate.forBlock(SupremeBlocks.SUPREME_GEM_BLOCK)))
           .where('C', BlockInWorld.hasState(BlockStatePredicate.forBlock(Blocks.SCULK_CATALYST)))
           .where('S', BlockInWorld.hasState(BlockStatePredicate.forBlock(Blocks.SCULK)))
           .where('~', BlockInWorld.hasState(BlockBehaviour.BlockStateBase::isAir))

@@ -19,58 +19,58 @@ import roeyqian.magnatour.level.recipe.SupremeCookingRecipe;
 import roeyqian.magnatour.level.recipe.SupremeCraftingRecipe;
 import roeyqian.magnatour.level.recipe.UniverseCraftingRecipe;
 import roeyqian.magnatour.level.recipe.UniverseCookingRecipe;
-import roeyqian.magnatour.registry.GenRegHelper;
+import roeyqian.magnatour.registry.LogicRegHelper;
 
 /*
  * Supreme Group: Crafting, Cooking
  * Universe Group: Crafting, Cooking
  */
-public final class RegRecipes {
+public final class CustomRecipes {
 
   // Supreme Group: Cooking
   public static final RecipeBookCategory SUPREME_COOKING =
-      GenRegHelper.registerRecipeBookCategory("supreme_cooking");
+      LogicRegHelper.registerRecipeBookCategory("supreme_cooking");
   // Supreme Group: Crafting
   public static final RecipeBookCategory SUPREME_CRAFTING =
-      GenRegHelper.registerRecipeBookCategory("supreme_crafting");
+      LogicRegHelper.registerRecipeBookCategory("supreme_crafting");
   // Universe Group: Cooking
   public static final RecipeBookCategory UNIVERSE_COOKING =
-      GenRegHelper.registerRecipeBookCategory("universe_cooking");
+      LogicRegHelper.registerRecipeBookCategory("universe_cooking");
   // Universe Group: Crafting
   public static final RecipeBookCategory UNIVERSE_CRAFTING =
-      GenRegHelper.registerRecipeBookCategory("universe_crafting");
+      LogicRegHelper.registerRecipeBookCategory("universe_crafting");
 
   public static final RecipeType<CraftingRecipe> SUPREME_CRAFTING_TYPE =
-      GenRegHelper.registerRecipeType("supreme_crafting");
+      LogicRegHelper.registerRecipeType("supreme_crafting");
   public static final RecipeType<CraftingRecipe> UNIVERSE_CRAFTING_TYPE =
-      GenRegHelper.registerRecipeType("universe_crafting");
+      LogicRegHelper.registerRecipeType("universe_crafting");
 
   public static final RecipeType<SupremeCookingRecipe> SUPREME_COOKING_TYPE =
-      GenRegHelper.registerRecipeType("supreme_cooking");
+      LogicRegHelper.registerRecipeType("supreme_cooking");
 
   public static final RecipeType<UniverseCookingRecipe> UNIVERSE_COOKING_TYPE =
-      GenRegHelper.registerRecipeType("universe_cooking");
+      LogicRegHelper.registerRecipeType("universe_cooking");
 
   @SuppressWarnings("unused") // loaded for registry side effect
   public static final RecipeSerializer<SupremeCookingRecipe> SUPREME_COOKING_SERIALIZER =
-      GenRegHelper.registerRecipeSerializer("supreme_cooking", SupremeCookingRecipe.SERIALIZER);
+      LogicRegHelper.registerRecipeSerializer("supreme_cooking", SupremeCookingRecipe.SERIALIZER);
 
   @SuppressWarnings("unused") // loaded for registry side effect
   public static final RecipeSerializer<SupremeCraftingRecipe> SUPREME_CRAFTING_SERIALIZER =
-      GenRegHelper.registerRecipeSerializer("supreme_crafting", SupremeCraftingRecipe.SERIALIZER);
+      LogicRegHelper.registerRecipeSerializer("supreme_crafting", SupremeCraftingRecipe.SERIALIZER);
 
   @SuppressWarnings("unused") // loaded for registry side effect
   public static final RecipeSerializer<UniverseCookingRecipe> UNIVERSE_COOKING_SERIALIZER =
-      GenRegHelper.registerRecipeSerializer("universe_cooking", UniverseCookingRecipe.SERIALIZER);
+      LogicRegHelper.registerRecipeSerializer("universe_cooking", UniverseCookingRecipe.SERIALIZER);
 
   @SuppressWarnings("unused") // loaded for registry side effect
   public static final RecipeSerializer<UniverseCraftingRecipe> UNIVERSE_CRAFTING_SERIALIZER =
-      GenRegHelper.registerRecipeSerializer("universe_crafting", UniverseCraftingRecipe.SERIALIZER);
+      LogicRegHelper.registerRecipeSerializer("universe_crafting", UniverseCraftingRecipe.SERIALIZER);
 
-  private RegRecipes() {}
+  private CustomRecipes() {}
 
   public static void init() {
-    Magnatour.LOGGER.info("[Server] Initializing 'RegRecipes'");
+    Magnatour.LOGGER.info("[Server] Initializing 'CustomRecipes'");
   }
 
 }

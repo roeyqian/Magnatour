@@ -35,8 +35,8 @@ import roeyqian.magnatour.level.recipe.SupremeCookingRecipe;
 import roeyqian.magnatour.level.recipe.UniverseCookingRecipe;
 import roeyqian.magnatour.menu.universe.UniverseRefineryMenu;
 import roeyqian.magnatour.mixin.block.AbstractFurnaceBlockEntityAccessor;
-import roeyqian.magnatour.registry.content.RegBlockEntities;
-import roeyqian.magnatour.registry.logic.RegRecipes;
+import roeyqian.magnatour.registry.content.UniverseBlockEntities;
+import roeyqian.magnatour.registry.logic.CustomRecipes;
 
 public class UniverseRefineryEntity extends AbstractFurnaceBlockEntity {
 
@@ -51,9 +51,9 @@ public class UniverseRefineryEntity extends AbstractFurnaceBlockEntity {
       BlockPos pos,
       BlockState state
   ) {
-    super(RegBlockEntities.UNIVERSE_REFINERY_ENTITY, pos, state, RecipeType.SMELTING);
-    this.supremeMatchGetter = RecipeManager.createCheck(RegRecipes.SUPREME_COOKING_TYPE);
-    this.universeMatchGetter = RecipeManager.createCheck(RegRecipes.UNIVERSE_COOKING_TYPE);
+    super(UniverseBlockEntities.UNIVERSE_REFINERY_ENTITY, pos, state, RecipeType.SMELTING);
+    this.supremeMatchGetter = RecipeManager.createCheck(CustomRecipes.SUPREME_COOKING_TYPE);
+    this.universeMatchGetter = RecipeManager.createCheck(CustomRecipes.UNIVERSE_COOKING_TYPE);
   }
 
   public static void tick(

@@ -14,48 +14,50 @@ import net.minecraft.world.entity.MobCategory;
 
 // Magnatour
 import roeyqian.magnatour.Magnatour;
-import roeyqian.magnatour.entity.supreme.PrimedChunkTnt;
 import roeyqian.magnatour.entity.supreme.BellRinger;
 import roeyqian.magnatour.entity.supreme.BellSoul;
 import roeyqian.magnatour.entity.supreme.NetheriteGolem;
 import roeyqian.magnatour.entity.supreme.ObsidianGolem;
 import roeyqian.magnatour.entity.supreme.PaleLord;
 import roeyqian.magnatour.entity.supreme.PaleLordClone;
+import roeyqian.magnatour.entity.supreme.PrimedChunkTnt;
 import roeyqian.magnatour.entity.supreme.SculkBehemoth;
 import roeyqian.magnatour.entity.supreme.TheUnnameableThing;
-import roeyqian.magnatour.entity.universe.UniverseGuardian;
 import roeyqian.magnatour.registry.EntityRegHelper;
 
 /*
- * Supreme Group: Creature, Monster
- * Universe Group: Creature, Monster
+ * Supreme Group: Creature, Monster, Misc
  */
-public final class RegLiveEntities {
+public final class SupremeEntities {
 
+  // Monster
   public static final ResourceKey<EntityType<?>> BELL_RINGER_KEY =
       EntityRegHelper.entityKey("bell_ringer");
-  // Supreme Group: Monster
   public static final ResourceKey<EntityType<?>> BELL_SOUL_KEY =
       EntityRegHelper.entityKey("bell_soul");
+  public static final ResourceKey<EntityType<?>> PALE_LORD_KEY =
+      EntityRegHelper.entityKey("pale_lord");
+  public static final ResourceKey<EntityType<?>> PALE_LORD_CLONE_KEY =
+      EntityRegHelper.entityKey("pale_lord_clone");
+  public static final ResourceKey<EntityType<?>> SCULK_BEHEMOTH_KEY =
+      EntityRegHelper.entityKey("sculk_behemoth");
+  public static final ResourceKey<EntityType<?>> THE_UNNAMEABLE_THING_KEY =
+      EntityRegHelper.entityKey("the_unnameable_thing");
+
+  // Creature
   public static final ResourceKey<EntityType<?>> NETHERITE_GOLEM_KEY =
       EntityRegHelper.entityKey("netherite_golem");
   public static final ResourceKey<EntityType<?>> OBSIDIAN_GOLEM_KEY =
       EntityRegHelper.entityKey("obsidian_golem");
-  public static final ResourceKey<EntityType<?>> PALE_LORD_CLONE_KEY =
-      EntityRegHelper.entityKey("pale_lord_clone");
-  public static final ResourceKey<EntityType<?>> PALE_LORD_KEY =
-      EntityRegHelper.entityKey("pale_lord");
-  // Dead Entity
+
+  // Misc
   public static final ResourceKey<EntityType<?>> PRIMED_CHUNK_TNT_KEY =
       EntityRegHelper.entityKey("primed_chunk_tnt");
-  public static final ResourceKey<EntityType<?>> SCULK_BEHEMOTH_KEY =
-      EntityRegHelper.entityKey("sculk_behemoth");
-  // Supreme Group: Creature
-  public static final ResourceKey<EntityType<?>> THE_UNNAMEABLE_THING_KEY =
-      EntityRegHelper.entityKey("the_unnameable_thing");
-  // Supreme Group: Creature
-  public static final ResourceKey<EntityType<?>> UNIVERSE_GUARDIAN_KEY =
-      EntityRegHelper.entityKey("universe_guardian");
+
+  public static final EntityType<BellRinger> BELL_RINGER = EntityRegHelper.register(
+      BELL_RINGER_KEY, BellRinger::new, MobCategory.MONSTER,
+      0.6F, 1.95F
+  );
 
   public static final EntityType<BellSoul> BELL_SOUL = EntityRegHelper.register(
       BELL_SOUL_KEY, BellSoul::new, MobCategory.MONSTER,
@@ -65,16 +67,6 @@ public final class RegLiveEntities {
   public static final EntityType<PaleLord> PALE_LORD = EntityRegHelper.register(
       PALE_LORD_KEY, PaleLord::new, MobCategory.MONSTER,
       0.6F, 1.95F
-  );
-
-  public static final EntityType<BellRinger> BELL_RINGER = EntityRegHelper.register(
-      BELL_RINGER_KEY, BellRinger::new, MobCategory.MONSTER,
-      0.6F, 1.95F
-  );
-
-  public static final EntityType<ObsidianGolem> OBSIDIAN_GOLEM = EntityRegHelper.register(
-      OBSIDIAN_GOLEM_KEY, ObsidianGolem::new, MobCategory.CREATURE,
-      1.4F, 2.7F
   );
 
   public static final EntityType<PaleLordClone> PALE_LORD_CLONE = EntityRegHelper.register(
@@ -87,8 +79,18 @@ public final class RegLiveEntities {
       8.0F, 10.0F
   );
 
+  public static final EntityType<TheUnnameableThing> THE_UNNAMEABLE_THING = EntityRegHelper.register(
+      THE_UNNAMEABLE_THING_KEY, TheUnnameableThing::new, MobCategory.MONSTER,
+      1.2F, 1.2F
+  );
+
   public static final EntityType<NetheriteGolem> NETHERITE_GOLEM = EntityRegHelper.register(
       NETHERITE_GOLEM_KEY, NetheriteGolem::new, MobCategory.CREATURE,
+      1.4F, 2.7F
+  );
+
+  public static final EntityType<ObsidianGolem> OBSIDIAN_GOLEM = EntityRegHelper.register(
+      OBSIDIAN_GOLEM_KEY, ObsidianGolem::new, MobCategory.CREATURE,
       1.4F, 2.7F
   );
 
@@ -97,30 +99,19 @@ public final class RegLiveEntities {
       0.98F, 0.98F
   );
 
-  public static final EntityType<UniverseGuardian> UNIVERSE_GUARDIAN = EntityRegHelper.register(
-      UNIVERSE_GUARDIAN_KEY, UniverseGuardian::new, MobCategory.CREATURE,
-      0.6F, 1.4F
-  );
-
-  public static final EntityType<TheUnnameableThing> THE_UNNAMEABLE_THING = EntityRegHelper.register(
-      THE_UNNAMEABLE_THING_KEY, TheUnnameableThing::new, MobCategory.MONSTER,
-      1.2F, 1.2F
-  );
-
-  private RegLiveEntities() {}
+  private SupremeEntities() {}
 
   public static void init() {
-    EntityRegHelper.registerAttributes(THE_UNNAMEABLE_THING, TheUnnameableThing.createAttributes());
-    EntityRegHelper.registerAttributes(OBSIDIAN_GOLEM, ObsidianGolem.createAttributes());
-    EntityRegHelper.registerAttributes(NETHERITE_GOLEM, NetheriteGolem.createAttributes());
-    EntityRegHelper.registerAttributes(BELL_SOUL, BellSoul.createAttributes());
     EntityRegHelper.registerAttributes(BELL_RINGER, BellRinger.createAttributes());
-    EntityRegHelper.registerAttributes(SCULK_BEHEMOTH, SculkBehemoth.createAttributes());
+    EntityRegHelper.registerAttributes(BELL_SOUL, BellSoul.createAttributes());
     EntityRegHelper.registerAttributes(PALE_LORD, PaleLord.createAttributes());
     EntityRegHelper.registerAttributes(PALE_LORD_CLONE, PaleLordClone.createAttributes());
-    EntityRegHelper.registerAttributes(UNIVERSE_GUARDIAN, UniverseGuardian.createAttributes());
+    EntityRegHelper.registerAttributes(SCULK_BEHEMOTH, SculkBehemoth.createAttributes());
+    EntityRegHelper.registerAttributes(THE_UNNAMEABLE_THING, TheUnnameableThing.createAttributes());
+    EntityRegHelper.registerAttributes(NETHERITE_GOLEM, NetheriteGolem.createAttributes());
+    EntityRegHelper.registerAttributes(OBSIDIAN_GOLEM, ObsidianGolem.createAttributes());
 
-    Magnatour.LOGGER.info("[Server] Initializing 'RegLiveEntities'");
+    Magnatour.LOGGER.info("[Server] Initializing 'SupremeEntities'");
   }
 
 }

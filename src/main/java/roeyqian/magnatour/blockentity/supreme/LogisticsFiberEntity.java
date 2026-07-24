@@ -37,7 +37,7 @@ import org.jspecify.annotations.Nullable;
 // Magnatour
 import roeyqian.magnatour.block.supreme.LogisticsFiber;
 import roeyqian.magnatour.block.supreme.SupremeChest;
-import roeyqian.magnatour.registry.content.RegBlockEntities;
+import roeyqian.magnatour.registry.content.SupremeBlockEntities;
 
 public class LogisticsFiberEntity extends BlockEntity {
 
@@ -52,7 +52,7 @@ public class LogisticsFiberEntity extends BlockEntity {
       BlockPos pos,
       BlockState state
   ) {
-    super(RegBlockEntities.LOGISTICS_FIBER_ENTITY, pos, state);
+    super(SupremeBlockEntities.LOGISTICS_FIBER_ENTITY, pos, state);
   }
 
   public static @Nullable Container getContainerAt(

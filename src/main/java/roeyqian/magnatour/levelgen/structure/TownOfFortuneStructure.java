@@ -36,7 +36,7 @@ import org.jspecify.annotations.NonNull;
 
 // Magnatour
 import roeyqian.magnatour.Magnatour;
-import roeyqian.magnatour.registry.worldgen.RegStructures;
+import roeyqian.magnatour.registry.worldgen.CustomStructures;
 
 public final class TownOfFortuneStructure extends Structure {
 
@@ -99,7 +99,7 @@ public final class TownOfFortuneStructure extends Structure {
 
   @Override @NonNull
   public StructureType<?> type() {
-    return RegStructures.TOWN_OF_FORTUNE;
+    return CustomStructures.TOWN_OF_FORTUNE;
   }
 
 }

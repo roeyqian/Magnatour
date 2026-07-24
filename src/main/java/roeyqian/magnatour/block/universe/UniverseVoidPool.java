@@ -30,7 +30,7 @@ import org.jspecify.annotations.NonNull;
 
 // Magnatour
 import roeyqian.magnatour.blockentity.universe.UniverseVoidPoolEntity;
-import roeyqian.magnatour.registry.content.RegBlockEntities;
+import roeyqian.magnatour.registry.content.UniverseBlockEntities;
 
 public class UniverseVoidPool extends BaseEntityBlock {
 
@@ -50,7 +50,7 @@ public class UniverseVoidPool extends BaseEntityBlock {
   ) {
     return createTickerHelper(
         type,
-        RegBlockEntities.UNIVERSE_VOID_POOL_ENTITY,
+        UniverseBlockEntities.UNIVERSE_VOID_POOL_ENTITY,
         (world1, _, _, blockEntity) -> blockEntity.tick(world1)
     );
   }

@@ -29,9 +29,9 @@ import org.jspecify.annotations.NonNull;
 
 // Magnatour
 import roeyqian.magnatour.block.CustomCraftingBlock;
-import roeyqian.magnatour.registry.content.RegActiveBlocks;
-import roeyqian.magnatour.registry.logic.RegRecipes;
-import roeyqian.magnatour.registry.content.RegBlockMenus;
+import roeyqian.magnatour.registry.content.SupremeBlocks;
+import roeyqian.magnatour.registry.logic.CustomRecipes;
+import roeyqian.magnatour.registry.content.SupremeMenus;
 
 public class SupremeWorktableMenu extends AbstractCraftingMenu implements CustomCraftingBlock {
 
@@ -62,7 +62,7 @@ public class SupremeWorktableMenu extends AbstractCraftingMenu implements Custom
       Inventory playerInventory,
       ContainerLevelAccess context
   ) {
-    super(RegBlockMenus.SUPREME_WORKTABLE_HANDLER, syncId, 3, 3);
+    super(SupremeMenus.SUPREME_WORKTABLE_HANDLER, syncId, 3, 3);
     this.context = context;
     this.player = playerInventory.player;
 
@@ -92,7 +92,7 @@ public class SupremeWorktableMenu extends AbstractCraftingMenu implements Custom
     var supremeMatch = world
         .recipeAccess()
         .getSynchronizedRecipes()
-        .getFirstMatch(RegRecipes.SUPREME_CRAFTING_TYPE, input, world);
+        .getFirstMatch(CustomRecipes.SUPREME_CRAFTING_TYPE, input, world);
 
     return supremeMatch.map(
         craftingRecipeRecipeHolder -> craftingRecipeRecipeHolder.value().assemble(input)
@@ -218,7 +218,7 @@ public class SupremeWorktableMenu extends AbstractCraftingMenu implements Custom
   public boolean stillValid(
       @NonNull Player player
   ) {
-    return stillValid(this.context, player, RegActiveBlocks.SUPREME_WORKTABLE);
+    return stillValid(this.context, player, SupremeBlocks.SUPREME_WORKTABLE);
   }
 
   @Override @NonNull

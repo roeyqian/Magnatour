@@ -22,7 +22,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.joml.Vector4f;
 
 // Magnatour
-import roeyqian.magnatour.registry.content.RegDurableItems;
+import roeyqian.magnatour.registry.content.UniverseItems;
 
 public final class RenderHelperForEquipment {
 
@@ -33,7 +33,7 @@ public final class RenderHelperForEquipment {
       CallbackInfoReturnable<FogData> cir
   ) {
     LocalPlayer player = Minecraft.getInstance().player;
-    if (player == null || !player.getItemBySlot(EquipmentSlot.HEAD).is(RegDurableItems.UNIVERSE_HELMET))
+    if (player == null || !player.getItemBySlot(EquipmentSlot.HEAD).is(UniverseItems.UNIVERSE_HELMET))
       return;
 
     FogType type = camera.getFluidInCamera();

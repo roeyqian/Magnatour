@@ -38,8 +38,8 @@ import net.minecraft.world.phys.Vec3;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 // Magnatour
-import roeyqian.magnatour.registry.logic.RegComponentTypes;
-import roeyqian.magnatour.registry.content.RegDurableItems;
+import roeyqian.magnatour.registry.logic.CustomComponents;
+import roeyqian.magnatour.registry.content.UniverseItems;
 
 public final class ServerHelperForEquipment {
 
@@ -58,8 +58,8 @@ public final class ServerHelperForEquipment {
     }
 
     ItemStack stack = player.getItemInHand(InteractionHand.MAIN_HAND);
-    if (stack.is(RegDurableItems.UNIVERSE_OMNI_BLADE)
-        && stack.getOrDefault(RegComponentTypes.UNIVERSE_OMNI_BLADE_MODE, 0) == 0) {
+    if (stack.is(UniverseItems.UNIVERSE_OMNI_BLADE)
+        && stack.getOrDefault(CustomComponents.UNIVERSE_OMNI_BLADE_MODE, 0) == 0) {
       execShovelMode(level, player, direction, pos, ci);
     }
   }
@@ -68,7 +68,7 @@ public final class ServerHelperForEquipment {
       ServerPlayer player
   ) {
     ItemStack stack = player.getMainHandItem();
-    if (!stack.is(RegDurableItems.UNIVERSE_BUCKET)) return;
+    if (!stack.is(UniverseItems.UNIVERSE_BUCKET)) return;
 
     BlockHitResult hitResult = getPlayerFluidSourceHitResult(player);
     if (hitResult.getType() != HitResult.Type.BLOCK) return;
@@ -90,7 +90,7 @@ public final class ServerHelperForEquipment {
     ItemStack taken = bucketPickupBlock.pickupBlock(player, player.level(), pos, blockState);
     if (taken.isEmpty()) return;
 
-    stack.set(RegComponentTypes.UNIVERSE_BUCKET_MODE, nextMode.getAsInt());
+    stack.set(CustomComponents.UNIVERSE_BUCKET_MODE, nextMode.getAsInt());
     player.awardStat(Stats.ITEM_USED.get(stack.getItem()));
     player.level().playSound(
         null,

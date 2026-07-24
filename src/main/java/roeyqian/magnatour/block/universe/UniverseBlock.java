@@ -34,7 +34,7 @@ import org.jspecify.annotations.NonNull;
 // Magnatour
 import roeyqian.magnatour.blockentity.universe.UniverseBlockEntity;
 import roeyqian.magnatour.block.VirtualBlockLightManager;
-import roeyqian.magnatour.registry.content.RegBlockEntities;
+import roeyqian.magnatour.registry.content.UniverseBlockEntities;
 
 public class UniverseBlock extends BaseEntityBlock {
 
@@ -57,7 +57,7 @@ public class UniverseBlock extends BaseEntityBlock {
   ) {
     return createTickerHelper(
         type,
-        RegBlockEntities.UNIVERSE_BLOCK_ENTITY,
+        UniverseBlockEntities.UNIVERSE_BLOCK_ENTITY,
         UniverseBlockEntity::tick
     );
   }

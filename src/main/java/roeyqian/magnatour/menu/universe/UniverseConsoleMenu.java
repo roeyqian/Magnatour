@@ -17,7 +17,7 @@ import org.jspecify.annotations.NonNull;
 
 // Magnatour
 import roeyqian.magnatour.item.universe.UniverseConsole;
-import roeyqian.magnatour.registry.content.RegItemMenus;
+import roeyqian.magnatour.registry.content.UniverseMenus;
 
 public class UniverseConsoleMenu extends AbstractContainerMenu {
 
@@ -27,7 +27,7 @@ public class UniverseConsoleMenu extends AbstractContainerMenu {
       int syncId,
       UniverseConsole.BoundBlockList boundBlocks
   ) {
-    super(RegItemMenus.UNIVERSE_CONSOLE_HANDLER, syncId);
+    super(UniverseMenus.UNIVERSE_CONSOLE_HANDLER, syncId);
     this.boundBlocks = boundBlocks != null
         ? boundBlocks
         : UniverseConsole.BoundBlockList.EMPTY;

@@ -33,7 +33,7 @@ import org.jspecify.annotations.NonNull;
 // Magnatour
 import roeyqian.magnatour.block.CustomContainer;
 import roeyqian.magnatour.menu.universe.UniverseVoidPoolMenu;
-import roeyqian.magnatour.registry.content.RegBlockEntities;
+import roeyqian.magnatour.registry.content.UniverseBlockEntities;
 
 public class UniverseVoidPoolEntity extends BlockEntity implements MenuProvider, CustomContainer {
 
@@ -45,7 +45,7 @@ public class UniverseVoidPoolEntity extends BlockEntity implements MenuProvider,
       BlockPos pos,
       BlockState state
   ) {
-    super(RegBlockEntities.UNIVERSE_VOID_POOL_ENTITY, pos, state);
+    super(UniverseBlockEntities.UNIVERSE_VOID_POOL_ENTITY, pos, state);
   }
 
   @Override

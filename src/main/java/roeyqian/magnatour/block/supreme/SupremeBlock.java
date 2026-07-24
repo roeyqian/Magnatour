@@ -34,7 +34,7 @@ import org.jspecify.annotations.NonNull;
 // Magnatour
 import roeyqian.magnatour.block.VirtualBlockLightManager;
 import roeyqian.magnatour.blockentity.supreme.SupremeBlockEntity;
-import roeyqian.magnatour.registry.content.RegBlockEntities;
+import roeyqian.magnatour.registry.content.SupremeBlockEntities;
 
 public class SupremeBlock extends BaseEntityBlock {
 
@@ -59,7 +59,7 @@ public class SupremeBlock extends BaseEntityBlock {
   ) {
     return createTickerHelper(
         type,
-        RegBlockEntities.SUPREME_BLOCK_ENTITY,
+        SupremeBlockEntities.SUPREME_BLOCK_ENTITY,
         SupremeBlockEntity::tick
     );
   }

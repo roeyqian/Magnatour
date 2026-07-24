@@ -52,7 +52,7 @@ import org.jspecify.annotations.NonNull;
 import roeyqian.magnatour.Magnatour;
 import roeyqian.magnatour.item.CustomItemSetting;
 import roeyqian.magnatour.menu.universe.UniverseConsoleMenu;
-import roeyqian.magnatour.registry.logic.RegComponentTypes;
+import roeyqian.magnatour.registry.logic.CustomComponents;
 
 public class UniverseConsole extends Item {
 
@@ -69,7 +69,7 @@ public class UniverseConsole extends Item {
       @NonNull InteractionHand hand
   ) {
     ItemStack stack = player.getItemInHand(hand);
-    int mode = stack.getOrDefault(RegComponentTypes.UNIVERSE_CONSOLE_MODE, 0);
+    int mode = stack.getOrDefault(CustomComponents.UNIVERSE_CONSOLE_MODE, 0);
 
     if (mode == 0) {
       return execWorkingManager(world, player, stack);
@@ -86,7 +86,7 @@ public class UniverseConsole extends Item {
     if (player == null) return InteractionResult.PASS;
 
     ItemStack stack = context.getItemInHand();
-    int mode = stack.getOrDefault(RegComponentTypes.UNIVERSE_CONSOLE_MODE, 0);
+    int mode = stack.getOrDefault(CustomComponents.UNIVERSE_CONSOLE_MODE, 0);
 
     if (mode == 1) return bindBlock(context);
     return InteractionResult.PASS;
@@ -104,8 +104,8 @@ public class UniverseConsole extends Item {
             DataComponents.ATTRIBUTE_MODIFIERS,
             createAttributes()
         )
-        .component(RegComponentTypes.UNIVERSE_CONSOLE_MODE, 0)
-        .component(RegComponentTypes.UNIVERSE_CONSOLE_BOUND_LIST, BoundBlockList.EMPTY);
+        .component(CustomComponents.UNIVERSE_CONSOLE_MODE, 0)
+        .component(CustomComponents.UNIVERSE_CONSOLE_BOUND_LIST, BoundBlockList.EMPTY);
   }
 
   private static ItemAttributeModifiers createAttributes() {
@@ -139,7 +139,7 @@ public class UniverseConsole extends Item {
     if (world.isClientSide()) return InteractionResult.SUCCESS;
 
     BoundBlockList boundList = stack.getOrDefault(
-        RegComponentTypes.UNIVERSE_CONSOLE_BOUND_LIST, BoundBlockList.EMPTY
+        CustomComponents.UNIVERSE_CONSOLE_BOUND_LIST, BoundBlockList.EMPTY
     );
 
     player.openMenu(new ExtendedMenuProvider<BoundBlockList>() {
@@ -192,7 +192,7 @@ public class UniverseConsole extends Item {
 
     if (!world.isClientSide()) {
       BoundBlockList currentList = stack.getOrDefault(
-          RegComponentTypes.UNIVERSE_CONSOLE_BOUND_LIST,
+          CustomComponents.UNIVERSE_CONSOLE_BOUND_LIST,
           BoundBlockList.EMPTY
       );
 
@@ -200,7 +200,7 @@ public class UniverseConsole extends Item {
       BoundBlocks newBlock = new BoundBlocks(pos, world.dimension(), blockName);
 
       BoundBlockList newList = currentList.withAdded(newBlock);
-      stack.set(RegComponentTypes.UNIVERSE_CONSOLE_BOUND_LIST, newList);
+      stack.set(CustomComponents.UNIVERSE_CONSOLE_BOUND_LIST, newList);
 
       player.sendOverlayMessage(
           Component.translatable("msg.magnatour.universe_console.bind")

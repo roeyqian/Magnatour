@@ -51,9 +51,9 @@ import org.jspecify.annotations.Nullable;
 import roeyqian.magnatour.Magnatour;
 import roeyqian.magnatour.entity.supreme.BellRinger;
 import roeyqian.magnatour.entity.supreme.BellSoul;
-import roeyqian.magnatour.registry.content.RegLiveEntities;
-import roeyqian.magnatour.registry.worldgen.RegDimensions;
-import roeyqian.magnatour.registry.worldgen.RegStructures;
+import roeyqian.magnatour.registry.content.SupremeEntities;
+import roeyqian.magnatour.registry.worldgen.CustomDimensions;
+import roeyqian.magnatour.registry.worldgen.CustomStructures;
 
 public final class StructureMobSpawner {
 
@@ -83,8 +83,8 @@ public final class StructureMobSpawner {
   private static final StructureSpawnProfile DIAMOND_CITY_PROFILE =
       new StructureSpawnProfile(
           "diamond_city",
-          RegDimensions.ORE_CONTINENT,
-          RegStructures.DIAMOND_CITY,
+          CustomDimensions.ORE_CONTINENT,
+          CustomStructures.DIAMOND_CITY,
           DIAMOND_CITY_SCAN_RADIUS_CHUNKS,
           96.0D,
           DIAMOND_CITY_TARGET_OBSIDIAN_GOLEMS,
@@ -99,8 +99,8 @@ public final class StructureMobSpawner {
   private static final StructureSpawnProfile GOLD_BELL_TOWER_PROFILE =
       new StructureSpawnProfile(
           "gold_bell_tower",
-          RegDimensions.HARVEST_CONTINENT,
-          RegStructures.GOLD_BELL_TOWER,
+          CustomDimensions.HARVEST_CONTINENT,
+          CustomStructures.GOLD_BELL_TOWER,
           GOLD_BELL_TOWER_SCAN_RADIUS_CHUNKS,
           48.0D,
           GOLD_BELL_TOWER_TARGET_BELL_RINGERS + GOLD_BELL_TOWER_TARGET_BELL_SOULS,
@@ -637,7 +637,7 @@ public final class StructureMobSpawner {
     return level.getEntities(
         (Entity) null,
         separationBox,
-        entity -> entity.isAlive() && entity.getType() == RegLiveEntities.OBSIDIAN_GOLEM
+        entity -> entity.isAlive() && entity.getType() == SupremeEntities.OBSIDIAN_GOLEM
     ).isEmpty();
   }
 
@@ -702,7 +702,7 @@ public final class StructureMobSpawner {
     return countEntities(
         level,
         box,
-        entity -> entity.isAlive() && entity.getType() == RegLiveEntities.OBSIDIAN_GOLEM
+        entity -> entity.isAlive() && entity.getType() == SupremeEntities.OBSIDIAN_GOLEM
     );
   }
 
@@ -822,7 +822,7 @@ public final class StructureMobSpawner {
       spawned += spawnPersistentGroundMobsFromCandidates(
           level,
           random,
-          RegLiveEntities.OBSIDIAN_GOLEM,
+          SupremeEntities.OBSIDIAN_GOLEM,
           indoorTarget,
           spawnSites.underCoverInterior,
           true,
@@ -834,7 +834,7 @@ public final class StructureMobSpawner {
       spawned += spawnPersistentGroundMobsFromCandidates(
           level,
           random,
-          RegLiveEntities.OBSIDIAN_GOLEM,
+          SupremeEntities.OBSIDIAN_GOLEM,
           outdoorTarget,
           spawnSites.openAir,
           true,
@@ -848,7 +848,7 @@ public final class StructureMobSpawner {
       spawned += spawnPersistentGroundMobsFromCandidates(
           level,
           random,
-          RegLiveEntities.OBSIDIAN_GOLEM,
+          SupremeEntities.OBSIDIAN_GOLEM,
           remaining,
           spawnSites.fallback,
           true,
@@ -897,7 +897,7 @@ public final class StructureMobSpawner {
           level,
           random,
           structureBox,
-          RegLiveEntities.BELL_RINGER,
+          SupremeEntities.BELL_RINGER,
           Math.min(missingRingers, cycleBudget),
           GOLD_BELL_TOWER_SPAWN_FLOOR
       );
@@ -920,7 +920,7 @@ public final class StructureMobSpawner {
           level,
           random,
           structureBox,
-          RegLiveEntities.BELL_SOUL,
+          SupremeEntities.BELL_SOUL,
           Math.min(missingSouls, cycleBudget),
           GOLD_BELL_TOWER_SPAWN_FLOOR,
           1,
@@ -1023,7 +1023,7 @@ public final class StructureMobSpawner {
           findGroundSpawnCandidatesByCeiling(
               level,
               chunkBox,
-              RegLiveEntities.OBSIDIAN_GOLEM,
+              SupremeEntities.OBSIDIAN_GOLEM,
               DIAMOND_CITY_SPAWN_FLOOR,
               DIAMOND_CITY_INTERIOR_FLOOR,
               DIAMOND_CITY_SITE_CEILING_SCAN_DISTANCE

@@ -38,7 +38,7 @@ import net.minecraft.world.phys.AABB;
 import roeyqian.magnatour.Magnatour;
 import roeyqian.magnatour.block.supreme.HarvestContinentPortal;
 import roeyqian.magnatour.block.supreme.OreContinentPortal;
-import roeyqian.magnatour.registry.content.RegInsertBlocks;
+import roeyqian.magnatour.registry.content.SupremeBlocks;
 import roeyqian.magnatour.block.CustomPortalBlock;
 
 @Environment(EnvType.CLIENT)
@@ -56,13 +56,13 @@ public final class RegBlockLayers {
   public static void init() {
     registerPortalOverlay(
         ORE_PORTAL_OVERLAY_ID,
-        RegInsertBlocks.ORE_CONTINENT_PORTAL,
+        SupremeBlocks.ORE_CONTINENT_PORTAL,
         () -> OreContinentPortal.clientPortalTicks,
         ticks -> OreContinentPortal.clientPortalTicks = ticks
     );
     registerPortalOverlay(
         HARVEST_PORTAL_OVERLAY_ID,
-        RegInsertBlocks.HARVEST_CONTINENT_PORTAL,
+        SupremeBlocks.HARVEST_CONTINENT_PORTAL,
         () -> HarvestContinentPortal.clientPortalTicks,
         ticks -> HarvestContinentPortal.clientPortalTicks = ticks
     );

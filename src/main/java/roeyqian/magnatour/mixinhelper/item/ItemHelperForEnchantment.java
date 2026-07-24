@@ -20,7 +20,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 // Magnatour
-import roeyqian.magnatour.registry.content.RegDurableItems;
+import roeyqian.magnatour.registry.content.UniverseItems;
 
 public final class ItemHelperForEnchantment {
 
@@ -71,12 +71,12 @@ public final class ItemHelperForEnchantment {
   public static boolean isUniverseEnchantBlocked(
       ItemStack stack
   ) {
-    return stack.is(RegDurableItems.UNIVERSE_HELMET)
-        || stack.is(RegDurableItems.UNIVERSE_CHESTPLATE)
-        || stack.is(RegDurableItems.UNIVERSE_LEGGINGS)
-        || stack.is(RegDurableItems.UNIVERSE_BOOTS)
-        || stack.is(RegDurableItems.UNIVERSE_ULTIMA_SWORD)
-        || stack.is(RegDurableItems.UNIVERSE_OMNI_BLADE);
+    return stack.is(UniverseItems.UNIVERSE_HELMET)
+        || stack.is(UniverseItems.UNIVERSE_CHESTPLATE)
+        || stack.is(UniverseItems.UNIVERSE_LEGGINGS)
+        || stack.is(UniverseItems.UNIVERSE_BOOTS)
+        || stack.is(UniverseItems.UNIVERSE_ULTIMA_SWORD)
+        || stack.is(UniverseItems.UNIVERSE_OMNI_BLADE);
   }
 
   private static <T> boolean shouldBlockEnchantComponentWrite(

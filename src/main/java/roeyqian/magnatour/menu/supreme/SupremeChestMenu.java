@@ -25,7 +25,7 @@ import org.jspecify.annotations.NonNull;
 
 // Magnatour
 import roeyqian.magnatour.blockentity.supreme.SupremeChestEntity;
-import roeyqian.magnatour.registry.content.RegBlockMenus;
+import roeyqian.magnatour.registry.content.SupremeMenus;
 
 public class SupremeChestMenu extends AbstractContainerMenu {
 
@@ -74,7 +74,7 @@ public class SupremeChestMenu extends AbstractContainerMenu {
       Container inventory,
       int inventorySize
   ) {
-    super(RegBlockMenus.SUPREME_CHEST_HANDLER, syncId);
+    super(SupremeMenus.SUPREME_CHEST_HANDLER, syncId);
     this.sourceInventory = inventory;
     this.rows = rowsFromInventorySize(inventorySize);
     this.addDataSlot(this.inventorySize);

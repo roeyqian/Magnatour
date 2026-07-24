@@ -39,8 +39,8 @@ import net.minecraft.world.phys.Vec3;
 
 // Magnatour
 import roeyqian.magnatour.Magnatour;
-import roeyqian.magnatour.registry.content.RegInsertBlocks;
-import roeyqian.magnatour.registry.worldgen.RegDimensions;
+import roeyqian.magnatour.registry.content.SupremeBlocks;
+import roeyqian.magnatour.registry.worldgen.CustomDimensions;
 
 public final class BiomeMobSpawner {
 
@@ -65,7 +65,7 @@ public final class BiomeMobSpawner {
       MELON_JUNGLE,
       10,
       2,
-      floor -> floor.is(RegInsertBlocks.EVER_WATER_GRASS_BLOCK),
+      floor -> floor.is(SupremeBlocks.EVER_WATER_GRASS_BLOCK),
       List.of(
           new WeightedAnimalType(EntityTypes.SHEEP, 16),
           new WeightedAnimalType(EntityTypes.PIG, 20),
@@ -101,8 +101,8 @@ public final class BiomeMobSpawner {
       WHEAT_PLAIN,
       14,
       3,
-      floor -> floor.is(RegInsertBlocks.EVER_WATER_GRASS_BLOCK)
-          || floor.is(RegInsertBlocks.EVER_WATER_FARMLAND),
+      floor -> floor.is(SupremeBlocks.EVER_WATER_GRASS_BLOCK)
+          || floor.is(SupremeBlocks.EVER_WATER_FARMLAND),
       List.of(
           new WeightedAnimalType(EntityTypes.SHEEP, 24),
           new WeightedAnimalType(EntityTypes.PIG, 20),
@@ -123,7 +123,7 @@ public final class BiomeMobSpawner {
       long currentTick = server.getTickCount();
       if (currentTick % SPAWN_INTERVAL_TICKS != 0L) return;
 
-      ServerLevel level = server.getLevel(RegDimensions.HARVEST_CONTINENT);
+      ServerLevel level = server.getLevel(CustomDimensions.HARVEST_CONTINENT);
       if (level == null || level.players().isEmpty()) return;
 
       for (ServerPlayer player : level.players()) {

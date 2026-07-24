@@ -47,7 +47,7 @@ import roeyqian.magnatour.block.CustomContainer;
 import roeyqian.magnatour.block.supreme.SupremeChest;
 import roeyqian.magnatour.menu.supreme.SupremeChestContainer;
 import roeyqian.magnatour.menu.supreme.SupremeChestMenu;
-import roeyqian.magnatour.registry.content.RegBlockEntities;
+import roeyqian.magnatour.registry.content.SupremeBlockEntities;
 
 public class SupremeChestEntity extends BlockEntity implements CustomContainer {
 
@@ -114,7 +114,7 @@ public class SupremeChestEntity extends BlockEntity implements CustomContainer {
       BlockPos pos,
       BlockState state
   ) {
-    super(RegBlockEntities.SUPREME_CHEST_ENTITY, pos, state);
+    super(SupremeBlockEntities.SUPREME_CHEST_ENTITY, pos, state);
   }
 
   public static void tick(

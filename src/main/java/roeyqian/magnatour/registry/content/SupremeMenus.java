@@ -18,19 +18,14 @@ import roeyqian.magnatour.menu.supreme.SupremeChestMenu;
 import roeyqian.magnatour.menu.supreme.SupremeFurnaceMenu;
 import roeyqian.magnatour.menu.supreme.SupremeReserverMenu;
 import roeyqian.magnatour.menu.supreme.SupremeWorktableMenu;
-import roeyqian.magnatour.menu.universe.UniverseLibraryMenu;
-import roeyqian.magnatour.menu.universe.UniverseRefineryMenu;
-import roeyqian.magnatour.menu.universe.UniverseTeleportPointMenu;
-import roeyqian.magnatour.menu.universe.UniverseVoidPoolMenu;
-import roeyqian.magnatour.menu.universe.UniverseWorkstationMenu;
 import roeyqian.magnatour.registry.MenuRegHelper;
 
 /*
- * Supreme Group: Stateless, Stateful
- * Universe Group: Stateless, Stateful
+ * Supreme Group: All Menus (Block Menus)
  */
-public final class RegBlockMenus {
+public final class SupremeMenus {
 
+  // Block Menus
   public static final MenuType<ItemHubMenu> ITEM_HUB_HANDLER =
       MenuRegHelper.registerExtended(
           "item_hub",
@@ -46,10 +41,6 @@ public final class RegBlockMenus {
           SupremeChestMenu.OpeningData.PACKET_CODEC
       );
 
-  // Supreme Group: Stateful
-  public static final MenuType<SupremeFurnaceMenu> SUPREME_FURNACE_HANDLER =
-      MenuRegHelper.register("supreme_furnace", SupremeFurnaceMenu::new);
-
   public static final MenuType<RedstoneTriggerMenu> REDSTONE_TRIGGER_HANDLER =
       MenuRegHelper.registerExtended(
           "redstone_trigger",
@@ -57,38 +48,20 @@ public final class RegBlockMenus {
           RedstoneTriggerMenu.OpeningData.PACKET_CODEC
       );
 
+  public static final MenuType<SupremeFurnaceMenu> SUPREME_FURNACE_HANDLER =
+      MenuRegHelper.register("supreme_furnace", SupremeFurnaceMenu::new);
+
   public static final MenuType<SupremeReserverMenu> SUPREME_RESERVER_HANDLER =
       MenuRegHelper.register("supreme_reserver", SupremeReserverMenu::new);
 
-  // Supreme Group: Stateless
   public static final MenuType<SupremeWorktableMenu> SUPREME_WORKTABLE_HANDLER =
       MenuRegHelper.register("supreme_worktable", SupremeWorktableMenu::new);
 
-  public static final MenuType<UniverseLibraryMenu> UNIVERSE_LIBRARY_HANDLER =
-      MenuRegHelper.register("universe_library", UniverseLibraryMenu::new);
 
-  // Universe Group: Stateful
-  public static final MenuType<UniverseRefineryMenu> UNIVERSE_REFINERY_HANDLER =
-      MenuRegHelper.register("universe_refinery", UniverseRefineryMenu::new);
-
-  public static final MenuType<UniverseVoidPoolMenu> UNIVERSE_VOID_POOL_HANDLER =
-      MenuRegHelper.register("universe_void_pool", UniverseVoidPoolMenu::new);
-
-  // Universe Group: Stateless
-  public static final MenuType<UniverseWorkstationMenu> UNIVERSE_WORKSTATION_HANDLER =
-      MenuRegHelper.register("universe_workstation", UniverseWorkstationMenu::new);
-
-  public static final MenuType<UniverseTeleportPointMenu> UNIVERSE_TELEPORT_POINT_HANDLER =
-      MenuRegHelper.registerExtended(
-          "universe_teleport_point",
-          (syncId, playerInventory, data) -> new UniverseTeleportPointMenu(syncId, data),
-          UniverseTeleportPointMenu.OpeningData.PACKET_CODEC
-      );
-
-  private RegBlockMenus() {}
+  private SupremeMenus() {}
 
   public static void init() {
-    Magnatour.LOGGER.info("[Server] Initializing 'RegBlockMenus'");
+    Magnatour.LOGGER.info("[Server] Initializing 'SupremeMenus'");
   }
 
 }

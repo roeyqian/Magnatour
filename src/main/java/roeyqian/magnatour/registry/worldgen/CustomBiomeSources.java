@@ -14,30 +14,30 @@ import net.minecraft.resources.Identifier;
 import roeyqian.magnatour.Magnatour;
 import roeyqian.magnatour.levelgen.biome.HarvestContinentBiomeSource;
 import roeyqian.magnatour.levelgen.biome.OreContinentBiomeSource;
-import roeyqian.magnatour.registry.LevelRegHelper;
+import roeyqian.magnatour.registry.WorldgenRegHelper;
 
 /*
  * Supreme Group: Biome Source
  * Universe Group: Biome Source
  */
-public final class RegBiomeSources {
+public final class CustomBiomeSources {
 
   // Supreme Group: Biome Source
-  public static final Identifier HARVEST_CONTINENT = LevelRegHelper.id("harvest_continent");
-  public static final Identifier ORE_CONTINENT = LevelRegHelper.id("ore_continent");
+  public static final Identifier HARVEST_CONTINENT = WorldgenRegHelper.id("harvest_continent");
+  public static final Identifier ORE_CONTINENT = WorldgenRegHelper.id("ore_continent");
 
-  private RegBiomeSources() {}
+  private CustomBiomeSources() {}
 
   public static void init() {
-    LevelRegHelper.registerBiomeSource(
+    WorldgenRegHelper.registerBiomeSource(
         HARVEST_CONTINENT.getPath(),
         HarvestContinentBiomeSource.CODEC
     );
-    LevelRegHelper.registerBiomeSource(
+    WorldgenRegHelper.registerBiomeSource(
         ORE_CONTINENT.getPath(),
         OreContinentBiomeSource.CODEC
     );
-    Magnatour.LOGGER.info("[Server] Initializing 'RegBiomeSources'");
+    Magnatour.LOGGER.info("[Server] Initializing 'CustomBiomeSources'");
   }
 
 }
