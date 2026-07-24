@@ -1,0 +1,11 @@
+{
+  "type": "magnatour:universe_meta_type",
+  "generator": {
+    "type": "minecraft:noise",
+    "settings": "magnatour:universe_meta",
+    "biome_source": {
+      "type": "minecraft:fixed",
+      "biome": "magnatour:universe_meta_void"
+    }
+  }
+}

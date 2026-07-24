@@ -77,6 +77,9 @@ public class Magnatour implements ModInitializer {
 
   @Override
   public void onInitialize() {
+    // Register worldgen events
+    roeyqian.magnatour.worldgen.UniverseMetaDimensionGenerator.register();
+
     SupremeItems.init();
     UniverseItems.init();
     CustomNetworks.init();

@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "axis=x": {
+      "model": "magnatour:block/universe_meta_portal_ew"
+    },
+    "axis=z": {
+      "model": "magnatour:block/universe_meta_portal_ns"
+    }
+  }
+}

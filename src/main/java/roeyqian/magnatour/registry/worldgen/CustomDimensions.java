@@ -29,6 +29,10 @@ public final class CustomDimensions {
   public static final ResourceKey<Level> ORE_CONTINENT =
       ResourceKey.create(Registries.DIMENSION, WorldgenRegHelper.id("ore_continent"));
 
+  // Universe Group: Dimension
+  public static final ResourceKey<Level> UNIVERSE_META =
+      ResourceKey.create(Registries.DIMENSION, WorldgenRegHelper.id("universe_meta"));
+
   private CustomDimensions() {}
 
   public static void init() {

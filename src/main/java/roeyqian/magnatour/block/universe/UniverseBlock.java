@@ -34,7 +34,9 @@ import org.jspecify.annotations.NonNull;
 // Magnatour
 import roeyqian.magnatour.blockentity.universe.UniverseBlockEntity;
 import roeyqian.magnatour.block.VirtualBlockLightManager;
+import roeyqian.magnatour.block.UniverseMetaPortalBlock;
 import roeyqian.magnatour.registry.content.UniverseBlockEntities;
+import roeyqian.magnatour.registry.content.UniverseBlocks;
 
 public class UniverseBlock extends BaseEntityBlock {
 
@@ -105,14 +107,29 @@ public class UniverseBlock extends BaseEntityBlock {
       @NonNull BlockHitResult hit
   ) {
     if (!world.isClientSide()) {
-      boolean newLit = !state.getValue(LIT);
-      world.setBlockAndUpdate(pos, state.setValue(LIT, newLit));
+      boolean currentLit = state.getValue(LIT);
+      boolean newLit = !currentLit;
+      System.out.println("[UniverseBlock] At " + pos + ": currentLit=" + currentLit + ", setting to=" + newLit);
+
+      BlockState newState = state.setValue(LIT, newLit);
+      world.setBlockAndUpdate(pos, newState);
+
+      // Verify the state was set
+      BlockState verifyState = world.getBlockState(pos);
+      System.out.println("[UniverseBlock] After setBlock: verified LIT=" + verifyState.getValue(LIT));
 
       BlockEntity blockEntity = world.getBlockEntity(pos);
       if (blockEntity instanceof UniverseBlockEntity universeBlockEntity) {
         universeBlockEntity.setLightRegistered(newLit);
       } else {
         VirtualBlockLightManager.setActive(world, pos, newLit);
+      }
+
+      // Try to activate portal when block is lit
+      if (newLit) {
+        System.out.println("[UniverseBlock] Attempting to activate portal...");
+        boolean activated = UniverseMetaPortalBlock.tryActivatePortal(world, pos, this, UniverseBlocks.UNIVERSE_META_PORTAL);
+        System.out.println("[UniverseBlock] Portal activation result: " + activated);
       }
     }
     return InteractionResult.SUCCESS;
