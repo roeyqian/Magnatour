@@ -9,6 +9,7 @@ package roeyqian.magnatour.block;
 
 // Java Standard
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
@@ -31,80 +32,29 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
+// Magnatour
+import roeyqian.magnatour.level.PortalLinkSavedData;
+
 /**
  * End Portal-style activation logic:
  * - 12 frame blocks in a 3x3 hollow square
  * - All frame blocks must be "lit" (activated)
  * - When complete, 3x3 portal blocks fill the center
  */
-public interface UniverseMetaPortalBlock {
+/**
+ * Shared logic for activated 5x5 horizontal portals.
+ *
+ * <p>Portal implementations supply their frame, portal block, linked dimensions, and fallback
+ * destination. This keeps individual portal blocks limited to block-state and collision hooks.</p>
+ */
+public interface CustomPortalHorizon {
 
   int TELEPORT_TICKS = 80;
 
-  VoxelShape X_SHAPE = Block.box(0.0, 0.0, 6.0, 16.0, 16.0, 10.0);
-  VoxelShape Z_SHAPE = Block.box(6.0, 0.0, 0.0, 10.0, 16.0, 16.0);
+  // Match the End Portal: a horizontal surface recessed below the frame top.
+  VoxelShape HORIZONTAL_SHAPE = Block.box(0.0, 0.0, 0.0, 16.0, 12.0, 16.0);
 
   EnumProperty<Direction.Axis> AXIS = BlockStateProperties.HORIZONTAL_AXIS;
-
-  static BlockPos findExistingPortal(
-      ServerLevel world,
-      Block portalBlock
-  ) {
-    BlockPos center = new BlockPos(0, 0, 0);
-    BlockPos.MutableBlockPos mutable = new BlockPos.MutableBlockPos();
-
-    for (int x = -16; x <= 16; x++) {
-      for (int z = -16; z <= 16; z++) {
-        for (int y = world.getMinY(); y <= world.getMaxY(); y++) {
-          mutable.set(center.getX() + x, y, center.getZ() + z);
-          if (world.getBlockState(mutable).getBlock() == portalBlock) {
-            return mutable.immutable();
-          }
-        }
-      }
-    }
-    return null;
-  }
-
-  static BlockPos buildPortalAt(
-      ServerLevel world,
-      BlockPos centerPos,
-      Block frameBlock,
-      Block portalBlock
-  ) {
-    // Build at y=32 above the cube center
-    BlockPos corner = centerPos.offset(-2, 32, -2);
-
-    // Place 5x5: frame on outer edge, portal in inner 3x3
-    for (int dx = 0; dx < 5; dx++) {
-      for (int dz = 0; dz < 5; dz++) {
-        BlockPos pos = corner.offset(dx, 0, dz);
-        boolean isEdge = (dx == 0 || dx == 4 || dz == 0 || dz == 4);
-
-        if (isEdge) {
-          // Place frame block on edges
-          world.setBlockAndUpdate(pos, frameBlock.defaultBlockState());
-        } else {
-          // Inner 3x3 gets portal blocks
-          world.setBlock(pos, portalBlock.defaultBlockState().setValue(AXIS, Direction.Axis.X), 18);
-        }
-      }
-    }
-
-    return corner.offset(2, 0, 2);
-  }
-
-  static BlockPos findOrCreatePortal(
-      ServerLevel targetWorld,
-      BlockPos sourcePos,
-      Block frameBlock,
-      Block portalBlock
-  ) {
-    BlockPos existing = findExistingPortal(targetWorld, portalBlock);
-    if (existing != null) return existing;
-
-    return buildPortalAt(targetWorld, new BlockPos(0, 0, 0), frameBlock, portalBlock);
-  }
 
   /**
    * Check if a 5x5 area starting at corner forms a valid activated portal frame.
@@ -155,50 +105,6 @@ public interface UniverseMetaPortalBlock {
     return true;
   }
 
-  static void execTeleport(
-      ServerPlayer player,
-      BlockPos portalPos,
-      Block frameBlock,
-      Block portalBlock,
-      ResourceKey<Level> sourceDim,
-      ResourceKey<Level> targetDim
-  ) {
-    MinecraftServer server = player.level().getServer();
-    ServerLevel currentWorld = player.level();
-    ServerLevel targetWorld;
-
-    if (currentWorld.dimension() == sourceDim) {
-      targetWorld = server.getLevel(targetDim);
-    } else {
-      targetWorld = server.getLevel(sourceDim);
-    }
-
-    if (targetWorld == null) return;
-
-    BlockPos targetPos = findOrCreatePortal(
-        targetWorld,
-        portalPos,
-        frameBlock,
-        portalBlock
-    );
-
-    player.teleportTo(
-        targetWorld,
-        targetPos.getX() + 0.5,
-        targetPos.getY(),
-        targetPos.getZ() + 0.5,
-        Set.of(),
-        player.getYRot(),
-        player.getXRot(),
-        false
-    );
-    player.setPortalCooldown(80);
-    targetWorld.playSound(
-        null, player.blockPosition(),
-        SoundEvents.PORTAL_TRAVEL, SoundSource.PLAYERS, 0.2F, 1.0F
-    );
-  }
-
   /**
    * Search around the clicked position to find a valid 5x5 frame.
    * Returns the corner position if found, null otherwise.
@@ -221,10 +127,171 @@ public interface UniverseMetaPortalBlock {
     return null;
   }
 
+  static BlockPos findExistingPortal(
+      ServerLevel world,
+      BlockPos searchCenter,
+      Block portalBlock
+  ) {
+    BlockPos.MutableBlockPos mutable = new BlockPos.MutableBlockPos();
+
+    for (int x = -16; x <= 16; x++) {
+      for (int z = -16; z <= 16; z++) {
+        for (int y = world.getMinY(); y <= world.getMaxY(); y++) {
+          mutable.set(searchCenter.getX() + x, y, searchCenter.getZ() + z);
+          if (world.getBlockState(mutable).getBlock() == portalBlock) {
+            return mutable.immutable();
+          }
+        }
+      }
+    }
+    return null;
+  }
+
+  static BlockPos buildPortalAt(
+      ServerLevel world,
+      BlockPos centerPos,
+      Block frameBlock,
+      Block portalBlock
+  ) {
+    // Build a 5x5 portal centered on the supplied destination position.
+    BlockPos corner = centerPos.offset(-2, 0, -2);
+
+    // Place the 12 non-corner frame blocks and the inner 3x3 portal.
+    for (int dx = 0; dx < 5; dx++) {
+      for (int dz = 0; dz < 5; dz++) {
+        BlockPos pos = corner.offset(dx, 0, dz);
+        boolean isCorner = (dx == 0 || dx == 4) && (dz == 0 || dz == 4);
+        boolean isFrame = (dx == 0 || dx == 4 || dz == 0 || dz == 4) && !isCorner;
+        boolean isPortal = dx >= 1 && dx <= 3 && dz >= 1 && dz <= 3;
+
+        if (isFrame) {
+          BlockState frameState = frameBlock.defaultBlockState();
+          if (frameState.hasProperty(BlockStateProperties.LIT)) {
+            frameState = frameState.setValue(BlockStateProperties.LIT, true);
+          }
+          world.setBlockAndUpdate(pos, frameState);
+        } else if (isPortal) {
+          world.setBlock(pos, portalBlock.defaultBlockState().setValue(AXIS, Direction.Axis.X), 18);
+        }
+      }
+    }
+
+    return corner.offset(2, 0, 2);
+  }
+
+  static BlockPos getPortalCenter(
+      Level world,
+      BlockPos portalPos,
+      Block frameBlock
+  ) {
+    BlockPos corner = findCompleteFrame(world, portalPos, frameBlock);
+    return corner == null ? portalPos : corner.offset(2, 0, 2);
+  }
+
+  static boolean isValidPortal(
+      LevelReader world,
+      BlockPos pos,
+      Block frameBlock,
+      Block portalBlock
+  ) {
+    BlockPos corner = findCompleteFrame((Level)world, pos, frameBlock);
+    if (corner == null) return false;
+
+    // Match the ore-continent portal's complete-shape check: a sound frame is
+    // not enough; all nine cells in the interior must still be portal blocks.
+    for (int dx = 1; dx < 4; dx++) {
+      for (int dz = 1; dz < 4; dz++) {
+        if (!world.getBlockState(corner.offset(dx, 0, dz)).is(portalBlock)) {
+          return false;
+        }
+      }
+    }
+    return true;
+  }
+
+  static BlockPos findOrCreatePortal(
+      ServerLevel targetWorld,
+      BlockPos fallbackPortalCenter,
+      Block frameBlock,
+      Block portalBlock
+  ) {
+    BlockPos existing = findExistingPortal(targetWorld, fallbackPortalCenter, portalBlock);
+    if (existing != null) return existing;
+
+    return buildPortalAt(targetWorld, fallbackPortalCenter, frameBlock, portalBlock);
+  }
+
+  static void execTeleport(
+      ServerPlayer player,
+      BlockPos portalPos,
+      Block frameBlock,
+      Block portalBlock,
+      ResourceKey<Level> sourceDim,
+      ResourceKey<Level> targetDim,
+      BlockPos fallbackPortalCenter
+  ) {
+    MinecraftServer server = player.level().getServer();
+    ServerLevel currentWorld = player.level();
+    ServerLevel targetWorld;
+
+    if (currentWorld.dimension() == sourceDim) {
+      targetWorld = server.getLevel(targetDim);
+    } else {
+      targetWorld = server.getLevel(sourceDim);
+    }
+
+    if (targetWorld == null) return;
+
+    PortalLinkSavedData linkData = PortalLinkSavedData.get(server);
+    PortalLinkSavedData.Endpoint sourceEndpoint = new PortalLinkSavedData.Endpoint(
+        currentWorld.dimension(), getPortalCenter(currentWorld, portalPos, frameBlock)
+    );
+    BlockPos targetPos = null;
+
+    Optional<PortalLinkSavedData.Endpoint> linkedEndpoint = linkData.getDestination(sourceEndpoint);
+    if (linkedEndpoint.isPresent()) {
+      PortalLinkSavedData.Endpoint endpoint = linkedEndpoint.get();
+      ServerLevel linkedWorld = server.getLevel(endpoint.dimension());
+      if (linkedWorld != null && isValidPortal(linkedWorld, endpoint.pos(), frameBlock, portalBlock)) {
+        targetWorld = linkedWorld;
+        targetPos = endpoint.pos();
+      } else {
+        linkData.unlink(sourceEndpoint);
+      }
+    }
+
+    if (targetPos == null) {
+      targetPos = findOrCreatePortal(
+          targetWorld, fallbackPortalCenter, frameBlock, portalBlock
+      );
+      BlockPos targetCenter = getPortalCenter(targetWorld, targetPos, frameBlock);
+      linkData.link(
+          sourceEndpoint,
+          new PortalLinkSavedData.Endpoint(targetWorld.dimension(), targetCenter)
+      );
+    }
+
+    player.teleportTo(
+        targetWorld,
+        targetPos.getX() + 0.5,
+        targetPos.getY(),
+        targetPos.getZ() + 0.5,
+        Set.of(),
+        player.getYRot(),
+        player.getXRot(),
+        false
+    );
+    player.setPortalCooldown(80);
+    targetWorld.playSound(
+        null, player.blockPosition(),
+        SoundEvents.PORTAL_TRAVEL, SoundSource.PLAYERS, 0.2F, 1.0F
+    );
+  }
+
   static VoxelShape getOutlineShape(
       BlockState state
   ) {
-    return state.getValue(AXIS) == Direction.Axis.Z ? Z_SHAPE : X_SHAPE;
+    return HORIZONTAL_SHAPE;
   }
 
   static void handleEntityCollision(
@@ -237,7 +304,8 @@ public interface UniverseMetaPortalBlock {
       Block frameBlock,
       Block portalBlock,
       ResourceKey<Level> sourceDim,
-      ResourceKey<Level> targetDim
+      ResourceKey<Level> targetDim,
+      BlockPos fallbackPortalCenter
   ) {
     if (world.isClientSide()) {
       if (entity instanceof Player && clientInPortalFlag != null) clientInPortalFlag[0] = true;
@@ -258,7 +326,7 @@ public interface UniverseMetaPortalBlock {
 
     if (player.isCreative()) {
       player.setPortalCooldown(80);
-      execTeleport(player, pos, frameBlock, portalBlock, sourceDim, targetDim);
+      execTeleport(player, pos, frameBlock, portalBlock, sourceDim, targetDim, fallbackPortalCenter);
       return;
     }
 
@@ -278,34 +346,23 @@ public interface UniverseMetaPortalBlock {
       portalTicks.remove(uuid);
       inPortalThisTick.remove(uuid);
       player.setPortalCooldown(60);
-      execTeleport(player, pos, frameBlock, portalBlock, sourceDim, targetDim);
+      execTeleport(player, pos, frameBlock, portalBlock, sourceDim, targetDim, fallbackPortalCenter);
     }
-  }
-
-  static boolean isValidPortal(
-      LevelReader world,
-      BlockPos pos,
-      Block frameBlock,
-      Block portalBlock
-  ) {
-    return findCompleteFrame((Level)world, pos, frameBlock) != null;
   }
 
   static boolean shouldBreakPortal(
       Block portalBlock,
       Block frameBlock,
-      BlockState state,
       BlockState neighborState,
       BlockPos pos,
-      Direction direction,
       LevelReader world
   ) {
-    Direction.Axis currentAxis = state.getValue(AXIS);
-    Direction.Axis neighborAxis = direction.getAxis();
-
-    return !(currentAxis != neighborAxis && neighborAxis.isHorizontal())
-        && !neighborState.is(portalBlock)
-        && findCompleteFrame((Level)world, pos, frameBlock) == null;
+    // Unlike a vertical Nether-style portal, every cell in this 3x3 portal
+    // must react to frame changes on both horizontal axes. Once one cell is
+    // removed, its neighbours receive the same invalid-frame check and the
+    // entire portal is cleared.
+    return !neighborState.is(portalBlock)
+        && !isValidPortal(world, pos, frameBlock, portalBlock);
   }
 
   /**

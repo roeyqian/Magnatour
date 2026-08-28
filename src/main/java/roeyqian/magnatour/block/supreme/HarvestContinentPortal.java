@@ -40,7 +40,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jspecify.annotations.NonNull;
 
 // Magnatour
-import roeyqian.magnatour.block.CustomPortalBlock;
+import roeyqian.magnatour.block.CustomPortalVertex;
 import roeyqian.magnatour.registry.content.SupremeBlocks;
 import roeyqian.magnatour.registry.worldgen.CustomDimensions;
 
@@ -58,7 +58,7 @@ public class HarvestContinentPortal extends Block {
       Properties settings
   ) {
     super(settings);
-    this.registerDefaultState(this.stateDefinition.any().setValue(CustomPortalBlock.AXIS, Direction.Axis.X));
+    this.registerDefaultState(this.stateDefinition.any().setValue(CustomPortalVertex.AXIS, Direction.Axis.X));
   }
 
   public static void registerTickEvent() {
@@ -75,7 +75,7 @@ public class HarvestContinentPortal extends Block {
       @NonNull BlockPos pos,
       @NonNull CollisionContext context
   ) {
-    return CustomPortalBlock.getOutlineShape(state);
+    return CustomPortalVertex.getOutlineShape(state);
   }
 
   @Override
@@ -92,7 +92,7 @@ public class HarvestContinentPortal extends Block {
   protected void createBlockStateDefinition(
       StateDefinition.Builder<Block, BlockState> builder
   ) {
-    builder.add(CustomPortalBlock.AXIS);
+    builder.add(CustomPortalVertex.AXIS);
   }
 
   @Override
@@ -105,7 +105,7 @@ public class HarvestContinentPortal extends Block {
       boolean bl
   ) {
     boolean[] clientFlag = new boolean[]{clientInPortal};
-    CustomPortalBlock.handleEntityCollision(
+    CustomPortalVertex.handleEntityCollision(
         world, pos, entity,
         PORTAL_TICKS, IN_PORTAL_THIS_TICK, clientFlag,
         SupremeBlocks.SUPREME_FODDER_BLOCK, SupremeBlocks.HARVEST_CONTINENT_PORTAL,
@@ -125,7 +125,7 @@ public class HarvestContinentPortal extends Block {
       @NonNull BlockState neighborState,
       @NonNull RandomSource random
   ) {
-    if (CustomPortalBlock.shouldBreakPortal(
+    if (CustomPortalVertex.shouldBreakPortal(
         SupremeBlocks.HARVEST_CONTINENT_PORTAL, SupremeBlocks.SUPREME_FODDER_BLOCK,
         state, neighborState, pos, direction, world
     )) {

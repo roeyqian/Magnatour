@@ -43,7 +43,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import roeyqian.magnatour.registry.content.SupremeBlocks;
 import roeyqian.magnatour.registry.worldgen.CustomDimensions;
 
-public interface CustomPortalBlock {
+public interface CustomPortalVertex {
 
   int MAX_PORTAL_INNER_HEIGHT = 21;
   int MAX_PORTAL_INNER_WIDTH = 21;

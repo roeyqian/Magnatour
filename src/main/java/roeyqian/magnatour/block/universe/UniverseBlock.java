@@ -34,7 +34,7 @@ import org.jspecify.annotations.NonNull;
 // Magnatour
 import roeyqian.magnatour.blockentity.universe.UniverseBlockEntity;
 import roeyqian.magnatour.block.VirtualBlockLightManager;
-import roeyqian.magnatour.block.UniverseMetaPortalBlock;
+import roeyqian.magnatour.block.CustomPortalHorizon;
 import roeyqian.magnatour.registry.content.UniverseBlockEntities;
 import roeyqian.magnatour.registry.content.UniverseBlocks;
 
@@ -128,7 +128,7 @@ public class UniverseBlock extends BaseEntityBlock {
       // Try to activate portal when block is lit
       if (newLit) {
         System.out.println("[UniverseBlock] Attempting to activate portal...");
-        boolean activated = UniverseMetaPortalBlock.tryActivatePortal(world, pos, this, UniverseBlocks.UNIVERSE_META_PORTAL);
+        boolean activated = CustomPortalHorizon.tryActivatePortal(world, pos, this, UniverseBlocks.UNIVERSE_META_PORTAL);
         System.out.println("[UniverseBlock] Portal activation result: " + activated);
       }
     }

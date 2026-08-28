@@ -29,7 +29,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 // Magnatour
-import roeyqian.magnatour.block.CustomPortalBlock;
+import roeyqian.magnatour.block.CustomPortalVertex;
 import roeyqian.magnatour.block.SummonStructureHelper;
 import roeyqian.magnatour.block.supreme.ChunkTntBlock;
 import roeyqian.magnatour.level.recipe.CraftingResultHelper;
@@ -49,7 +49,7 @@ public final class BlockHelperForFunction {
   ) {
     if (cir.getReturnValue()) return;
 
-    cir.setReturnValue(CustomPortalBlock.canBePlacedAt(level, pos, forwardDirection));
+    cir.setReturnValue(CustomPortalVertex.canBePlacedAt(level, pos, forwardDirection));
   }
 
   public static void handleBaseFireOnPlace(
@@ -60,7 +60,7 @@ public final class BlockHelperForFunction {
       CallbackInfo ci
   ) {
     if (oldState.is(state.getBlock())) return;
-    if (CustomPortalBlock.tryCreatePortalFromFire(level, pos)) ci.cancel();
+    if (CustomPortalVertex.tryCreatePortalFromFire(level, pos)) ci.cancel();
   }
 
   public static void handleFireTick(

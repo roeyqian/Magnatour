@@ -39,7 +39,7 @@ import roeyqian.magnatour.Magnatour;
 import roeyqian.magnatour.block.supreme.HarvestContinentPortal;
 import roeyqian.magnatour.block.supreme.OreContinentPortal;
 import roeyqian.magnatour.registry.content.SupremeBlocks;
-import roeyqian.magnatour.block.CustomPortalBlock;
+import roeyqian.magnatour.block.CustomPortalVertex;
 
 @Environment(EnvType.CLIENT)
 public final class RegBlockLayers {
@@ -138,7 +138,7 @@ public final class RegBlockLayers {
             return;
           }
 
-          float progress = (float) ticks / CustomPortalBlock.TELEPORT_TICKS;
+          float progress = (float) ticks / CustomPortalVertex.TELEPORT_TICKS;
           renderPortalOverlay(guiGraphics, progress, client, portalBlock);
         }
     );
@@ -149,7 +149,7 @@ public final class RegBlockLayers {
       int currentTicks,
       IntConsumer setTicks
   ) {
-    int maxTicks = CustomPortalBlock.TELEPORT_TICKS;
+    int maxTicks = CustomPortalVertex.TELEPORT_TICKS;
     if (isInPortal.getAsBoolean()) {
       if (currentTicks < maxTicks) setTicks.accept(currentTicks + 1);
     } else {

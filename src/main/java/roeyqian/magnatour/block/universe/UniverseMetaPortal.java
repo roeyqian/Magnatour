@@ -40,7 +40,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jspecify.annotations.NonNull;
 
 // Magnatour
-import roeyqian.magnatour.block.UniverseMetaPortalBlock;
+import roeyqian.magnatour.block.CustomPortalHorizon;
 import roeyqian.magnatour.registry.content.UniverseBlocks;
 import roeyqian.magnatour.registry.worldgen.CustomDimensions;
 
@@ -50,6 +50,8 @@ public class UniverseMetaPortal extends Block {
 
   public static boolean clientInPortal = false;
 
+  private static final BlockPos FALLBACK_PORTAL_CENTER = new BlockPos(0, 32, 0);
+
   private static final Set<UUID> IN_PORTAL_THIS_TICK = ConcurrentHashMap.newKeySet();
 
   private static final Map<UUID, Integer> PORTAL_TICKS = new ConcurrentHashMap<>();
@@ -58,7 +60,7 @@ public class UniverseMetaPortal extends Block {
       Properties settings
   ) {
     super(settings);
-    this.registerDefaultState(this.stateDefinition.any().setValue(UniverseMetaPortalBlock.AXIS, Direction.Axis.X));
+    this.registerDefaultState(this.stateDefinition.any().setValue(CustomPortalHorizon.AXIS, Direction.Axis.X));
   }
 
   public static void registerTickEvent() {
@@ -75,7 +77,7 @@ public class UniverseMetaPortal extends Block {
       @NonNull BlockPos pos,
       @NonNull CollisionContext context
   ) {
-    return UniverseMetaPortalBlock.getOutlineShape(state);
+    return CustomPortalHorizon.getOutlineShape(state);
   }
 
   @Override
@@ -92,7 +94,7 @@ public class UniverseMetaPortal extends Block {
   protected void createBlockStateDefinition(
       StateDefinition.Builder<Block, BlockState> builder
   ) {
-    builder.add(UniverseMetaPortalBlock.AXIS);
+    builder.add(CustomPortalHorizon.AXIS);
   }
 
   @Override
@@ -105,11 +107,11 @@ public class UniverseMetaPortal extends Block {
       boolean bl
   ) {
     boolean[] clientFlag = new boolean[]{clientInPortal};
-    UniverseMetaPortalBlock.handleEntityCollision(
+    CustomPortalHorizon.handleEntityCollision(
         world, pos, entity,
         PORTAL_TICKS, IN_PORTAL_THIS_TICK, clientFlag,
         UniverseBlocks.UNIVERSE_BLOCK, this,
-        CustomDimensions.UNIVERSE_META, Level.OVERWORLD
+        CustomDimensions.UNIVERSE_META, Level.OVERWORLD, FALLBACK_PORTAL_CENTER
     );
     clientInPortal = clientFlag[0];
   }
@@ -125,9 +127,8 @@ public class UniverseMetaPortal extends Block {
       @NonNull BlockState neighborState,
       @NonNull RandomSource random
   ) {
-    if (UniverseMetaPortalBlock.shouldBreakPortal(
-        this, UniverseBlocks.UNIVERSE_BLOCK,
-        state, neighborState, pos, direction, world
+    if (CustomPortalHorizon.shouldBreakPortal(
+        this, UniverseBlocks.UNIVERSE_BLOCK, neighborState, pos, world
     )) {
       return Blocks.AIR.defaultBlockState();
     }
