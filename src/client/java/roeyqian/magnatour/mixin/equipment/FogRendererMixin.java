@@ -5,7 +5,7 @@
  * This file is part of Universe Mod.
  * Full license text available in the LICENSE file in the project root.
  */
-package roeyqian.magnatour.mixin.render;
+package roeyqian.magnatour.mixin.equipment;
 
 // Minecraft
 import net.minecraft.client.Camera;
@@ -21,7 +21,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 // Magnatour
-import roeyqian.magnatour.mixinhelper.render.RenderHelperForEquipment;
+import roeyqian.magnatour.mixinhelper.equipment.RenderHelperForEquipment;
 
 @Mixin(value = FogRenderer.class, priority = 3600000)
 public class FogRendererMixin {

@@ -5,7 +5,7 @@
  * This file is part of Universe Mod.
  * Full license text available in the LICENSE file in the project root.
  */
-package roeyqian.magnatour.mixin.render;
+package roeyqian.magnatour.mixin.item;
 
 // Fabric
 import net.fabricmc.api.EnvType;
@@ -19,7 +19,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 
 // Magnatour
-import roeyqian.magnatour.mixinhelper.render.RenderHelperForGlint;
+import roeyqian.magnatour.mixinhelper.glint.RenderHelperForGlint;
 
 @Environment(EnvType.CLIENT) @Mixin(value = ItemFeatureRenderer.Submit.class, priority = 3600000)
 public class ItemSubmitGlintMixin implements RenderHelperForGlint.UniverseGlintHolder {

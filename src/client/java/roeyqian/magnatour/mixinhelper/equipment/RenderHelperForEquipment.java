@@ -5,7 +5,7 @@
  * This file is part of Universe Mod.
  * full license text available in the LICENSE file in the project root.
  */
-package roeyqian.magnatour.mixinhelper.render;
+package roeyqian.magnatour.mixinhelper.equipment;
 
 // Minecraft
 import net.minecraft.client.Camera;

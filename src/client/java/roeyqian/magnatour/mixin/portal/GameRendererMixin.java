@@ -5,7 +5,7 @@
  * This file is part of Universe Mod.
  * Full license text available in the LICENSE file in the project root.
  */
-package roeyqian.magnatour.mixin.render;
+package roeyqian.magnatour.mixin.portal;
 
 // Minecraft
 import net.minecraft.client.Minecraft;
@@ -23,7 +23,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.objectweb.asm.Opcodes;
 
 // Magnatour
-import roeyqian.magnatour.mixinhelper.render.RenderHelperForFunction;
+import roeyqian.magnatour.mixinhelper.portal.RenderHelperForPortalEffect;
 
 @Mixin(value = GameRenderer.class, priority = 3600000)
 public class GameRendererMixin {
@@ -42,7 +42,7 @@ public class GameRendererMixin {
   private void inTick(
       CallbackInfo ci
   ) {
-    this.spinningEffectSpeed = RenderHelperForFunction.handleTick(this.minecraft, this.spinningEffectSpeed);
+    this.spinningEffectSpeed = RenderHelperForPortalEffect.handleTick(this.minecraft, this.spinningEffectSpeed);
   }
 
 }

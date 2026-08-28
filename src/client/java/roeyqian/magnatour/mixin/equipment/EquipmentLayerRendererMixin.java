@@ -5,7 +5,7 @@
  * This file is part of Universe Mod.
  * Full license text available in the LICENSE file in the project root.
  */
-package roeyqian.magnatour.mixin.render;
+package roeyqian.magnatour.mixin.equipment;
 
 // Mojang
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -30,7 +30,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 // Magnatour
-import roeyqian.magnatour.mixinhelper.render.RenderHelperForGlint;
+import roeyqian.magnatour.mixinhelper.glint.RenderHelperForGlint;
 
 @Environment(EnvType.CLIENT) @Mixin(value = EquipmentLayerRenderer.class, priority = 3600000)
 public class EquipmentLayerRendererMixin {

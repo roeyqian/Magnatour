@@ -5,7 +5,7 @@
  * This file is part of Universe Mod.
  * Full license text available in the LICENSE file in the project root.
  */
-package roeyqian.magnatour.mixinhelper.render;
+package roeyqian.magnatour.mixinhelper.glint;
 
 // Mojang
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -26,7 +26,7 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.world.item.ItemStack;
 
 // Magnatour
-import roeyqian.magnatour.mixin.render.ItemStackRenderStateAccessor;
+import roeyqian.magnatour.mixin.item.ItemStackRenderStateAccessor;
 import roeyqian.magnatour.registry.logic.CustomComponents;
 import roeyqian.magnatour.renderer.GlintRenderTypes;
 

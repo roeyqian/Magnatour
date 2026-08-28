@@ -5,13 +5,13 @@
  * This file is part of Universe Mod.
  * full license text available in the LICENSE file in the project root.
  */
-package roeyqian.magnatour.mixinhelper.render;
+package roeyqian.magnatour.mixinhelper.portal;
 
 // Minecraft
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.effect.MobEffects;
 
-public final class RenderHelperForFunction {
+public final class RenderHelperForPortalEffect {
 
   public static float handleTick(
       Minecraft minecraft,
