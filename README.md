@@ -31,9 +31,13 @@
 - 创造标签页
     - 当前分为 `超凡方块类`、`超凡物品类`、`寰宇方块类`、`寰宇物品类`。
 - 世界生成
-    - 目前包含 `丰收大陆` 与 `矿石大陆` 两个主要维度。
+    - 目前包含 `丰收大陆`、`矿石大陆` 与 `寰宇元` 三个主要维度。
     - `丰收大陆` 侧重特色地貌与群系，例如小麦平原、西瓜丛林、南瓜峡谷、大湖、湖心岛。
     - `矿石大陆` 侧重矿物资源堆叠与高密度采集。
+    - `寰宇元` 是虚空中的寰宇维度：首次生成时会在原点创建一个 64×64×64 的实体立方体，主体使用死亡方块，并以重生方块加固边缘；生成状态会随存档持久保存。
+- 传送门与跨维
+    - `寰宇元` 传送门采用末地传送门式的 5×5 水平结构：点亮 12 个非角落的寰宇方块后，中心会生成 3×3 传送门。
+    - 该传送门可在主世界与 `寰宇元` 间往返；生存模式需在门内停留 80 游戏刻，创造模式可立即传送。传送门会记录配对的落点，并在需要时安全生成返回门。
 - 结构与探索
     - 目前代表性结构包括 `黄金钟楼` 与 `钻石城`。
 - 生物与战斗
@@ -69,9 +73,13 @@
 - Creative tabs
     - The mod currently separates content into `Supreme Blocks`, `Supreme Items`, `Universe Blocks`, and `Universe Items`.
 - World generation
-    - The main dimensions are currently `Harvest Continent` and `Ore Continent`.
+    - The main dimensions are currently `Harvest Continent`, `Ore Continent`, and `Universe Meta`.
     - `Harvest Continent` focuses on themed terrain and biomes such as Wheat Plains, Watermelon Jungle, Pumpkin Canyon, Great Lake, and Lake Isle.
     - `Ore Continent` focuses on concentrated mineral generation and high-density resource collection.
+    - `Universe Meta` is a void-based Universe dimension. On its first generation, a solid 64×64×64 cube is created at the origin from dark blocks with reinforced light-block edges; its generation state is saved with the world.
+- Portals and cross-dimensional travel
+    - The `Universe Meta` portal uses a 5×5 horizontal, End-Portal-style structure: light all 12 non-corner Universe Blocks to create the 3×3 portal center.
+    - It supports travel between the Overworld and `Universe Meta`. Survival players must remain in the portal for 80 game ticks, while Creative players teleport instantly. Portals remember paired destinations and safely create a return portal when needed.
 - Structures and exploration
     - Major structures currently include `Golden Clock Tower` and `Diamond City`.
 - Creatures and combat
@@ -99,21 +107,25 @@ For full documentation about blocks, items, dimensions, creatures, recipes, cont
 
 `Magnatour` は Minecraft Fabric API 向けの冒険系 MOD で、極端に強い数値設定と意図的に破天荒なゲームメカニクスを中心に構成されています。
 
-- `Supreme` ラインは、進行、新規ディメンション、機能ブロック、高性能装備が中心です。
-- `Universe` ラインは、終盤の圧倒的な強さ、次元をまたぐアクセス、遠隔操作、極端な戦闘性能、理不尽な能力が中心です。
+- `至高` ラインは、進行、新規ディメンション、機能ブロック、高性能装備が中心です。
+- `寰宇` ラインは、終盤の圧倒的な強さ、次元をまたぐアクセス、遠隔操作、極端な戦闘性能、理不尽な能力が中心です。
 
 ### コンテンツ概要
 
 - クリエイティブタブ
-    - 現在の主な分類は `Supreme Blocks`、`Supreme Items`、`Universe Blocks`、`Universe Items` です。
+    - 現在の主な分類は `至高のブロック`、`至高のアイテム`、`寰宇のブロック`、`寰宇のアイテム` です。
 - ワールド生成
-    - 主なディメンションは `Harvest Continent` と `Ore Continent` です。
-    - `Harvest Continent` には、小麦平原、スイカジャングル、カボチャ峡谷、大湖、湖心島などの特徴的なバイオームがあります。
-    - `Ore Continent` は鉱石資源の集中生成と大量採掘に重点が置かれています。
+    - 主なディメンションは `豊穣大陸`、`鉱石大陸`、`寰宇元` です。
+    - `豊穣大陸` には、`小麦平原`、`メロンの密林`、`カボチャ峡谷`、`大湖`、`湖心島` などの特徴的なバイオームがあります。
+    - `鉱石大陸` は鉱石資源の集中生成と大量採掘に重点が置かれています。
+    - `寰宇元` は虚無に存在する寰宇ディメンションです。初回生成時、原点に死のブロックを主体とし、再生のブロックで縁を補強した 64×64×64 の中実キューブが生成され、その生成状態はワールドに保存されます。
+- ポータルと次元間移動
+    - `寰宇元` ポータルは、エンドポータル式の 5×5 水平構造です。角以外の 12 個の `寰宇のブロック` を点灯すると、中央に 3×3 のポータルが生成されます。
+    - このポータルでオーバーワールドと `寰宇元` を往復できます。サバイバルでは 80 ゲームティックの滞在が必要ですが、クリエイティブでは即座に転送されます。ポータルは接続先を記録し、必要に応じて安全な帰還用ポータルを生成します。
 - 構造物と探索
-    - 代表的な構造物は `Golden Clock Tower` と `Diamond City` です。
+    - 代表的な構造物は `豪奢な見張り塔` と `ダイヤモンドの都` です。
 - 生物と戦闘
-    - `Sculk Behemoth`、`Pale Lord`、`Bell Keeper`、`Obsidian Golem`、`Netherite Golem`、`Universe Guardian` など、ボス、敵対、友好の各種生物が実装されています。
+    - `スカルクの巨獣`、`ペイルロード`、`鐘守`、`黒曜石のゴーレム`、`ネザライトのゴーレム`、`寰宇の守護者` など、ボス、敵対、友好の各種生物が実装されています。
 - ゲームプレイの方向性
     - 誇張された成長曲線、終盤装備、遠隔管理、次元間移動、極端な戦闘、特殊システムが体験の中心です。
 
@@ -145,9 +157,13 @@ For full documentation about blocks, items, dimensions, creatures, recipes, cont
 - Pestañas creativas
     - El contenido principal se divide actualmente en `Supreme Blocks`, `Supreme Items`, `Universe Blocks` y `Universe Items`.
 - Generación del mundo
-    - Las dimensiones principales son `Harvest Continent` y `Ore Continent`.
+    - Las dimensiones principales son `Harvest Continent`, `Ore Continent` y `Universe Meta`.
     - `Harvest Continent` incluye biomas característicos como Wheat Plains, Watermelon Jungle, Pumpkin Canyon, Great Lake y Lake Isle.
     - `Ore Continent` se centra en la generación concentrada de minerales y la recolección masiva de recursos.
+    - `Universe Meta` es una dimensión de la línea Universe situada en el vacío. Durante su primera generación, se crea en el origen un cubo macizo de 64×64×64 de bloques oscuros, con bordes reforzados de bloques de luz; su estado de generación se guarda con el mundo.
+- Portales y viaje entre dimensiones
+    - El portal de `Universe Meta` usa una estructura horizontal de 5×5 al estilo del portal del End: activa los 12 Universe Blocks que no están en las esquinas para crear el centro de portal de 3×3.
+    - Permite viajar entre el Overworld y `Universe Meta`. En Supervivencia debes permanecer en el portal 80 ticks de juego; en Creativo el teletransporte es inmediato. Los portales recuerdan los destinos vinculados y crean de forma segura un portal de regreso cuando hace falta.
 - Estructuras y exploración
     - Las estructuras más representativas incluyen `Golden Clock Tower` y `Diamond City`.
 - Criaturas y combate
