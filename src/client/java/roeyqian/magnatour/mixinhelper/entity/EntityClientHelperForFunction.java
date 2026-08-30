@@ -18,9 +18,11 @@ import net.minecraft.world.entity.LivingEntity;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 // Magnatour
+import roeyqian.magnatour.block.CustomPortalHorizon;
 import roeyqian.magnatour.block.CustomPortalVertex;
 import roeyqian.magnatour.block.supreme.HarvestContinentPortal;
 import roeyqian.magnatour.block.supreme.OreContinentPortal;
+import roeyqian.magnatour.block.universe.UniverseMetaPortal;
 
 public final class EntityClientHelperForFunction {
 
@@ -41,6 +43,11 @@ public final class EntityClientHelperForFunction {
     int harvestContinentPortalTicks = HarvestContinentPortal.clientPortalTicks;
     if (harvestContinentPortalTicks > 0) {
       cir.setReturnValue((float) harvestContinentPortalTicks / CustomPortalVertex.TELEPORT_TICKS);
+    }
+
+    int universeMetaPortalTicks = UniverseMetaPortal.clientPortalTicks;
+    if (universeMetaPortalTicks > 0) {
+      cir.setReturnValue((float) universeMetaPortalTicks / CustomPortalHorizon.TELEPORT_TICKS);
     }
   }
 

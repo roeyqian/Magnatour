@@ -19,6 +19,7 @@ import roeyqian.magnatour.Magnatour;
 import roeyqian.magnatour.block.universe.UniverseBlock;
 import roeyqian.magnatour.block.universe.UniverseLeavesBlock;
 import roeyqian.magnatour.block.universe.UniverseLibrary;
+import roeyqian.magnatour.block.universe.UniverseMetaPortal;
 import roeyqian.magnatour.block.universe.UniverseRefinery;
 import roeyqian.magnatour.block.universe.UniverseTeleportPoint;
 import roeyqian.magnatour.block.universe.UniverseVoidPool;
@@ -124,6 +125,7 @@ public final class UniverseBlocks {
   private UniverseBlocks() {}
 
   public static void init() {
+    UniverseMetaPortal.registerTickEvent();
     Magnatour.LOGGER.info("[Server] Initializing 'UniverseBlocks'");
   }
 

@@ -27,9 +27,11 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
+import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 // Magnatour
@@ -105,6 +107,24 @@ public interface CustomPortalHorizon {
     return true;
   }
 
+  private static boolean hasClearArrivalSpace(
+      ServerLevel world,
+      BlockPos center
+  ) {
+    if (world.isEmptyBlock(center.below())) return false;
+
+    for (int dx = -1; dx <= 1; dx++) {
+      for (int dz = -1; dz <= 1; dz++) {
+        BlockPos portalPos = center.offset(dx, 0, dz);
+        if (!world.isEmptyBlock(portalPos.above())
+            || !world.isEmptyBlock(portalPos.above(2))) {
+          return false;
+        }
+      }
+    }
+    return true;
+  }
+
   /**
    * Search around the clicked position to find a valid 5x5 frame.
    * Returns the corner position if found, null otherwise.
@@ -172,11 +192,50 @@ public interface CustomPortalHorizon {
           world.setBlockAndUpdate(pos, frameState);
         } else if (isPortal) {
           world.setBlock(pos, portalBlock.defaultBlockState().setValue(AXIS, Direction.Axis.X), 18);
+          world.setBlock(pos.above(), Blocks.AIR.defaultBlockState(), 18);
+          world.setBlock(pos.above(2), Blocks.AIR.defaultBlockState(), 18);
         }
       }
     }
 
     return corner.offset(2, 0, 2);
+  }
+
+  /**
+   * Custom dimensions define their own arrival platform. For the Overworld, create the fallback
+   * portal above local terrain instead of at a fixed Y level that may be inside stone.
+   */
+  static BlockPos findSafeFallbackPortalCenter(
+      ServerLevel world,
+      BlockPos fallbackPortalCenter
+  ) {
+    if (world.dimension() != Level.OVERWORLD) return fallbackPortalCenter;
+
+    int fallbackX = fallbackPortalCenter.getX();
+    int fallbackZ = fallbackPortalCenter.getZ();
+    for (int radius = 0; radius <= 16; radius++) {
+      for (int x = fallbackX - radius; x <= fallbackX + radius; x++) {
+        for (int z = fallbackZ - radius; z <= fallbackZ + radius; z++) {
+          if (radius > 0 && x != fallbackX - radius && x != fallbackX + radius
+              && z != fallbackZ - radius && z != fallbackZ + radius) {
+            continue;
+          }
+
+          BlockPos candidate = new BlockPos(
+              x,
+              world.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, x, z),
+              z
+          );
+          if (hasClearArrivalSpace(world, candidate)) return candidate;
+        }
+      }
+    }
+
+    return new BlockPos(
+        fallbackX,
+        world.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, fallbackX, fallbackZ),
+        fallbackZ
+    );
   }
 
   static BlockPos getPortalCenter(
@@ -218,7 +277,12 @@ public interface CustomPortalHorizon {
     BlockPos existing = findExistingPortal(targetWorld, fallbackPortalCenter, portalBlock);
     if (existing != null) return existing;
 
-    return buildPortalAt(targetWorld, fallbackPortalCenter, frameBlock, portalBlock);
+    return buildPortalAt(
+        targetWorld,
+        findSafeFallbackPortalCenter(targetWorld, fallbackPortalCenter),
+        frameBlock,
+        portalBlock
+    );
   }
 
   static void execTeleport(

@@ -38,7 +38,9 @@ import net.minecraft.world.phys.AABB;
 import roeyqian.magnatour.Magnatour;
 import roeyqian.magnatour.block.supreme.HarvestContinentPortal;
 import roeyqian.magnatour.block.supreme.OreContinentPortal;
+import roeyqian.magnatour.block.universe.UniverseMetaPortal;
 import roeyqian.magnatour.registry.content.SupremeBlocks;
+import roeyqian.magnatour.registry.content.UniverseBlocks;
 import roeyqian.magnatour.block.CustomPortalVertex;
 
 @Environment(EnvType.CLIENT)
@@ -49,6 +51,9 @@ public final class RegBlockLayers {
   );
   public static final Identifier ORE_PORTAL_OVERLAY_ID = Identifier.fromNamespaceAndPath(
       Magnatour.MOD_ID, "ore_continent_portal_overlay"
+  );
+  public static final Identifier UNIVERSE_META_PORTAL_OVERLAY_ID = Identifier.fromNamespaceAndPath(
+      Magnatour.MOD_ID, "universe_meta_portal_overlay"
   );
 
   private RegBlockLayers() {}
@@ -66,11 +71,18 @@ public final class RegBlockLayers {
         () -> HarvestContinentPortal.clientPortalTicks,
         ticks -> HarvestContinentPortal.clientPortalTicks = ticks
     );
+    registerPortalOverlay(
+        UNIVERSE_META_PORTAL_OVERLAY_ID,
+        UniverseBlocks.UNIVERSE_META_PORTAL,
+        () -> UniverseMetaPortal.clientPortalTicks,
+        ticks -> UniverseMetaPortal.clientPortalTicks = ticks
+    );
 
     ClientTickEvents.END_CLIENT_TICK.register(client -> {
       if (client.player == null) {
         OreContinentPortal.clientPortalTicks = 0;
         HarvestContinentPortal.clientPortalTicks = 0;
+        UniverseMetaPortal.clientPortalTicks = 0;
         return;
       }
 
@@ -83,6 +95,11 @@ public final class RegBlockLayers {
           () -> isPlayerInPortalType(client.player, HarvestContinentPortal.class),
           HarvestContinentPortal.clientPortalTicks,
           ticks -> HarvestContinentPortal.clientPortalTicks = ticks
+      );
+      updatePortalTicks(
+          () -> isPlayerInPortalType(client.player, UniverseMetaPortal.class),
+          UniverseMetaPortal.clientPortalTicks,
+          ticks -> UniverseMetaPortal.clientPortalTicks = ticks
       );
     });
 
