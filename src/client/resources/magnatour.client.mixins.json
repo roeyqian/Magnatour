@@ -4,6 +4,7 @@
   "compatibilityLevel": "JAVA_25",
   "mixins": [
     "client.GuiMixin",
+    "client.SkyRendererMixin",
     "item.CuboidItemModelWrapperMixin",
     "item.ItemFeatureRendererMixin",
     "item.ItemStackRenderStateAccessor",
