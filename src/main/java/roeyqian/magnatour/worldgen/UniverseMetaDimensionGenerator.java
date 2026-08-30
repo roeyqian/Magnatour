@@ -7,10 +7,6 @@
  */
 package roeyqian.magnatour.worldgen;
 
-// Java Standard
-import java.util.HashSet;
-import java.util.Set;
-
 // Fabric
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 
@@ -19,6 +15,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 
 // Magnatour
+import roeyqian.magnatour.level.UniverseMetaGenerationSavedData;
 import roeyqian.magnatour.registry.content.UniverseBlocks;
 import roeyqian.magnatour.registry.worldgen.CustomDimensions;
 
@@ -28,14 +25,13 @@ public class UniverseMetaDimensionGenerator {
   private static final int CUBE_MAX = 31;
   private static final int CUBE_MIN = -32;
 
-  private static final Set<ServerLevel> GENERATED_WORLDS = new HashSet<>();
-
   public static void register() {
     ServerTickEvents.END_SERVER_TICK.register(server -> {
       ServerLevel world = server.getLevel(CustomDimensions.UNIVERSE_META);
-      if (world != null && !GENERATED_WORLDS.contains(world)) {
-        GENERATED_WORLDS.add(world);
+      UniverseMetaGenerationSavedData generationData = UniverseMetaGenerationSavedData.get(server);
+      if (world != null && !generationData.isGenerated()) {
         generateCube(world);
+        generationData.markGenerated();
       }
     });
   }
