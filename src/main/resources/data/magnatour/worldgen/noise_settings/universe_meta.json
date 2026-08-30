@@ -70,7 +70,7 @@
           "then_run": {
             "type": "minecraft:block",
             "result_state": {
-              "Name": "magnatour:universe_primary_block"
+              "Name": "magnatour:universe_dark_block"
             }
           }
         }

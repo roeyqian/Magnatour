@@ -24,6 +24,10 @@ import roeyqian.magnatour.registry.worldgen.CustomDimensions;
 
 public class UniverseMetaDimensionGenerator {
 
+  private static final int BORDER_THICKNESS = 4;
+  private static final int CUBE_MAX = 31;
+  private static final int CUBE_MIN = -32;
+
   private static final Set<ServerLevel> GENERATED_WORLDS = new HashSet<>();
 
   public static void register() {
@@ -43,16 +47,40 @@ public class UniverseMetaDimensionGenerator {
 
     // Generate 64x64x64 cube centered at (0, 0, 0)
     // From (-32, -32, -32) to (31, 31, 31)
-    for (int x = -32; x < 32; x++) {
-      for (int y = -32; y < 32; y++) {
-        for (int z = -32; z < 32; z++) {
+    for (int x = CUBE_MIN; x <= CUBE_MAX; x++) {
+      for (int y = CUBE_MIN; y <= CUBE_MAX; y++) {
+        for (int z = CUBE_MIN; z <= CUBE_MAX; z++) {
           BlockPos pos = new BlockPos(x, y, z);
-          world.setBlock(pos, UniverseBlocks.UNIVERSE_PRIMARY_BLOCK.defaultBlockState(), 3);
+          int boundaryAxes = 0;
+          if (isNearBoundary(x)) {
+            boundaryAxes++;
+          }
+          if (isNearBoundary(y)) {
+            boundaryAxes++;
+          }
+          if (isNearBoundary(z)) {
+            boundaryAxes++;
+          }
+
+          boolean isSurfaceBorder = boundaryAxes >= 2;
+          world.setBlock(
+              pos,
+              (isSurfaceBorder ? UniverseBlocks.UNIVERSE_LIGHT_BLOCK : UniverseBlocks.UNIVERSE_DARK_BLOCK)
+                  .defaultBlockState(),
+              3
+          );
         }
       }
     }
 
     System.out.println("[UniverseMeta] Cube generation complete!");
+  }
+
+  private static boolean isNearBoundary(
+      int coordinate
+  ) {
+    return coordinate < CUBE_MIN + BORDER_THICKNESS
+        || coordinate > CUBE_MAX - BORDER_THICKNESS;
   }
 
 }
