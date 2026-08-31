@@ -5,7 +5,7 @@
  * This file is part of Universe Mod.
  * Full license text available in the LICENSE file in the project root.
  */
-package roeyqian.magnatour.worldgen;
+package roeyqian.magnatour.levelgen;
 
 // Fabric
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
@@ -19,7 +19,7 @@ import roeyqian.magnatour.level.UniverseMetaGenerationSavedData;
 import roeyqian.magnatour.registry.content.UniverseBlocks;
 import roeyqian.magnatour.registry.worldgen.CustomDimensions;
 
-public class UniverseMetaDimensionGenerator {
+public final class UniverseMetaDimensionGenerator {
 
   private static final int BORDER_THICKNESS = 4;
   private static final int CUBE_MAX = 31;
