@@ -30,7 +30,6 @@
     "world.EnderDragonFightMixin",
     "world.WorldGenRegionAccessor",
     "world.IngredientAccessor",
-    "world.NoiseChunkGeneratorMixin",
     "world.ShapelessRecipeAccessor"
   ],
   "injectors": {

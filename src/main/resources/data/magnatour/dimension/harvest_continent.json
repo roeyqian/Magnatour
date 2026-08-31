@@ -1,7 +1,7 @@
 {
   "type": "magnatour:harvest_continent_type",
   "generator": {
-    "type": "minecraft:noise",
+    "type": "magnatour:harvest_continent",
     "settings": "magnatour:harvest_continent",
     "biome_source": {
       "type": "magnatour:harvest_continent",

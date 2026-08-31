@@ -12,6 +12,7 @@ import net.minecraft.resources.Identifier;
 
 // Magnatour
 import roeyqian.magnatour.Magnatour;
+import roeyqian.magnatour.levelgen.HarvestContinentChunkGenerator;
 import roeyqian.magnatour.levelgen.OreContinentChunkGenerator;
 import roeyqian.magnatour.registry.WorldgenRegHelper;
 
@@ -22,11 +23,16 @@ import roeyqian.magnatour.registry.WorldgenRegHelper;
 public final class CustomChunkGenerators {
 
   // Supreme Group: Chunk Generator
+  public static final Identifier HARVEST_CONTINENT = WorldgenRegHelper.id("harvest_continent");
   public static final Identifier ORE_CONTINENT = WorldgenRegHelper.id("ore_continent");
 
   private CustomChunkGenerators() {}
 
   public static void init() {
+    WorldgenRegHelper.registerChunkGenerator(
+        HARVEST_CONTINENT.getPath(),
+        HarvestContinentChunkGenerator.CODEC
+    );
     WorldgenRegHelper.registerChunkGenerator(
         ORE_CONTINENT.getPath(),
         OreContinentChunkGenerator.CODEC

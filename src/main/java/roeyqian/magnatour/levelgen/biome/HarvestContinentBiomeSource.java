@@ -59,23 +59,26 @@ public final class HarvestContinentBiomeSource extends BiomeSource {
               .apply(instance, HarvestContinentBiomeSource::new)
       );
 
-  private static final int SHAPE_OCTAVES = 2;
-  private static final int WARP_OCTAVES = 2;
+  /*
+   * A harvest biome must always own a complete macro cell.  The previous
+   * thresholded FBM approach could form arbitrarily small islands wherever a
+   * noise value crossed a threshold.  A jittered Voronoi layout has a bounded
+   * site distance instead, so accidental micro-biomes cannot occur.
+   */
+  private static final int MIN_CELL_SIZE = 256;
 
-  private static final long DOMAIN_WARP_X_SEED_SALT = 0xBB67AE8584CAA73BL;
-  private static final long DOMAIN_WARP_Z_SEED_SALT = 0x3C6EF372FE94F82BL;
-  private static final long ISLAND_SHAPE_SEED_SALT = 0xA54FF53A5F1D36F1L;
-  private static final long LAKE_SHAPE_SEED_SALT = 0x9B05688C2B3E6C1FL;
-  private static final long LAND_BIOME_SEED_SALT = 0x6A09E667F3BCC909L;
+  private static final long CELL_JITTER_X_SEED_SALT = 0xBB67AE8584CAA73BL;
+  private static final long CELL_JITTER_Z_SEED_SALT = 0x3C6EF372FE94F82BL;
+  private static final long CELL_TYPE_SEED_SALT = 0xA54FF53A5F1D36F1L;
+  private static final long LAKE_ISLAND_RADIUS_SEED_SALT = 0x510E527FADE682D1L;
+  private static final long LAKE_ISLAND_SEED_SALT = 0x6A09E667F3BCC909L;
+  private static final long LAND_TYPE_SEED_SALT = 0x9B05688C2B3E6C1FL;
 
-  private static final double DOMAIN_WARP_SCALE = 0.85D;
-  private static final double ISLAND_THRESHOLD = 0.48D;
-  private static final double LAKE_DOMAIN_WARP = 0.24D;
-  private static final double LAKE_ISLAND_MIN_SCORE = 0.24D;
-  private static final double LAKE_THRESHOLD = 0.07D;
-  private static final double LAND_DOMAIN_WARP = 0.18D;
-  private static final double MELON_SELECTOR_THRESHOLD = 0.28D;
-  private static final double PUMPKIN_SELECTOR_THRESHOLD = -0.24D;
+  private static final double CELL_JITTER_SCALE = 0.45D;
+  private static final double LAKE_CHANCE = 0.16D;
+  private static final double LAKE_ISLAND_CHANCE = 0.55D;
+  private static final double MELON_CHANCE_THRESHOLD = 0.38D;
+  private static final double PUMPKIN_CHANCE_THRESHOLD = -0.34D;
 
   private final int cellSize;
   private final int islandCellSize;
@@ -111,9 +114,9 @@ public final class HarvestContinentBiomeSource extends BiomeSource {
     this.pumpkinGorge = pumpkinGorge;
 
     this.seed = seed;
-    this.cellSize = Math.max(32, cellSize);
-    this.landCellSize = Math.max(32, landCellSize);
-    this.islandCellSize = Math.max(32, islandCellSize);
+    this.cellSize = Math.max(MIN_CELL_SIZE, Math.max(cellSize, landCellSize));
+    this.landCellSize = Math.max(MIN_CELL_SIZE, landCellSize);
+    this.islandCellSize = Math.max(64, islandCellSize);
     this.jitter = Mth.clamp(jitter, 0.0F, 0.48F);
   }
 
@@ -127,23 +130,18 @@ public final class HarvestContinentBiomeSource extends BiomeSource {
     double worldX = x * 4.0D;
     double worldZ = z * 4.0D;
 
-    WarpedPoint lakePoint = warpPoint(this.seed, worldX, worldZ, this.cellSize, LAKE_DOMAIN_WARP);
-    double lakeScore = lakeScore(lakePoint.x(), lakePoint.z());
-    if (lakeScore > LAKE_THRESHOLD) {
-      if (isLakeCenterIsland(lakePoint.x(), lakePoint.z(), lakeScore)) {
-        return this.lakeCenterIsland;
-      }
-
+    MacroCell cell = nearestCell(worldX, worldZ);
+    if (cell.type() == MacroBiome.LAKE) {
+      if (hasLakeCenterIsland(cell, worldX, worldZ)) return this.lakeCenterIsland;
       return this.bigLake;
     }
 
-    WarpedPoint landPoint = warpPoint(
-        this.seed ^ LAND_BIOME_SEED_SALT,
-        worldX, worldZ,
-        this.landCellSize,
-        LAND_DOMAIN_WARP
-    );
-    return pickLandBiome(landSelector(landPoint.x(), landPoint.z()));
+    return switch (cell.type()) {
+      case MELON -> this.melonJungle;
+      case PUMPKIN -> this.pumpkinGorge;
+      case WHEAT -> this.wheatPlain;
+      case LAKE -> throw new IllegalStateException("Lake cell was not handled");
+    };
   }
 
   @Override @NonNull
@@ -154,25 +152,6 @@ public final class HarvestContinentBiomeSource extends BiomeSource {
   @Override @NonNull
   protected Stream<Holder<Biome>> collectPossibleBiomes() {
     return Stream.of(this.wheatPlain, this.bigLake, this.lakeCenterIsland, this.melonJungle, this.pumpkinGorge);
-  }
-
-  private static int fastFloor(
-      double value
-  ) {
-    int i = (int) value;
-    return value < i ? i - 1 : i;
-  }
-
-  private static double fade(
-      double t
-  ) {
-    return t * t * t * (t * (t * 6.0D - 15.0D) + 10.0D);
-  }
-
-  private static double signedUnit(
-      long value
-  ) {
-    return ((value & 0xFFFFL) / 65535.0D) * 2.0D - 1.0D;
   }
 
   private static long mix(
@@ -191,114 +170,102 @@ public final class HarvestContinentBiomeSource extends BiomeSource {
     return h;
   }
 
-  private static double lerp(
-      double t,
-      double a,
-      double b
+  private static double unit(
+      long value
   ) {
-    return a + t * (b - a);
+    return ((value >>> 11) * 0x1.0p-53);
   }
 
-  private static double valueNoise(
-      long seed,
-      double x,
-      double z
+  private static double signedUnit(
+      long value
   ) {
-    int x0 = fastFloor(x);
-    int z0 = fastFloor(z);
-    int x1 = x0 + 1;
-    int z1 = z0 + 1;
-
-    double tx = x - x0;
-    double tz = z - z0;
-    double u = fade(tx);
-    double v = fade(tz);
-
-    double n00 = signedUnit(mix(seed, x0, z0));
-    double n10 = signedUnit(mix(seed, x1, z0));
-    double n01 = signedUnit(mix(seed, x0, z1));
-    double n11 = signedUnit(mix(seed, x1, z1));
-
-    return lerp(v, lerp(u, n00, n10), lerp(u, n01, n11));
+    return ((value & 0xFFFFL) / 65535.0D) * 2.0D - 1.0D;
   }
 
-  private static double fbmValue(
-      long seed,
-      double x,
-      double z,
-      double scale,
-      int octaves
+  private MacroCell nearestCell(
+      double worldX,
+      double worldZ
   ) {
-    double amplitude = 1.0D;
-    double frequency = scale;
-    double sum = 0.0D;
-    double norm = 0.0D;
+    int baseX = Math.floorDiv(Mth.floor(worldX), this.cellSize);
+    int baseZ = Math.floorDiv(Mth.floor(worldZ), this.cellSize);
+    MacroCell closest = null;
+    double closestDistanceSq = Double.MAX_VALUE;
 
-    for (int i = 0; i < octaves; i++) {
-      sum += amplitude * valueNoise(seed + (long) i * 0x9E3779B97F4A7C15L, x * frequency, z * frequency);
-      norm += amplitude;
-      amplitude *= 0.5D;
-      frequency *= 2.0D;
+    for (int gridX = baseX - 1; gridX <= baseX + 1; gridX++) {
+      for (int gridZ = baseZ - 1; gridZ <= baseZ + 1; gridZ++) {
+        MacroCell candidate = createCell(gridX, gridZ);
+        double dx = worldX - candidate.centerX();
+        double dz = worldZ - candidate.centerZ();
+        double distanceSq = dx * dx + dz * dz;
+        if (distanceSq < closestDistanceSq) {
+          closest = candidate;
+          closestDistanceSq = distanceSq;
+        }
+      }
     }
 
-    return norm <= 0.0D ? 0.0D : Mth.clamp(sum / norm, -1.0D, 1.0D);
+    if (closest == null) throw new IllegalStateException("No macro cell was sampled");
+    return closest;
   }
 
-  private WarpedPoint warpPoint(
-      long seed,
-      double x,
-      double z,
-      int featureSize,
-      double amount
-  ) {
-    if (amount <= 0.0D) return new WarpedPoint(x, z);
-
-    double scale = DOMAIN_WARP_SCALE / Math.max(32.0D, featureSize);
-    double warpX = fbmValue(seed ^ DOMAIN_WARP_X_SEED_SALT, x, z, scale, WARP_OCTAVES);
-    double warpZ = fbmValue(seed ^ DOMAIN_WARP_Z_SEED_SALT, x, z, scale, WARP_OCTAVES);
-    double blocks = featureSize * amount * (0.5D + this.jitter);
-    return new WarpedPoint(x + warpX * blocks, z + warpZ * blocks);
-  }
-
-  private double lakeScore(
+  private boolean hasLakeCenterIsland(
+      MacroCell cell,
       double worldX,
       double worldZ
   ) {
-    double baseScale = 1.0D / this.cellSize;
-    return fbmValue(this.seed ^ LAKE_SHAPE_SEED_SALT, worldX, worldZ, baseScale, SHAPE_OCTAVES);
+    long islandSeed = mix(this.seed ^ LAKE_ISLAND_SEED_SALT, cell.gridX(), cell.gridZ());
+    if (unit(islandSeed) >= LAKE_ISLAND_CHANCE) return false;
+
+    int maxRadius = Math.max(64, this.cellSize / 4);
+    int baseRadius = Mth.clamp(this.islandCellSize, 64, maxRadius);
+    double radiusScale = 1.0D + unit(
+        mix(this.seed ^ LAKE_ISLAND_RADIUS_SEED_SALT, cell.gridX(), cell.gridZ())
+    ) * 0.35D;
+    double radius = Math.min(maxRadius, baseRadius * radiusScale);
+    double dx = worldX - cell.centerX();
+    double dz = worldZ - cell.centerZ();
+    return dx * dx + dz * dz <= radius * radius;
   }
 
-  private boolean isLakeCenterIsland(
-      double worldX,
-      double worldZ,
-      double lakeScore
+  private MacroCell createCell(
+      int gridX,
+      int gridZ
   ) {
-    if (lakeScore < LAKE_ISLAND_MIN_SCORE) return false;
-
-    double islandScale = 1.0D / Math.max(96.0D, this.islandCellSize * 1.25D);
-    return fbmValue(this.seed ^ ISLAND_SHAPE_SEED_SALT, worldX, worldZ, islandScale, SHAPE_OCTAVES)
-        > ISLAND_THRESHOLD;
+    double jitterAmount = this.cellSize * this.jitter * CELL_JITTER_SCALE;
+    double centerX = (gridX + 0.5D) * this.cellSize
+        + signedUnit(mix(this.seed ^ CELL_JITTER_X_SEED_SALT, gridX, gridZ)) * jitterAmount;
+    double centerZ = (gridZ + 0.5D) * this.cellSize
+        + signedUnit(mix(this.seed ^ CELL_JITTER_Z_SEED_SALT, gridX, gridZ)) * jitterAmount;
+    return new MacroCell(gridX, gridZ, centerX, centerZ, pickMacroBiome(gridX, gridZ));
   }
 
-  private Holder<Biome> pickLandBiome(
-      double selector
+  private MacroBiome pickMacroBiome(
+      int gridX,
+      int gridZ
   ) {
-    if (selector < PUMPKIN_SELECTOR_THRESHOLD) return this.pumpkinGorge;
-    if (selector > MELON_SELECTOR_THRESHOLD) return this.melonJungle;
-    return this.wheatPlain;
+    if (unit(mix(this.seed ^ CELL_TYPE_SEED_SALT, gridX, gridZ)) < LAKE_CHANCE) {
+      return MacroBiome.LAKE;
+    }
+
+    double landValue = signedUnit(mix(this.seed ^ LAND_TYPE_SEED_SALT, gridX, gridZ));
+    if (landValue > MELON_CHANCE_THRESHOLD) return MacroBiome.MELON;
+    if (landValue < PUMPKIN_CHANCE_THRESHOLD) return MacroBiome.PUMPKIN;
+    return MacroBiome.WHEAT;
   }
 
-  private double landSelector(
-      double worldX,
-      double worldZ
-  ) {
-    double baseScale = 1.0D / this.landCellSize;
-    return fbmValue(this.seed ^ LAND_BIOME_SEED_SALT, worldX, worldZ, baseScale, SHAPE_OCTAVES);
+  private enum MacroBiome {
+    LAKE,
+    MELON,
+    PUMPKIN,
+    WHEAT
   }
 
-  private record WarpedPoint(
-      double x,
-      double z
+  private record MacroCell(
+      int gridX,
+      int gridZ,
+      double centerX,
+      double centerZ,
+      MacroBiome type
   ) {}
 
 }
