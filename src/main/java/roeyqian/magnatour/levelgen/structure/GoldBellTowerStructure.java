@@ -32,7 +32,7 @@ import org.jspecify.annotations.NonNull;
 
 // Magnatour
 import roeyqian.magnatour.Magnatour;
-import roeyqian.magnatour.mixinhelper.world.WorldHelperForDimension;
+import roeyqian.magnatour.levelgen.HarvestContinentTerrain;
 import roeyqian.magnatour.registry.worldgen.CustomStructures;
 
 public final class GoldBellTowerStructure extends Structure {
@@ -92,7 +92,7 @@ public final class GoldBellTowerStructure extends Structure {
     Vec3i lowerSize = lowerOpt.get().getSize();
     Vec3i upperSize = upperOpt.get().getSize();
 
-    int surfaceY = WorldHelperForDimension.lakeCenterIslandHeight(
+    int surfaceY = HarvestContinentTerrain.lakeCenterIslandHeight(
         seed, originX, originZ
     );
 

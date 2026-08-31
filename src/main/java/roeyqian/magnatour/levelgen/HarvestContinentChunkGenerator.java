@@ -38,8 +38,6 @@ import net.minecraft.world.level.levelgen.structure.StructureSet;
 // JSpecify
 import org.jspecify.annotations.NonNull;
 
-// Magnatour
-import roeyqian.magnatour.mixinhelper.world.WorldHelperForDimension;
 
 /**
  * Harvest Continent's dedicated generator.
@@ -105,7 +103,7 @@ public final class HarvestContinentChunkGenerator extends ChunkGenerator {
       @NonNull ChunkAccess chunk
   ) {
     this.vanillaGenerator.buildSurface(region, structureManager, randomState, chunk);
-    WorldHelperForDimension.handleBuildSurface(this.vanillaGenerator, region, randomState, chunk);
+    HarvestContinentTerrain.handleBuildSurface(this.vanillaGenerator, region, randomState, chunk);
   }
 
   @Override

@@ -5,7 +5,7 @@
  * This file is part of Universe Mod.
  * Full license text available in the LICENSE file in the project root.
  */
-package roeyqian.magnatour.mixinhelper.world;
+package roeyqian.magnatour.levelgen;
 
 // Java Standard
 import java.util.Random;
@@ -37,31 +37,28 @@ import roeyqian.magnatour.mixin.world.WorldGenRegionAccessor;
 import roeyqian.magnatour.registry.content.SupremeBlocks;
 import roeyqian.magnatour.registry.worldgen.CustomDimensions;
 
-public final class WorldHelperForDimension {
+public final class HarvestContinentTerrain {
 
-  private static final int BIOME_VOTE_STEP = 2;
-  private static final int CENTER_BIOME_BONUS = 8;
-  private static final int CONSTRAINT_PASSES_CENTER = 12;
-  private static final int HARVEST_BOUNDARY_BLEND_RANGE = 20;
-  private static final int HARVEST_BOUNDARY_MAX_ADJUST_FULL = 128;
-  private static final int HARVEST_LAKE_BLEND_RANGE = 24;
-  private static final int LOCAL_SAMPLE_RADIUS = 10;
-  private static final int MAX_DELTA_DIFF_BIOME = 2;
-  private static final int MAX_DELTA_GORGE_INTERNAL = 7;
-  private static final int MAX_DELTA_LAKE_BORDER = 1;
-  private static final int MAX_DELTA_MELON_INTERNAL = 4;
-  private static final int MAX_DELTA_WHEAT_INTERNAL = 4;
-  private static final int MAX_HEIGHT = 72;
-  private static final int SEA_LEVEL = 63;
-  private static final int LAKE_CENTER_ISLAND_MAX_HEIGHT = SEA_LEVEL + 6;
-  private static final int LAKE_CENTER_ISLAND_MIN_HEIGHT = SEA_LEVEL + 1;
+  private static final int LAKE_CENTER_ISLAND_BASE_HEIGHT = 65;
+  private static final int LAKE_CENTER_ISLAND_MAX_HEIGHT = LAKE_CENTER_ISLAND_BASE_HEIGHT + 5;
+  private static final int LAKE_CENTER_ISLAND_MIN_HEIGHT = LAKE_CENTER_ISLAND_BASE_HEIGHT;
+  private static final int MELON_JUNGLE_BOUNDARY_BASE_HEIGHT = 96;
+  private static final int MELON_JUNGLE_BOUNDARY_BLEND_RANGE = 128;
+  private static final int PUMPKIN_GORGE_BASE_HEIGHT = 256;
+  private static final int PUMPKIN_GORGE_BOUNDARY_BLEND_RANGE = 64;
+  private static final int PUMPKIN_GORGE_INTERIOR_MIN_HEIGHT = PUMPKIN_GORGE_BASE_HEIGHT - 6;
+  private static final int PUMPKIN_GORGE_MAX_HEIGHT = PUMPKIN_GORGE_BASE_HEIGHT + 45;
+  private static final int SEA_LEVEL = 64;
+  private static final int PUMPKIN_GORGE_BOUNDARY_MIN_HEIGHT = SEA_LEVEL + 1;
   private static final int TREE_CLEARING_RADIUS = 2;
   private static final int TREE_GRID_SIZE = 32;
-  private static final int WHEAT_BASE = MAX_HEIGHT - 5;
+  private static final int WHEAT_BASE = 128;
+  private static final int WHEAT_BOUNDARY_BLEND_RANGE = 32;
   private static final int WHEAT_BOUNDARY_EXTRA_MAX = 96;
-  private static final int WHEAT_INTERNAL_MAX = MAX_HEIGHT + 2;
-  private static final int WHEAT_MIN_HEIGHT = SEA_LEVEL - 1;
-  private static final int WINDOW_RADIUS = HARVEST_LAKE_BLEND_RANGE;
+  private static final int WHEAT_BOUNDARY_MIN_HEIGHT = SEA_LEVEL;
+  private static final int WHEAT_INTERIOR_MIN_HEIGHT = WHEAT_BASE - 5;
+  private static final int WHEAT_INTERNAL_MAX = WHEAT_BASE + 7;
+  private static final int WINDOW_RADIUS = MELON_JUNGLE_BOUNDARY_BLEND_RANGE;
 
   private static final ResourceKey<Biome> BIG_LAKE = ResourceKey.create(
       Registries.BIOME,
@@ -86,7 +83,7 @@ public final class WorldHelperForDimension {
 
   private final NoiseBasedChunkGenerator generator;
 
-  private WorldHelperForDimension(
+  private HarvestContinentTerrain(
       NoiseBasedChunkGenerator generator
   ) {
     this.generator = generator;
@@ -151,7 +148,7 @@ public final class WorldHelperForDimension {
       RandomState noiseConfig,
       ChunkAccess chunk
   ) {
-    new WorldHelperForDimension(generator).onBuildSurface(region, noiseConfig, chunk);
+    new HarvestContinentTerrain(generator).onBuildSurface(region, noiseConfig, chunk);
   }
 
   public static int lakeCenterIslandHeight(
@@ -160,7 +157,7 @@ public final class WorldHelperForDimension {
       int worldZ
   ) {
     double shape = fbmPerlin(seed ^ 0x6A09E667F3BCC909L, worldX, worldZ, 0.026, 2);
-    int h = Math.round(SEA_LEVEL + 2 + (float) (shape * 1.5D));
+    int h = Math.round(LAKE_CENTER_ISLAND_BASE_HEIGHT + (float) (shape * 1.5D));
     return Mth.clamp(h, LAKE_CENTER_ISLAND_MIN_HEIGHT, LAKE_CENTER_ISLAND_MAX_HEIGHT);
   }
 
@@ -244,8 +241,7 @@ public final class WorldHelperForDimension {
     }
 
     computeStableBiomesAndTargetHeights(
-        seed, region, noiseConfig, chunk, originalSurfaces,
-        stableBiomes, targetHeights
+        seed, region, noiseConfig, chunk, originalSurfaces, stableBiomes, targetHeights
     );
 
     for (int x = 0; x < 16; x++) {
@@ -296,12 +292,9 @@ public final class WorldHelperForDimension {
       ResourceKey<Biome>[][] outStableBiomes16,
       int[][] outTargetHeights16
   ) {
-    float[][] boundaryMask = computeStableBiomesAndInitialTargetHeights(
-        seed, region, noiseConfig, chunk,
-        originalSurfaces16, outStableBiomes16, outTargetHeights16
+    computeInitialTargetHeights(
+        seed, region, noiseConfig, chunk, originalSurfaces16, outStableBiomes16, outTargetHeights16
     );
-
-    applyHeightConstraints(outStableBiomes16, outTargetHeights16, boundaryMask);
   }
 
   private void processWheatPlainColumn(
@@ -449,14 +442,14 @@ public final class WorldHelperForDimension {
     );
   }
 
-  private float[][] computeStableBiomesAndInitialTargetHeights(
+  private void computeInitialTargetHeights(
       long seed,
       WorldGenRegion region,
       RandomState noiseConfig,
       ChunkAccess chunk,
       int[][] originalSurfaces16,
-      ResourceKey<Biome>[][] outStableBiomes16,
-      int[][] outTargetHeights16
+      ResourceKey<Biome>[][] outBiomes16,
+      int[][] outHeights16
   ) {
     NoiseBasedChunkGenerator gen = this.generator;
 
@@ -476,7 +469,7 @@ public final class WorldHelperForDimension {
       for (int gz = 0; gz < size; gz++) {
         int wz = startZ + (gz - r);
         int qz = wz >> 2;
-        int qy = MAX_HEIGHT >> 2;
+        int qy = SEA_LEVEL >> 2;
 
         var entry = gen.getBiomeSource().getNoiseBiome(qx, qy, qz, sampler);
         ResourceKey<Biome> key = resolveTrackedBiome(entry);
@@ -487,77 +480,52 @@ public final class WorldHelperForDimension {
     Long2IntOpenHashMap heightCache = new Long2IntOpenHashMap(256);
     heightCache.defaultReturnValue(Integer.MIN_VALUE);
 
-    float[][] boundaryMask = new float[16][16];
+    BiomeDistanceFields distanceFields = new BiomeDistanceFields(
+        computeDistancesToBiome(trackedBiome, WHEAT_PLAIN),
+        computeDistancesToBiome(trackedBiome, MELON_JUNGLE),
+        computeDistancesToBiome(trackedBiome, PUMPKIN_GORGE),
+        computeDistancesToBiome(trackedBiome, BIG_LAKE),
+        computeDistancesToBiome(trackedBiome, LAKE_CENTER_ISLAND)
+    );
 
     for (int x = 0; x < 16; x++) {
       for (int z = 0; z < 16; z++) {
         int gx = x + r;
         int gz = z + r;
 
-        ResourceKey<Biome> stable = sampleStableBiomeFromGrid(trackedBiome, gx, gz);
-        outStableBiomes16[x][z] = stable;
+        // Terrain ownership must match the biome source exactly on both sides of a boundary.
+        // A locally voted biome shifts that boundary while neighboring samples remain raw,
+        // which makes the height blend asymmetric.
+        ResourceKey<Biome> stable = trackedBiome[gx][gz];
+        outBiomes16[x][z] = stable;
 
         int worldX = startX + x;
         int worldZ = startZ + z;
 
         if (stable.equals(BIG_LAKE)) {
-          outTargetHeights16[x][z] = SEA_LEVEL;
-          boundaryMask[x][z] = 0.0f;
+          outHeights16[x][z] = SEA_LEVEL;
           continue;
         }
 
         int interior = baseHeightForBiome(
-            seed, gen, region, noiseConfig,
-            stable, worldX, worldZ,
-            startX, startZ, originalSurfaces16,
-            heightCache
+            seed, gen, region, noiseConfig, stable, worldX, worldZ,
+            startX, startZ, originalSurfaces16, heightCache
         );
-        HarvestBoundaryGoal boundaryGoal = findNearestHarvestBoundaryGoal(
-            seed, gen, region, noiseConfig, trackedBiome, stable,
-            gx, gz, r, startX, startZ, originalSurfaces16,
-            heightCache
+        HarvestBoundaryGoal boundaryGoal = findHarvestBoundaryGoal(
+            stable,
+            seed,
+            worldX,
+            worldZ,
+            gx,
+            gz,
+            distanceFields
         );
 
-        outTargetHeights16[x][z] = blendHarvestBoundaryHeight(
+        outHeights16[x][z] = blendHarvestBoundaryHeight(
             stable, interior, boundaryGoal
         );
-        boundaryMask[x][z] = boundaryGoal.boundaryFactor();
       }
     }
-
-    return boundaryMask;
-  }
-
-  private void applyHeightConstraints(
-      ResourceKey<Biome>[][] outStableBiomes16,
-      int[][] outTargetHeights16,
-      float[][] boundaryMask
-  ) {
-    int[][] currentHeights = copyHeightGrid16(outTargetHeights16);
-    int[][] nextHeights = new int[16][16];
-
-    for (int pass = 0; pass < CONSTRAINT_PASSES_CENTER; pass++) {
-      for (int x = 0; x < 16; x++) {
-        for (int z = 0; z < 16; z++) {
-          int constrained = currentHeights[x][z];
-          if (boundaryMask[x][z] > 0.0f) {
-            constrained = clampToNeighbors16(outStableBiomes16, currentHeights, x, z);
-            constrained = clampHarvestBoundaryHeight(
-                outStableBiomes16[x][z],
-                constrained,
-                boundaryMask[x][z]
-            );
-          }
-          nextHeights[x][z] = constrained;
-        }
-      }
-
-      int[][] swap = currentHeights;
-      currentHeights = nextHeights;
-      nextHeights = swap;
-    }
-
-    copyHeightGrid16(currentHeights, outTargetHeights16);
   }
 
   private boolean isInTreeClearing(
@@ -669,60 +637,51 @@ public final class WorldHelperForDimension {
     return null;
   }
 
-  private ResourceKey<Biome> sampleStableBiomeFromGrid(
-      ResourceKey<Biome>[][] trackedBiome,
-      int cx,
-      int cz
+  private int[][] computeDistancesToBiome(
+      ResourceKey<Biome>[][] biomes,
+      ResourceKey<Biome> biome
   ) {
-    ResourceKey<Biome> center = trackedBiome[cx][cz];
+    int sizeX = biomes.length;
+    int sizeZ = biomes[0].length;
+    int[][] distances = new int[sizeX][sizeZ];
+    int[] queue = new int[sizeX * sizeZ];
+    int head = 0;
+    int tail = 0;
 
-    int wheatVotes = 0;
-    int melonVotes = 0;
-    int lakeVotes = 0;
-    int islandVotes = 0;
-    int gorgeVotes = 0;
-
-    if (center.equals(WHEAT_PLAIN)) wheatVotes += CENTER_BIOME_BONUS;
-    else if (center.equals(MELON_JUNGLE)) melonVotes += CENTER_BIOME_BONUS;
-    else if (center.equals(BIG_LAKE)) lakeVotes += CENTER_BIOME_BONUS;
-    else if (center.equals(LAKE_CENTER_ISLAND)) islandVotes += CENTER_BIOME_BONUS;
-    else if (center.equals(PUMPKIN_GORGE)) gorgeVotes += CENTER_BIOME_BONUS;
-
-    for (int dx = -LOCAL_SAMPLE_RADIUS; dx <= LOCAL_SAMPLE_RADIUS; dx += BIOME_VOTE_STEP) {
-      for (int dz = -LOCAL_SAMPLE_RADIUS; dz <= LOCAL_SAMPLE_RADIUS; dz += BIOME_VOTE_STEP) {
-        int sx = cx + dx;
-        int sz = cz + dz;
-        if (sx < 0 || sx >= trackedBiome.length || sz < 0 || sz >= trackedBiome[0].length) continue;
-
-        ResourceKey<Biome> b = trackedBiome[sx][sz];
-        int weight = Math.max(1, 6 - (Math.abs(dx) + Math.abs(dz)) / 3);
-
-        if (b.equals(WHEAT_PLAIN)) wheatVotes += weight;
-        else if (b.equals(MELON_JUNGLE)) melonVotes += weight;
-        else if (b.equals(BIG_LAKE)) lakeVotes += weight;
-        else if (b.equals(LAKE_CENTER_ISLAND)) islandVotes += weight;
-        else if (b.equals(PUMPKIN_GORGE)) gorgeVotes += weight;
+    for (int x = 0; x < sizeX; x++) {
+      for (int z = 0; z < sizeZ; z++) {
+        if (biomes[x][z].equals(biome)) {
+          distances[x][z] = 0;
+          queue[tail++] = x * sizeZ + z;
+        } else {
+          distances[x][z] = -1;
+        }
       }
     }
 
-    int maxVotes = Math.max(Math.max(wheatVotes, melonVotes), Math.max(Math.max(lakeVotes, islandVotes), gorgeVotes));
-    if (maxVotes == 0) return center;
+    while (head < tail) {
+      int current = queue[head++];
+      int x = current / sizeZ;
+      int z = current % sizeZ;
+      int distance = distances[x][z];
+      if (distance >= WINDOW_RADIUS) continue;
 
-    int centerVotes;
-    if (center.equals(WHEAT_PLAIN)) centerVotes = wheatVotes;
-    else if (center.equals(MELON_JUNGLE)) centerVotes = melonVotes;
-    else if (center.equals(BIG_LAKE)) centerVotes = lakeVotes;
-    else if (center.equals(LAKE_CENTER_ISLAND)) centerVotes = islandVotes;
-    else if (center.equals(PUMPKIN_GORGE)) centerVotes = gorgeVotes;
-    else centerVotes = 0;
+      for (int dx = -1; dx <= 1; dx++) {
+        for (int dz = -1; dz <= 1; dz++) {
+          if (dx == 0 && dz == 0) continue;
 
-    if (centerVotes + 3 >= maxVotes) return center;
+          int nextX = x + dx;
+          int nextZ = z + dz;
+          if (nextX < 0 || nextX >= sizeX || nextZ < 0 || nextZ >= sizeZ) continue;
+          if (distances[nextX][nextZ] != -1) continue;
 
-    if (gorgeVotes == maxVotes) return PUMPKIN_GORGE;
-    if (melonVotes == maxVotes) return MELON_JUNGLE;
-    if (islandVotes == maxVotes) return LAKE_CENTER_ISLAND;
-    if (lakeVotes == maxVotes) return BIG_LAKE;
-    return WHEAT_PLAIN;
+          distances[nextX][nextZ] = distance + 1;
+          queue[tail++] = nextX * sizeZ + nextZ;
+        }
+      }
+    }
+
+    return distances;
   }
 
   private int baseHeightForBiome(
@@ -743,77 +702,69 @@ public final class WorldHelperForDimension {
     if (biome.equals(PUMPKIN_GORGE)) return pumpkinGorgeFinalHeight(seed, worldX, worldZ);
     if (biome.equals(WHEAT_PLAIN)) return generateWheatPlainInteriorHeight(seed, worldX, worldZ);
 
-    int lx = worldX - chunkStartX;
-    int lz = worldZ - chunkStartZ;
-    if (lx >= 0 && lx < 16 && lz >= 0 && lz < 16) {
-      return originalSurfaces16[lx][lz];
+    int localX = worldX - chunkStartX;
+    int localZ = worldZ - chunkStartZ;
+    if (localX >= 0 && localX < 16 && localZ >= 0 && localZ < 16) {
+      return originalSurfaces16[localX][localZ];
     }
     return vanillaSurfaceHeightCached(gen, region, noiseConfig, worldX, worldZ, heightCache);
   }
 
-  private HarvestBoundaryGoal findNearestHarvestBoundaryGoal(
-      long seed,
-      NoiseBasedChunkGenerator gen,
-      WorldGenRegion region,
-      RandomState noiseConfig,
-      ResourceKey<Biome>[][] trackedBiome,
+  private HarvestBoundaryGoal findHarvestBoundaryGoal(
       ResourceKey<Biome> centerBiome,
-      int cx,
-      int cz,
-      int windowRadius,
-      int chunkStartX,
-      int chunkStartZ,
-      int[][] originalSurfaces16,
-      Long2IntOpenHashMap heightCache
+      long seed,
+      int worldX,
+      int worldZ,
+      int gridX,
+      int gridZ,
+      BiomeDistanceFields distanceFields
   ) {
-    int sizeX = trackedBiome.length;
-    int sizeZ = trackedBiome[0].length;
+    int blendRange = harvestBoundaryBlendRange(centerBiome);
+    if (blendRange <= 0) return HarvestBoundaryGoal.NONE;
 
-    for (int d = 1; d <= WINDOW_RADIUS; d++) {
-      long sum = 0;
-      int count = 0;
-      boolean waterBoundary = false;
-      float strongestBoundaryFactor = 0.0f;
+    int ownReferenceHeight = boundaryReferenceHeightForBiome(centerBiome, seed, worldX, worldZ);
+    float totalWeight = 1.0f;
+    float weightedHeight = ownReferenceHeight;
+    float strongestInfluence = 0.0f;
 
-      for (int dx = -d; dx <= d; dx++) {
-        for (int dz = -d; dz <= d; dz++) {
-          if (Math.max(Math.abs(dx), Math.abs(dz)) != d) continue;
-
-          int gx = cx + dx;
-          int gz = cz + dz;
-          if (gx < 0 || gx >= sizeX || gz < 0 || gz >= sizeZ) continue;
-
-          ResourceKey<Biome> nb = trackedBiome[gx][gz];
-          if (nb.equals(centerBiome)) continue;
-
-          int blendRange = harvestBoundaryBlendRange(centerBiome, nb);
-          if (blendRange <= 0 || d > blendRange) continue;
-
-          waterBoundary |= nb.equals(BIG_LAKE);
-
-          int worldX = chunkStartX + (gx - windowRadius);
-          int worldZ = chunkStartZ + (gz - windowRadius);
-
-          int h = baseHeightForBiome(
-              seed, gen, region, noiseConfig,
-              nb, worldX, worldZ,
-              chunkStartX, chunkStartZ, originalSurfaces16,
-              heightCache
-          );
-
-          sum += h;
-          count++;
-          strongestBoundaryFactor = Math.max(strongestBoundaryFactor, boundaryFactorFromDist(d, blendRange));
-        }
-      }
-
-      if (count > 0) {
-        int goal = Math.round(sum / (float) count);
-        return new HarvestBoundaryGoal(goal, strongestBoundaryFactor, waterBoundary);
-      }
+    if (!centerBiome.equals(WHEAT_PLAIN)) {
+      int distance = distanceFields.wheat()[gridX][gridZ];
+      float referenceInfluence = boundaryReferenceInfluence(distance);
+      weightedHeight += boundaryReferenceHeightForBiome(WHEAT_PLAIN, seed, worldX, worldZ) * referenceInfluence;
+      totalWeight += referenceInfluence;
+      strongestInfluence = Math.max(strongestInfluence, boundaryInfluence(distance, blendRange));
+    }
+    if (!centerBiome.equals(MELON_JUNGLE)) {
+      int distance = distanceFields.melon()[gridX][gridZ];
+      float referenceInfluence = boundaryReferenceInfluence(distance);
+      weightedHeight += boundaryReferenceHeightForBiome(MELON_JUNGLE, seed, worldX, worldZ) * referenceInfluence;
+      totalWeight += referenceInfluence;
+      strongestInfluence = Math.max(strongestInfluence, boundaryInfluence(distance, blendRange));
+    }
+    if (!centerBiome.equals(PUMPKIN_GORGE)) {
+      int distance = distanceFields.pumpkin()[gridX][gridZ];
+      float referenceInfluence = boundaryReferenceInfluence(distance);
+      weightedHeight += boundaryReferenceHeightForBiome(PUMPKIN_GORGE, seed, worldX, worldZ) * referenceInfluence;
+      totalWeight += referenceInfluence;
+      strongestInfluence = Math.max(strongestInfluence, boundaryInfluence(distance, blendRange));
+    }
+    if (!centerBiome.equals(BIG_LAKE)) {
+      int distance = distanceFields.lake()[gridX][gridZ];
+      float referenceInfluence = boundaryInfluence(distance, blendRange);
+      weightedHeight += SEA_LEVEL * referenceInfluence;
+      totalWeight += referenceInfluence;
+      strongestInfluence = Math.max(strongestInfluence, boundaryInfluence(distance, blendRange));
+    }
+    if (!centerBiome.equals(LAKE_CENTER_ISLAND)) {
+      int distance = distanceFields.island()[gridX][gridZ];
+      float referenceInfluence = boundaryInfluence(distance, blendRange);
+      weightedHeight += LAKE_CENTER_ISLAND_BASE_HEIGHT * referenceInfluence;
+      totalWeight += referenceInfluence;
+      strongestInfluence = Math.max(strongestInfluence, boundaryInfluence(distance, blendRange));
     }
 
-    return HarvestBoundaryGoal.NONE;
+    if (strongestInfluence <= 0.0f) return HarvestBoundaryGoal.NONE;
+    return new HarvestBoundaryGoal(Math.round(weightedHeight / totalWeight), strongestInfluence);
   }
 
   private int blendHarvestBoundaryHeight(
@@ -826,78 +777,10 @@ public final class WorldHelperForDimension {
       return clampHarvestBoundaryHeight(biome, interior, 0.0f);
     }
 
-    int goalHeight = boundaryGoal.waterBoundary()
-        ? boundaryGoal.height()
-        : Math.round((interior + boundaryGoal.height()) * 0.5f);
-
-    float t = boundaryFactor * boundaryFactor * (3.0f - 2.0f * boundaryFactor);
-    int desired = Math.round(Mth.lerpInt(t, interior, goalHeight));
-    int cap = Math.round(boundaryFactor * HARVEST_BOUNDARY_MAX_ADJUST_FULL);
-    desired = Mth.clamp(desired, interior - cap, interior + cap);
+    float t = 1.0f - boundaryFactor;
+    float interiorWeight = t * t * (3.0f - 2.0f * t);
+    int desired = Math.round(Mth.lerpInt(interiorWeight, boundaryGoal.height(), interior));
     return clampHarvestBoundaryHeight(biome, desired, boundaryFactor);
-  }
-
-  private int[][] copyHeightGrid16(
-      int[][] source
-  ) {
-    int[][] copy = new int[16][16];
-    copyHeightGrid16(source, copy);
-    return copy;
-  }
-
-  private void copyHeightGrid16(
-      int[][] source,
-      int[][] target
-  ) {
-    for (int x = 0; x < 16; x++) {
-      System.arraycopy(source[x], 0, target[x], 0, 16);
-    }
-  }
-
-  private int clampToNeighbors16(
-      ResourceKey<Biome>[][] biome,
-      int[][] height,
-      int x,
-      int z
-  ) {
-    ResourceKey<Biome> center = biome[x][z];
-    int candidate = height[x][z];
-
-    int minAllowed = Integer.MIN_VALUE;
-    int maxAllowed = Integer.MAX_VALUE;
-
-    int[][] dirs = {
-        {1, 0}, {-1, 0}, {0, 1}, {0, -1},
-        {1, 1}, {1, -1}, {-1, 1}, {-1, -1}
-    };
-
-    for (int[] d : dirs) {
-      int nx = x + d[0];
-      int nz = z + d[1];
-      if (nx < 0 || nx >= 16 || nz < 0 || nz >= 16) continue;
-
-      int maxDelta = getPairMaxDelta(center, biome[nx][nz]);
-      if (d[0] != 0 && d[1] != 0) maxDelta = Math.max(1, maxDelta - 1);
-
-      minAllowed = Math.max(minAllowed, height[nx][nz] - maxDelta);
-      maxAllowed = Math.min(maxAllowed, height[nx][nz] + maxDelta);
-    }
-
-    return Mth.clamp(candidate, minAllowed, maxAllowed);
-  }
-
-  private int clampHarvestBoundaryHeight(
-      ResourceKey<Biome> biome,
-      int height,
-      float boundaryFactor
-  ) {
-    if (biome.equals(WHEAT_PLAIN)) return clampWheatAdaptive(height, boundaryFactor);
-    if (biome.equals(LAKE_CENTER_ISLAND)) {
-      return Mth.clamp(height, LAKE_CENTER_ISLAND_MIN_HEIGHT, LAKE_CENTER_ISLAND_MAX_HEIGHT);
-    }
-    if (biome.equals(BIG_LAKE)) return SEA_LEVEL;
-    if (biome.equals(PUMPKIN_GORGE)) return Mth.clamp(height, SEA_LEVEL + 1, MAX_HEIGHT + 44);
-    return height;
   }
 
   private boolean isNearTreeInGrid(
@@ -944,7 +827,7 @@ public final class WorldHelperForDimension {
     int base = calculatePumpkinGorgeHeight(worldX, worldZ);
     float detail = computePumpkinGorgeDetail(seed, worldX, worldZ);
     int h = Math.round(base + detail);
-    return Mth.clamp(h, SEA_LEVEL + 2, MAX_HEIGHT + 44);
+    return Mth.clamp(h, PUMPKIN_GORGE_INTERIOR_MIN_HEIGHT, PUMPKIN_GORGE_MAX_HEIGHT);
   }
 
   private int generateWheatPlainInteriorHeight(
@@ -957,7 +840,7 @@ public final class WorldHelperForDimension {
     double micro = fbmPerlin(seed ^ 0xABCDEF0123456789L, worldX, worldZ, 0.0340, 2) * 1.35;
 
     int h = (int) Math.round(WHEAT_BASE + large + medium + micro);
-    return Mth.clamp(h, WHEAT_MIN_HEIGHT, WHEAT_INTERNAL_MAX);
+    return Mth.clamp(h, WHEAT_INTERIOR_MIN_HEIGHT, WHEAT_INTERNAL_MAX);
   }
 
   private int vanillaSurfaceHeightCached(
@@ -969,67 +852,86 @@ public final class WorldHelperForDimension {
       Long2IntOpenHashMap cache
   ) {
     long key = (((long) worldX) << 32) ^ (worldZ & 0xffffffffL);
-    int v = cache.get(key);
-    if (v != Integer.MIN_VALUE) return v;
+    int value = cache.get(key);
+    if (value != Integer.MIN_VALUE) return value;
 
-    int h = gen.getBaseHeight(worldX, worldZ, Heightmap.Types.WORLD_SURFACE_WG, region, noiseConfig);
-    cache.put(key, h);
-    return h;
+    int height = gen.getBaseHeight(worldX, worldZ, Heightmap.Types.WORLD_SURFACE_WG, region, noiseConfig);
+    cache.put(key, height);
+    return height;
   }
 
   private int harvestBoundaryBlendRange(
-      ResourceKey<Biome> centerBiome,
-      ResourceKey<Biome> neighborBiome
+      ResourceKey<Biome> biome
   ) {
-    if (centerBiome.equals(BIG_LAKE)) return 0;
-    if (neighborBiome.equals(BIG_LAKE)) return HARVEST_LAKE_BLEND_RANGE;
-    if (centerBiome.equals(LAKE_CENTER_ISLAND) || neighborBiome.equals(LAKE_CENTER_ISLAND)) {
-      return HARVEST_LAKE_BLEND_RANGE;
+    if (biome.equals(WHEAT_PLAIN)) return WHEAT_BOUNDARY_BLEND_RANGE;
+    if (biome.equals(MELON_JUNGLE)) return MELON_JUNGLE_BOUNDARY_BLEND_RANGE;
+    if (biome.equals(PUMPKIN_GORGE)) return PUMPKIN_GORGE_BOUNDARY_BLEND_RANGE;
+    return 0;
+  }
+
+  private int boundaryReferenceHeightForBiome(
+      ResourceKey<Biome> biome,
+      long seed,
+      int worldX,
+      int worldZ
+  ) {
+    if (biome.equals(BIG_LAKE)) return SEA_LEVEL;
+    if (biome.equals(LAKE_CENTER_ISLAND)) return LAKE_CENTER_ISLAND_BASE_HEIGHT;
+    if (biome.equals(WHEAT_PLAIN)) return WHEAT_BASE;
+    if (biome.equals(PUMPKIN_GORGE)) return PUMPKIN_GORGE_BASE_HEIGHT;
+    if (biome.equals(MELON_JUNGLE)) {
+      double undulation = fbmPerlin(
+          seed ^ 0xD1B54A32D192ED03L,
+          worldX,
+          worldZ,
+          0.0025,
+          2
+      ) * 6.0D;
+      return Math.round(MELON_JUNGLE_BOUNDARY_BASE_HEIGHT + (float) undulation);
     }
-    return HARVEST_BOUNDARY_BLEND_RANGE;
+    return WHEAT_BASE;
   }
 
-  private float boundaryFactorFromDist(
-      int dist,
-      int range
+  /**
+   * Computes the shared reference-height contribution for a nearby biome.
+   *
+   * <p>This is deliberately independent of the biome that owns the current
+   * column.  At a three-biome junction, every column next to the same border
+   * must agree on the third biome's contribution; using the owning biome's
+   * 32/64/128 block range here gave each side a different target height and
+   * produced a vertical seam.  The owning biome's range is still used by
+   * {@link #boundaryInfluence(int, int)} above to control how far its actual
+   * terrain transitions extend.</p>
+   */
+  private float boundaryReferenceInfluence(
+      int distance
   ) {
-    if (dist > range) return 0.0f;
-    float t = 1.0f - (dist - 1) / (float) range;
-    return Mth.clamp(t, 0.0f, 1.0f);
+    if (distance <= 0 || distance > WINDOW_RADIUS) return 0.0f;
+    return boundaryFactorFromDist(distance, WINDOW_RADIUS);
   }
 
-  private int getPairMaxDelta(
-      ResourceKey<Biome> a,
-      ResourceKey<Biome> b
+  private float boundaryInfluence(
+      int distance,
+      int blendRange
   ) {
-    if ((a.equals(LAKE_CENTER_ISLAND) && b.equals(BIG_LAKE))
-        || (a.equals(BIG_LAKE) && b.equals(LAKE_CENTER_ISLAND))) {
-      return 3;
-    }
-
-    boolean lakePair = a.equals(BIG_LAKE) || b.equals(BIG_LAKE);
-    if (lakePair) return MAX_DELTA_LAKE_BORDER;
-
-    if (a.equals(LAKE_CENTER_ISLAND) && b.equals(LAKE_CENTER_ISLAND)) return 2;
-
-    if (!a.equals(b)) return MAX_DELTA_DIFF_BIOME;
-
-    if (a.equals(WHEAT_PLAIN)) return MAX_DELTA_WHEAT_INTERNAL;
-    if (a.equals(MELON_JUNGLE)) return MAX_DELTA_MELON_INTERNAL;
-    if (a.equals(PUMPKIN_GORGE)) return MAX_DELTA_GORGE_INTERNAL;
-    if (a.equals(BIG_LAKE)) return 0;
-    if (a.equals(LAKE_CENTER_ISLAND)) return 2;
-
-    return 3;
+    if (distance <= 0 || distance > blendRange) return 0.0f;
+    return boundaryFactorFromDist(distance, blendRange);
   }
 
-  private int clampWheatAdaptive(
-      int h,
+  private int clampHarvestBoundaryHeight(
+      ResourceKey<Biome> biome,
+      int height,
       float boundaryFactor
   ) {
-    int extra = Math.round(boundaryFactor * WHEAT_BOUNDARY_EXTRA_MAX);
-    int max = WHEAT_INTERNAL_MAX + extra;
-    return Mth.clamp(h, WHEAT_MIN_HEIGHT, max);
+    if (biome.equals(WHEAT_PLAIN)) return clampWheatAdaptive(height, boundaryFactor);
+    if (biome.equals(LAKE_CENTER_ISLAND)) {
+      return Mth.clamp(height, LAKE_CENTER_ISLAND_MIN_HEIGHT, LAKE_CENTER_ISLAND_MAX_HEIGHT);
+    }
+    if (biome.equals(BIG_LAKE)) return SEA_LEVEL;
+    if (biome.equals(PUMPKIN_GORGE)) {
+      return Mth.clamp(height, PUMPKIN_GORGE_BOUNDARY_MIN_HEIGHT, PUMPKIN_GORGE_MAX_HEIGHT);
+    }
+    return height;
   }
 
   private int calculatePumpkinGorgeHeight(
@@ -1039,8 +941,8 @@ public final class WorldHelperForDimension {
     double macro = Math.sin(worldX * 0.035D) + Math.cos(worldZ * 0.032D);
     double ridges = Math.abs(Math.sin((worldX + worldZ) * 0.08D)) * 24.0D;
     double spikes = Math.abs(Math.sin(worldX * 0.19D) * Math.cos(worldZ * 0.17D)) * 14.0D;
-    int target = (int) Math.round(SEA_LEVEL + 8 + macro * 6.0D + ridges + spikes);
-    return Mth.clamp(target, SEA_LEVEL + 2, MAX_HEIGHT + 44);
+    int target = (int) Math.round(PUMPKIN_GORGE_BASE_HEIGHT + macro * 6.0D + ridges + spikes);
+    return Mth.clamp(target, PUMPKIN_GORGE_INTERIOR_MIN_HEIGHT, PUMPKIN_GORGE_MAX_HEIGHT);
   }
 
   private float computePumpkinGorgeDetail(
@@ -1057,13 +959,38 @@ public final class WorldHelperForDimension {
     return (float) ((ridged * 22.0 - 10.0) + spikes * 8.0);
   }
 
+  private float boundaryFactorFromDist(
+      int dist,
+      int range
+  ) {
+    if (dist > range) return 0.0f;
+    float t = 1.0f - (dist - 1) / (float) range;
+    return Mth.clamp(t, 0.0f, 1.0f);
+  }
+
+  private int clampWheatAdaptive(
+      int h,
+      float boundaryFactor
+  ) {
+    int extra = Math.round(boundaryFactor * WHEAT_BOUNDARY_EXTRA_MAX);
+    int max = WHEAT_INTERNAL_MAX + extra;
+    return Mth.clamp(h, WHEAT_BOUNDARY_MIN_HEIGHT, max);
+  }
+
+  private record BiomeDistanceFields(
+      int[][] wheat,
+      int[][] melon,
+      int[][] pumpkin,
+      int[][] lake,
+      int[][] island
+  ) {}
+
   private record HarvestBoundaryGoal(
       int height,
-      float boundaryFactor,
-      boolean waterBoundary
+      float boundaryFactor
   ) {
 
-    private static final HarvestBoundaryGoal NONE = new HarvestBoundaryGoal(0, 0.0f, false);
+    private static final HarvestBoundaryGoal NONE = new HarvestBoundaryGoal(0, 0.0f);
 
   }
 
