@@ -158,6 +158,7 @@
   "dimension.minecraft:the_end": "§eThe End",
   "dimension.magnatour:ore_continent": "§bOre Continent",
   "dimension.magnatour:harvest_continent": "§6Harvest Continent",
+  "dimension.magnatour:universe_meta": "§5Universe Meta",
 
   "biome.magnatour.wheat_plain": "Wheat Plain",
   "biome.magnatour.melon_jungle": "Melon Jungle",
@@ -166,6 +167,7 @@
   "biome.magnatour.lake_center_island": "Lake Center Island",
   "biome.magnatour.ore_land": "Ore Land",
   "biome.magnatour.ore_forest": "Ore Forest",
+  "biome.magnatour.universe_meta_void": "Universe Meta Void",
 
   "entity.magnatour.bell_ringer": "Bell Ringer",
   "entity.magnatour.bell_soul": "Bell Soul",
@@ -185,6 +187,7 @@
   "item.magnatour.harvest_core": "Harvest Core",
   "item.magnatour.ore_core": "Ore Core",
   "item.magnatour.seed_of_all_things": "Seed of All Things",
+  "item.magnatour.crop_of_all_things": "Crop of All Things",
   "item.magnatour.fruit_of_all_things": "Fruit of All Things",
   "item.magnatour.supreme_banquet": "Supreme Banquet",
   "item.magnatour.supreme_crystal": "Supreme Crystal",
@@ -256,6 +259,7 @@
   "block.magnatour.supreme_gem_block": "Supreme Gem Block",
   "block.magnatour.supreme_fodder_block": "Supreme Fodder Block",
   "block.magnatour.chunk_tnt": "Chunk TNT",
+  "block.magnatour.crop_of_all_things": "Crop of All Things",
   "block.magnatour.supreme_pumpkin_head": "Supreme Pumpkin Head",
   "block.magnatour.supreme_block": "Supreme Block",
   "block.magnatour.supreme_worktable": "Supreme Worktable",
@@ -310,6 +314,7 @@
   "item.magnatour.universe_library": "Universe Library",
   "item.magnatour.universe_void_pool": "Universe Void Pool",
   "item.magnatour.universe_teleport_point": "Universe Teleport Point",
+  "item.magnatour.universe_meta_portal": "Universe Meta Portal",
 
   "lore.magnatour.universe_star.0": "The quintessence of all things",
   "lore.magnatour.universe_star.1": "Only time itself may erase its being",
@@ -359,6 +364,7 @@
   "block.magnatour.universe_dark_block": "Death Block",
   "block.magnatour.universe_light_air": "Rebirth Air",
   "block.magnatour.universe_dark_air": "Death Air",
+  "block.magnatour.universe_meta_portal": "Universe Meta Portal",
   "block.magnatour.universe_log": "Universe Log",
   "block.magnatour.stripped_universe_log": "Stripped Universe Log",
   "block.magnatour.universe_wood": "Universe Wood",

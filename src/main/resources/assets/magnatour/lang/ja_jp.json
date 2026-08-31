@@ -158,6 +158,7 @@
   "dimension.minecraft:the_end": "§eエンド",
   "dimension.magnatour:ore_continent": "§b鉱石大陸",
   "dimension.magnatour:harvest_continent": "§6豊穣大陸",
+  "dimension.magnatour:universe_meta": "§5寰宇メタ界",
 
   "biome.magnatour.wheat_plain": "小麦平原",
   "biome.magnatour.melon_jungle": "メロンの密林",
@@ -166,6 +167,7 @@
   "biome.magnatour.lake_center_island": "湖心島",
   "biome.magnatour.ore_land": "鉱石の大地",
   "biome.magnatour.ore_forest": "鉱石の森",
+  "biome.magnatour.universe_meta_void": "寰宇メタ虚空",
 
   "entity.magnatour.bell_ringer": "鐘守",
   "entity.magnatour.bell_soul": "鐘霊",
@@ -185,6 +187,7 @@
   "item.magnatour.harvest_core": "収穫の核",
   "item.magnatour.ore_core": "鉱石の核",
   "item.magnatour.seed_of_all_things": "万物の種",
+  "item.magnatour.crop_of_all_things": "万物の作物",
   "item.magnatour.fruit_of_all_things": "万物の果実",
   "item.magnatour.supreme_banquet": "至高の饗宴",
   "item.magnatour.supreme_crystal": "至高の結晶",
@@ -256,6 +259,7 @@
   "block.magnatour.supreme_gem_block": "至高の宝石ブロック",
   "block.magnatour.supreme_fodder_block": "至高の飼葉ブロック",
   "block.magnatour.chunk_tnt": "チャンクTNT",
+  "block.magnatour.crop_of_all_things": "万物の作物",
   "block.magnatour.supreme_pumpkin_head": "至高のカボチャ頭",
   "block.magnatour.supreme_block": "至高のブロック",
   "block.magnatour.supreme_worktable": "至高の作業台",
@@ -310,6 +314,7 @@
   "item.magnatour.universe_library": "寰宇書庫",
   "item.magnatour.universe_void_pool": "寰宇の虚無池",
   "item.magnatour.universe_teleport_point": "寰宇転送点",
+  "item.magnatour.universe_meta_portal": "寰宇メタポータル",
 
   "lore.magnatour.universe_star.0": "万物の精髄",
   "lore.magnatour.universe_star.1": "その存在を消せるのは時そのものだけ",
@@ -359,6 +364,7 @@
   "block.magnatour.universe_dark_block": "死のブロック",
   "block.magnatour.universe_light_air": "再生の気息",
   "block.magnatour.universe_dark_air": "死の気息",
+  "block.magnatour.universe_meta_portal": "寰宇メタポータル",
   "block.magnatour.universe_log": "寰宇の原木",
   "block.magnatour.stripped_universe_log": "樹皮を剥いだ寰宇の原木",
   "block.magnatour.universe_wood": "寰宇の木",

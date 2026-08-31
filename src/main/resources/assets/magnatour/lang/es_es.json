@@ -158,6 +158,7 @@
   "dimension.minecraft:the_end": "§eEnd",
   "dimension.magnatour:ore_continent": "§bContinente de los Minerales",
   "dimension.magnatour:harvest_continent": "§6Continente de la Cosecha",
+  "dimension.magnatour:universe_meta": "§5Metauniverso",
 
   "biome.magnatour.wheat_plain": "Llanura de Trigo",
   "biome.magnatour.melon_jungle": "Selva de Melones",
@@ -166,6 +167,7 @@
   "biome.magnatour.lake_center_island": "Isla central del lago",
   "biome.magnatour.ore_land": "Tierra de Minerales",
   "biome.magnatour.ore_forest": "Bosque de Minerales",
+  "biome.magnatour.universe_meta_void": "Vacío Meta del Universo",
 
   "entity.magnatour.bell_ringer": "Campanero",
   "entity.magnatour.bell_soul": "Alma de Campana",
@@ -185,6 +187,7 @@
   "item.magnatour.harvest_core": "Núcleo de la Cosecha",
   "item.magnatour.ore_core": "Núcleo de los Minerales",
   "item.magnatour.seed_of_all_things": "Semilla de Todas las Cosas",
+  "item.magnatour.crop_of_all_things": "Cultivo de Todas las Cosas",
   "item.magnatour.fruit_of_all_things": "Fruto de Todas las Cosas",
   "item.magnatour.supreme_banquet": "Banquete Supremo",
   "item.magnatour.supreme_crystal": "Cristal Supremo",
@@ -256,6 +259,7 @@
   "block.magnatour.supreme_gem_block": "Bloque de gema suprema",
   "block.magnatour.supreme_fodder_block": "Bloque de forraje supremo",
   "block.magnatour.chunk_tnt": "TNT de chunk",
+  "block.magnatour.crop_of_all_things": "Cultivo de Todas las Cosas",
   "block.magnatour.supreme_pumpkin_head": "Cabeza de calabaza suprema",
   "block.magnatour.supreme_block": "Bloque Supremo",
   "block.magnatour.supreme_worktable": "Mesa de trabajo suprema",
@@ -310,6 +314,7 @@
   "item.magnatour.universe_library": "Biblioteca del Universo",
   "item.magnatour.universe_void_pool": "Poza del Vacío del Universo",
   "item.magnatour.universe_teleport_point": "Punto de Teletransporte del Universo",
+  "item.magnatour.universe_meta_portal": "Portal Meta del Universo",
 
   "lore.magnatour.universe_star.0": "La quintaesencia de todas las cosas",
   "lore.magnatour.universe_star.1": "Sólo el propio tiempo puede borrar su existencia",
@@ -359,6 +364,7 @@
   "block.magnatour.universe_dark_block": "Bloque de la Muerte",
   "block.magnatour.universe_light_air": "Aliento del Renacer",
   "block.magnatour.universe_dark_air": "Aliento de la Muerte",
+  "block.magnatour.universe_meta_portal": "Portal Meta del Universo",
   "block.magnatour.universe_log": "Tronco del Universo",
   "block.magnatour.stripped_universe_log": "Tronco del Universo sin corteza",
   "block.magnatour.universe_wood": "Madera del Universo",

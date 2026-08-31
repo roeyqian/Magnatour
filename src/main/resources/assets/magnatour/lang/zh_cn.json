@@ -158,6 +158,7 @@
   "dimension.minecraft:the_end": "§e末地",
   "dimension.magnatour:ore_continent": "§b矿石大陆",
   "dimension.magnatour:harvest_continent": "§6丰收大陆",
+  "dimension.magnatour:universe_meta": "§5寰宇元界",
 
   "biome.magnatour.wheat_plain": "小麦平原",
   "biome.magnatour.melon_jungle": "西瓜丛林",
@@ -166,6 +167,7 @@
   "biome.magnatour.lake_center_island": "湖心岛",
   "biome.magnatour.ore_land": "矿石陆地",
   "biome.magnatour.ore_forest": "矿石森林",
+  "biome.magnatour.universe_meta_void": "寰宇元界虚空",
 
   "entity.magnatour.bell_ringer": "守钟人",
   "entity.magnatour.bell_soul": "钟灵",
@@ -185,6 +187,7 @@
   "item.magnatour.harvest_core": "丰收核心",
   "item.magnatour.ore_core": "矿石核心",
   "item.magnatour.seed_of_all_things": "万物之种",
+  "item.magnatour.crop_of_all_things": "万物作物",
   "item.magnatour.fruit_of_all_things": "万物之果",
   "item.magnatour.supreme_banquet": "超凡盛宴",
   "item.magnatour.supreme_crystal": "超凡结晶",
@@ -256,6 +259,7 @@
   "block.magnatour.supreme_gem_block": "超凡宝石块",
   "block.magnatour.supreme_fodder_block": "超凡粮草块",
   "block.magnatour.chunk_tnt": "区块TNT",
+  "block.magnatour.crop_of_all_things": "万物作物",
   "block.magnatour.supreme_pumpkin_head": "超凡南瓜头",
   "block.magnatour.supreme_block": "超凡方块",
   "block.magnatour.supreme_worktable": "超凡工作台",
@@ -310,6 +314,7 @@
   "item.magnatour.universe_library": "寰宇保藏库",
   "item.magnatour.universe_void_pool": "寰宇虚空池",
   "item.magnatour.universe_teleport_point": "寰宇传送点",
+  "item.magnatour.universe_meta_portal": "寰宇元界传送门",
 
   "lore.magnatour.universe_star.0": "万物之精华",
   "lore.magnatour.universe_star.1": "唯有时空本身能抹除其存在",
@@ -359,6 +364,7 @@
   "block.magnatour.universe_dark_block": "死亡方块",
   "block.magnatour.universe_light_air": "重生气息",
   "block.magnatour.universe_dark_air": "死亡气息",
+  "block.magnatour.universe_meta_portal": "寰宇元界传送门",
   "block.magnatour.universe_log": "寰宇原木",
   "block.magnatour.stripped_universe_log": "去皮寰宇原木",
   "block.magnatour.universe_wood": "寰宇木",

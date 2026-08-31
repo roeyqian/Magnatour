@@ -158,6 +158,7 @@
   "dimension.minecraft:the_end": "§eEnd",
   "dimension.magnatour:ore_continent": "§bContinent des Minerais",
   "dimension.magnatour:harvest_continent": "§6Continent des Récoltes",
+  "dimension.magnatour:universe_meta": "§5Métaunivers",
 
   "biome.magnatour.wheat_plain": "Plaine de Blé",
   "biome.magnatour.melon_jungle": "Jungle de Melons",
@@ -166,6 +167,7 @@
   "biome.magnatour.lake_center_island": "Île centrale du lac",
   "biome.magnatour.ore_land": "Terre des minerais",
   "biome.magnatour.ore_forest": "Forêt de minerais",
+  "biome.magnatour.universe_meta_void": "Vide Méta de l'Univers",
 
   "entity.magnatour.bell_ringer": "Sonneur de cloche",
   "entity.magnatour.bell_soul": "Âme de cloche",
@@ -185,6 +187,7 @@
   "item.magnatour.harvest_core": "Noyau des Récoltes",
   "item.magnatour.ore_core": "Noyau des Minerais",
   "item.magnatour.seed_of_all_things": "Graine de Toute Chose",
+  "item.magnatour.crop_of_all_things": "Culture de Toutes Choses",
   "item.magnatour.fruit_of_all_things": "Fruit de Toute Chose",
   "item.magnatour.supreme_banquet": "Banquet Suprême",
   "item.magnatour.supreme_crystal": "Cristal Suprême",
@@ -256,6 +259,7 @@
   "block.magnatour.supreme_gem_block": "Bloc de gemme suprême",
   "block.magnatour.supreme_fodder_block": "Bloc de fourrage suprême",
   "block.magnatour.chunk_tnt": "TNT de chunk",
+  "block.magnatour.crop_of_all_things": "Culture de Toutes Choses",
   "block.magnatour.supreme_pumpkin_head": "Tête de citrouille suprême",
   "block.magnatour.supreme_block": "Bloc Suprême",
   "block.magnatour.supreme_worktable": "Table de travail suprême",
@@ -310,6 +314,7 @@
   "item.magnatour.universe_library": "Bibliothèque de l'Univers",
   "item.magnatour.universe_void_pool": "Bassin du Vide de l'Univers",
   "item.magnatour.universe_teleport_point": "Point de Téléportation de l'Univers",
+  "item.magnatour.universe_meta_portal": "Portail Méta de l'Univers",
 
   "lore.magnatour.universe_star.0": "La quintessence de toute chose",
   "lore.magnatour.universe_star.1": "Seul le temps lui-même peut effacer son existence",
@@ -359,6 +364,7 @@
   "block.magnatour.universe_dark_block": "Bloc de Mort",
   "block.magnatour.universe_light_air": "Souffle de Renaissance",
   "block.magnatour.universe_dark_air": "Souffle de Mort",
+  "block.magnatour.universe_meta_portal": "Portail Méta de l'Univers",
   "block.magnatour.universe_log": "Bûche de l'Univers",
   "block.magnatour.stripped_universe_log": "Bûche de l'Univers écorcée",
   "block.magnatour.universe_wood": "Bois de l'Univers",
