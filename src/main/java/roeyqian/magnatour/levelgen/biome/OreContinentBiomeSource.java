@@ -159,7 +159,7 @@ public final class OreContinentBiomeSource extends BiomeSource {
       int cellX,
       int cellZ
   ) {
-    long selector = Math.floorMod(mix(this.seed, cellX, cellZ), 3L);
+    long selector = Math.floorMod(mix(this.seed, cellX, cellZ), 2L);
     return selector == 0L ? this.oreForest : this.oreLand;
   }
 
