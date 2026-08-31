@@ -41,6 +41,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 
 // Magnatour
 import roeyqian.magnatour.registry.content.SupremeBlocks;
+import roeyqian.magnatour.level.PortalLinkSavedData;
 import roeyqian.magnatour.registry.worldgen.CustomDimensions;
 
 public interface CustomPortalVertex {
@@ -249,6 +250,14 @@ public interface CustomPortalVertex {
     ).filter(isValid);
   }
 
+  private static Direction.Axis portalAxis(
+      LevelReader world,
+      BlockPos portalPos
+  ) {
+    BlockState state = world.getBlockState(portalPos);
+    return state.hasProperty(AXIS) ? state.getValue(AXIS) : Direction.Axis.X;
+  }
+
   private static BlockPos findExistingPortal(
       ServerLevel world,
       int centerX,
@@ -372,6 +381,28 @@ public interface CustomPortalVertex {
     return Optional.empty();
   }
 
+  private static BlockPos getPortalOrigin(
+      LevelReader world,
+      BlockPos portalPos,
+      Block frameBlock,
+      Block portalBlock
+  ) {
+    CustomPortalShape shape = findAnyShape(
+        world, portalPos, portalAxis(world, portalPos), frameBlock, portalBlock
+    );
+    return shape.isComplete() ? shape.bottomLeft() : portalPos;
+  }
+
+  static boolean isValidPortal(
+      LevelReader world,
+      BlockPos pos,
+      Direction.Axis axis,
+      Block frameBlock,
+      Block portalBlock
+  ) {
+    return findAnyShape(world, pos, axis, frameBlock, portalBlock).isComplete();
+  }
+
   static BlockPos findOrCreatePortal(
       ServerLevel targetWorld,
       BlockPos sourcePos,
@@ -423,28 +454,51 @@ public interface CustomPortalVertex {
   ) {
     MinecraftServer server = player.level().getServer();
     ServerLevel currentWorld = player.level();
-    ServerLevel targetWorld;
-
-    BlockState currentState = currentWorld.getBlockState(portalPos);
-    Direction.Axis portalAxis = currentState.hasProperty(AXIS)
-        ? currentState.getValue(AXIS)
-        : Direction.Axis.X;
+    PortalLinkSavedData linkData = PortalLinkSavedData.get(server);
+    PortalLinkSavedData.Endpoint sourceEndpoint = new PortalLinkSavedData.Endpoint(
+        currentWorld.dimension(), getPortalOrigin(currentWorld, portalPos, frameBlock, portalBlock)
+    );
+    ServerLevel targetWorld = null;
+    BlockPos targetPos = null;
 
     if (currentWorld.dimension() == sourceDim) {
-      targetWorld = server.getLevel(targetDim);
-    } else {
-      targetWorld = server.getLevel(sourceDim);
+      Optional<PortalLinkSavedData.Endpoint> linkedEndpoint = linkData.getDestination(sourceEndpoint);
+      if (linkedEndpoint.isPresent()) {
+        PortalLinkSavedData.Endpoint endpoint = linkedEndpoint.get();
+        ServerLevel linkedWorld = server.getLevel(endpoint.dimension());
+        if (linkedWorld != null && endpoint.dimension() == CustomDimensions.UNIVERSE_META
+            && isValidPortal(linkedWorld, endpoint.pos(), portalAxis(linkedWorld, endpoint.pos()), frameBlock, portalBlock)) {
+          targetWorld = linkedWorld;
+          targetPos = endpoint.pos();
+        } else {
+          linkData.unlink(sourceEndpoint);
+        }
+      }
     }
 
+    if (targetWorld == null) {
+      targetWorld = currentWorld.dimension() == sourceDim
+          ? server.getLevel(targetDim)
+          : server.getLevel(sourceDim);
+    }
     if (targetWorld == null) return;
 
-    BlockPos targetPos = findOrCreatePortal(
-        targetWorld,
-        portalPos,
-        portalAxis,
-        frameBlock,
-        portalBlock
-    );
+    if (targetPos == null) {
+      targetPos = findOrCreatePortal(
+          targetWorld,
+          portalPos,
+          portalAxis(currentWorld, portalPos),
+          frameBlock,
+          portalBlock
+      );
+
+      if (currentWorld.dimension() == CustomDimensions.UNIVERSE_META) {
+        PortalLinkSavedData.Endpoint targetEndpoint = new PortalLinkSavedData.Endpoint(
+            targetWorld.dimension(), getPortalOrigin(targetWorld, targetPos, frameBlock, portalBlock)
+        );
+        linkData.link(sourceEndpoint, targetEndpoint);
+      }
+    }
 
     player.teleportTo(
         targetWorld,
@@ -461,16 +515,6 @@ public interface CustomPortalVertex {
         null, player.blockPosition(),
         SoundEvents.PORTAL_TRAVEL, SoundSource.PLAYERS, 0.2F, 1.0F
     );
-  }
-
-  static boolean isValidPortal(
-      LevelReader world,
-      BlockPos pos,
-      Direction.Axis axis,
-      Block frameBlock,
-      Block portalBlock
-  ) {
-    return findAnyShape(world, pos, axis, frameBlock, portalBlock).isComplete();
   }
 
   static boolean canBePlacedAt(
@@ -620,7 +664,9 @@ public interface CustomPortalVertex {
         LevelAccessor world
     ) {
       if (!(world instanceof Level level)) return false;
-      return level.dimension() == Level.OVERWORLD || level.dimension() == this.portalDimension;
+      return level.dimension() == Level.OVERWORLD
+          || level.dimension() == CustomDimensions.UNIVERSE_META
+          || level.dimension() == this.portalDimension;
     }
 
   }

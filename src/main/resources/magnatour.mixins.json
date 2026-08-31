@@ -9,6 +9,7 @@
     "menu.AnvilMenuAccessor",
     "block.BaseFireBlockMixin",
     "block.FireBlockMixin",
+    "block.NetherPortalBlockMixin",
     "block.ResultSlotMixin",
     "block.CropBlockMixin",
     "block.PowderSnowBlockMixin",

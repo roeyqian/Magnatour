@@ -37,6 +37,7 @@ import roeyqian.magnatour.block.VirtualBlockLightManager;
 import roeyqian.magnatour.block.CustomPortalHorizon;
 import roeyqian.magnatour.registry.content.UniverseBlockEntities;
 import roeyqian.magnatour.registry.content.UniverseBlocks;
+import roeyqian.magnatour.registry.worldgen.CustomDimensions;
 
 public class UniverseBlock extends BaseEntityBlock {
 
@@ -126,7 +127,8 @@ public class UniverseBlock extends BaseEntityBlock {
       }
 
       // Try to activate portal when block is lit
-      if (newLit) {
+      if (newLit && (world.dimension() == Level.OVERWORLD
+          || world.dimension() == CustomDimensions.UNIVERSE_META)) {
         System.out.println("[UniverseBlock] Attempting to activate portal...");
         boolean activated = CustomPortalHorizon.tryActivatePortal(world, pos, this, UniverseBlocks.UNIVERSE_META_PORTAL);
         System.out.println("[UniverseBlock] Portal activation result: " + activated);

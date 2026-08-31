@@ -23,6 +23,7 @@ import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.portal.PortalShape;
 
 // SpongePowered Mixin
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -36,6 +37,7 @@ import roeyqian.magnatour.level.recipe.CraftingResultHelper;
 import roeyqian.magnatour.level.recipe.SupremeCraftingRecipe;
 import roeyqian.magnatour.level.recipe.UniverseCraftingRecipe;
 import roeyqian.magnatour.registry.logic.CustomRecipes;
+import roeyqian.magnatour.registry.worldgen.CustomDimensions;
 
 public final class BlockHelperForFunction {
 
@@ -49,7 +51,10 @@ public final class BlockHelperForFunction {
   ) {
     if (cir.getReturnValue()) return;
 
-    cir.setReturnValue(CustomPortalVertex.canBePlacedAt(level, pos, forwardDirection));
+    cir.setReturnValue(
+        CustomPortalVertex.canBePlacedAt(level, pos, forwardDirection)
+            || canCreateNetherPortal(level, pos, forwardDirection)
+    );
   }
 
   public static void handleBaseFireOnPlace(
@@ -60,7 +65,11 @@ public final class BlockHelperForFunction {
       CallbackInfo ci
   ) {
     if (oldState.is(state.getBlock())) return;
-    if (CustomPortalVertex.tryCreatePortalFromFire(level, pos)) ci.cancel();
+    if (CustomPortalVertex.tryCreatePortalFromFire(level, pos)) {
+      ci.cancel();
+      return;
+    }
+    if (tryCreateNetherPortal(level, pos)) ci.cancel();
   }
 
   public static void handleFireTick(
@@ -164,6 +173,36 @@ public final class BlockHelperForFunction {
       CraftingContainer craftSlots
   ) {
     return getActiveCustomRecipe(player, craftSlots) != null;
+  }
+
+  /**
+   * Vanilla only considers the Overworld and Nether valid Nether-portal dimensions. Universe
+   * Meta is intentionally a portal hub, so let its obsidian frames use the standard shape.
+   */
+  private static boolean canCreateNetherPortal(
+      Level level,
+      BlockPos pos,
+      Direction forwardDirection
+  ) {
+    if (level.dimension() != CustomDimensions.UNIVERSE_META) return false;
+
+    Direction.Axis axis = forwardDirection.getAxis().isHorizontal()
+        ? forwardDirection.getCounterClockWise().getAxis()
+        : Direction.Plane.HORIZONTAL.getRandomAxis(level.getRandom());
+    return PortalShape.findEmptyPortalShape(level, pos, axis).isPresent();
+  }
+
+  private static boolean tryCreateNetherPortal(
+      Level level,
+      BlockPos pos
+  ) {
+    if (level.dimension() != CustomDimensions.UNIVERSE_META) return false;
+
+    var portalShape = PortalShape.findEmptyPortalShape(level, pos, Direction.Axis.X);
+    if (portalShape.isEmpty()) return false;
+
+    portalShape.get().createPortalBlocks(level);
+    return true;
   }
 
   private static RecipeHolder<? extends CraftingRecipe> getActiveCustomRecipe(
