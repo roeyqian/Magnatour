@@ -33,12 +33,15 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.StructureStart;
 import net.minecraft.world.level.levelgen.structure.StructureType;
@@ -67,16 +70,24 @@ public final class StructureMobSpawner {
   private static final int GOLD_BELL_TOWER_TARGET_BELL_RINGERS = 32;
   private static final int GOLD_BELL_TOWER_TARGET_BELL_SOULS = 24;
   private static final int MAX_SPAWNS_PER_CYCLE = 8;
+  private static final int TOWN_OF_FORTUNE_MAX_SPAWNS_PER_CYCLE = 2;
+  private static final int TOWN_OF_FORTUNE_SCAN_RADIUS_CHUNKS = 10;
+  private static final int TOWN_OF_FORTUNE_SPAWN_ATTEMPTS = 48;
+  private static final int TOWN_OF_FORTUNE_TARGET_ANIMALS = 16;
+  private static final int TOWN_OF_FORTUNE_TARGET_VILLAGERS = 16;
 
   private static final long SPAWN_INTERVAL_TICKS = 20L;
   private static final long STATE_PRUNE_INTERVAL_TICKS = 200L;
   private static final long STATE_TTL_TICKS = 1200L;
+  private static final long TOWN_OF_FORTUNE_SPAWN_INTERVAL_TICKS = 1200L;
 
   private static final double DIAMOND_CITY_COUNT_HORIZONTAL_PADDING = 6.0D;
   private static final double DIAMOND_CITY_COUNT_VERTICAL_PADDING = 6.0D;
   private static final double DIAMOND_CITY_SPAWN_SEPARATION = 8.0D;
   private static final double GOLD_BELL_TOWER_COUNT_HORIZONTAL_PADDING = 8.0D;
   private static final double GOLD_BELL_TOWER_COUNT_VERTICAL_PADDING = 12.0D;
+  private static final double TOWN_OF_FORTUNE_COUNT_HORIZONTAL_PADDING = 8.0D;
+  private static final double TOWN_OF_FORTUNE_COUNT_VERTICAL_PADDING = 16.0D;
 
   private static boolean tickEventRegistered = false;
 
@@ -112,6 +123,22 @@ public final class StructureMobSpawner {
           StructureMobSpawner::countGoldBellTowerMobs,
           StructureMobSpawner::spawnGoldBellTowerMobs
       );
+  private static final StructureSpawnProfile TOWN_OF_FORTUNE_PROFILE =
+      new StructureSpawnProfile(
+          "town_of_fortune",
+          CustomDimensions.ORE_CONTINENT,
+          CustomStructures.TOWN_OF_FORTUNE,
+          TOWN_OF_FORTUNE_SCAN_RADIUS_CHUNKS,
+          80.0D,
+          TOWN_OF_FORTUNE_TARGET_VILLAGERS + TOWN_OF_FORTUNE_TARGET_ANIMALS,
+          TOWN_OF_FORTUNE_TARGET_VILLAGERS + TOWN_OF_FORTUNE_TARGET_ANIMALS,
+          TOWN_OF_FORTUNE_SPAWN_INTERVAL_TICKS,
+          TOWN_OF_FORTUNE_SPAWN_INTERVAL_TICKS,
+          TOWN_OF_FORTUNE_COUNT_HORIZONTAL_PADDING,
+          TOWN_OF_FORTUNE_COUNT_VERTICAL_PADDING,
+          StructureMobSpawner::countTownOfFortuneMobs,
+          StructureMobSpawner::spawnTownOfFortuneMobs
+      );
 
   private static final Map<StructureInstanceKey, SpawnState> SPAWN_STATES =
       new HashMap<>();
@@ -142,6 +169,11 @@ public final class StructureMobSpawner {
       processLevel(
           server.getLevel(DIAMOND_CITY_PROFILE.dimensionKey()),
           DIAMOND_CITY_PROFILE,
+          currentTick
+      );
+      processLevel(
+          server.getLevel(TOWN_OF_FORTUNE_PROFILE.dimensionKey()),
+          TOWN_OF_FORTUNE_PROFILE,
           currentTick
       );
 
@@ -266,7 +298,7 @@ public final class StructureMobSpawner {
         currentCount,
         state
     );
-    if (spawned > 0) {
+    if (spawned > 0 || profile == TOWN_OF_FORTUNE_PROFILE) {
       state.lastSpawnTick = currentTick;
     }
   }
@@ -549,6 +581,15 @@ public final class StructureMobSpawner {
     return level.getEntities((Entity) null, box, predicate).size();
   }
 
+  private static boolean isTownOfFortuneAnimal(
+      EntityType<?> entityType
+  ) {
+    return entityType == EntityTypes.SHEEP
+        || entityType == EntityTypes.PIG
+        || entityType == EntityTypes.CHICKEN
+        || entityType == EntityTypes.COW;
+  }
+
   private static boolean hasCeilingNearby(
       WorldGenLevel level,
       BlockPos pos,
@@ -695,6 +736,67 @@ public final class StructureMobSpawner {
     return spawned;
   }
 
+  private static <T extends Mob> boolean spawnTownOfFortuneMob(
+      ServerLevel level,
+      RandomSource random,
+      BoundingBox structureBox,
+      EntityType<T> entityType
+  ) {
+    T mob = entityType.create(level, EntitySpawnReason.STRUCTURE);
+    if (mob == null) return false;
+
+    for (int attempt = 0; attempt < TOWN_OF_FORTUNE_SPAWN_ATTEMPTS; attempt++) {
+      int x = randomBetween(random, structureBox.minX(), structureBox.maxX());
+      int z = randomBetween(random, structureBox.minZ(), structureBox.maxZ());
+      if (!level.getChunkSource().hasChunk(x >> 4, z >> 4)) continue;
+
+      int topY = level.getHeight(Heightmap.Types.WORLD_SURFACE, x, z);
+      BlockPos floorPos = new BlockPos(x, topY - 1, z);
+      BlockPos spawnPos = floorPos.above();
+      BlockState floorState = level.getBlockState(floorPos);
+      if (floorState.isAir()
+          || !floorState.isFaceSturdy(level, floorPos, Direction.UP)
+          || !hasAirColumn(level, spawnPos)) {
+        continue;
+      }
+      if (level.getNearestPlayer(
+          spawnPos.getX() + 0.5D,
+          spawnPos.getY(),
+          spawnPos.getZ() + 0.5D,
+          16.0D,
+          false
+      ) != null) {
+        continue;
+      }
+
+      mob.snapTo(
+          spawnPos.getX() + 0.5D,
+          spawnPos.getY(),
+          spawnPos.getZ() + 0.5D,
+          0.0F,
+          0.0F
+      );
+      if (!mob.checkSpawnObstruction(level)) continue;
+
+      prepareMob(level, random, mob, spawnPos);
+      level.addFreshEntityWithPassengers(mob);
+      return true;
+    }
+
+    return false;
+  }
+
+  private static EntityType<? extends Animal> pickTownOfFortuneAnimal(
+      RandomSource random
+  ) {
+    return switch (random.nextInt(4)) {
+      case 0 -> EntityTypes.SHEEP;
+      case 1 -> EntityTypes.PIG;
+      case 2 -> EntityTypes.CHICKEN;
+      default -> EntityTypes.COW;
+    };
+  }
+
   private static int countDiamondCityMobs(
       ServerLevel level,
       AABB box
@@ -716,6 +818,24 @@ public final class StructureMobSpawner {
         entity -> entity.isAlive()
             && (entity instanceof BellRinger || entity instanceof BellSoul)
     );
+  }
+
+  private static int countTownOfFortuneMobs(
+      ServerLevel level,
+      AABB box
+  ) {
+    int villagers = countEntities(
+        level,
+        box,
+        entity -> entity.isAlive() && entity.getType() == EntityTypes.VILLAGER
+    );
+    int animals = countEntities(
+        level,
+        box,
+        entity -> entity.isAlive() && isTownOfFortuneAnimal(entity.getType())
+    );
+    return Math.min(villagers, TOWN_OF_FORTUNE_TARGET_VILLAGERS)
+        + Math.min(animals, TOWN_OF_FORTUNE_TARGET_ANIMALS);
   }
 
   private static <T extends Mob> GroundSpawnCandidates findGroundSpawnCandidatesByCeiling(
@@ -926,6 +1046,68 @@ public final class StructureMobSpawner {
           1,
           3
       );
+    }
+
+    return spawned;
+  }
+
+  private static int spawnTownOfFortuneMobs(
+      ServerLevel level,
+      RandomSource random,
+      BoundingBox structureBox,
+      StructureSpawnProfile profile,
+      int currentCount,
+      SpawnState state
+  ) {
+    AABB countBox = mobCountBox(structureBox, profile);
+    int villagers = countEntities(
+        level,
+        countBox,
+        entity -> entity.isAlive() && entity.getType() == EntityTypes.VILLAGER
+    );
+    int animals = countEntities(
+        level,
+        countBox,
+        entity -> entity.isAlive() && isTownOfFortuneAnimal(entity.getType())
+    );
+    int missingVillagers = Math.max(0, TOWN_OF_FORTUNE_TARGET_VILLAGERS - villagers);
+    int missingAnimals = Math.max(0, TOWN_OF_FORTUNE_TARGET_ANIMALS - animals);
+    int cycleBudget = Math.min(
+        TOWN_OF_FORTUNE_MAX_SPAWNS_PER_CYCLE,
+        missingVillagers + missingAnimals
+    );
+    if (cycleBudget <= 0) return 0;
+
+    int spawned = 0;
+    if (missingVillagers > 0 && cycleBudget > 0
+        && spawnTownOfFortuneMob(level, random, structureBox, EntityTypes.VILLAGER)) {
+      spawned++;
+      cycleBudget--;
+    }
+    if (missingAnimals > 0 && cycleBudget > 0
+        && spawnTownOfFortuneMob(
+            level,
+            random,
+            structureBox,
+            pickTownOfFortuneAnimal(random)
+        )) {
+      spawned++;
+      cycleBudget--;
+    }
+
+    if (cycleBudget > 0 && missingVillagers > 1
+        && spawnTownOfFortuneMob(level, random, structureBox, EntityTypes.VILLAGER)) {
+      spawned++;
+      cycleBudget--;
+    }
+    if (cycleBudget > 0 && missingAnimals > 1
+        && spawnTownOfFortuneMob(
+            level,
+            random,
+            structureBox,
+            pickTownOfFortuneAnimal(random)
+        )) {
+      spawned++;
     }
 
     return spawned;
