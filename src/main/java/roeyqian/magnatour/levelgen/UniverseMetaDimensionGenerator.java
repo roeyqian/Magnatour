@@ -21,55 +21,63 @@ import roeyqian.magnatour.registry.worldgen.CustomDimensions;
 
 public final class UniverseMetaDimensionGenerator {
 
+  // 32 batches finish the cube in about 1.6 seconds at 20 TPS without a single-tick spike.
+  private static final int BLOCKS_PER_TICK = 8192;
   private static final int BORDER_THICKNESS = 4;
   private static final int CUBE_MAX = 31;
   private static final int CUBE_MIN = -32;
+  private static final int CUBE_SIZE = CUBE_MAX - CUBE_MIN + 1;
+  private static final int CUBE_LAYER_SIZE = CUBE_SIZE * CUBE_SIZE;
+  private static final int TOTAL_BLOCKS = CUBE_SIZE * CUBE_LAYER_SIZE;
 
   public static void register() {
     ServerTickEvents.END_SERVER_TICK.register(server -> {
       ServerLevel world = server.getLevel(CustomDimensions.UNIVERSE_META);
       UniverseMetaGenerationSavedData generationData = UniverseMetaGenerationSavedData.get(server);
       if (world != null && !generationData.isGenerated()) {
-        generateCube(world);
-        generationData.markGenerated();
+        int startIndex = generationData.nextBlockIndex();
+        int endIndex = Math.min(startIndex + BLOCKS_PER_TICK, TOTAL_BLOCKS);
+        generateCubeSlice(world, startIndex, endIndex);
+
+        if (endIndex == TOTAL_BLOCKS) {
+          generationData.markGenerated();
+        } else {
+          generationData.setNextBlockIndex(endIndex);
+        }
       }
     });
   }
 
-  private static void generateCube(
-      ServerLevel world
+  private static void generateCubeSlice(
+      ServerLevel world,
+      int startIndex,
+      int endIndex
   ) {
-    System.out.println("[UniverseMeta] Generating 64x64x64 cube at origin...");
+    for (int index = startIndex; index < endIndex; index++) {
+      int x = CUBE_MIN + index / CUBE_LAYER_SIZE;
+      int remaining = index % CUBE_LAYER_SIZE;
+      int y = CUBE_MIN + remaining / CUBE_SIZE;
+      int z = CUBE_MIN + remaining % CUBE_SIZE;
 
-    // Generate 64x64x64 cube centered at (0, 0, 0)
-    // From (-32, -32, -32) to (31, 31, 31)
-    for (int x = CUBE_MIN; x <= CUBE_MAX; x++) {
-      for (int y = CUBE_MIN; y <= CUBE_MAX; y++) {
-        for (int z = CUBE_MIN; z <= CUBE_MAX; z++) {
-          BlockPos pos = new BlockPos(x, y, z);
-          int boundaryAxes = 0;
-          if (isNearBoundary(x)) {
-            boundaryAxes++;
-          }
-          if (isNearBoundary(y)) {
-            boundaryAxes++;
-          }
-          if (isNearBoundary(z)) {
-            boundaryAxes++;
-          }
-
-          boolean isSurfaceBorder = boundaryAxes >= 2;
-          world.setBlock(
-              pos,
-              (isSurfaceBorder ? UniverseBlocks.UNIVERSE_LIGHT_BLOCK : UniverseBlocks.UNIVERSE_DARK_BLOCK)
-                  .defaultBlockState(),
-              3
-          );
-        }
+      int boundaryAxes = 0;
+      if (isNearBoundary(x)) {
+        boundaryAxes++;
       }
-    }
+      if (isNearBoundary(y)) {
+        boundaryAxes++;
+      }
+      if (isNearBoundary(z)) {
+        boundaryAxes++;
+      }
 
-    System.out.println("[UniverseMeta] Cube generation complete!");
+      boolean isSurfaceBorder = boundaryAxes >= 2;
+      world.setBlock(
+          new BlockPos(x, y, z),
+          (isSurfaceBorder ? UniverseBlocks.UNIVERSE_LIGHT_BLOCK : UniverseBlocks.UNIVERSE_DARK_BLOCK)
+              .defaultBlockState(),
+          3
+      );
+    }
   }
 
   private static boolean isNearBoundary(

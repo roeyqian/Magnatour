@@ -110,14 +110,9 @@ public class UniverseBlock extends BaseEntityBlock {
     if (!world.isClientSide()) {
       boolean currentLit = state.getValue(LIT);
       boolean newLit = !currentLit;
-      System.out.println("[UniverseBlock] At " + pos + ": currentLit=" + currentLit + ", setting to=" + newLit);
 
       BlockState newState = state.setValue(LIT, newLit);
       world.setBlockAndUpdate(pos, newState);
-
-      // Verify the state was set
-      BlockState verifyState = world.getBlockState(pos);
-      System.out.println("[UniverseBlock] After setBlock: verified LIT=" + verifyState.getValue(LIT));
 
       BlockEntity blockEntity = world.getBlockEntity(pos);
       if (blockEntity instanceof UniverseBlockEntity universeBlockEntity) {
@@ -129,9 +124,7 @@ public class UniverseBlock extends BaseEntityBlock {
       // Try to activate portal when block is lit
       if (newLit && (world.dimension() == Level.OVERWORLD
           || world.dimension() == CustomDimensions.UNIVERSE_META)) {
-        System.out.println("[UniverseBlock] Attempting to activate portal...");
-        boolean activated = CustomPortalHorizon.tryActivatePortal(world, pos, this, UniverseBlocks.UNIVERSE_META_PORTAL);
-        System.out.println("[UniverseBlock] Portal activation result: " + activated);
+        CustomPortalHorizon.tryActivatePortal(world, pos, this, UniverseBlocks.UNIVERSE_META_PORTAL);
       }
     }
     return InteractionResult.SUCCESS;

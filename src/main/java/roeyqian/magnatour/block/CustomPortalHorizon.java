@@ -56,9 +56,7 @@ public interface CustomPortalHorizon {
       BlockPos corner,
       Block frameBlock
   ) {
-    System.out.println("[Portal] Checking 5x5 frame at corner: " + corner);
     // Check 5x5 grid - only outer edges EXCLUDING corners (12 blocks total)
-    int validCount = 0;
     for (int dx = 0; dx < 5; dx++) {
       for (int dz = 0; dz < 5; dz++) {
         // Skip corners: (0,0), (0,4), (4,0), (4,4)
@@ -75,23 +73,17 @@ public interface CustomPortalHorizon {
         BlockPos pos = corner.offset(dx, 0, dz);
         BlockState state = world.getBlockState(pos);
 
-        System.out.println("[Portal]   Checking pos " + pos + " (offset " + dx + "," + dz + "): block=" + state.getBlock().getDescriptionId() + ", isFrame=" + state.is(frameBlock) + ", hasLIT=" + state.hasProperty(BlockStateProperties.LIT) + ", lit=" + (state.hasProperty(BlockStateProperties.LIT) ? state.getValue(BlockStateProperties.LIT) : "N/A"));
-
         // Must be the frame block
         if (!state.is(frameBlock)) {
-          System.out.println("[Portal] FAILED: Not a frame block at " + pos);
           return false;
         }
 
         // Must be lit (activated)
         if (!state.hasProperty(BlockStateProperties.LIT) || !state.getValue(BlockStateProperties.LIT)) {
-          System.out.println("[Portal] FAILED: Not lit at " + pos);
           return false;
         }
-        validCount++;
       }
     }
-    System.out.println("[Portal] SUCCESS: Frame complete with " + validCount + " valid blocks!");
     return true;
   }
 
