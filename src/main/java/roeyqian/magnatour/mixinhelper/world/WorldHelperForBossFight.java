@@ -32,11 +32,32 @@ import roeyqian.magnatour.registry.content.UniverseItems;
 
 public final class WorldHelperForBossFight {
 
+  private static final Map<EnderDragonFight, DragonKillReward> CACHED_KILL_REWARDS =
+      Collections.synchronizedMap(new WeakHashMap<>());
+
   private static final Map<EnderDragonFight, Block> PENDING_REWARD_BLOCKS = Collections.synchronizedMap(
       new WeakHashMap<>()
   );
 
   private WorldHelperForBossFight() {}
+
+  /**
+   * Captures the eligible reward when the dragon starts dying, before vanilla's
+   * 100-tick last-player-damage memory expires during its 200-tick death animation.
+   */
+  public static void cacheDragonKillReward(
+      EnderDragonFight fight,
+      EnderDragon dragon
+  ) {
+    if (fight == null) return;
+
+    synchronized (CACHED_KILL_REWARDS) {
+      CACHED_KILL_REWARDS.put(
+          fight,
+          new DragonKillReward(dragon.getUUID(), resolveDragonKillRewardBlock(dragon))
+      );
+    }
+  }
 
   public static void handleSetDragonKilledHead(
       EnderDragonFight fight,
@@ -53,7 +74,7 @@ public final class WorldHelperForBossFight {
         return;
       }
 
-      PENDING_REWARD_BLOCKS.put(fight, resolveDragonKillRewardBlock(dragon));
+      PENDING_REWARD_BLOCKS.put(fight, getCachedKillReward(fight, dragon));
     }
   }
 
@@ -85,6 +106,20 @@ public final class WorldHelperForBossFight {
     }
 
     return SupremeBlocks.SUPREME_WORKTABLE;
+  }
+
+  private static Block getCachedKillReward(
+      EnderDragonFight fight,
+      EnderDragon dragon
+  ) {
+    synchronized (CACHED_KILL_REWARDS) {
+      DragonKillReward reward = CACHED_KILL_REWARDS.remove(fight);
+      if (reward != null && reward.dragonUuid().equals(dragon.getUUID())) {
+        return reward.block();
+      }
+    }
+
+    return resolveDragonKillRewardBlock(dragon);
   }
 
   private static BlockPos findWorktablePos(
@@ -127,5 +162,10 @@ public final class WorldHelperForBossFight {
         && world.getBlockState(pos).canBeReplaced()
         && world.getBlockState(belowPos).isFaceSturdy(world, belowPos, Direction.UP);
   }
+
+  private record DragonKillReward(
+      UUID dragonUuid,
+      Block block
+  ) {}
 
 }
