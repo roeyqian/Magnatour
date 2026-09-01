@@ -116,10 +116,11 @@ public final class UniverseBlocks {
       "universe_light_air", universe, TransparentBlock::new,
       BlockBehaviour.Properties.of().noOcclusion()
   );
-  public static final Block UNIVERSE_META_PORTAL = BlockRegHelper.registerBase(
-      "universe_meta_portal", universe,
-      roeyqian.magnatour.block.universe.UniverseMetaPortal::new,
-      BlockBehaviour.Properties.of().noCollision().strength(-1.0F).noLootTable()
+
+  // Portal Blocks
+  public static final Block UNIVERSE_META_PORTAL = BlockRegHelper.registerPortal(
+      "universe_meta_portal",
+      roeyqian.magnatour.block.universe.UniverseMetaPortal::new
   );
 
   private UniverseBlocks() {}
