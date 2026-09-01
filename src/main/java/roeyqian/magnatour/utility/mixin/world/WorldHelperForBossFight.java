@@ -31,11 +31,40 @@ import roeyqian.magnatour.utility.registry.item.RegConsumableItems;
 
 public final class WorldHelperForBossFight {
 
+  private static final Map<EnderDragonFight, DragonKillReward> CACHED_KILL_REWARDS =
+      Collections.synchronizedMap(new WeakHashMap<>());
+
   private static final Map<EnderDragonFight, Block> PENDING_REWARD_BLOCKS = Collections.synchronizedMap(
       new WeakHashMap<>()
   );
 
   private WorldHelperForBossFight() {}
+
+  /**
+   * Captures the eligible reward before the dragon's death animation outlives
+   * vanilla's last-player-damage memory.
+   */
+  public static void cacheDragonKillReward(
+      EnderDragonFight fight,
+      EnderDragon dragon
+  ) {
+    cacheDragonKillReward(fight, dragon, dragon.getLastHurtByPlayer());
+  }
+
+  public static void cacheDragonKillReward(
+      EnderDragonFight fight,
+      EnderDragon dragon,
+      Player player
+  ) {
+    if (fight == null) return;
+
+    synchronized (CACHED_KILL_REWARDS) {
+      CACHED_KILL_REWARDS.put(
+          fight,
+          new DragonKillReward(dragon.getUUID(), resolveDragonKillRewardBlock(player))
+      );
+    }
+  }
 
   public static void handleSetDragonKilledHead(
       EnderDragonFight fight,
@@ -52,7 +81,7 @@ public final class WorldHelperForBossFight {
         return;
       }
 
-      PENDING_REWARD_BLOCKS.put(fight, resolveDragonKillRewardBlock(dragon));
+      PENDING_REWARD_BLOCKS.put(fight, getCachedKillReward(fight, dragon));
     }
   }
 
@@ -76,14 +105,27 @@ public final class WorldHelperForBossFight {
   }
 
   private static Block resolveDragonKillRewardBlock(
-      EnderDragon dragon
+      Player player
   ) {
-    Player player = dragon.getLastHurtByPlayer();
     if (player != null && hasAllUniverseGems(player)) {
       return RegActiveBlocks.UNIVERSE_WORKSTATION;
     }
 
     return RegActiveBlocks.SUPREME_WORKTABLE;
+  }
+
+  private static Block getCachedKillReward(
+      EnderDragonFight fight,
+      EnderDragon dragon
+  ) {
+    synchronized (CACHED_KILL_REWARDS) {
+      DragonKillReward reward = CACHED_KILL_REWARDS.remove(fight);
+      if (reward != null && reward.dragonUuid().equals(dragon.getUUID())) {
+        return reward.block();
+      }
+    }
+
+    return resolveDragonKillRewardBlock(dragon.getLastHurtByPlayer());
   }
 
   private static BlockPos findWorktablePos(
@@ -126,5 +168,10 @@ public final class WorldHelperForBossFight {
         && world.getBlockState(pos).canBeReplaced()
         && world.getBlockState(belowPos).isFaceSturdy(world, belowPos, Direction.UP);
   }
+
+  private record DragonKillReward(
+      UUID dragonUuid,
+      Block block
+  ) {}
 
 }
