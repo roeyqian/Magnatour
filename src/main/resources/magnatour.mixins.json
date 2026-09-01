@@ -26,6 +26,7 @@
     "menu.AbstractContainerMenuMixin",
     "server.ServerPlayerGameModeMixin",
     "world.BlockLightEngineMixin",
+    "world.EnderDragonMixin",
     "world.EnderDragonFightMixin",
     "world.WorldGenRegionAccessor",
     "world.IngredientAccessor",
