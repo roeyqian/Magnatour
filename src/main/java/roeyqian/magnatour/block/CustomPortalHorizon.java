@@ -37,18 +37,6 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 // Magnatour
 import roeyqian.magnatour.level.PortalLinkSavedData;
 
-/**
- * End Portal-style activation logic:
- * - 12 frame blocks in a 3x3 hollow square
- * - All frame blocks must be "lit" (activated)
- * - When complete, 3x3 portal blocks fill the center
- */
-/**
- * Shared logic for activated 5x5 horizontal portals.
- *
- * <p>Portal implementations supply their frame, portal block, linked dimensions, and fallback
- * destination. This keeps individual portal blocks limited to block-state and collision hooks.</p>
- */
 public interface CustomPortalHorizon {
 
   int TELEPORT_TICKS = 80;

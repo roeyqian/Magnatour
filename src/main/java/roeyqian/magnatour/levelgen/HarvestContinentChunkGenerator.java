@@ -1,6 +1,9 @@
 /*
  * SPDX-License-Identifier: GPL-3.0-or-later
  * Copyright (C) 2026 Roey Qian
+ *
+ * This file is part of Universe Mod.
+ * Full license text available in the LICENSE file in the project root.
  */
 package roeyqian.magnatour.levelgen;
 
@@ -41,13 +44,6 @@ import org.jspecify.annotations.NonNull;
 // Magnatour
 import roeyqian.magnatour.registry.content.SupremeBlocks;
 
-/**
- * Fully custom Harvest Continent generator.
- *
- * <p>The height field, terrain material, caves and aquifers are all authored
- * here. The {@code settings} identifier is preserved solely for existing
- * dimension JSON compatibility; it is not dereferenced by this generator.</p>
- */
 public final class HarvestContinentChunkGenerator extends ChunkGenerator {
 
   public static final MapCodec<HarvestContinentChunkGenerator> CODEC =

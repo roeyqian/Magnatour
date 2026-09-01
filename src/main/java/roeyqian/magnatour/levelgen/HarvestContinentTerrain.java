@@ -1,6 +1,9 @@
 /*
  * SPDX-License-Identifier: GPL-3.0-or-later
  * Copyright (C) 2026 Roey Qian
+ *
+ * This file is part of Universe Mod.
+ * Full license text available in the LICENSE file in the project root.
  */
 package roeyqian.magnatour.levelgen;
 
@@ -18,14 +21,6 @@ import net.minecraft.world.level.biome.Biome;
 // Magnatour
 import roeyqian.magnatour.Magnatour;
 
-/**
- * Pure terrain functions for the Harvest Continent.
- *
- * <p>This class deliberately has no dependency on vanilla's noise chunk,
- * surface rules, carvers, or aquifer implementation.  The chunk generator is
- * the sole caller and uses these functions for both bulk generation and all
- * base-height queries.</p>
- */
 public final class HarvestContinentTerrain {
 
   public static final int MAX_TERRAIN_SLOPE = 2;
