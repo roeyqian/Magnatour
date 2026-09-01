@@ -16,6 +16,7 @@ import java.util.Set;
 // Minecraft
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
@@ -41,14 +42,17 @@ public final class BlockHelperForNetherPortal {
       BlockPos portalPos,
       CallbackInfoReturnable<TeleportTransition> cir
   ) {
-    if (sourceLevel.dimension() != Level.NETHER) return;
+    if (!isUniverseMetaOrNether(sourceLevel.dimension())) return;
 
     PortalLinkSavedData linkData = PortalLinkSavedData.get(sourceLevel.getServer());
     PortalLinkSavedData.Endpoint source = endpointAt(sourceLevel, portalPos);
     Optional<PortalLinkSavedData.Endpoint> linked = linkData.getDestination(source);
-    if (linked.isEmpty() || linked.get().dimension() != CustomDimensions.UNIVERSE_META) return;
+    if (linked.isEmpty() || !isUniverseMetaNetherPair(source.dimension(), linked.get().dimension())) return;
 
     ServerLevel destinationLevel = sourceLevel.getServer().getLevel(linked.get().dimension());
+    if (destinationLevel != null) {
+      loadPortalChunk(destinationLevel, linked.get().pos());
+    }
     if (destinationLevel == null || !destinationLevel.getBlockState(linked.get().pos()).is(Blocks.NETHER_PORTAL)) {
       linkData.unlink(source);
       return;
@@ -70,9 +74,9 @@ public final class BlockHelperForNetherPortal {
       BlockPos sourcePortalPos,
       TeleportTransition transition
   ) {
-    if (sourceLevel.dimension() != CustomDimensions.UNIVERSE_META
+    if (!CustomDimensions.UNIVERSE_META.equals(sourceLevel.dimension())
         || transition == null
-        || transition.newLevel().dimension() != Level.NETHER) {
+        || !Level.NETHER.equals(transition.newLevel().dimension())) {
       return;
     }
 
@@ -84,11 +88,36 @@ public final class BlockHelperForNetherPortal {
     PortalLinkSavedData.get(sourceLevel.getServer()).link(source, destination);
   }
 
+  private static boolean isUniverseMetaOrNether(
+      ResourceKey<Level> dimension
+  ) {
+    return CustomDimensions.UNIVERSE_META.equals(dimension) || Level.NETHER.equals(dimension);
+  }
+
   private static PortalLinkSavedData.Endpoint endpointAt(
       ServerLevel level,
       BlockPos portalPos
   ) {
     return new PortalLinkSavedData.Endpoint(level.dimension(), findPortalOrigin(level, portalPos));
+  }
+
+  private static boolean isUniverseMetaNetherPair(
+      ResourceKey<Level> sourceDimension,
+      ResourceKey<Level> destinationDimension
+  ) {
+    return (CustomDimensions.UNIVERSE_META.equals(sourceDimension) && Level.NETHER.equals(destinationDimension))
+        || (Level.NETHER.equals(sourceDimension) && CustomDimensions.UNIVERSE_META.equals(destinationDimension));
+  }
+
+  /**
+   * A target portal's chunk is normally unloaded after a server restart. Load it before checking
+   * the saved endpoint so an unloaded chunk is not mistaken for a destroyed portal.
+   */
+  private static void loadPortalChunk(
+      ServerLevel level,
+      BlockPos portalPos
+  ) {
+    level.getChunkSource().getChunk(portalPos.getX() >> 4, portalPos.getZ() >> 4, true);
   }
 
   private static BlockPos findPortalOrigin(

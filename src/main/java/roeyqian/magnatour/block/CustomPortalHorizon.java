@@ -227,6 +227,29 @@ public interface CustomPortalHorizon {
     return corner == null ? portalPos : corner.offset(2, 0, 2);
   }
 
+  /**
+   * Loads every chunk that can contain the 5x5 portal centered at {@code center}.
+   *
+   * <p>Portal links survive a server restart, but their target chunks are normally unloaded until
+   * a player visits that dimension. Validating an unloaded endpoint would otherwise look like a
+   * missing frame and permanently discard the link.</p>
+   */
+  private static void loadPortalChunks(
+      ServerLevel world,
+      BlockPos center
+  ) {
+    int minChunkX = (center.getX() - 2) >> 4;
+    int maxChunkX = (center.getX() + 2) >> 4;
+    int minChunkZ = (center.getZ() - 2) >> 4;
+    int maxChunkZ = (center.getZ() + 2) >> 4;
+
+    for (int chunkX = minChunkX; chunkX <= maxChunkX; chunkX++) {
+      for (int chunkZ = minChunkZ; chunkZ <= maxChunkZ; chunkZ++) {
+        world.getChunkSource().getChunk(chunkX, chunkZ, true);
+      }
+    }
+  }
+
   static boolean isValidPortal(
       LevelReader world,
       BlockPos pos,
@@ -296,6 +319,9 @@ public interface CustomPortalHorizon {
     if (linkedEndpoint.isPresent()) {
       PortalLinkSavedData.Endpoint endpoint = linkedEndpoint.get();
       ServerLevel linkedWorld = server.getLevel(endpoint.dimension());
+      if (linkedWorld != null) {
+        loadPortalChunks(linkedWorld, endpoint.pos());
+      }
       if (linkedWorld != null && isValidPortal(linkedWorld, endpoint.pos(), frameBlock, portalBlock)) {
         targetWorld = linkedWorld;
         targetPos = endpoint.pos();
