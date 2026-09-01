@@ -64,7 +64,7 @@ public final class BiomeMobSpawner {
   private static final BiomeSpawnProfile MELON_JUNGLE_PROFILE = new BiomeSpawnProfile(
       MELON_JUNGLE,
       10,
-      2,
+      4,
       floor -> floor.is(SupremeBlocks.EVER_WATER_GRASS_BLOCK),
       List.of(
           new WeightedAnimalType(EntityTypes.SHEEP, 16),
@@ -82,7 +82,7 @@ public final class BiomeMobSpawner {
   private static final BiomeSpawnProfile PUMPKIN_GORGE_PROFILE = new BiomeSpawnProfile(
       PUMPKIN_GORGE,
       8,
-      2,
+      4,
       floor -> floor.is(Blocks.RED_SAND),
       List.of(
           new WeightedAnimalType(EntityTypes.SHEEP, 16),
@@ -100,7 +100,7 @@ public final class BiomeMobSpawner {
   private static final BiomeSpawnProfile WHEAT_PLAIN_PROFILE = new BiomeSpawnProfile(
       WHEAT_PLAIN,
       14,
-      3,
+      6,
       floor -> floor.is(SupremeBlocks.EVER_WATER_GRASS_BLOCK)
           || floor.is(SupremeBlocks.EVER_WATER_FARMLAND),
       List.of(
