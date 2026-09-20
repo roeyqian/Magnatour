@@ -21,6 +21,8 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.biome.Climate;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.StructureType;
@@ -67,6 +69,21 @@ public final class TownOfFortuneStructure extends Structure {
   public Optional<GenerationStub> findGenerationPoint(
       GenerationContext context
   ) {
+    ChunkPos chunkPos = context.chunkPos();
+    int originX = chunkPos.getMiddleBlockX();
+    int originZ = chunkPos.getMiddleBlockZ();
+
+    Climate.Sampler sampler = context.randomState().sampler();
+    Holder<Biome> biome = context.biomeSource().getNoiseBiome(
+        originX >> 2,
+        0,
+        originZ >> 2,
+        sampler
+    );
+    if (!context.validBiome().test(biome)) {
+      return Optional.empty();
+    }
+
     Registry<StructureTemplatePool> templatePools =
         context.registryAccess().lookupOrThrow(Registries.TEMPLATE_POOL);
     Optional<Holder.Reference<StructureTemplatePool>> startPool =
@@ -75,7 +92,6 @@ public final class TownOfFortuneStructure extends Structure {
       return Optional.empty();
     }
 
-    ChunkPos chunkPos = context.chunkPos();
     BlockPos startPos = new BlockPos(
         chunkPos.getMinBlockX(),
         0,
