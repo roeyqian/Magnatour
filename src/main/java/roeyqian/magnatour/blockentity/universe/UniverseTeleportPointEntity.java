@@ -61,9 +61,9 @@ public class UniverseTeleportPointEntity extends BlockEntity implements MenuProv
   public boolean addDestination(
       Destination destination
   ) {
+    destinations.removeIf(existing -> existing.name().equals(destination.name()));
     if (destinations.size() >= MAX_DESTINATIONS) return false;
 
-    destinations.removeIf(existing -> existing.name().equals(destination.name()));
     destinations.add(destination);
     syncChanged();
     return true;
