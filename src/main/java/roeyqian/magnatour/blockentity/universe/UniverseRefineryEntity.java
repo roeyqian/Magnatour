@@ -184,6 +184,9 @@ public class UniverseRefineryEntity extends AbstractFurnaceBlockEntity {
       @NonNull ItemStack stack
   ) {
     int baseFuelTime = fuelRegistry.burnDuration(stack);
+    if (baseFuelTime > Integer.MAX_VALUE / FUEL_EFFICIENCY_MULTIPLIER) {
+      return Integer.MAX_VALUE;
+    }
     return baseFuelTime * FUEL_EFFICIENCY_MULTIPLIER;
   }
 
