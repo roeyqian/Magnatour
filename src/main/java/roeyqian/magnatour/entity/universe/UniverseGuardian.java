@@ -19,6 +19,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.AgeableMob;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
@@ -34,6 +35,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.pathfinder.PathType;
+import net.minecraft.world.level.portal.TeleportTransition;
 import net.minecraft.world.phys.Vec3;
 
 // JSpecify
@@ -156,6 +158,7 @@ public class UniverseGuardian extends TamableAnimal {
     LivingEntity owner = this.getOwner();
     if (owner == null) return;
     if (!execTeleport(owner)) execFollow(owner);
+    if (this.isRemoved() || this.level() != owner.level()) return;
 
     if (this.getTarget() != null && this.getTarget().isAlive()) {
       if (attackCooldown-- <= 0) {
@@ -252,11 +255,26 @@ public class UniverseGuardian extends TamableAnimal {
       double spawnZ = owner.getZ() + Math.sin(spawnAngle) * targetDistance;
       double spawnY = owner.getY() + 1.0;
 
-      this.snapTo(spawnX, spawnY, spawnZ, owner.getYRot(), owner.getXRot());
-
-      this.setDeltaMovement(0, 0, 0);
-
-      this.lastOwnerPos = owner.position();
+      if (this.level() != owner.level()) {
+        if (owner.level() instanceof ServerLevel targetLevel) {
+          Entity teleported = this.teleport(new TeleportTransition(
+              targetLevel,
+              new Vec3(spawnX, spawnY, spawnZ),
+              Vec3.ZERO,
+              owner.getYRot(),
+              owner.getXRot(),
+              TeleportTransition.DO_NOTHING
+          ));
+          if (teleported instanceof UniverseGuardian guardian) {
+            guardian.setDeltaMovement(Vec3.ZERO);
+            guardian.lastOwnerPos = owner.position();
+          }
+        }
+      } else {
+        this.snapTo(spawnX, spawnY, spawnZ, owner.getYRot(), owner.getXRot());
+        this.setDeltaMovement(Vec3.ZERO);
+        this.lastOwnerPos = owner.position();
+      }
       return true;
     }
 
