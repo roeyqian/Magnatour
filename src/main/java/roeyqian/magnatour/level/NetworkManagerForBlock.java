@@ -30,6 +30,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -253,6 +254,7 @@ public final class NetworkManagerForBlock {
     }
 
     try {
+      AbstractContainerMenu previousMenu = player.containerMenu;
       BlockHitResult hitResult = new BlockHitResult(
           Vec3.atCenterOf(pos),
           Direction.UP,
@@ -275,7 +277,11 @@ public final class NetworkManagerForBlock {
         }
       }
 
-      RemoteAccessManager.finishOpenRemote(player);
+      if (player.containerMenu == previousMenu || player.containerMenu == player.inventoryMenu) {
+        RemoteAccessManager.forceEndRemoteAccess(player);
+      } else {
+        RemoteAccessManager.finishOpenRemote(player);
+      }
     } catch (Exception e) {
       RemoteAccessManager.forceEndRemoteAccess(player);
       player.sendOverlayMessage(
