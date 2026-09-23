@@ -320,21 +320,25 @@ public class UniverseGuardian extends TamableAnimal {
       double dZ = target.getZ() - startZ;
 
       double distance = Math.sqrt(dX * dX + dY * dY + dZ * dZ);
-      dX /= distance;
-      dY /= distance;
-      dZ /= distance;
+      if (distance > 0.0) {
+        dX /= distance;
+        dY /= distance;
+        dZ /= distance;
 
-      for (int i = 1; i < (int) distance; ++i) {
-        serverWorld.sendParticles(
-            CustomParticles.UNIVERSE_SONIC_BOOM,
-            startX + dX * i, startY + dY * i, startZ + dZ * i,
-            1, 0.0F, 0.0F, 0.0F, 0.0F
-        );
+        for (int i = 1; i < (int) distance; ++i) {
+          serverWorld.sendParticles(
+              CustomParticles.UNIVERSE_SONIC_BOOM,
+              startX + dX * i, startY + dY * i, startZ + dZ * i,
+              1, 0.0F, 0.0F, 0.0F, 0.0F
+          );
+        }
       }
 
       this.playSound(SoundEvents.WARDEN_SONIC_BOOM, 1.0F, 1.0F);
       target.hurtServer(serverWorld, this.damageSources().sonicBoom(this), Integer.MAX_VALUE);
-      target.knockback(3.0, -dX, -dZ, this.damageSources().sonicBoom(this), 0.0F);
+      if (distance > 0.0) {
+        target.knockback(3.0, -dX, -dZ, this.damageSources().sonicBoom(this), 0.0F);
+      }
     }
   }
 
