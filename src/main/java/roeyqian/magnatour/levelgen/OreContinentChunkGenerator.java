@@ -183,7 +183,7 @@ public final class OreContinentChunkGenerator extends ChunkGenerator {
 
   @Override
   public int getMinY() {
-    return 0;
+    return -64;
   }
 
   @Override
