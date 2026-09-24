@@ -15,12 +15,10 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 
 // Minecraft
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.Model;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.feature.ItemFeatureRenderer;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
-import net.minecraft.client.renderer.rendertype.OutputTarget;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.world.item.ItemStack;
@@ -69,12 +67,9 @@ public final class RenderHelperForGlint {
       RenderType baseRenderType,
       GlintType glintType
   ) {
-    boolean transparent = Minecraft.getInstance().gameRenderer.gameRenderState().useShaderTransparency()
-        && baseRenderType.outputTarget() == OutputTarget.ITEM_ENTITY_TARGET;
-    if (glintType == GlintType.SUPREME) {
-      return transparent ? GlintRenderTypes.SUPREME_GLINT_TRANSLUCENT : GlintRenderTypes.SUPREME_GLINT;
-    }
-    return transparent ? GlintRenderTypes.GLINT_TRANSLUCENT : GlintRenderTypes.GLINT;
+    return glintType == GlintType.NONE
+        ? baseRenderType
+        : GlintRenderTypes.itemGlint(baseRenderType, glintType == GlintType.SUPREME);
   }
 
   public static void markGlint(
@@ -107,8 +102,8 @@ public final class RenderHelperForGlint {
   public static void markLastSubmit(
       ItemFeatureRenderer.Submit submit
   ) {
-    GlintType glintType = UniverseGlintBridge.consume();
-    if (glintType == GlintType.NONE) {
+    GlintType glintType = UniverseGlintBridge.pending();
+    if (glintType == GlintType.NONE || submit.foilType() == ItemStackRenderState.FoilType.NONE) {
       return;
     }
     ((UniverseGlintHolder) (Object) submit).setUniverseGlint(glintType);
@@ -137,8 +132,7 @@ public final class RenderHelperForGlint {
         OverlayTexture.NO_OVERLAY,
         -1,
         null,
-        outlineColor,
-        null
+        outlineColor
     );
   }
 
@@ -188,14 +182,12 @@ public final class RenderHelperForGlint {
       currentFoil = value;
     }
 
-    public static GlintType consume() {
-      GlintType value = pending;
-      pending = GlintType.NONE;
-      return value;
-    }
-
     public static GlintType currentFoil() {
       return currentFoil;
+    }
+
+    public static GlintType pending() {
+      return pending;
     }
 
   }

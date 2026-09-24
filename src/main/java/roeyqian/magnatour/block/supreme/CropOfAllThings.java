@@ -7,9 +7,6 @@
  */
 package roeyqian.magnatour.block.supreme;
 
-// Mojang
-import com.mojang.serialization.MapCodec;
-
 // Minecraft
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.CropBlock;
@@ -22,17 +19,10 @@ import roeyqian.magnatour.registry.content.SupremeItems;
 
 public class CropOfAllThings extends CropBlock {
 
-  public static final MapCodec<CropOfAllThings> CODEC = simpleCodec(CropOfAllThings::new);
-
   public CropOfAllThings(
       Properties settings
   ) {
     super(settings);
-  }
-
-  @Override @NonNull
-  public MapCodec<? extends CropBlock> codec() {
-    return CODEC;
   }
 
   @Override @NonNull

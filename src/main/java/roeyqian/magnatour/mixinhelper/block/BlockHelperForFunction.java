@@ -8,6 +8,7 @@
 package roeyqian.magnatour.mixinhelper.block;
 
 // Minecraft
+import net.minecraft.util.Prediction;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
@@ -269,7 +270,7 @@ public final class BlockHelperForFunction {
           remainingStack.grow(inputStack.getCount());
           craftSlots.setItem(slotIndex, remainingStack);
         } else if (!player.getInventory().add(remainingStack)) {
-          player.drop(remainingStack, false);
+          player.drop(remainingStack, false, Prediction.SERVER_ONLY);
         }
       }
     }

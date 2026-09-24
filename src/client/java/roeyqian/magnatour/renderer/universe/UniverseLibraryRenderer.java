@@ -109,8 +109,7 @@ public final class UniverseLibraryRenderer implements BlockEntityRenderer<Univer
         -1,
         UNIVERSE_LIBRARY_SPRITE,
         this.sprites,
-        0,
-        state.breakProgress
+        0
     );
 
     poseStack.popPose();

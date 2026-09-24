@@ -25,7 +25,6 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.block.AbstractFurnaceBlock;
 import net.minecraft.world.level.block.entity.AbstractFurnaceBlockEntity;
-import net.minecraft.world.level.block.entity.FuelValues;
 import net.minecraft.world.level.block.state.BlockState;
 
 // JSpecify
@@ -83,7 +82,7 @@ public class SupremeFurnaceEntity extends AbstractFurnaceBlockEntity {
     boolean canCook = canBurn(recipe, recipeInput, blockEntity.items, maxCount);
 
     if (accessor.getLitTimeRemaining() <= 0 && canCook && hasFuel) {
-      int fuelTime = blockEntity.getBurnDuration(world.fuelValues(), fuelStack);
+        int fuelTime = blockEntity.getBurnDuration(world, fuelStack);
       accessor.setLitTimeRemaining(fuelTime);
       accessor.setLitTotalTime(fuelTime);
 
@@ -159,10 +158,10 @@ public class SupremeFurnaceEntity extends AbstractFurnaceBlockEntity {
 
   @Override
   protected int getBurnDuration(
-      FuelValues fuelRegistry,
+      ServerLevel world,
       @NonNull ItemStack stack
   ) {
-    int baseFuelTime = fuelRegistry.burnDuration(stack);
+    int baseFuelTime = super.getBurnDuration(world, stack);
     if (baseFuelTime > Integer.MAX_VALUE / FUEL_EFFICIENCY_MULTIPLIER) {
       return Integer.MAX_VALUE;
     }

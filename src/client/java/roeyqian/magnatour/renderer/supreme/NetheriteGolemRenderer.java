@@ -92,7 +92,7 @@ public final class NetheriteGolemRenderer extends MobRenderer<NetheriteGolem, Cu
       float p = 13.0F;
       float wp = state.walkAnimationPos + 6.0F;
       float triangleWave = (Math.abs(wp % 13.0F - 6.5F) - 3.25F) / 3.25F;
-      poseStack.mulPose(Axis.ZP.rotationDegrees(6.5F * triangleWave));
+      poseStack.rotateDegrees(Axis.ZP, 6.5F * triangleWave);
     }
   }
 

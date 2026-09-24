@@ -6,8 +6,8 @@
       "predicate": {
         "type": "minecraft:would_survive",
         "state": {
-          "Name": "magnatour:universe_sapling",
-          "Properties": {
+          "id": "magnatour:universe_sapling",
+          "properties": {
             "stage": "0"
           }
         }

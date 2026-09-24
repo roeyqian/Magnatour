@@ -11,6 +11,7 @@ package roeyqian.magnatour.entity.supreme;
 import java.util.EnumSet;
 
 // Minecraft
+import net.minecraft.world.item.component.SwingAnimation;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -84,7 +85,7 @@ public class BellSoul extends Monster {
   }
 
   public boolean isChargingAttack() {
-    return this.swinging;
+    return this.isSwinging();
   }
 
   @Override
@@ -152,7 +153,7 @@ public class BellSoul extends Monster {
     );
   }
 
-  class BellSoulMoveControl extends MoveControl {
+  class BellSoulMoveControl extends MoveControl<BellSoul> {
 
     private static final double ACCELERATION = 0.12;
 
@@ -271,7 +272,7 @@ public class BellSoul extends Monster {
 
       if (BellSoul.this.distanceToSqr(target) <= ATTACK_RANGE_SQR && attackCooldown <= 0) {
         attackCooldown = ATTACK_INTERVAL_TICKS;
-        BellSoul.this.swing(InteractionHand.MAIN_HAND);
+        BellSoul.this.swing(InteractionHand.MAIN_HAND, SwingAnimation.DEFAULT, false);
         if (BellSoul.this.level() instanceof ServerLevel serverWorld) {
           target.hurtServer(
               serverWorld,

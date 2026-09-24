@@ -11,16 +11,21 @@ package roeyqian.magnatour.registry;
 import java.util.function.Function;
 
 // Fabric
-import net.fabricmc.fabric.api.registry.FuelValueEvents;
+import net.fabricmc.fabric.api.item.v1.DefaultItemComponentEvents;
 
 // Minecraft
 import net.minecraft.core.Registry;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.component.CookingFuel;
+import net.minecraft.world.level.storage.loot.providers.number.floats.ContextFloatProviders;
+import net.minecraft.world.level.storage.loot.providers.number.floats.ResolvableFloat;
+import net.minecraft.world.level.storage.loot.providers.number.ints.ResolvableInt;
 
 // Magnatour
 import roeyqian.magnatour.Magnatour;
@@ -62,7 +67,12 @@ public interface ItemRegHelper {
       int time,
       Item fuel
   ) {
-    FuelValueEvents.BUILD.register((builder, _) -> builder.add(fuel, time));
+    DefaultItemComponentEvents.MODIFY.register(context -> context.modify(fuel, builder ->
+        builder.set(DataComponents.COOKING_FUEL, new CookingFuel(
+            new ResolvableInt.Constant(time),
+            ResolvableFloat.fromKey(ContextFloatProviders.COOKING_DEFAULT_SPEED_MULTIPLIER)
+        ))
+    ));
   }
 
 }

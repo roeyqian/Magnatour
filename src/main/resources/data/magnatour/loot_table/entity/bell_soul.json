@@ -2,7 +2,7 @@
   "type": "minecraft:entity",
   "pools": [
     {
-      "rolls": 2.0,
+      "rolls": 2,
       "entries": [
         {
           "type": "minecraft:item",
@@ -11,19 +11,17 @@
       ]
     },
     {
-      "rolls": 1.0,
+      "rolls": 1,
       "entries": [
         {
           "type": "minecraft:item",
           "name": "magnatour:harvest_core"
         }
       ],
-      "conditions": [
-        {
-          "condition": "minecraft:random_chance",
-          "chance": 0.1
-        }
-      ]
+      "condition": {
+        "type": "minecraft:random_chance",
+        "chance": 0.1
+      }
     }
   ]
 }

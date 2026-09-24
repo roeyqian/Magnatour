@@ -9,6 +9,7 @@ package roeyqian.magnatour.levelgen;
 
 // Java Standard
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Stream;
 
@@ -18,6 +19,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 // Minecraft
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.levelgen.densityfunction.SamplerContext;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.util.Util;
@@ -67,10 +69,10 @@ public final class OreContinentChunkGenerator extends ChunkGenerator {
   public void addDebugScreenInfo(
       @NonNull List<String> info,
       @NonNull RandomState randomState,
-      @NonNull BlockPos pos
+      @NonNull BlockPos pos,
+      @NonNull SamplerContext samplerContext
   ) {}
 
-  @Override
   public void applyCarvers(
       @NonNull WorldGenRegion region,
       long seed,
@@ -80,7 +82,6 @@ public final class OreContinentChunkGenerator extends ChunkGenerator {
       @NonNull ChunkAccess chunk
   ) {}
 
-  @Override
   public void buildSurface(
       @NonNull WorldGenRegion region,
       @NonNull StructureManager structureManager,
@@ -89,28 +90,14 @@ public final class OreContinentChunkGenerator extends ChunkGenerator {
   ) {}
 
   @Override @NonNull
-  public ChunkGeneratorStructureState createState(
-      HolderLookup<StructureSet> structureSets,
-      RandomState randomState,
-      long seed
-  ) {
-    Stream<Holder<StructureSet>> stream = this.settings.structureOverrides()
-        .map((overrides) -> overrides.stream())
-        .orElseGet(() -> structureSets.listElements().map((holder) -> holder));
-    return ChunkGeneratorStructureState.createForFlat(
-        randomState,
-        seed,
-        this.biomeSource,
-        stream
-    );
-  }
-
-  @Override @NonNull
-  public CompletableFuture<ChunkAccess> fillFromNoise(
+  public CompletableFuture<ChunkAccess> buildTerrain(
+      ChunkAccess chunk,
       @NonNull Blender blender,
       @NonNull RandomState randomState,
       @NonNull StructureManager structureManager,
-      ChunkAccess chunk
+      @NonNull BiomeManager biomeManager,
+      @NonNull WorldGenRegion region,
+      Set<Holder<net.minecraft.world.level.biome.Biome>> availableBiomes
   ) {
     List<BlockState> layers = this.settings.getLayers();
     BlockPos.MutableBlockPos mutable = new BlockPos.MutableBlockPos();
@@ -134,6 +121,24 @@ public final class OreContinentChunkGenerator extends ChunkGenerator {
     }
 
     return CompletableFuture.completedFuture(chunk);
+  }
+
+  @Override @NonNull
+  public ChunkGeneratorStructureState createState(
+      HolderLookup<StructureSet> structureSets,
+      RandomState randomState,
+      long seed
+  ) {
+    Stream<Holder<StructureSet>> stream = this.settings.structureOverrides()
+        .map((overrides) -> overrides.stream())
+        .orElseGet(() -> structureSets.listElements().map((holder) -> holder));
+    return ChunkGeneratorStructureState.createForFlat(
+        randomState,
+        seed,
+        this.getOrigin(randomState),
+        this.biomeSource,
+        stream
+    );
   }
 
   @Override @NonNull

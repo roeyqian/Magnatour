@@ -9,12 +9,10 @@
           "name": "minecraft:golden_apple"
         }
       ],
-      "conditions": [
-        {
-          "condition": "minecraft:random_chance",
-          "chance": 0.5
-        }
-      ]
+      "condition": {
+        "type": "minecraft:random_chance",
+        "chance": 0.5
+      }
     },
     {
       "rolls": 1,
@@ -24,12 +22,10 @@
           "name": "minecraft:enchanted_golden_apple"
         }
       ],
-      "conditions": [
-        {
-          "condition": "minecraft:random_chance",
-          "chance": 0.1
-        }
-      ]
+      "condition": {
+        "type": "minecraft:random_chance",
+        "chance": 0.1
+      }
     },
     {
       "rolls": 1,
@@ -39,12 +35,10 @@
           "name": "magnatour:golden_sapling"
         }
       ],
-      "conditions": [
-        {
-          "condition": "minecraft:random_chance",
-          "chance": 0.25
-        }
-      ]
+      "condition": {
+        "type": "minecraft:random_chance",
+        "chance": 0.25
+      }
     }
   ]
 }

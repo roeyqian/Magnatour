@@ -215,7 +215,7 @@ public final class StructureMobSpawner {
           }
 
           for (StructureStart start : level.structureManager().startsForStructure(
-              new ChunkPos(chunkX, chunkZ),
+              chunkX, chunkZ,
               structure -> structure.type() == profile.structureType()
           )) {
             if (!start.isValid()) continue;

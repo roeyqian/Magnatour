@@ -21,6 +21,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Climate;
+import net.minecraft.world.level.levelgen.densityfunction.SamplerContext;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.StructureType;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePiecesBuilder;
@@ -71,12 +72,11 @@ public final class GoldBellTowerStructure extends Structure {
       return Optional.empty();
     }
 
-    Climate.Sampler sampler = context.randomState().sampler();
-    Holder<Biome> biome = context.biomeSource().getNoiseBiome(
+    Climate.Sampler sampler = context.randomState().createClimateSampler(SamplerContext.EMPTY_UNCACHED);
+    Holder<Biome> biome = context.biomeSource().createResolver(sampler).getNoiseBiome(
         originX >> 2,
         0,
-        originZ >> 2,
-        sampler
+        originZ >> 2
     );
     if (!context.validBiome().test(biome)) {
       return Optional.empty();

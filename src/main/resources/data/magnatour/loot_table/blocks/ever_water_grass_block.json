@@ -8,8 +8,7 @@
           "type": "minecraft:item",
           "name": "magnatour:ever_water_grass_block"
         }
-      ],
-      "conditions": []
+      ]
     },
     {
       "rolls": 1,
@@ -19,12 +18,10 @@
           "name": "magnatour:universe_gemgreen"
         }
       ],
-      "conditions": [
-        {
-          "condition": "minecraft:random_chance",
-          "chance": 0.001
-        }
-      ]
+      "condition": {
+        "type": "minecraft:random_chance",
+        "chance": 0.001
+      }
     }
   ]
 }

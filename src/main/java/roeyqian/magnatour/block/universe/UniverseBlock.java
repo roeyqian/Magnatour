@@ -7,9 +7,6 @@
  */
 package roeyqian.magnatour.block.universe;
 
-// Mojang
-import com.mojang.serialization.MapCodec;
-
 // Minecraft
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
@@ -40,8 +37,6 @@ import roeyqian.magnatour.registry.content.UniverseBlocks;
 import roeyqian.magnatour.registry.worldgen.CustomDimensions;
 
 public class UniverseBlock extends BaseEntityBlock {
-
-  public static final MapCodec<UniverseBlock> CODEC = simpleCodec(UniverseBlock::new);
 
   public static final BooleanProperty LIT = BlockStateProperties.LIT;
 
@@ -85,11 +80,6 @@ public class UniverseBlock extends BaseEntityBlock {
       VirtualBlockLightManager.setActive(world, pos, false);
       super.affectNeighborsAfterRemoval(state, world, pos, moved);
     }
-  }
-
-  @Override @NonNull
-  protected MapCodec<? extends BaseEntityBlock> codec() {
-    return CODEC;
   }
 
   @Override

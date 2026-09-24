@@ -17,6 +17,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.CropBlock;
 import net.minecraft.world.level.block.FarmlandBlock;
 import net.minecraft.world.level.block.StemBlock;
@@ -32,7 +33,7 @@ public class EverWaterFarmland extends FarmlandBlock {
   public EverWaterFarmland(
       BlockBehaviour.Properties settings
   ) {
-    super(settings);
+    super(Blocks.DIRT, settings);
   }
 
   @Override

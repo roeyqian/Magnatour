@@ -17,11 +17,10 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 // Minecraft
 import net.minecraft.core.Holder;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.RegistryFileCodec;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.BiomeSource;
+import net.minecraft.world.level.biome.BiomeResolver;
 import net.minecraft.world.level.biome.Climate;
 
 // JSpecify
@@ -33,9 +32,9 @@ public final class OreContinentBiomeSource extends BiomeSource {
 
   public static final MapCodec<OreContinentBiomeSource> CODEC =
       RecordCodecBuilder.mapCodec((instance) -> instance.group(
-              RegistryFileCodec.create(Registries.BIOME, Biome.DIRECT_CODEC)
+              Biome.CODEC
                   .fieldOf("ore_land").forGetter((source) -> source.oreLand),
-              RegistryFileCodec.create(Registries.BIOME, Biome.DIRECT_CODEC)
+              Biome.CODEC
                   .fieldOf("ore_forest").forGetter((source) -> source.oreForest),
               Codec.LONG.optionalFieldOf("seed", 0L)
                   .forGetter((source) -> source.seed),
@@ -75,6 +74,13 @@ public final class OreContinentBiomeSource extends BiomeSource {
   }
 
   @Override @NonNull
+  public BiomeResolver createResolver(
+      Climate.Sampler sampler
+  ) {
+    return (x, y, z) -> getNoiseBiome(x, y, z, sampler);
+  }
+
+  @NonNull
   public Holder<Biome> getNoiseBiome(
       int x,
       int y,

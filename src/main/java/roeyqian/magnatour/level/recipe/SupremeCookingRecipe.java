@@ -28,7 +28,7 @@ public class SupremeCookingRecipe extends AbstractCookingRecipe {
 
   public static final RecipeSerializer<SupremeCookingRecipe> SERIALIZER =
       new RecipeSerializer<>(
-          AbstractCookingRecipe.cookingMapCodec(SupremeCookingRecipe::new, 960),
+          AbstractCookingRecipe.cookingMapCodec(SupremeCookingRecipe::new),
           AbstractCookingRecipe.cookingStreamCodec(SupremeCookingRecipe::new)
       );
 

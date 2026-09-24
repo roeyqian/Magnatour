@@ -16,16 +16,85 @@
       }
     },
     "minecraft:visual/fog_color": "#fff096",
-    "minecraft:visual/sky_color": "#fff078"
+    "minecraft:visual/sky_color": "#fff078",
+    "minecraft:gameplay/natural_mob_spawns": {
+      "argument": {
+        "spawn_costs": {},
+        "spawns_by_category": {
+          "creature": [
+            {
+              "type": "minecraft:sheep",
+              "weight": 24,
+              "count": {
+                "type": "minecraft:uniform",
+                "min_inclusive": 4,
+                "max_inclusive": 6
+              }
+            },
+            {
+              "type": "minecraft:pig",
+              "weight": 20,
+              "count": {
+                "type": "minecraft:uniform",
+                "min_inclusive": 4,
+                "max_inclusive": 6
+              }
+            },
+            {
+              "type": "minecraft:chicken",
+              "weight": 20,
+              "count": {
+                "type": "minecraft:uniform",
+                "min_inclusive": 4,
+                "max_inclusive": 6
+              }
+            },
+            {
+              "type": "minecraft:cow",
+              "weight": 16,
+              "count": {
+                "type": "minecraft:uniform",
+                "min_inclusive": 4,
+                "max_inclusive": 6
+              }
+            },
+            {
+              "type": "minecraft:horse",
+              "weight": 8,
+              "count": {
+                "type": "minecraft:uniform",
+                "min_inclusive": 2,
+                "max_inclusive": 4
+              }
+            },
+            {
+              "type": "minecraft:donkey",
+              "weight": 2,
+              "count": {
+                "type": "minecraft:uniform",
+                "min_inclusive": 1,
+                "max_inclusive": 2
+              }
+            }
+          ]
+        }
+      },
+      "modifier": "overlay"
+    },
+    "minecraft:gameplay/creature_world_gen_spawn_probability": 0.3
   },
   "carvers": [],
-  "creature_spawn_probability": 0.3,
   "downfall": 0.4,
   "effects": {
     "water_color": "#3f76e4"
   },
   "features": [
-    [], [], [], [], [], [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
     [
       "minecraft:ore_coal_upper",
       "minecraft:ore_coal_lower",
@@ -44,7 +113,8 @@
       "minecraft:ore_lapis_buried",
       "minecraft:ore_copper"
     ],
-    [], [],
+    [],
+    [],
     [
       "magnatour:wheat_plain_wheat",
       "magnatour:wheat_plain_trees"
@@ -52,53 +122,5 @@
     []
   ],
   "has_precipitation": true,
-  "spawn_costs": {},
-  "spawners": {
-    "ambient": [],
-    "axolotls": [],
-    "creature": [
-      {
-        "type": "minecraft:sheep",
-        "maxCount": 6,
-        "minCount": 4,
-        "weight": 24
-      },
-      {
-        "type": "minecraft:pig",
-        "maxCount": 6,
-        "minCount": 4,
-        "weight": 20
-      },
-      {
-        "type": "minecraft:chicken",
-        "maxCount": 6,
-        "minCount": 4,
-        "weight": 20
-      },
-      {
-        "type": "minecraft:cow",
-        "maxCount": 6,
-        "minCount": 4,
-        "weight": 16
-      },
-      {
-        "type": "minecraft:horse",
-        "maxCount": 4,
-        "minCount": 2,
-        "weight": 8
-      },
-      {
-        "type": "minecraft:donkey",
-        "maxCount": 2,
-        "minCount": 1,
-        "weight": 2
-      }
-    ],
-    "misc": [],
-    "monster": [],
-    "underground_water_creature": [],
-    "water_ambient": [],
-    "water_creature": []
-  },
   "temperature": 0.8
 }

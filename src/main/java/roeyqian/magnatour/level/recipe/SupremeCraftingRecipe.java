@@ -188,7 +188,7 @@ public class SupremeCraftingRecipe implements CraftingRecipe {
       RegistryFriendlyByteBuf buf
   ) {
     String group = buf.readUtf();
-    CraftingBookCategory category = buf.readEnum(CraftingBookCategory.class);
+    CraftingBookCategory category = CraftingBookCategory.STREAM_CODEC.decode(buf);
     ShapedRecipePattern raw = ShapedRecipePattern.STREAM_CODEC.decode(buf);
     ItemStackTemplate result = ItemStackTemplate.STREAM_CODEC.decode(buf);
     boolean showNotification = buf.readBoolean();
@@ -201,7 +201,7 @@ public class SupremeCraftingRecipe implements CraftingRecipe {
       SupremeCraftingRecipe recipe
   ) {
     buf.writeUtf(recipe.recipeGroup);
-    buf.writeEnum(recipe.recipeCategory);
+    CraftingBookCategory.STREAM_CODEC.encode(buf, recipe.recipeCategory);
     ShapedRecipePattern.STREAM_CODEC.encode(buf, recipe.rawContents);
 
     ItemStackTemplate.STREAM_CODEC.encode(buf, recipe.resultStack);

@@ -9,6 +9,7 @@ package roeyqian.magnatour.levelgen;
 
 // Java Standard
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
 // Mojang
@@ -17,6 +18,8 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 // Minecraft
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
+import net.minecraft.world.level.levelgen.densityfunction.SamplerContext;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
@@ -76,13 +79,13 @@ public final class HarvestContinentChunkGenerator extends ChunkGenerator {
   public void addDebugScreenInfo(
       @NonNull List<String> info,
       @NonNull RandomState randomState,
-      @NonNull BlockPos pos
+      @NonNull BlockPos pos,
+      @NonNull SamplerContext samplerContext
   ) {
     info.add("Harvest terrain: custom heightfield + custom caves/aquifers");
   }
 
   /** Caves are filled in fillFromNoise, so vanilla carvers are intentionally not run. */
-  @Override
   public void applyCarvers(
       @NonNull WorldGenRegion region,
       long seed,
@@ -93,7 +96,6 @@ public final class HarvestContinentChunkGenerator extends ChunkGenerator {
   ) {}
 
   /** Surface material is placed while the custom terrain is filled. */
-  @Override
   public void buildSurface(
       @NonNull WorldGenRegion region,
       @NonNull StructureManager structureManager,
@@ -102,32 +104,14 @@ public final class HarvestContinentChunkGenerator extends ChunkGenerator {
   ) {}
 
   @Override @NonNull
-  public CompletableFuture<ChunkAccess> createBiomes(
-      @NonNull RandomState randomState,
-      @NonNull Blender blender,
-      @NonNull StructureManager structureManager,
-      @NonNull ChunkAccess chunk
-  ) {
-    chunk.fillBiomesFromNoise(this.biomeSource, randomState.sampler());
-    return CompletableFuture.completedFuture(chunk);
-  }
-
-  @Override @NonNull
-  public ChunkGeneratorStructureState createState(
-      HolderLookup<StructureSet> structureSets,
-      RandomState randomState,
-      long seed
-  ) {
-    this.terrainSeed = seed;
-    return super.createState(structureSets, randomState, seed);
-  }
-
-  @Override @NonNull
-  public CompletableFuture<ChunkAccess> fillFromNoise(
+  public CompletableFuture<ChunkAccess> buildTerrain(
+      ChunkAccess chunk,
       @NonNull Blender blender,
       @NonNull RandomState randomState,
       @NonNull StructureManager structureManager,
-      @NonNull ChunkAccess chunk
+      @NonNull BiomeManager biomeManager,
+      @NonNull WorldGenRegion region,
+      Set<Holder<Biome>> availableBiomes
   ) {
     SurfaceGrid surface = sampleSurfaceGrid(chunk, randomState);
     BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
@@ -155,6 +139,16 @@ public final class HarvestContinentChunkGenerator extends ChunkGenerator {
       }
     }
     return CompletableFuture.completedFuture(chunk);
+  }
+
+  @Override @NonNull
+  public ChunkGeneratorStructureState createState(
+      HolderLookup<StructureSet> structureSets,
+      RandomState randomState,
+      long seed
+  ) {
+    this.terrainSeed = seed;
+    return super.createState(structureSets, randomState, seed);
   }
 
   @Override @NonNull
@@ -357,13 +351,14 @@ public final class HarvestContinentChunkGenerator extends ChunkGenerator {
     ResourceKey<Biome>[][] biomes = new ResourceKey[size][size];
     int[][] heights = new int[size][size];
     long seed = this.terrainSeed;
+    var resolver = this.biomeSource.createResolver(randomState.createClimateSampler(SamplerContext.EMPTY_UNCACHED));
 
     for (int gx = 0; gx < size; gx++) {
       int worldX = originX + gx;
       for (int gz = 0; gz < size; gz++) {
         int worldZ = originZ + gz;
-        ResourceKey<Biome> biome = HarvestContinentTerrain.resolveBiome(this.biomeSource.getNoiseBiome(
-            worldX >> 2, HarvestContinentTerrain.SEA_LEVEL >> 2, worldZ >> 2, randomState.sampler()));
+        ResourceKey<Biome> biome = HarvestContinentTerrain.resolveBiome(resolver.getNoiseBiome(
+            worldX >> 2, HarvestContinentTerrain.SEA_LEVEL >> 2, worldZ >> 2));
         biomes[gx][gz] = biome;
         heights[gx][gz] = HarvestContinentTerrain.rawSurfaceHeight(biome, seed, worldX, worldZ);
       }
@@ -398,12 +393,13 @@ public final class HarvestContinentChunkGenerator extends ChunkGenerator {
     int best = Integer.MAX_VALUE;
     ResourceKey<Biome> center = null;
     int radius = HarvestContinentTerrain.SHORE_BLEND_DISTANCE;
+    var resolver = this.biomeSource.createResolver(randomState.createClimateSampler(SamplerContext.EMPTY_UNCACHED));
     for (int dx = -radius; dx <= radius; dx++) {
       for (int dz = -radius; dz <= radius; dz++) {
         int worldX = x + dx;
         int worldZ = z + dz;
-        ResourceKey<Biome> biome = HarvestContinentTerrain.resolveBiome(this.biomeSource.getNoiseBiome(
-            worldX >> 2, HarvestContinentTerrain.SEA_LEVEL >> 2, worldZ >> 2, randomState.sampler()));
+        ResourceKey<Biome> biome = HarvestContinentTerrain.resolveBiome(resolver.getNoiseBiome(
+            worldX >> 2, HarvestContinentTerrain.SEA_LEVEL >> 2, worldZ >> 2));
         if (dx == 0 && dz == 0) center = biome;
         int candidate = HarvestContinentTerrain.rawSurfaceHeight(biome, seed, worldX, worldZ)
             + HarvestContinentTerrain.MAX_TERRAIN_SLOPE * (Math.abs(dx) + Math.abs(dz));

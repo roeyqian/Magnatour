@@ -78,7 +78,7 @@ public final class DiamondCityPiece extends StructurePiece {
       @NonNull ChunkPos chunkPos,
       @NonNull BlockPos pivot
   ) {
-    StructureTemplateManager templateManager = level.getLevel().getStructureManager();
+    StructureTemplateManager templateManager = level.getLevel().getStructureTemplateManager();
     Optional<DiamondCityLayout> layoutOpt = DiamondCityLayout.create(
         templateManager,
         this.layoutSeed

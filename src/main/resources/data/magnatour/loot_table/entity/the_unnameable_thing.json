@@ -2,22 +2,20 @@
   "type": "minecraft:entity",
   "pools": [
     {
-      "rolls": 1.0,
+      "rolls": 1,
       "entries": [
         {
           "type": "minecraft:item",
           "name": "magnatour:universe_gemred"
         }
       ],
-      "conditions": [
-        {
-          "condition": "minecraft:random_chance",
-          "chance": 0.66
-        }
-      ]
+      "condition": {
+        "type": "minecraft:random_chance",
+        "chance": 0.66
+      }
     },
     {
-      "rolls": 1.0,
+      "rolls": 1,
       "entries": [
         {
           "type": "minecraft:item",

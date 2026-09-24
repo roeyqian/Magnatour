@@ -12,6 +12,7 @@ package roeyqian.magnatour.level.network;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.Identifier;
@@ -36,7 +37,7 @@ public record UniverseConsoleBoundBlockPayload(
 
   public static final StreamCodec<RegistryFriendlyByteBuf, UniverseConsoleBoundBlockPayload> CODEC =
       StreamCodec.composite(
-          StreamCodec.ofMember((value, buf) -> buf.writeEnum(value), buf -> buf.readEnum(Action.class)),
+          ByteBufCodecs.idMapper(id -> Action.values()[id], Action::ordinal),
           UniverseConsoleBoundBlockPayload::act,
           BlockPos.STREAM_CODEC,
           UniverseConsoleBoundBlockPayload::pos,

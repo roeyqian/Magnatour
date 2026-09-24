@@ -351,7 +351,7 @@ public final class EntityHelperForEquipment {
 
     if (weaponStack.getOrDefault(CustomComponents.UNIVERSE_ULTIMA_SWORD_MODE, 0) == 1) {
       target.hurtTime = 0;
-      target.invulnerableTime = 0;
+      target.setInvulnerableTime(0);
     }
   }
 

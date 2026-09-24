@@ -8,6 +8,7 @@
 package roeyqian.magnatour.item.supreme;
 
 // Minecraft
+import net.minecraft.world.item.component.SwingAnimation;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
@@ -53,7 +54,7 @@ public class SupremeMobile extends Item {
   ) {
     ItemStack stack = user.getItemInHand(hand);
 
-    user.swing(hand);
+    user.swing(hand, SwingAnimation.DEFAULT, false);
     if (world.isClientSide()) return InteractionResult.PASS;
 
     int mode = stack.getOrDefault(CustomComponents.SUPREME_MOBILE_MODE, 0);
@@ -90,7 +91,7 @@ public class SupremeMobile extends Item {
     if (mode != 1) return InteractionResult.PASS;
 
     if (player == null) return InteractionResult.PASS;
-    player.swing(player.getUsedItemHand());
+    player.swing(player.getUsedItemHand(), SwingAnimation.DEFAULT, false);
     if (world.isClientSide()) return InteractionResult.PASS;
 
     BlockState blockState = world.getBlockState(pos);

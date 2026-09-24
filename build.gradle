@@ -33,6 +33,11 @@ repositories {
 
 loom {
 	splitEnvironmentSourceSets()
+	runs {
+		client {
+			preferGradleTask.set(false)
+		}
+	}
 	mods {
 		"magnatour" {
 			sourceSet sourceSets.main
@@ -57,6 +62,7 @@ processResources {
 
 tasks.withType(JavaCompile).configureEach {
 	it.options.release = 25
+	it.options.compilerArgs.addAll(['-Xlint:deprecation', '-Xlint:unchecked'])
 }
 
 def importGroupConfigFile = layout.projectDirectory.file("gradle/config/import-groups.json")
@@ -1203,10 +1209,12 @@ def formatJavaDeclarations = { File sourceFile, boolean checkOnly ->
 		int start = parsed.positions.getStartPosition(parsed.unit, classTree) as int
 		int end = parsed.positions.getEndPosition(parsed.unit, classTree) as int
 		if (start >= 0 && end > start) {
+			int lineStart = lineStartAt(normalizedOriginal, start) as int
+			int replacementStart = normalizedOriginal.substring(lineStart, start).trim().isEmpty() ? lineStart : start
 			replacements << [
-					start: start,
+					start: replacementStart,
 					end: end,
-					text: formatJavaClassDeclaration.call(classTree, normalizedOriginal, parsed.unit, parsed.positions, importMap, null)
+					text: formatJavaClassDeclaration.call(classTree, normalizedOriginal, parsed.unit, parsed.positions, importMap, "")
 			]
 		}
 	}
@@ -1300,10 +1308,11 @@ java {
 	targetCompatibility = JavaVersion.VERSION_25
 }
 
+def archiveProjectName = project.name
 jar {
-	inputs.property "projectName", project.name
+	inputs.property "projectName", archiveProjectName
 	from("LICENSE") {
-		rename { "${it}_${project.name}"}
+		rename { "${it}_${archiveProjectName}"}
 	}
 }
 

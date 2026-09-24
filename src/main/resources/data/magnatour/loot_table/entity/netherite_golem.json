@@ -2,19 +2,17 @@
   "type": "minecraft:entity",
   "pools": [
     {
-      "rolls": 5.0,
+      "rolls": 5,
       "entries": [
         {
           "type": "minecraft:item",
           "name": "minecraft:netherite_ingot"
         }
       ],
-      "conditions": [
-        {
-          "condition": "minecraft:random_chance",
-          "chance": 0.33
-        }
-      ]
+      "condition": {
+        "type": "minecraft:random_chance",
+        "chance": 0.33
+      }
     }
   ]
 }

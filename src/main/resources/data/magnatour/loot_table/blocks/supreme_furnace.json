@@ -8,9 +8,7 @@
           "type": "minecraft:item",
           "name": "magnatour:supreme_furnace"
         }
-      ],
-      "conditions": []
+      ]
     }
   ]
 }
-

@@ -7,9 +7,6 @@
  */
 package roeyqian.magnatour.block.supreme;
 
-// Mojang
-import com.mojang.serialization.MapCodec;
-
 // Minecraft
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
@@ -33,8 +30,6 @@ import roeyqian.magnatour.blockentity.supreme.SupremeFurnaceEntity;
 import roeyqian.magnatour.registry.content.SupremeBlockEntities;
 
 public class SupremeFurnace extends AbstractFurnaceBlock {
-
-  public static final MapCodec<SupremeFurnace> CODEC = simpleCodec(SupremeFurnace::new);
 
   public SupremeFurnace(
       Properties settings
@@ -67,11 +62,6 @@ public class SupremeFurnace extends AbstractFurnaceBlock {
       @NonNull BlockState state
   ) {
     return new SupremeFurnaceEntity(pos, state);
-  }
-
-  @Override @NonNull
-  protected MapCodec<? extends SupremeFurnace> codec() {
-    return CODEC;
   }
 
   @Override

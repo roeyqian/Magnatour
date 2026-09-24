@@ -7,12 +7,11 @@
  */
 package roeyqian.magnatour.registry.worldgen;
 
-// Minecraft
-import net.minecraft.world.level.levelgen.feature.Feature;
+// Mojang
+import com.mojang.serialization.MapCodec;
 
 // Magnatour
 import roeyqian.magnatour.Magnatour;
-import roeyqian.magnatour.levelgen.tree.OreTreeConfiguration;
 import roeyqian.magnatour.levelgen.tree.OreTreeFeature;
 import roeyqian.magnatour.registry.WorldgenRegHelper;
 
@@ -20,13 +19,13 @@ import roeyqian.magnatour.registry.WorldgenRegHelper;
  * Supreme Group: Feature
  * Universe Group: Feature
  */
-public final class CustomFeatures {
+  public final class CustomFeatures {
 
   // Supreme Group: Ore Continent
-  public static final Feature<OreTreeConfiguration> ORE_TREE =
+  public static final MapCodec<OreTreeFeature> ORE_TREE =
       WorldgenRegHelper.registerFeature(
           "ore_tree",
-          new OreTreeFeature(OreTreeConfiguration.CODEC)
+          OreTreeFeature.CODEC
       );
 
   private CustomFeatures() {}

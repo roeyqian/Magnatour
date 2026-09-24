@@ -3,15 +3,13 @@
   "criteria": {
     "summon_pale_lord": {
       "conditions": {
-        "entity": [
-          {
-            "condition": "minecraft:entity_properties",
-            "entity": "this",
-            "predicate": {
-              "minecraft:entity_type": "magnatour:pale_lord"
-            }
-          }
-        ]
+        "entity": {
+          "entity": "this",
+          "predicate": {
+            "minecraft:entity_type": "magnatour:pale_lord"
+          },
+          "type": "minecraft:entity_properties"
+        }
       },
       "trigger": "minecraft:summoned_entity"
     }

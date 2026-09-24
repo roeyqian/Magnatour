@@ -7,9 +7,6 @@
  */
 package roeyqian.magnatour.block.supreme;
 
-// Mojang
-import com.mojang.serialization.MapCodec;
-
 // Minecraft
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -31,9 +28,6 @@ import roeyqian.magnatour.menu.supreme.SupremeReserverMenu;
 
 public class SupremeReserver extends Block {
 
-  public static final MapCodec<SupremeReserver> CODEC =
-      simpleCodec(SupremeReserver::new);
-
   private static final Component TITLE =
       Component.translatable("block.magnatour.supreme_reserver");
 
@@ -41,11 +35,6 @@ public class SupremeReserver extends Block {
       Properties settings
   ) {
     super(settings);
-  }
-
-  @Override @NonNull
-  protected MapCodec<? extends Block> codec() {
-    return CODEC;
   }
 
   @Override

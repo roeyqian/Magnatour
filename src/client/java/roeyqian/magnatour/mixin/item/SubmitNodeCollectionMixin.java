@@ -7,9 +7,6 @@
  */
 package roeyqian.magnatour.mixin.item;
 
-// Mojang
-import com.mojang.blaze3d.vertex.PoseStack;
-
 // Fabric
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -17,16 +14,12 @@ import net.fabricmc.api.Environment;
 // Minecraft
 import net.minecraft.client.renderer.SubmitNodeCollection;
 import net.minecraft.client.renderer.feature.ItemFeatureRenderer;
-import net.minecraft.client.renderer.item.ItemStackRenderState;
-import net.minecraft.client.resources.model.geometry.BakedQuad;
-import net.minecraft.world.item.ItemDisplayContext;
+import net.minecraft.client.renderer.feature.submit.SubmitNode;
 
 // SpongePowered Mixin
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
+import org.spongepowered.asm.mixin.injection.ModifyArg;
 
 // Magnatour
 import roeyqian.magnatour.mixinhelper.glint.RenderHelperForGlint;
@@ -34,31 +27,31 @@ import roeyqian.magnatour.mixinhelper.glint.RenderHelperForGlint;
 @Environment(EnvType.CLIENT) @Mixin(value = SubmitNodeCollection.class, priority = 3600000)
 public class SubmitNodeCollectionMixin {
 
-  /* Universe Items: Mark Item Submit for Glint
-   */
-  @Inject(method = "submitItem(Lcom/mojang/blaze3d/vertex/PoseStack;"
-      + "Lnet/minecraft/world/item/ItemDisplayContext;III[I"
-      + "Ljava/util/List;"
-      + "Lnet/minecraft/client/renderer/item/ItemStackRenderState$FoilType;)V",
-      at = @At(
-          value = "INVOKE",
-          target = "Lnet/minecraft/client/renderer/feature/ItemFeatureRenderer$Submit;hasTranslucency()Z"
-      ),
-      locals = LocalCapture.CAPTURE_FAILHARD)
-  private void inSubmitItem(
-      PoseStack poseStack,
-      ItemDisplayContext displayContext,
-      int lightCoords,
-      int overlayCoords,
-      int outlineColor,
-      int[] tintLayers,
-      java.util.List<BakedQuad> quads,
-      ItemStackRenderState.FoilType foilType,
-      CallbackInfo ci,
-      PoseStack.Pose pose,
-      ItemFeatureRenderer.Submit submit
+  private static SubmitNode mark(
+      SubmitNode node
   ) {
-    RenderHelperForGlint.markLastSubmit(submit);
+    if (node instanceof ItemFeatureRenderer.Submit submit) {
+      RenderHelperForGlint.markLastSubmit(submit);
+    }
+    return node;
+  }
+
+  @ModifyArg(method = "submitItem", at = @At(value = "INVOKE",
+      target = "Lnet/minecraft/client/renderer/feature/phase/SimpleFeatureRenderPhase;submit" +
+          "(Lnet/minecraft/client/renderer/feature/submit/SubmitNode;)V"), index = 0)
+  private SubmitNode magnatour$markSolidItem(
+      SubmitNode node
+  ) {
+    return mark(node);
+  }
+
+  @ModifyArg(method = "submitItem", at = @At(value = "INVOKE",
+      target = "Lnet/minecraft/client/renderer/feature/phase/FeatureRenderPhase;submit" +
+          "(Lnet/minecraft/client/renderer/feature/submit/SubmitNode;)V"), index = 0)
+  private SubmitNode magnatour$markTranslucentItem(
+      SubmitNode node
+  ) {
+    return mark(node);
   }
 
 }

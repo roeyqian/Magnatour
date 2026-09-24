@@ -23,7 +23,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.dimension.end.EnderDragonFight;
 import net.minecraft.world.level.levelgen.Heightmap;
-import net.minecraft.world.level.levelgen.feature.EndPodiumFeature;
 
 // Magnatour
 import roeyqian.magnatour.registry.content.SupremeBlocks;
@@ -91,7 +90,7 @@ public final class WorldHelperForBossFight {
 
     BlockPos eggPos = level.getHeightmapPos(
         Heightmap.Types.MOTION_BLOCKING,
-        EndPodiumFeature.getLocation(origin)
+        origin
     );
     BlockPos worktablePos = findWorktablePos(level, eggPos);
     level.setBlockAndUpdate(worktablePos, rewardBlock.defaultBlockState());

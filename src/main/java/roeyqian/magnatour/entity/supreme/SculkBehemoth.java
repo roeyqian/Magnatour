@@ -430,7 +430,7 @@ public class SculkBehemoth extends Mob implements Enemy, CustomBossEntity {
         entity.hurtServer(world, damageSources().mobAttack(this), 200.0F);
         Vec3 knockback = chargeDirection.scale(4.0).add(0, 2.0, 0);
         entity.setDeltaMovement(knockback);
-        entity.hurtMarked = true;
+        entity.syncVelocity = true;
 
         chargeHit = true;
         chargeStunTimer = 60;
@@ -509,7 +509,7 @@ public class SculkBehemoth extends Mob implements Enemy, CustomBossEntity {
 
       target.hurtServer(world, damageSources().sonicBoom(this), 20.0F);
       target.push(dir.x * 0.3, 0.2, dir.z * 0.3);
-      target.hurtMarked = true;
+      target.syncVelocity = true;
 
       sonicBoomCooldown = 40;
     }
@@ -592,7 +592,7 @@ public class SculkBehemoth extends Mob implements Enemy, CustomBossEntity {
                   2.0 + strength,
                   knockDir.z * strength * 2.5
               );
-              entity.hurtMarked = true;
+              entity.syncVelocity = true;
             }
           }
 

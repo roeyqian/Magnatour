@@ -11,9 +11,6 @@ package roeyqian.magnatour.block.universe;
 import java.util.Collections;
 import java.util.List;
 
-// Mojang
-import com.mojang.serialization.MapCodec;
-
 // Minecraft
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -48,8 +45,6 @@ import roeyqian.magnatour.blockentity.universe.UniverseLibraryEntity;
 import roeyqian.magnatour.registry.content.UniverseBlockEntities;
 
 public class UniverseLibrary extends BaseEntityBlock {
-
-  public static final MapCodec<UniverseLibrary> CODEC = simpleCodec(UniverseLibrary::new);
 
   public static final EnumProperty<Direction> FACING = BlockStateProperties.HORIZONTAL_FACING;
 
@@ -103,11 +98,6 @@ public class UniverseLibrary extends BaseEntityBlock {
     if (!world.isClientSide()) execShulker(world, pos, blockEntity, player);
 
     return super.playerWillDestroy(world, pos, state, player);
-  }
-
-  @Override @NonNull
-  protected MapCodec<? extends UniverseLibrary> codec() {
-    return CODEC;
   }
 
   @Override

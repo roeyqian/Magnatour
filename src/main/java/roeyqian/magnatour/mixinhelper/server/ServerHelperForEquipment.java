@@ -11,6 +11,7 @@ package roeyqian.magnatour.mixinhelper.server;
 import java.util.OptionalInt;
 
 // Minecraft
+import net.minecraft.world.item.component.SwingAnimation;
 import net.minecraft.advancements.triggers.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -102,7 +103,7 @@ public final class ServerHelperForEquipment {
     );
     player.level().gameEvent(player, GameEvent.FLUID_PICKUP, pos);
     CriteriaTriggers.FILLED_BUCKET.trigger(player, taken);
-    player.swing(InteractionHand.MAIN_HAND, true);
+    player.swing(InteractionHand.MAIN_HAND, SwingAnimation.DEFAULT, true);
   }
 
   private static void execShovelMode(
@@ -130,8 +131,8 @@ public final class ServerHelperForEquipment {
       return;
     }
 
-    player.swing(InteractionHand.MAIN_HAND, true);
-    level.playSound(null, pos, SoundEvents.SHOVEL_FLATTEN, SoundSource.BLOCKS, 1.0f, 1.0f);
+    player.swing(InteractionHand.MAIN_HAND, SwingAnimation.DEFAULT, true);
+    level.playSound(null, pos, SoundEvents.SHOVEL_FLATTEN.value(), SoundSource.BLOCKS, 1.0f, 1.0f);
     level.setBlock(pos, newState, Block.UPDATE_ALL | Block.UPDATE_IMMEDIATE);
     ci.cancel();
   }

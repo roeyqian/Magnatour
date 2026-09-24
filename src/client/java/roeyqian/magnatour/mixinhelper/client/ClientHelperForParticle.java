@@ -37,7 +37,7 @@ public final class ClientHelperForParticle {
       ClientboundLevelParticlesPacket packet,
       CallbackInfo ci
   ) {
-    if (packet.getCount() <= PARTICLE_PACKET_COUNT_CAP) {
+    if (packet.count() <= PARTICLE_PACKET_COUNT_CAP) {
       return;
     }
 
@@ -50,22 +50,28 @@ public final class ClientHelperForParticle {
       RandomSource random,
       ClientboundLevelParticlesPacket packet
   ) {
+    boolean alternative = packet.randomizationType().isAlternative();
+    boolean randomSpeed = packet.randomizationType()
+        == ClientboundLevelParticlesPacket.RandomizationType.ALTERNATIVE_WITH_SPEED;
     for (int i = 0; i < PARTICLE_PACKET_COUNT_CAP; i++) {
-      double xVariance = random.nextGaussian() * packet.getXDist();
-      double yVariance = random.nextGaussian() * packet.getYDist();
-      double zVariance = random.nextGaussian() * packet.getZDist();
-      double xa = random.nextGaussian() * packet.getMaxSpeed();
-      double ya = random.nextGaussian() * packet.getMaxSpeed();
-      double za = random.nextGaussian() * packet.getMaxSpeed();
+      double xVariance = (alternative ? random.nextDouble() : random.nextGaussian()) * packet.xDist();
+      double yVariance = (alternative ? random.nextDouble() : random.nextGaussian()) * packet.yDist();
+      double zVariance = (alternative ? random.nextDouble() : random.nextGaussian()) * packet.zDist();
+      double xa = (alternative ? randomSpeed ? random.nextDouble() : 1.0 : random.nextGaussian())
+          * packet.xMaxSpeed();
+      double ya = (alternative ? randomSpeed ? random.nextDouble() : 1.0 : random.nextGaussian())
+          * packet.yMaxSpeed();
+      double za = (alternative ? randomSpeed ? random.nextDouble() : 1.0 : random.nextGaussian())
+          * packet.zMaxSpeed();
 
       try {
         level.addParticle(
-            packet.getParticle(),
-            packet.isOverrideLimiter(),
+            packet.particle(),
+            packet.overrideLimiter(),
             packet.alwaysShow(),
-            packet.getX() + xVariance,
-            packet.getY() + yVariance,
-            packet.getZ() + zVariance,
+            packet.x() + xVariance,
+            packet.y() + yVariance,
+            packet.z() + zVariance,
             xa,
             ya,
             za

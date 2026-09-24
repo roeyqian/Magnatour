@@ -8,8 +8,7 @@
           "type": "minecraft:item",
           "name": "magnatour:ever_water_soil"
         }
-      ],
-      "conditions": []
+      ]
     }
   ]
 }

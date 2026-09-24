@@ -7,9 +7,6 @@
  */
 package roeyqian.magnatour.block.universe;
 
-// Mojang
-import com.mojang.serialization.MapCodec;
-
 // Minecraft
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
@@ -33,8 +30,6 @@ import roeyqian.magnatour.blockentity.universe.UniverseRefineryEntity;
 import roeyqian.magnatour.registry.content.UniverseBlockEntities;
 
 public class UniverseRefinery extends AbstractFurnaceBlock {
-
-  public static final MapCodec<UniverseRefinery> CODEC = simpleCodec(UniverseRefinery::new);
 
   public UniverseRefinery(
       Properties settings
@@ -67,11 +62,6 @@ public class UniverseRefinery extends AbstractFurnaceBlock {
       @NonNull BlockState state
   ) {
     return new UniverseRefineryEntity(pos, state);
-  }
-
-  @Override @NonNull
-  protected MapCodec<? extends UniverseRefinery> codec() {
-    return CODEC;
   }
 
   @Override

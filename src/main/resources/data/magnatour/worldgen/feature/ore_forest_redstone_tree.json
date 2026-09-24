@@ -1,0 +1,15 @@
+{
+  "type": "magnatour:ore_tree",
+  "trunk": {
+    "id": "minecraft:redstone_ore",
+    "properties": {
+      "lit": "false"
+    }
+  },
+  "foliage": {
+    "id": "minecraft:redstone_block"
+  },
+  "min_height": 4,
+  "max_height": 7,
+  "foliage_radius": 2
+}

@@ -157,8 +157,7 @@ public final class SupremeChestRenderer implements BlockEntityRenderer<SupremeCh
         -1,
         getSprite(state),
         this.sprites,
-        0,
-        state.breakProgress
+        0
     );
 
     poseStack.popPose();

@@ -7,9 +7,6 @@
  */
 package roeyqian.magnatour.block.universe;
 
-// Mojang
-import com.mojang.serialization.MapCodec;
-
 // Fabric
 import net.fabricmc.fabric.api.menu.v1.ExtendedMenuProvider;
 
@@ -36,8 +33,6 @@ import roeyqian.magnatour.menu.universe.UniverseTeleportPointMenu;
 
 public class UniverseTeleportPoint extends BaseEntityBlock {
 
-  public static final MapCodec<UniverseTeleportPoint> CODEC = simpleCodec(UniverseTeleportPoint::new);
-
   public UniverseTeleportPoint(
       Properties settings
   ) {
@@ -50,11 +45,6 @@ public class UniverseTeleportPoint extends BaseEntityBlock {
       @NonNull BlockState state
   ) {
     return new UniverseTeleportPointEntity(pos, state);
-  }
-
-  @Override @NonNull
-  protected MapCodec<? extends BaseEntityBlock> codec() {
-    return CODEC;
   }
 
   @Override @NonNull

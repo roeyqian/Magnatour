@@ -17,6 +17,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 
 // Minecraft
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
@@ -80,8 +82,8 @@ public class OreContinentPortal extends Block {
 
   @Override
   public void playerDestroy(
-      @NonNull Level world,
-      @NonNull Player player,
+      @NonNull ServerLevel world,
+      @NonNull ServerPlayer player,
       @NonNull BlockPos pos,
       @NonNull BlockState state,
       BlockEntity blockEntity,

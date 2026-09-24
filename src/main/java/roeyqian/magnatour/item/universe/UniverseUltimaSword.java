@@ -8,6 +8,7 @@
 package roeyqian.magnatour.item.universe;
 
 // Minecraft
+import net.minecraft.world.item.component.SwingAnimation;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.resources.Identifier;
@@ -132,7 +133,7 @@ public class UniverseUltimaSword extends Item {
       Player player
   ) {
     if (player == null) return InteractionResult.PASS;
-    player.swing(player.getUsedItemHand());
+    player.swing(player.getUsedItemHand(), SwingAnimation.DEFAULT, false);
     if (!(world instanceof ServerLevel)) return InteractionResult.PASS;
 
     double speedMultiplier = 5.0F;

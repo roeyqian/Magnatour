@@ -8,6 +8,7 @@
 package roeyqian.magnatour.item.universe;
 
 // Minecraft
+import net.minecraft.world.item.component.SwingAnimation;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponents;
@@ -103,7 +104,7 @@ public class UniverseBucket extends Item {
       return InteractionResult.FAIL;
     }
 
-    player.swing(hand);
+    player.swing(hand, SwingAnimation.DEFAULT, false);
 
     if (!level.isClientSide()) {
       if (block instanceof LiquidBlockContainer container && fluidToPlace == Fluids.WATER) {

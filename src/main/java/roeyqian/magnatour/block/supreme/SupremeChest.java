@@ -13,9 +13,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
-// Mojang
-import com.mojang.serialization.MapCodec;
-
 // Fabric
 import net.fabricmc.fabric.api.menu.v1.ExtendedMenuProvider;
 
@@ -82,8 +79,6 @@ import roeyqian.magnatour.menu.supreme.SupremeChestMenu;
 import roeyqian.magnatour.registry.content.SupremeBlockEntities;
 
 public class SupremeChest extends BaseEntityBlock implements SimpleWaterloggedBlock, WorldlyContainerHolder {
-
-  public static final MapCodec<SupremeChest> CODEC = simpleCodec(SupremeChest::new);
 
   public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 
@@ -252,11 +247,6 @@ public class SupremeChest extends BaseEntityBlock implements SimpleWaterloggedBl
       boolean movedByPiston
   ) {
     Containers.updateNeighboursAfterDestroy(state, level, pos);
-  }
-
-  @Override @NonNull
-  protected MapCodec<? extends SupremeChest> codec() {
-    return CODEC;
   }
 
   @Override

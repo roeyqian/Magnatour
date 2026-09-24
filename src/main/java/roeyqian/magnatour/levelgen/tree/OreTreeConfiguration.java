@@ -9,12 +9,12 @@ package roeyqian.magnatour.levelgen.tree;
 
 // Mojang
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 // Minecraft
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
 
 public record OreTreeConfiguration(
     BlockState trunk,
@@ -22,10 +22,10 @@ public record OreTreeConfiguration(
     int minHeight,
     int maxHeight,
     int foliageRadius
-) implements FeatureConfiguration {
+) {
 
-  public static final Codec<OreTreeConfiguration> CODEC =
-      RecordCodecBuilder.create((instance) -> instance.group(
+  public static final MapCodec<OreTreeConfiguration> CODEC =
+      RecordCodecBuilder.mapCodec((instance) -> instance.group(
               BlockState.CODEC.fieldOf("trunk")
                   .forGetter(OreTreeConfiguration::trunk),
               BlockState.CODEC.fieldOf("foliage")

@@ -16,7 +16,14 @@
       }
     },
     "minecraft:visual/fog_color": "#d7f8ff",
-    "minecraft:visual/sky_color": "#a9dcff"
+    "minecraft:visual/sky_color": "#a9dcff",
+    "minecraft:gameplay/natural_mob_spawns": {
+      "argument": {
+        "spawn_costs": {},
+        "spawns_by_category": {}
+      },
+      "modifier": "overlay"
+    }
   },
   "carvers": [],
   "downfall": 0.6,
@@ -24,7 +31,12 @@
     "water_color": "#3f76e4"
   },
   "features": [
-    [], [], [], [], [], [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
     [
       "minecraft:ore_coal_upper",
       "minecraft:ore_coal_lower",
@@ -43,7 +55,8 @@
       "minecraft:ore_lapis_buried",
       "minecraft:ore_copper"
     ],
-    [], [],
+    [],
+    [],
     [
       "magnatour:lake_center_island_dandelion",
       "magnatour:lake_center_island_poppy",
@@ -53,17 +66,5 @@
     ]
   ],
   "has_precipitation": true,
-  "spawn_costs": {},
-  "spawners": {
-    "ambient": [],
-    "axolotls": [],
-    "creature": [],
-    "misc": [],
-    "monster": [],
-    "underground_water_creature": [],
-    "water_ambient": [],
-    "water_creature": []
-  },
   "temperature": 0.8
 }
-

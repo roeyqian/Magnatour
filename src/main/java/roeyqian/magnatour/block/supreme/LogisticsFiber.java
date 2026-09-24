@@ -10,9 +10,6 @@ package roeyqian.magnatour.block.supreme;
 // Java Standard
 import java.util.Map;
 
-// Mojang
-import com.mojang.serialization.MapCodec;
-
 // Minecraft
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -48,8 +45,6 @@ import roeyqian.magnatour.blockentity.supreme.LogisticsFiberEntity;
 import roeyqian.magnatour.registry.content.SupremeBlockEntities;
 
 public class LogisticsFiber extends BaseEntityBlock {
-
-  public static final MapCodec<LogisticsFiber> CODEC = simpleCodec(LogisticsFiber::new);
 
   public static final BooleanProperty DOWN = BooleanProperty.create("down");
   public static final BooleanProperty EAST = BlockStateProperties.EAST;
@@ -128,11 +123,6 @@ public class LogisticsFiber extends BaseEntityBlock {
       @NonNull BlockState state
   ) {
     return new LogisticsFiberEntity(pos, state);
-  }
-
-  @Override @NonNull
-  protected MapCodec<? extends BaseEntityBlock> codec() {
-    return CODEC;
   }
 
   @Override

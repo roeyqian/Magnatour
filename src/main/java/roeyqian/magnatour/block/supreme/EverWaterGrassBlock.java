@@ -10,10 +10,6 @@ package roeyqian.magnatour.block.supreme;
 // Java Standard
 import java.util.List;
 
-// Mojang
-import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
-
 // Minecraft
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
@@ -27,6 +23,7 @@ import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.BonemealableBlock;
+import net.minecraft.world.level.block.BonemealSource;
 import net.minecraft.world.level.block.SnowLayerBlock;
 import net.minecraft.world.level.block.SpreadingSnowyBlock;
 import net.minecraft.world.level.block.VegetationBlock;
@@ -43,21 +40,11 @@ import roeyqian.magnatour.registry.content.SupremeBlocks;
 
 public class EverWaterGrassBlock extends SpreadingSnowyBlock implements BonemealableBlock {
 
-  public static final MapCodec<EverWaterGrassBlock> CODEC = RecordCodecBuilder.mapCodec(instance ->
-      instance.group(
-          propertiesCodec(),
-          ResourceKey.codec(Registries.BLOCK).fieldOf("base_block").forGetter(b -> b.baseBlockKey)
-      ).apply(instance, EverWaterGrassBlock::new)
-  );
-
-  private final ResourceKey<Block> baseBlockKey;
-
   public EverWaterGrassBlock(
       BlockBehaviour.Properties settings,
       ResourceKey<Block> baseBlock
   ) {
     super(settings, baseBlock);
-    this.baseBlockKey = baseBlock;
   }
 
   @Override
@@ -65,7 +52,8 @@ public class EverWaterGrassBlock extends SpreadingSnowyBlock implements Bonemeal
       @NonNull Level world,
       @NonNull RandomSource random,
       @NonNull BlockPos pos,
-      @NonNull BlockState state
+      @NonNull BlockState state,
+      BonemealSource source
   ) {
     return true;
   }
@@ -74,7 +62,8 @@ public class EverWaterGrassBlock extends SpreadingSnowyBlock implements Bonemeal
   public boolean isValidBonemealTarget(
       LevelReader world,
       BlockPos pos,
-      @NonNull BlockState state
+      @NonNull BlockState state,
+      BonemealSource source
   ) {
     return world.getBlockState(pos.above()).isAir();
   }
@@ -84,7 +73,8 @@ public class EverWaterGrassBlock extends SpreadingSnowyBlock implements Bonemeal
       @NonNull ServerLevel world,
       @NonNull RandomSource random,
       BlockPos pos,
-      @NonNull BlockState state
+      @NonNull BlockState state,
+      BonemealSource source
   ) {
     BlockPos above = pos.above();
     var placedFeatureRegistry = world.registryAccess().lookupOrThrow(Registries.PLACED_FEATURE);
@@ -132,11 +122,6 @@ public class EverWaterGrassBlock extends SpreadingSnowyBlock implements Bonemeal
           random, target
       );
     }
-  }
-
-  @Override @NonNull
-  protected MapCodec<EverWaterGrassBlock> codec() {
-    return CODEC;
   }
 
   @Override

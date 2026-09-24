@@ -17,7 +17,6 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.biome.BiomeSource;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.feature.Feature;
-import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.StructureType;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceType;
@@ -57,14 +56,14 @@ public interface WorldgenRegHelper {
     );
   }
 
-  static <FC extends FeatureConfiguration> Feature<FC> registerFeature(
+  static <F extends Feature> MapCodec<F> registerFeature(
       String path,
-      Feature<FC> feature
+      MapCodec<F> codec
   ) {
     return Registry.register(
-        BuiltInRegistries.FEATURE,
+        BuiltInRegistries.FEATURE_TYPE,
         id(path),
-        feature
+        codec
     );
   }
 

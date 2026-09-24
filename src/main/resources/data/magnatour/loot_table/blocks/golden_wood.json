@@ -8,8 +8,7 @@
           "type": "minecraft:item",
           "name": "magnatour:golden_wood"
         }
-      ],
-      "conditions": []
+      ]
     }
   ]
 }

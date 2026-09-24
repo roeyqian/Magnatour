@@ -22,6 +22,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.MouseHandler;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.item.component.SwingAnimation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.block.BucketPickup;
@@ -36,12 +37,11 @@ import net.minecraft.world.phys.Vec3;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 // Lightweight Java Game Library
-import org.lwjgl.glfw.GLFW;
+import org.lwjgl.sdl.SDLMouse;
 
 // Magnatour
 import roeyqian.magnatour.level.network.UniverseBucketPickupPayload;
 import roeyqian.magnatour.item.universe.UniverseBucket;
-import roeyqian.magnatour.mixin.screen.WindowAccessor;
 import roeyqian.magnatour.screen.universe.UniverseConsoleScreen;
 
 @Environment(EnvType.CLIENT)
@@ -65,8 +65,7 @@ public final class ClientHelperForEquipment {
     }
     if (state == null) return;
 
-    long windowHandle = ((WindowAccessor) (Object) client.getWindow()).getHandle();
-    GLFW.glfwSetCursorPos(windowHandle, state.mouseX, state.mouseY);
+    SDLMouse.SDL_WarpMouseInWindow(client.getWindow().handle(), (float) state.mouseX, (float) state.mouseY);
   }
 
   public static void handleBeforeSetScreen(
@@ -92,7 +91,7 @@ public final class ClientHelperForEquipment {
     if (hitResult.getType() != HitResult.Type.BLOCK || !canPickupFluidAt(client, hitResult)) return;
 
     ClientPlayNetworking.send(new UniverseBucketPickupPayload());
-    client.player.swing(InteractionHand.MAIN_HAND);
+    client.player.swing(InteractionHand.MAIN_HAND, SwingAnimation.DEFAULT, false);
     cir.setReturnValue(true);
   }
 

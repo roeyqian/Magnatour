@@ -8,6 +8,7 @@
 package roeyqian.magnatour.menu.universe;
 
 // Minecraft
+import net.minecraft.util.Prediction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
@@ -98,7 +99,7 @@ public class UniverseLibraryMenu extends AbstractContainerMenu {
     int maxOffset = Math.max(0, (int) Math.ceil(getInventorySize() / 9.0) - 6);
     if (id >= 0 && id <= maxOffset) {
       if (!this.getCarried().isEmpty()) {
-        player.drop(this.getCarried(), false);
+        player.drop(this.getCarried(), false, Prediction.SERVER_ONLY);
         this.setCarried(ItemStack.EMPTY);
       }
 

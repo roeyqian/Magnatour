@@ -7,9 +7,6 @@
  */
 package roeyqian.magnatour.block.supreme;
 
-// Mojang
-import com.mojang.serialization.MapCodec;
-
 // Fabric
 import net.fabricmc.fabric.api.menu.v1.ExtendedMenuProvider;
 
@@ -45,8 +42,6 @@ import roeyqian.magnatour.menu.supreme.RedstoneTriggerMenu;
 import roeyqian.magnatour.registry.content.SupremeBlockEntities;
 
 public class RedstoneTrigger extends BaseEntityBlock {
-
-  public static final MapCodec<RedstoneTrigger> CODEC = simpleCodec(RedstoneTrigger::new);
 
   public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
 
@@ -100,11 +95,6 @@ public class RedstoneTrigger extends BaseEntityBlock {
       updateSignalNeighbours(world, pos, state.getBlock());
     }
     super.affectNeighborsAfterRemoval(state, world, pos, moved);
-  }
-
-  @Override @NonNull
-  protected MapCodec<? extends BaseEntityBlock> codec() {
-    return CODEC;
   }
 
   @Override

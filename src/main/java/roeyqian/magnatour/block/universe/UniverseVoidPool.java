@@ -7,9 +7,6 @@
  */
 package roeyqian.magnatour.block.universe;
 
-// Mojang
-import com.mojang.serialization.MapCodec;
-
 // Minecraft
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
@@ -33,8 +30,6 @@ import roeyqian.magnatour.blockentity.universe.UniverseVoidPoolEntity;
 import roeyqian.magnatour.registry.content.UniverseBlockEntities;
 
 public class UniverseVoidPool extends BaseEntityBlock {
-
-  public static final MapCodec<UniverseVoidPool> CODEC = simpleCodec(UniverseVoidPool::new);
 
   public UniverseVoidPool(
       Properties settings
@@ -76,11 +71,6 @@ public class UniverseVoidPool extends BaseEntityBlock {
       world.updateNeighbourForOutputSignal(pos, this);
     }
     super.affectNeighborsAfterRemoval(state, world, pos, moved);
-  }
-
-  @Override @NonNull
-  protected MapCodec<? extends BaseEntityBlock> codec() {
-    return CODEC;
   }
 
   @Override @NonNull

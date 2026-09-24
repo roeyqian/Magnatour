@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Optional;
 
 // Minecraft
+import net.minecraft.util.Prediction;
 import net.minecraft.network.protocol.game.ClientboundContainerSetSlotPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -92,7 +93,7 @@ public interface CustomCraftingBlock {
     if (originalStack.getCount() == movedStack.getCount()) return ItemStack.EMPTY;
     currentSlot.onTake(player, originalStack);
 
-    if (slot == getResultId()) player.drop(originalStack, false);
+    if (slot == getResultId()) player.drop(originalStack, false, Prediction.SERVER_ONLY);
     return movedStack;
   }
 

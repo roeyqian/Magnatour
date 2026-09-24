@@ -8,18 +8,17 @@
 package roeyqian.magnatour.mixinhelper.portal;
 
 // Minecraft
-import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.effect.MobEffects;
 
 public final class RenderHelperForPortalEffect {
 
   public static float handleTick(
-      Minecraft minecraft,
+      LocalPlayer player,
       float spinningEffectSpeed
   ) {
-    if (minecraft.player != null
-        && minecraft.player.portalEffectIntensity <= 0
-        && minecraft.player.getEffectBlendFactor(MobEffects.NAUSEA, 1.0F) > 0) {
+    if (player.portalEffectIntensity <= 0
+        && player.getEffectBlendFactor(MobEffects.NAUSEA, 1.0F) > 0) {
       return 20.0F;
     }
     return spinningEffectSpeed;

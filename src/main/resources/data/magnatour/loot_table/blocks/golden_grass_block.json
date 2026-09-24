@@ -8,8 +8,7 @@
           "type": "minecraft:item",
           "name": "magnatour:golden_grass_block"
         }
-      ],
-      "conditions": []
+      ]
     }
   ]
 }

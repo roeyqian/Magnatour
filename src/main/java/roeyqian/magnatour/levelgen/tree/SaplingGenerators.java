@@ -7,13 +7,11 @@
  */
 package roeyqian.magnatour.levelgen.tree;
 
-// Java Standard
-import java.util.Optional;
-
 // Minecraft
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.util.random.WeightedList;
 import net.minecraft.world.level.block.grower.TreeGrower;
 
 // Magnatour
@@ -23,25 +21,23 @@ public final class SaplingGenerators {
 
   public static final TreeGrower GOLDEN = new TreeGrower(
       "golden",
-      Optional.empty(),
-      Optional.of(
-          ResourceKey.create(
-              Registries.CONFIGURED_FEATURE,
-              Identifier.fromNamespaceAndPath(Magnatour.MOD_ID, "golden_tree")
-          )
-      ),
-      Optional.empty()
+      WeightedList.of(),
+      WeightedList.of(),
+      WeightedList.of(),
+      ResourceKey.create(
+          Registries.FEATURE,
+          Identifier.fromNamespaceAndPath(Magnatour.MOD_ID, "golden_tree")
+      )
   );
   public static final TreeGrower UNIVERSE = new TreeGrower(
       "universe",
-      Optional.empty(),
-      Optional.of(
-          ResourceKey.create(
-              Registries.CONFIGURED_FEATURE,
-              Identifier.fromNamespaceAndPath(Magnatour.MOD_ID, "universe_tree")
-          )
-      ),
-      Optional.empty()
+      WeightedList.of(),
+      WeightedList.of(),
+      WeightedList.of(),
+      ResourceKey.create(
+          Registries.FEATURE,
+          Identifier.fromNamespaceAndPath(Magnatour.MOD_ID, "universe_tree")
+      )
   );
 
 }

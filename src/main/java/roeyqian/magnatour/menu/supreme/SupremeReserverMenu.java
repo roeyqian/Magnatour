@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 // Minecraft
+import net.minecraft.util.Prediction;
 import net.minecraft.core.Holder;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.Container;
@@ -241,7 +242,7 @@ public class SupremeReserverMenu extends AbstractContainerMenu {
     else inputInventory.setItem(0, inputStack);
 
     for (ItemStack output : outputs) {
-      if (!player.getInventory().add(output.copy())) player.drop(output, false);
+      if (!player.getInventory().add(output.copy())) player.drop(output, false, Prediction.SERVER_ONLY);
     }
 
     broadcastChanges();

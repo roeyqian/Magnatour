@@ -8,8 +8,7 @@
           "type": "minecraft:item",
           "name": "magnatour:chunk_tnt"
         }
-      ],
-      "conditions": []
+      ]
     }
   ]
 }

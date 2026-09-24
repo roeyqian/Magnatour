@@ -36,7 +36,7 @@ public record UniverseTeleportPointPayload(
 
   public static final StreamCodec<RegistryFriendlyByteBuf, UniverseTeleportPointPayload> CODEC =
       StreamCodec.composite(
-          StreamCodec.ofMember((value, buf) -> buf.writeEnum(value), buf -> buf.readEnum(Action.class)),
+          ByteBufCodecs.idMapper(id -> Action.values()[id], Action::ordinal),
           UniverseTeleportPointPayload::action,
           BlockPos.STREAM_CODEC,
           UniverseTeleportPointPayload::blockPos,

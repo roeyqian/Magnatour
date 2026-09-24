@@ -84,7 +84,7 @@ public interface BlockRegHelper {
               .randomTicks()
               .instabreak()
               .sound(SoundType.CROP)
-              .pushReaction(PushReaction.DESTROY),
+              .pushReaction(PushReaction.POPPED),
           setting -> setting.rarity(Rarity.RARE)
       );
     } else {
@@ -94,7 +94,7 @@ public interface BlockRegHelper {
               .randomTicks()
               .instabreak()
               .sound(SoundType.CROP)
-              .pushReaction(PushReaction.DESTROY),
+              .pushReaction(PushReaction.POPPED),
           setting -> setting.rarity(Rarity.EPIC)
       );
     }
@@ -165,9 +165,9 @@ public interface BlockRegHelper {
               .noOcclusion()
               .isValidSpawn(Blocks::ocelotOrParrot)
               .isSuffocating(Blocks::never)
-              .isViewBlocking(Blocks::never)
+              .isViewBlocking((state, level, pos, shape) -> false)
               .ignitedByLava()
-              .pushReaction(PushReaction.DESTROY)
+              .pushReaction(PushReaction.POPPED)
               .isRedstoneConductor(Blocks::never),
           setting -> setting.rarity(Rarity.RARE)
       );
@@ -180,9 +180,9 @@ public interface BlockRegHelper {
               .noOcclusion()
               .isValidSpawn(Blocks::ocelotOrParrot)
               .isSuffocating(Blocks::never)
-              .isViewBlocking(Blocks::never)
+              .isViewBlocking((state, level, pos, shape) -> false)
               .ignitedByLava()
-              .pushReaction(PushReaction.DESTROY)
+              .pushReaction(PushReaction.POPPED)
               .isRedstoneConductor(Blocks::never),
           setting -> setting.rarity(Rarity.EPIC)
       );
@@ -219,7 +219,7 @@ public interface BlockRegHelper {
               .randomTicks()
               .instabreak()
               .sound(SoundType.GRASS)
-              .pushReaction(PushReaction.DESTROY),
+              .pushReaction(PushReaction.POPPED),
           setting -> setting.rarity(Rarity.RARE)
       );
     } else {
@@ -230,7 +230,7 @@ public interface BlockRegHelper {
               .randomTicks()
               .instabreak()
               .sound(SoundType.GRASS)
-              .pushReaction(PushReaction.DESTROY),
+              .pushReaction(PushReaction.POPPED),
           setting -> setting.rarity(Rarity.EPIC)
       );
     }

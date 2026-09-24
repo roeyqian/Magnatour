@@ -28,7 +28,7 @@ public class UniverseCookingRecipe extends AbstractCookingRecipe {
 
   public static final RecipeSerializer<UniverseCookingRecipe> SERIALIZER =
       new RecipeSerializer<>(
-          AbstractCookingRecipe.cookingMapCodec(UniverseCookingRecipe::new, 10240),
+          AbstractCookingRecipe.cookingMapCodec(UniverseCookingRecipe::new),
           AbstractCookingRecipe.cookingStreamCodec(UniverseCookingRecipe::new)
       );
 

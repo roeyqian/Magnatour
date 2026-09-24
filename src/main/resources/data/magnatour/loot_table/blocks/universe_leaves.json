@@ -9,15 +9,18 @@
           "name": "magnatour:universe_sapling"
         }
       ],
-      "conditions": [
-        {
-          "condition": "minecraft:random_chance",
-          "chance": 0.25
-        },
-        {
-          "condition": "minecraft:survives_explosion"
-        }
-      ]
+      "condition": {
+        "type": "minecraft:all_of",
+        "terms": [
+          {
+            "type": "minecraft:random_chance",
+            "chance": 0.25
+          },
+          {
+            "type": "minecraft:survives_explosion"
+          }
+        ]
+      }
     },
     {
       "rolls": 1,
@@ -27,15 +30,18 @@
           "name": "magnatour:universe_gemred"
         }
       ],
-      "conditions": [
-        {
-          "condition": "minecraft:random_chance",
-          "chance": 0.1
-        },
-        {
-          "condition": "minecraft:survives_explosion"
-        }
-      ]
+      "condition": {
+        "type": "minecraft:all_of",
+        "terms": [
+          {
+            "type": "minecraft:random_chance",
+            "chance": 0.1
+          },
+          {
+            "type": "minecraft:survives_explosion"
+          }
+        ]
+      }
     },
     {
       "rolls": 1,
@@ -45,15 +51,18 @@
           "name": "magnatour:universe_gemblue"
         }
       ],
-      "conditions": [
-        {
-          "condition": "minecraft:random_chance",
-          "chance": 0.1
-        },
-        {
-          "condition": "minecraft:survives_explosion"
-        }
-      ]
+      "condition": {
+        "type": "minecraft:all_of",
+        "terms": [
+          {
+            "type": "minecraft:random_chance",
+            "chance": 0.1
+          },
+          {
+            "type": "minecraft:survives_explosion"
+          }
+        ]
+      }
     },
     {
       "rolls": 1,
@@ -63,15 +72,18 @@
           "name": "magnatour:universe_gemyellow"
         }
       ],
-      "conditions": [
-        {
-          "condition": "minecraft:random_chance",
-          "chance": 0.1
-        },
-        {
-          "condition": "minecraft:survives_explosion"
-        }
-      ]
+      "condition": {
+        "type": "minecraft:all_of",
+        "terms": [
+          {
+            "type": "minecraft:random_chance",
+            "chance": 0.1
+          },
+          {
+            "type": "minecraft:survives_explosion"
+          }
+        ]
+      }
     },
     {
       "rolls": 1,
@@ -81,15 +93,18 @@
           "name": "magnatour:universe_gemgreen"
         }
       ],
-      "conditions": [
-        {
-          "condition": "minecraft:random_chance",
-          "chance": 0.1
-        },
-        {
-          "condition": "minecraft:survives_explosion"
-        }
-      ]
+      "condition": {
+        "type": "minecraft:all_of",
+        "terms": [
+          {
+            "type": "minecraft:random_chance",
+            "chance": 0.1
+          },
+          {
+            "type": "minecraft:survives_explosion"
+          }
+        ]
+      }
     },
     {
       "rolls": 1,
@@ -99,15 +114,18 @@
           "name": "magnatour:universe_gemblack"
         }
       ],
-      "conditions": [
-        {
-          "condition": "minecraft:random_chance",
-          "chance": 0.1
-        },
-        {
-          "condition": "minecraft:survives_explosion"
-        }
-      ]
+      "condition": {
+        "type": "minecraft:all_of",
+        "terms": [
+          {
+            "type": "minecraft:random_chance",
+            "chance": 0.1
+          },
+          {
+            "type": "minecraft:survives_explosion"
+          }
+        ]
+      }
     },
     {
       "rolls": 1,
@@ -117,15 +135,18 @@
           "name": "magnatour:universe_gemwhite"
         }
       ],
-      "conditions": [
-        {
-          "condition": "minecraft:random_chance",
-          "chance": 0.1
-        },
-        {
-          "condition": "minecraft:survives_explosion"
-        }
-      ]
+      "condition": {
+        "type": "minecraft:all_of",
+        "terms": [
+          {
+            "type": "minecraft:random_chance",
+            "chance": 0.1
+          },
+          {
+            "type": "minecraft:survives_explosion"
+          }
+        ]
+      }
     }
   ]
 }

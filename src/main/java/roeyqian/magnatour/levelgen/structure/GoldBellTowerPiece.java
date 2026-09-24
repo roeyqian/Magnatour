@@ -85,7 +85,7 @@ public final class GoldBellTowerPiece extends StructurePiece {
       @NonNull ChunkPos chunkPos,
       @NonNull BlockPos pivot
   ) {
-    StructureTemplateManager templateManager = level.getLevel().getStructureManager();
+    StructureTemplateManager templateManager = level.getLevel().getStructureTemplateManager();
     Optional<StructureTemplate> lowerOpt = templateManager.get(LOWER_TEMPLATE);
     Optional<StructureTemplate> upperOpt = templateManager.get(UPPER_TEMPLATE);
     if (lowerOpt.isEmpty() || upperOpt.isEmpty()) {

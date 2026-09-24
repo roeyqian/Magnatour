@@ -7,9 +7,6 @@
  */
 package roeyqian.magnatour.block.supreme;
 
-// Mojang
-import com.mojang.serialization.MapCodec;
-
 // Minecraft
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
@@ -39,8 +36,6 @@ import roeyqian.magnatour.registry.content.SupremeBlockEntities;
 public class SupremeBlock extends BaseEntityBlock {
 
   public static final int LIGHT_LEVEL = 12;
-
-  public static final MapCodec<SupremeBlock> CODEC = simpleCodec(SupremeBlock::new);
 
   public static final BooleanProperty LIT = BlockStateProperties.LIT;
 
@@ -84,11 +79,6 @@ public class SupremeBlock extends BaseEntityBlock {
       VirtualBlockLightManager.setActive(world, pos, LIGHT_LEVEL, false);
       super.affectNeighborsAfterRemoval(state, world, pos, moved);
     }
-  }
-
-  @Override @NonNull
-  protected MapCodec<? extends BaseEntityBlock> codec() {
-    return CODEC;
   }
 
   @Override

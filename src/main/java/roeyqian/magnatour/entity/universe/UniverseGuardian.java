@@ -8,6 +8,7 @@
 package roeyqian.magnatour.entity.universe;
 
 // Minecraft
+import net.minecraft.world.item.component.SwingAnimation;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -60,7 +61,7 @@ public class UniverseGuardian extends TamableAnimal {
   ) {
     super(entityType, world);
     this.noPhysics = true;
-    this.moveControl = new FlyingMoveControl(this, 20, true);
+    this.moveControl = new FlyingMoveControl<>(this, 20, true);
     this.setPathfindingMalus(PathType.WATER, 0.0F);
     this.setPathfindingMalus(PathType.LAVA, 0.0F);
   }
@@ -132,7 +133,7 @@ public class UniverseGuardian extends TamableAnimal {
       @NonNull InteractionHand hand
   ) {
     if (hand != InteractionHand.MAIN_HAND) return InteractionResult.PASS;
-    player.swing(hand);
+    player.swing(hand, SwingAnimation.DEFAULT, false);
 
     if (!this.level().isClientSide()) return execTame(player);
     return this.level().isClientSide() ? InteractionResult.SUCCESS : InteractionResult.PASS;

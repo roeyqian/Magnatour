@@ -9,8 +9,8 @@ package roeyqian.magnatour.blockentity.supreme;
 
 // Minecraft
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
@@ -26,6 +26,9 @@ import org.jspecify.annotations.Nullable;
 // Magnatour
 import roeyqian.magnatour.block.supreme.RedstoneTrigger;
 import roeyqian.magnatour.registry.content.SupremeBlockEntities;
+
+// Other
+import io.netty.buffer.ByteBuf;
 
 public class RedstoneTriggerEntity extends BlockEntity {
 
@@ -188,11 +191,8 @@ public class RedstoneTriggerEntity extends BlockEntity {
     NORMAL(0),
     PULSE(1);
 
-    public static final StreamCodec<RegistryFriendlyByteBuf, TriggerMode> PACKET_CODEC =
-        StreamCodec.ofMember(
-            (mode, buf) -> buf.writeEnum(mode),
-            buf -> buf.readEnum(TriggerMode.class)
-        );
+  public static final StreamCodec<ByteBuf, TriggerMode> PACKET_CODEC =
+        ByteBufCodecs.idMapper(id -> TriggerMode.values()[id], TriggerMode::ordinal);
 
     private final int id;
 

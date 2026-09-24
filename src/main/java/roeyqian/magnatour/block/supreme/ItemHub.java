@@ -14,9 +14,6 @@ import java.util.function.Function;
 // Google Guava
 import com.google.common.collect.ImmutableMap;
 
-// Mojang
-import com.mojang.serialization.MapCodec;
-
 // Fabric
 import net.fabricmc.fabric.api.menu.v1.ExtendedMenuProvider;
 
@@ -70,8 +67,6 @@ import roeyqian.magnatour.menu.supreme.ItemHubMenu;
 import roeyqian.magnatour.registry.content.SupremeBlockEntities;
 
 public class ItemHub extends BaseEntityBlock {
-
-  public static final MapCodec<ItemHub> CODEC = simpleCodec(ItemHub::new);
 
   public static final BooleanProperty ENABLED = BlockStateProperties.ENABLED;
 
@@ -131,11 +126,6 @@ public class ItemHub extends BaseEntityBlock {
       boolean movedByPiston
   ) {
     Containers.updateNeighboursAfterDestroy(state, level, pos);
-  }
-
-  @Override
-  protected @NonNull MapCodec<? extends BaseEntityBlock> codec() {
-    return CODEC;
   }
 
   @Override

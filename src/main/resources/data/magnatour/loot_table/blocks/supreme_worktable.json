@@ -8,8 +8,7 @@
           "type": "minecraft:item",
           "name": "magnatour:supreme_worktable"
         }
-      ],
-      "conditions": []
+      ]
     }
   ]
 }

@@ -1,7 +1,8 @@
 {
-  "parent": "minecraft:block/template_farmland",
+  "parent": "minecraft:block/template_cube_bottom_top_indented",
   "textures": {
     "top": "minecraft:block/farmland_moist",
-    "dirt": "magnatour:block/ever_water_soil"
+    "bottom": "magnatour:block/ever_water_soil",
+    "side": "magnatour:block/ever_water_soil"
   }
 }

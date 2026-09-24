@@ -22,9 +22,6 @@ import net.minecraft.client.KeyMapping;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 
-// Lightweight Java Game Library
-import org.lwjgl.glfw.GLFW;
-
 // Magnatour
 import roeyqian.magnatour.Magnatour;
 import roeyqian.magnatour.level.network.DurableItemModePayload;
@@ -35,7 +32,7 @@ import roeyqian.magnatour.item.supreme.SupremeMobile;
 import roeyqian.magnatour.item.universe.UniverseConsole;
 
 @Environment(EnvType.CLIENT)
-public final class RegKeyBindings {
+  public final class RegKeyBindings {
 
   public static final KeyMapping.Category UNIVERSE_CATEGORY =
       KeyMapping.Category.register(Identifier.fromNamespaceAndPath(Magnatour.MOD_ID, "general"));
@@ -43,8 +40,8 @@ public final class RegKeyBindings {
   public static final KeyMapping universeModeKey = KeyMappingHelper.registerKeyMapping(
       new KeyMapping(
           "key.magnatour.universe_mode",
-          InputConstants.Type.KEYSYM,
-          GLFW.GLFW_KEY_U,
+          InputConstants.Type.KEYBOARD,
+          InputConstants.KEY_U,
           UNIVERSE_CATEGORY
       )
   );

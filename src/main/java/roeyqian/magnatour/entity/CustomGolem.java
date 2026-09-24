@@ -12,6 +12,7 @@ import java.util.Objects;
 import java.util.function.Predicate;
 
 // Minecraft
+import net.minecraft.world.item.component.SwingAnimation;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -420,7 +421,7 @@ public final class CustomGolem<T extends AbstractGolem & NeutralMob> {
 
       this.attackCooldown = this.adjustedTickDelay(this.attackIntervals[this.attackPatternIndex]);
       this.attackPatternIndex = (this.attackPatternIndex + 1) % this.attackIntervals.length;
-      this.mob.swing(InteractionHand.MAIN_HAND);
+      this.mob.swing(InteractionHand.MAIN_HAND, SwingAnimation.DEFAULT, false);
       if (this.mob.level() instanceof ServerLevel serverLevel) {
         this.mob.doHurtTarget(serverLevel, target);
       }

@@ -3,15 +3,13 @@
   "criteria": {
     "summon_sculk_behemoth": {
       "conditions": {
-        "entity": [
-          {
-            "condition": "minecraft:entity_properties",
-            "entity": "this",
-            "predicate": {
-              "minecraft:entity_type": "magnatour:sculk_behemoth"
-            }
-          }
-        ]
+        "entity": {
+          "entity": "this",
+          "predicate": {
+            "minecraft:entity_type": "magnatour:sculk_behemoth"
+          },
+          "type": "minecraft:entity_properties"
+        }
       },
       "trigger": "minecraft:summoned_entity"
     }

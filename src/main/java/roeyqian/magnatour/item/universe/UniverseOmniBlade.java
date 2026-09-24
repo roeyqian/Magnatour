@@ -14,10 +14,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
 
 // Minecraft
+import net.minecraft.world.item.component.SwingAnimation;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.resources.Identifier;
@@ -29,7 +28,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.HoeItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
@@ -51,14 +49,14 @@ import roeyqian.magnatour.registry.logic.CustomComponents;
 
 public class UniverseOmniBlade extends Item {
 
-  private static final Map<Block, TillBehavior> TILLING_ACTIONS = Map.ofEntries(
-      Map.entry(Blocks.GRASS_BLOCK, tillToFarmland()),
-      Map.entry(Blocks.DIRT_PATH, tillToFarmland()),
-      Map.entry(Blocks.DIRT, tillToFarmland()),
-      Map.entry(Blocks.COARSE_DIRT, tillToDirt()),
-      Map.entry(Blocks.ROOTED_DIRT, tillToDirt()),
-      Map.entry(SupremeBlocks.EVER_WATER_GRASS_BLOCK, tillToEverWaterFarmland()),
-      Map.entry(SupremeBlocks.EVER_WATER_SOIL, tillToEverWaterFarmland())
+  private static final Map<Block, BlockState> TILLING_ACTIONS = Map.ofEntries(
+      Map.entry(Blocks.GRASS_BLOCK, Blocks.FARMLAND.defaultBlockState()),
+      Map.entry(Blocks.DIRT_PATH, Blocks.FARMLAND.defaultBlockState()),
+      Map.entry(Blocks.DIRT, Blocks.FARMLAND.defaultBlockState()),
+      Map.entry(Blocks.COARSE_DIRT, Blocks.DIRT.defaultBlockState()),
+      Map.entry(Blocks.ROOTED_DIRT, Blocks.DIRT.defaultBlockState()),
+      Map.entry(SupremeBlocks.EVER_WATER_GRASS_BLOCK, SupremeBlocks.EVER_WATER_FARMLAND.defaultBlockState()),
+      Map.entry(SupremeBlocks.EVER_WATER_SOIL, SupremeBlocks.EVER_WATER_FARMLAND.defaultBlockState())
   );
 
   public UniverseOmniBlade(
@@ -95,32 +93,11 @@ public class UniverseOmniBlade extends Item {
     Player player = context.getPlayer();
 
     if (player == null) return InteractionResult.PASS;
-    player.swing(player.getUsedItemHand());
+    player.swing(player.getUsedItemHand(), SwingAnimation.DEFAULT, false);
     if (world.isClientSide()) return InteractionResult.PASS;
 
     int mode = context.getItemInHand().getOrDefault(CustomComponents.UNIVERSE_OMNI_BLADE_MODE, 0);
     return mode == 0 ? execTilling(context, world, blockPos) : execChainBreak(world, blockPos, player);
-  }
-
-  private static TillBehavior tillToFarmland() {
-    return new TillBehavior(
-        HoeItem::onlyIfAirAbove,
-        HoeItem.changeIntoState(Blocks.FARMLAND.defaultBlockState())
-    );
-  }
-
-  private static TillBehavior tillToDirt() {
-    return new TillBehavior(
-        HoeItem::onlyIfAirAbove,
-        HoeItem.changeIntoState(Blocks.DIRT.defaultBlockState())
-    );
-  }
-
-  private static TillBehavior tillToEverWaterFarmland() {
-    return new TillBehavior(
-        HoeItem::onlyIfAirAbove,
-        HoeItem.changeIntoState(SupremeBlocks.EVER_WATER_FARMLAND.defaultBlockState())
-    );
   }
 
   private static Properties applySettings(
@@ -174,20 +151,18 @@ public class UniverseOmniBlade extends Item {
       Level world,
       BlockPos blockPos
   ) {
-    TillBehavior behavior = TILLING_ACTIONS.get(world.getBlockState(blockPos).getBlock());
-    if (behavior == null) return InteractionResult.PASS;
-
-    if (!behavior.predicate().test(context)) return InteractionResult.PASS;
+    BlockState result = TILLING_ACTIONS.get(world.getBlockState(blockPos).getBlock());
+    if (result == null || !world.getBlockState(blockPos.above()).isAir()) return InteractionResult.PASS;
 
     world.playSound(
         null,
         blockPos,
-        SoundEvents.HOE_TILL,
+        SoundEvents.HOE_TILL.value(),
         SoundSource.BLOCKS,
         1.0F,
         1.0F
     );
-    behavior.consumer().accept(context);
+    world.setBlock(blockPos, result, Block.UPDATE_ALL);
     return InteractionResult.SUCCESS;
   }
 
@@ -232,10 +207,5 @@ public class UniverseOmniBlade extends Item {
     }
     return InteractionResult.SUCCESS;
   }
-
-  private record TillBehavior(
-      Predicate<UseOnContext> predicate,
-      Consumer<UseOnContext> consumer
-  ) {}
 
 }

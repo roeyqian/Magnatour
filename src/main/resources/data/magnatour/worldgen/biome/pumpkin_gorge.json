@@ -16,20 +16,71 @@
       }
     },
     "minecraft:visual/fog_color": "#fadcdc",
-    "minecraft:visual/sky_color": "#fab4b4"
+    "minecraft:visual/sky_color": "#fab4b4",
+    "minecraft:gameplay/natural_mob_spawns": {
+      "argument": {
+        "spawn_costs": {},
+        "spawns_by_category": {
+          "creature": [
+            {
+              "type": "minecraft:sheep",
+              "weight": 16,
+              "count": {
+                "type": "minecraft:uniform",
+                "min_inclusive": 4,
+                "max_inclusive": 5
+              }
+            },
+            {
+              "type": "minecraft:pig",
+              "weight": 14,
+              "count": {
+                "type": "minecraft:uniform",
+                "min_inclusive": 4,
+                "max_inclusive": 5
+              }
+            },
+            {
+              "type": "minecraft:chicken",
+              "weight": 16,
+              "count": {
+                "type": "minecraft:uniform",
+                "min_inclusive": 4,
+                "max_inclusive": 5
+              }
+            },
+            {
+              "type": "minecraft:cow",
+              "weight": 10,
+              "count": {
+                "type": "minecraft:uniform",
+                "min_inclusive": 3,
+                "max_inclusive": 4
+              }
+            }
+          ]
+        }
+      },
+      "modifier": "overlay"
+    },
+    "minecraft:gameplay/creature_world_gen_spawn_probability": 0.2
   },
   "carvers": [
     "minecraft:cave",
     "minecraft:cave_extra_underground",
     "minecraft:canyon"
   ],
-  "creature_spawn_probability": 0.2,
   "downfall": 0.0,
   "effects": {
     "water_color": "#3f76e4"
   },
   "features": [
-    [], [], [], [], [], [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
     [
       "minecraft:ore_coal_upper",
       "minecraft:ore_coal_lower",
@@ -48,50 +99,13 @@
       "minecraft:ore_lapis_buried",
       "minecraft:ore_copper"
     ],
-    [], [],
+    [],
+    [],
     [
       "magnatour:pumpkin_gorge_pumpkin"
     ],
     []
   ],
   "has_precipitation": false,
-  "spawn_costs": {},
-  "spawners": {
-    "ambient": [],
-    "axolotls": [],
-    "creature": [
-      {
-        "type": "minecraft:sheep",
-        "maxCount": 5,
-        "minCount": 4,
-        "weight": 16
-      },
-      {
-        "type": "minecraft:pig",
-        "maxCount": 5,
-        "minCount": 4,
-        "weight": 14
-      },
-      {
-        "type": "minecraft:chicken",
-        "maxCount": 5,
-        "minCount": 4,
-        "weight": 16
-      },
-      {
-        "type": "minecraft:cow",
-        "maxCount": 4,
-        "minCount": 3,
-        "weight": 10
-      }
-    ],
-    "misc": [],
-    "monster": [],
-    "underground_water_creature": [],
-    "water_ambient": [],
-    "water_creature": []
-  },
   "temperature": 2.0
 }
-
-

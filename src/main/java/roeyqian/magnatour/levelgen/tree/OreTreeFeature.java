@@ -8,32 +8,42 @@
 package roeyqian.magnatour.levelgen.tree;
 
 // Mojang
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 
 // Minecraft
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.feature.Feature;
-import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 
-public final class OreTreeFeature extends Feature<OreTreeConfiguration> {
+public final class OreTreeFeature implements Feature {
+
+  public static final MapCodec<OreTreeFeature> CODEC =
+      OreTreeConfiguration.CODEC.xmap(OreTreeFeature::new, OreTreeFeature::config);
+
+  private final OreTreeConfiguration config;
 
   public OreTreeFeature(
-      Codec<OreTreeConfiguration> codec
+      OreTreeConfiguration config
   ) {
-    super(codec);
+    this.config = config;
+  }
+
+  @Override
+  public MapCodec<OreTreeFeature> codec() {
+    return CODEC;
   }
 
   @Override
   public boolean place(
-      FeaturePlaceContext<OreTreeConfiguration> context
+      WorldGenLevel level,
+      ChunkGenerator generator,
+      RandomSource random,
+      BlockPos origin
   ) {
-    WorldGenLevel level = context.level();
-    BlockPos origin = context.origin();
-    RandomSource random = context.random();
-    OreTreeConfiguration config = context.config();
+    OreTreeConfiguration config = this.config;
 
     int height = config.minHeight();
     int heightRange = config.maxHeight() - config.minHeight();
@@ -154,6 +164,10 @@ public final class OreTreeFeature extends Feature<OreTreeConfiguration> {
         }
       }
     }
+  }
+
+  private OreTreeConfiguration config() {
+    return config;
   }
 
 }
