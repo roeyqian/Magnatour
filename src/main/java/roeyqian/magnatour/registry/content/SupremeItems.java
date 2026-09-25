@@ -24,7 +24,7 @@ import roeyqian.magnatour.item.CustomToolMaterial;
 import roeyqian.magnatour.item.supreme.StrangeLingeringPotion;
 import roeyqian.magnatour.item.supreme.StrangePotion;
 import roeyqian.magnatour.item.supreme.StrangeSplashPotion;
-import roeyqian.magnatour.item.supreme.SupremeMobile;
+import roeyqian.magnatour.item.supreme.MirrorMobile;
 import roeyqian.magnatour.registry.ItemRegHelper;
 
 /*
@@ -33,54 +33,54 @@ import roeyqian.magnatour.registry.ItemRegHelper;
 public final class SupremeItems {
 
   // Handheld - Tools and Weapons
-  public static final Item SUPREME_AXE = ItemRegHelper.registerDurableItem(
-      "supreme_axe",
+  public static final Item EMPEROR_AXE = ItemRegHelper.registerDurableItem(
+      "emperor_axe",
       Item::new, CustomItemSetting.applySupremeDefaults(new Item.Properties())
           .axe(CustomToolMaterial.SUPREME_TOOL, 5.0F, -3.0F)
   );
-  public static final Item SUPREME_HOE = ItemRegHelper.registerDurableItem(
-      "supreme_hoe",
+  public static final Item EMPEROR_HOE = ItemRegHelper.registerDurableItem(
+      "emperor_hoe",
       Item::new, CustomItemSetting.applySupremeDefaults(new Item.Properties())
           .hoe(CustomToolMaterial.SUPREME_TOOL, -4.0F, 0.0F)
   );
-  public static final Item SUPREME_MOBILE = ItemRegHelper.registerDurableItem(
-      "supreme_mobile",
-      SupremeMobile::new, CustomItemSetting.applySupremeDefaults(new Item.Properties())
+  public static final Item MIRROR_MOBILE = ItemRegHelper.registerDurableItem(
+      "mirror_mobile",
+      MirrorMobile::new, CustomItemSetting.applySupremeDefaults(new Item.Properties())
   );
-  public static final Item SUPREME_PICKAXE = ItemRegHelper.registerDurableItem(
-      "supreme_pickaxe",
+  public static final Item EMPEROR_PICKAXE = ItemRegHelper.registerDurableItem(
+      "emperor_pickaxe",
       Item::new, CustomItemSetting.applySupremeDefaults(new Item.Properties())
           .pickaxe(CustomToolMaterial.SUPREME_TOOL, 1.0F, -2.8F)
   );
-  public static final Item SUPREME_SHOVEL = ItemRegHelper.registerDurableItem(
-      "supreme_shovel",
+  public static final Item EMPEROR_SHOVEL = ItemRegHelper.registerDurableItem(
+      "emperor_shovel",
       Item::new, CustomItemSetting.applySupremeDefaults(new Item.Properties())
           .shovel(CustomToolMaterial.SUPREME_TOOL, 1.5F, -3.0F)
   );
-  public static final Item SUPREME_SWORD = ItemRegHelper.registerDurableItem(
-      "supreme_sword", Item::new,
+  public static final Item EMPEROR_SWORD = ItemRegHelper.registerDurableItem(
+      "emperor_sword", Item::new,
       CustomItemSetting.applySupremeDefaults(new Item.Properties())
           .sword(CustomToolMaterial.SUPREME_TOOL, 3.0F, -2.4F)
   );
 
   // Armor
-  public static final Item SUPREME_BOOTS = ItemRegHelper.registerDurableItem(
-      "supreme_boots", Item::new,
+  public static final Item EMPEROR_BOOTS = ItemRegHelper.registerDurableItem(
+      "emperor_boots", Item::new,
       CustomItemSetting.applySupremeDefaults(new Item.Properties())
           .humanoidArmor(CustomArmorMaterial.SUPREME_ARMOR, ArmorType.BOOTS).enchantable(100)
   );
-  public static final Item SUPREME_CHESTPLATE = ItemRegHelper.registerDurableItem(
-      "supreme_chestplate", Item::new,
+  public static final Item EMPEROR_CHESTPLATE = ItemRegHelper.registerDurableItem(
+      "emperor_chestplate", Item::new,
       CustomItemSetting.applySupremeDefaults(new Item.Properties())
           .humanoidArmor(CustomArmorMaterial.SUPREME_ARMOR, ArmorType.CHESTPLATE).enchantable(100)
   );
-  public static final Item SUPREME_HELMET = ItemRegHelper.registerDurableItem(
-      "supreme_helmet", Item::new,
+  public static final Item EMPEROR_HELMET = ItemRegHelper.registerDurableItem(
+      "emperor_helmet", Item::new,
       CustomItemSetting.applySupremeDefaults(new Item.Properties())
           .humanoidArmor(CustomArmorMaterial.SUPREME_ARMOR, ArmorType.HELMET).enchantable(100)
   );
-  public static final Item SUPREME_LEGGINGS = ItemRegHelper.registerDurableItem(
-      "supreme_leggings", Item::new,
+  public static final Item EMPEROR_LEGGINGS = ItemRegHelper.registerDurableItem(
+      "emperor_leggings", Item::new,
       CustomItemSetting.applySupremeDefaults(new Item.Properties())
           .humanoidArmor(CustomArmorMaterial.SUPREME_ARMOR, ArmorType.LEGGINGS).enchantable(100)
   );
@@ -106,12 +106,12 @@ public final class SupremeItems {
       "supreme_core", 64, Item::new,
       new Item.Properties().rarity(Rarity.RARE)
   );
-  public static final Item SUPREME_CRYSTAL = ItemRegHelper.registerConsumableItem(
-      "supreme_crystal", 64, Item::new,
+  public static final Item FORTUNE_CRYSTAL = ItemRegHelper.registerConsumableItem(
+      "fortune_crystal", 64, Item::new,
       new Item.Properties().rarity(Rarity.RARE)
   );
-  public static final Item SUPREME_METAL = ItemRegHelper.registerConsumableItem(
-      "supreme_metal", 64, Item::new,
+  public static final Item FORTUNE_METAL = ItemRegHelper.registerConsumableItem(
+      "fortune_metal", 64, Item::new,
       new Item.Properties().rarity(Rarity.RARE)
   );
 
@@ -138,8 +138,8 @@ public final class SupremeItems {
       "strange_splash_potion",
       StrangeSplashPotion::new, new Item.Properties()
   );
-  public static final Item SUPREME_BANQUET = ItemRegHelper.registerConsumableItem(
-      "supreme_banquet", 64, Item::new,
+  public static final Item GREAT_BANQUET = ItemRegHelper.registerConsumableItem(
+      "great_banquet", 64, Item::new,
       new Item.Properties()
           .food(new FoodProperties(100, 10000.0F, true))
           .rarity(Rarity.RARE)

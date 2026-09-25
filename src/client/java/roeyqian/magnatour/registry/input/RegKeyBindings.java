@@ -28,7 +28,7 @@ import roeyqian.magnatour.level.network.DurableItemModePayload;
 import roeyqian.magnatour.item.universe.UniverseBucket;
 import roeyqian.magnatour.item.universe.UniverseOmniBlade;
 import roeyqian.magnatour.item.universe.UniverseUltimaSword;
-import roeyqian.magnatour.item.supreme.SupremeMobile;
+import roeyqian.magnatour.item.supreme.MirrorMobile;
 import roeyqian.magnatour.item.universe.UniverseConsole;
 
 @Environment(EnvType.CLIENT)
@@ -54,7 +54,7 @@ import roeyqian.magnatour.item.universe.UniverseConsole;
         if (client.player == null) return;
 
         Item item = client.player.getMainHandItem().getItem();
-        if (item instanceof SupremeMobile ||
+        if (item instanceof MirrorMobile ||
             item instanceof UniverseUltimaSword ||
             item instanceof UniverseOmniBlade ||
             item instanceof UniverseConsole ||

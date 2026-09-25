@@ -44,7 +44,7 @@ import roeyqian.magnatour.level.network.UniverseBootsDashPayload;
 import roeyqian.magnatour.level.network.UniverseBucketPickupPayload;
 import roeyqian.magnatour.level.network.UniverseConsoleBoundBlockPayload;
 import roeyqian.magnatour.item.RemoteAccessManager;
-import roeyqian.magnatour.item.supreme.SupremeMobile;
+import roeyqian.magnatour.item.supreme.MirrorMobile;
 import roeyqian.magnatour.item.universe.UniverseBucket;
 import roeyqian.magnatour.item.universe.UniverseConsole;
 import roeyqian.magnatour.item.universe.UniverseOmniBlade;
@@ -76,9 +76,9 @@ public final class NetworkManagerForBlock {
           Item item = stack.getItem();
 
           switch (item) {
-            case SupremeMobile _ -> execTogglingMode(
+            case MirrorMobile _ -> execTogglingMode(
                 player, stack,
-                CustomComponents.SUPREME_MOBILE_MODE, "msg.magnatour.supreme_mobile"
+                CustomComponents.MIRROR_MOBILE_MODE, "msg.magnatour.mirror_mobile"
             );
             case UniverseUltimaSword _ -> execTogglingMode(
                 player, stack,

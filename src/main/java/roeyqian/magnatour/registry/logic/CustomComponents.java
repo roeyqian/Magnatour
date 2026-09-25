@@ -28,8 +28,8 @@ import roeyqian.magnatour.registry.LogicRegHelper;
  */
 public final class CustomComponents {
 
-  public static final DataComponentType<String> SUPREME_MOBILE_BLOCK_ID = register(
-      "supreme_mobile_block_id",
+  public static final DataComponentType<String> MIRROR_MOBILE_BLOCK_ID = register(
+      "mirror_mobile_block_id",
       builder -> builder
           .persistent(Codec.STRING)
           .networkSynchronized(ByteBufCodecs.STRING_UTF8)
@@ -53,8 +53,8 @@ public final class CustomComponents {
       );
 
   // Supreme Group: Item
-  public static final DataComponentType<Integer> SUPREME_MOBILE_MODE = register(
-      "supreme_mobile_mode",
+  public static final DataComponentType<Integer> MIRROR_MOBILE_MODE = register(
+      "mirror_mobile_mode",
       builder -> builder
           .persistent(Codec.INT)
           .networkSynchronized(ByteBufCodecs.VAR_INT)

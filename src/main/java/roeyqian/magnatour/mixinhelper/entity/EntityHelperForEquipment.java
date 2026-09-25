@@ -145,10 +145,10 @@ public final class EntityHelperForEquipment {
       if (!slot.isArmor() || armorStack.isEmpty()) {
         continue;
       }
-      if (armorStack.is(SupremeItems.SUPREME_HELMET)
-          || armorStack.is(SupremeItems.SUPREME_CHESTPLATE)
-          || armorStack.is(SupremeItems.SUPREME_LEGGINGS)
-          || armorStack.is(SupremeItems.SUPREME_BOOTS)) {
+      if (armorStack.is(SupremeItems.EMPEROR_HELMET)
+          || armorStack.is(SupremeItems.EMPEROR_CHESTPLATE)
+          || armorStack.is(SupremeItems.EMPEROR_LEGGINGS)
+          || armorStack.is(SupremeItems.EMPEROR_BOOTS)) {
         count++;
       }
     }

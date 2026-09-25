@@ -70,7 +70,7 @@ public interface CustomItemSetting {
         );
   }
 
-  static ItemLore supremeLore(
+  static ItemLore itemLore(
       String itemId,
       int lineCount
   ) {
