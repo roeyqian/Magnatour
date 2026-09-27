@@ -8,7 +8,6 @@
 package roeyqian.magnatour.registry.output;
 
 // Java Standard
-import java.util.function.BooleanSupplier;
 import java.util.function.IntConsumer;
 import java.util.function.IntSupplier;
 
@@ -28,6 +27,7 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
@@ -45,6 +45,12 @@ import roeyqian.magnatour.block.CustomPortalVertex;
 
 @Environment(EnvType.CLIENT)
 public final class RegBlockLayers {
+
+  private static final int ARRIVAL_GRACE_TICKS = 20;
+
+  private static ResourceKey<Level> previousDimension;
+  private static boolean suppressArrivalPortal;
+  private static int arrivalGraceTicks;
 
   public static final Identifier HARVEST_PORTAL_OVERLAY_ID = Identifier.fromNamespaceAndPath(
       Magnatour.MOD_ID, "harvest_continent_portal_overlay"
@@ -83,21 +89,45 @@ public final class RegBlockLayers {
         OreContinentPortal.clientPortalTicks = 0;
         HarvestContinentPortal.clientPortalTicks = 0;
         UniverseMetaPortal.clientPortalTicks = 0;
+        previousDimension = null;
+        suppressArrivalPortal = false;
+        arrivalGraceTicks = 0;
         return;
       }
 
+      ResourceKey<Level> dimension = client.player.level().dimension();
+      if (previousDimension != null && previousDimension != dimension) {
+        suppressArrivalPortal = true;
+        arrivalGraceTicks = ARRIVAL_GRACE_TICKS;
+      }
+      previousDimension = dimension;
+
+      boolean inOrePortal = isPlayerInPortalType(client.player, OreContinentPortal.class);
+      boolean inHarvestPortal = isPlayerInPortalType(client.player, HarvestContinentPortal.class);
+      boolean inUniversePortal = isPlayerInPortalType(client.player, UniverseMetaPortal.class);
+      boolean inAnyPortal = inOrePortal || inHarvestPortal || inUniversePortal;
+
+      if (suppressArrivalPortal) {
+        if (inAnyPortal) {
+          // Keep fading while the player remains inside the destination portal.
+          arrivalGraceTicks = -1;
+        } else if (arrivalGraceTicks == -1 || --arrivalGraceTicks <= 0) {
+          suppressArrivalPortal = false;
+        }
+      }
+
       updatePortalTicks(
-          () -> isPlayerInPortalType(client.player, OreContinentPortal.class),
+          inOrePortal && !suppressArrivalPortal,
           OreContinentPortal.clientPortalTicks,
           ticks -> OreContinentPortal.clientPortalTicks = ticks
       );
       updatePortalTicks(
-          () -> isPlayerInPortalType(client.player, HarvestContinentPortal.class),
+          inHarvestPortal && !suppressArrivalPortal,
           HarvestContinentPortal.clientPortalTicks,
           ticks -> HarvestContinentPortal.clientPortalTicks = ticks
       );
       updatePortalTicks(
-          () -> isPlayerInPortalType(client.player, UniverseMetaPortal.class),
+          inUniversePortal && !suppressArrivalPortal,
           UniverseMetaPortal.clientPortalTicks,
           ticks -> UniverseMetaPortal.clientPortalTicks = ticks
       );
@@ -162,12 +192,12 @@ public final class RegBlockLayers {
   }
 
   private static void updatePortalTicks(
-      BooleanSupplier isInPortal,
+      boolean isInPortal,
       int currentTicks,
       IntConsumer setTicks
   ) {
     int maxTicks = CustomPortalVertex.TELEPORT_TICKS;
-    if (isInPortal.getAsBoolean()) {
+    if (isInPortal) {
       if (currentTicks < maxTicks) setTicks.accept(currentTicks + 1);
     } else {
       if (currentTicks > 0) setTicks.accept(currentTicks - 1);
@@ -178,7 +208,7 @@ public final class RegBlockLayers {
       LocalPlayer player,
       Class<? extends Block> portalClass
   ) {
-    AABB box = player.getBoundingBox().inflate(0.1);
+    AABB box = player.getBoundingBox();
     Level level = player.level();
 
     int minX = Mth.floor(box.minX);
@@ -193,7 +223,8 @@ public final class RegBlockLayers {
       for (int y = minY; y <= maxY; y++) {
         for (int z = minZ; z <= maxZ; z++) {
           pos.set(x, y, z);
-          if (portalClass.isInstance(level.getBlockState(pos).getBlock())) {
+          if (box.intersects(new AABB(pos))
+              && portalClass.isInstance(level.getBlockState(pos).getBlock())) {
             return true;
           }
         }
