@@ -49,6 +49,7 @@ import roeyqian.magnatour.item.universe.UniverseBucket;
 import roeyqian.magnatour.item.universe.UniverseConsole;
 import roeyqian.magnatour.item.universe.UniverseOmniBlade;
 import roeyqian.magnatour.item.universe.UniverseUltimaSword;
+import roeyqian.magnatour.menu.universe.UniverseConsoleMenu;
 import roeyqian.magnatour.mixinhelper.server.ServerHelperForEquipment;
 import roeyqian.magnatour.registry.logic.CustomComponents;
 import roeyqian.magnatour.registry.content.UniverseItems;
@@ -296,7 +297,9 @@ public final class NetworkManagerForBlock {
       ServerPlayNetworking.Context context
   ) {
     ServerPlayer player = context.player();
-    ItemStack consoleStack = player.getItemInHand(player.getUsedItemHand());
+    if (!(player.containerMenu instanceof UniverseConsoleMenu menu)) return;
+
+    ItemStack consoleStack = player.getItemInHand(menu.getConsoleHand());
 
     if (!(consoleStack.getItem() instanceof UniverseConsole)) return;
 

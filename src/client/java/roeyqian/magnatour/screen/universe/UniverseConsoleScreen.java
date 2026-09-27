@@ -11,6 +11,9 @@ package roeyqian.magnatour.screen.universe;
 import java.util.List;
 import java.util.ArrayList;
 
+// Mojang
+import com.mojang.blaze3d.platform.InputConstants;
+
 // Fabric
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 
@@ -154,7 +157,7 @@ public class UniverseConsoleScreen extends AbstractContainerScreen<UniverseConso
     double mouseY = event.y();
     int button = event.button();
 
-    if (button == 0) {
+    if (button == InputConstants.MOUSE_BUTTON_LEFT) {
       if (mouseOverScrollbar(mouseX, mouseY) && canScroll()) {
         this.isScrolling = true;
         updateScroll(mouseY);
@@ -191,7 +194,7 @@ public class UniverseConsoleScreen extends AbstractContainerScreen<UniverseConso
   public boolean mouseReleased(
       MouseButtonEvent event
   ) {
-    if (event.button() == 0) {
+    if (event.button() == InputConstants.MOUSE_BUTTON_LEFT) {
       this.isScrolling = false;
     }
     return super.mouseReleased(event);
@@ -406,18 +409,14 @@ public class UniverseConsoleScreen extends AbstractContainerScreen<UniverseConso
         BUTTON_WIDTH, BUTTON_HEIGHT
     );
 
-    String blockName = block.displayName();
-    String blockPos = " [" + block.pos().toShortString() + "]";
-    String fullText = blockName + blockPos;
+    String fullText = block.displayName() + " [" + block.pos().toShortString() + "]";
 
     int maxTextWidth = BUTTON_WIDTH - 10;
     if (this.font.width(fullText) > maxTextWidth) {
-      while (this.font.width(blockName + "..." + blockPos) > maxTextWidth) {
-        if (blockName.length() > 1) {
-          blockName = blockName.substring(0, blockName.length() - 1);
-        }
+      while (!fullText.isEmpty() && this.font.width(fullText + "...") > maxTextWidth) {
+        fullText = fullText.substring(0, fullText.length() - 1);
       }
-      fullText = blockName + "..." + blockPos;
+      fullText += "...";
     }
 
     int textX = baseX + (BUTTON_WIDTH - this.font.width(fullText)) / 2;

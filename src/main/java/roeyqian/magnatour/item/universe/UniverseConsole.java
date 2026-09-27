@@ -72,7 +72,7 @@ public class UniverseConsole extends Item {
     int mode = stack.getOrDefault(CustomComponents.UNIVERSE_CONSOLE_MODE, 0);
 
     if (mode == 0) {
-      return execWorkingManager(world, player, stack);
+      return execWorkingManager(world, player, stack, hand);
     }
 
     return InteractionResult.PASS;
@@ -134,7 +134,8 @@ public class UniverseConsole extends Item {
   private InteractionResult execWorkingManager(
       Level world,
       Player player,
-      ItemStack stack
+      ItemStack stack,
+      InteractionHand hand
   ) {
     if (world.isClientSide()) return InteractionResult.SUCCESS;
 
@@ -155,7 +156,7 @@ public class UniverseConsole extends Item {
           @NonNull Inventory inv,
           @NonNull Player player
       ) {
-        return new UniverseConsoleMenu(syncId, boundList);
+        return new UniverseConsoleMenu(syncId, boundList, hand);
       }
 
       @Override

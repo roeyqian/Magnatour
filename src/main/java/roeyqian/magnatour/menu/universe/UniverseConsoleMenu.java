@@ -9,6 +9,7 @@ package roeyqian.magnatour.menu.universe;
 
 // Minecraft
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 
@@ -21,20 +22,35 @@ import roeyqian.magnatour.registry.content.UniverseMenus;
 
 public class UniverseConsoleMenu extends AbstractContainerMenu {
 
+  private final InteractionHand consoleHand;
+
   private final UniverseConsole.BoundBlockList boundBlocks;
 
   public UniverseConsoleMenu(
       int syncId,
       UniverseConsole.BoundBlockList boundBlocks
   ) {
+    this(syncId, boundBlocks, InteractionHand.MAIN_HAND);
+  }
+
+  public UniverseConsoleMenu(
+      int syncId,
+      UniverseConsole.BoundBlockList boundBlocks,
+      InteractionHand consoleHand
+  ) {
     super(UniverseMenus.UNIVERSE_CONSOLE_HANDLER, syncId);
     this.boundBlocks = boundBlocks != null
         ? boundBlocks
         : UniverseConsole.BoundBlockList.EMPTY;
+    this.consoleHand = consoleHand;
   }
 
   public UniverseConsole.BoundBlockList getBoundBlocks() {
     return boundBlocks;
+  }
+
+  public InteractionHand getConsoleHand() {
+    return consoleHand;
   }
 
   @Override @NonNull
