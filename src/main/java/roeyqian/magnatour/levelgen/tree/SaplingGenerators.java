@@ -21,7 +21,10 @@ public final class SaplingGenerators {
 
   public static final TreeGrower GOLDEN = new TreeGrower(
       "golden",
-      WeightedList.of(),
+      WeightedList.of(ResourceKey.create(
+          Registries.FEATURE,
+          Identifier.fromNamespaceAndPath(Magnatour.MOD_ID, "golden_tree")
+      )),
       WeightedList.of(),
       WeightedList.of(),
       ResourceKey.create(
@@ -31,7 +34,10 @@ public final class SaplingGenerators {
   );
   public static final TreeGrower UNIVERSE = new TreeGrower(
       "universe",
-      WeightedList.of(),
+      WeightedList.of(ResourceKey.create(
+          Registries.FEATURE,
+          Identifier.fromNamespaceAndPath(Magnatour.MOD_ID, "universe_tree")
+      )),
       WeightedList.of(),
       WeightedList.of(),
       ResourceKey.create(
