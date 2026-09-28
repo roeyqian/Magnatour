@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/template_shelf_unconnected",
+  "textures": {
+    "all": "magnatour:block/universe_shelf",
+    "particle": "magnatour:block/stripped_universe_log_side"
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/template_wall_hanging_sign",
+  "textures": {
+    "all": "magnatour:block/universe_hanging_sign",
+    "particle": "magnatour:block/stripped_universe_log_side"
+  }
+}

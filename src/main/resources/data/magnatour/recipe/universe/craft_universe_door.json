@@ -1,0 +1,18 @@
+{
+  "type": "magnatour:universe_crafting",
+  "category": "building",
+  "group": "magnatour:items",
+  "pattern": [
+    "AA",
+    "AA",
+    "AA"
+  ],
+  "key": {
+    "A": "magnatour:universe_planks"
+  },
+  "result": {
+    "count": 3,
+    "id": "magnatour:universe_door"
+  },
+  "show_notification": true
+}

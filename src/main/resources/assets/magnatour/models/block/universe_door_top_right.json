@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/door_top_right",
+  "textures": {
+    "bottom": "magnatour:block/universe_door_bottom",
+    "top": "magnatour:block/universe_door_top"
+  }
+}

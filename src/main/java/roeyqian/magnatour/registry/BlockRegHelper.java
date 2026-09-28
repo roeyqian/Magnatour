@@ -13,12 +13,16 @@ import java.util.function.Function;
 import java.util.function.UnaryOperator;
 
 // Minecraft
+import net.minecraft.core.Direction;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.DoubleHighBlockItem;
+import net.minecraft.world.item.HangingSignItem;
+import net.minecraft.world.item.StandingAndWallBlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.level.block.Block;
@@ -259,6 +263,58 @@ public interface BlockRegHelper {
           setting -> setting.rarity(Rarity.EPIC)
       );
     }
+  }
+
+  static Block registerWoodBlockOnly(
+      String name,
+      Function<BlockBehaviour.Properties, Block> factory,
+      BlockBehaviour.Properties properties
+  ) {
+    Identifier id = Identifier.fromNamespaceAndPath(Magnatour.MOD_ID, name);
+    ResourceKey<Block> key = ResourceKey.create(Registries.BLOCK, id);
+    return Blocks.register(
+        key, factory,
+        properties.strength(128.0F, 3600000.0F)
+            .sound(SoundType.WOOD).ignitedByLava().requiresCorrectToolForDrops()
+    );
+  }
+
+  static Block registerWoodDoor(
+      String name,
+      Function<BlockBehaviour.Properties, Block> factory,
+      BlockBehaviour.Properties properties
+  ) {
+    Identifier id = Identifier.fromNamespaceAndPath(Magnatour.MOD_ID, name);
+    ResourceKey<Block> blockKey = ResourceKey.create(Registries.BLOCK, id);
+    ResourceKey<Item> itemKey = ResourceKey.create(Registries.ITEM, id);
+    Block block = Blocks.register(
+        blockKey, factory,
+        properties.strength(128.0F, 3600000.0F)
+            .sound(SoundType.WOOD).ignitedByLava().requiresCorrectToolForDrops()
+    );
+    BlockItem item = new DoubleHighBlockItem(
+        block, new Item.Properties().setId(itemKey).rarity(Rarity.EPIC)
+    );
+    item.registerBlocks(Item.BY_BLOCK, item);
+    Registry.register(BuiltInRegistries.ITEM, itemKey, item);
+    return block;
+  }
+
+  static Item registerWoodSignItem(
+      String name,
+      Block standing,
+      Block wall,
+      boolean hanging
+  ) {
+    Identifier id = Identifier.fromNamespaceAndPath(Magnatour.MOD_ID, name);
+    ResourceKey<Item> key = ResourceKey.create(Registries.ITEM, id);
+    Item.Properties properties = new Item.Properties().setId(key).rarity(Rarity.EPIC);
+    BlockItem item = hanging
+        ? new HangingSignItem(standing, wall, properties)
+        : new StandingAndWallBlockItem(standing, wall, Direction.DOWN, properties);
+    item.registerBlocks(Item.BY_BLOCK, item);
+    Registry.register(BuiltInRegistries.ITEM, key, item);
+    return item;
   }
 
 }

@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "magnatour:block/universe_slab"
+    },
+    "type=double": {
+      "model": "magnatour:block/universe_planks"
+    },
+    "type=top": {
+      "model": "magnatour:block/universe_slab_top"
+    }
+  }
+}

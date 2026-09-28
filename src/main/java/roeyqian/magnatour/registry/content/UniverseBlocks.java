@@ -7,8 +7,32 @@
  */
 package roeyqian.magnatour.registry.content;
 
+// Java Standard
+import java.util.Optional;
+
 // Minecraft
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.ButtonBlock;
+import net.minecraft.world.level.block.CeilingHangingSignBlock;
+import net.minecraft.world.level.block.DoorBlock;
+import net.minecraft.world.level.block.FenceBlock;
+import net.minecraft.world.level.block.FenceGateBlock;
+import net.minecraft.world.level.block.StandingSignBlock;
+import net.minecraft.world.level.block.PressurePlateBlock;
+import net.minecraft.world.level.block.SlabBlock;
+import net.minecraft.world.level.block.ShelfBlock;
+import net.minecraft.world.level.block.StairBlock;
+import net.minecraft.world.level.block.TrapDoorBlock;
+import net.minecraft.world.level.block.WallHangingSignBlock;
+import net.minecraft.world.level.block.WallSignBlock;
+import net.minecraft.world.level.block.state.properties.BlockSetType;
+import net.minecraft.world.level.block.state.properties.WoodType;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.Identifier;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.block.SaplingBlock;
 import net.minecraft.world.level.block.TransparentBlock;
@@ -72,6 +96,72 @@ public final class UniverseBlocks {
       "universe_planks", universe, Block::new,
       BlockBehaviour.Properties.of()
   );
+  public static final Block UNIVERSE_STAIRS = BlockRegHelper.registerWood(
+      "universe_stairs", universe,
+      properties -> new StairBlock(UNIVERSE_PLANKS.defaultBlockState(), properties),
+      BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_STAIRS)
+  );
+  public static final Block UNIVERSE_SLAB = BlockRegHelper.registerWood(
+      "universe_slab", universe, SlabBlock::new,
+      BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_SLAB)
+  );
+  public static final Block UNIVERSE_FENCE = BlockRegHelper.registerWood(
+      "universe_fence", universe, FenceBlock::new,
+      BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_FENCE)
+  );
+  public static final Block UNIVERSE_FENCE_GATE = BlockRegHelper.registerWood(
+      "universe_fence_gate", universe,
+      properties -> new FenceGateBlock(WoodType.OAK, properties),
+      BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_FENCE_GATE)
+  );
+  public static final Block UNIVERSE_DOOR = BlockRegHelper.registerWoodDoor(
+      "universe_door",
+      properties -> new DoorBlock(BlockSetType.OAK, properties),
+      BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_DOOR)
+  );
+  public static final Block UNIVERSE_TRAPDOOR = BlockRegHelper.registerWood(
+      "universe_trapdoor", universe,
+      properties -> new TrapDoorBlock(BlockSetType.OAK, properties),
+      BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_TRAPDOOR)
+  );
+  public static final Block UNIVERSE_PRESSURE_PLATE = BlockRegHelper.registerWood(
+      "universe_pressure_plate", universe,
+      properties -> new PressurePlateBlock(BlockSetType.OAK, properties),
+      BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_PRESSURE_PLATE)
+  );
+  public static final Block UNIVERSE_BUTTON = BlockRegHelper.registerWood(
+      "universe_button", universe,
+      properties -> new ButtonBlock(BlockSetType.OAK, 30, properties),
+      BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_BUTTON)
+  );
+  public static final Block UNIVERSE_SHELF = BlockRegHelper.registerWood(
+      "universe_shelf", universe, ShelfBlock::new,
+      BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_SHELF)
+  );
+  public static final Block UNIVERSE_SIGN = BlockRegHelper.registerWoodBlockOnly(
+      "universe_sign", properties -> new StandingSignBlock(WoodType.OAK, properties),
+      BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_SIGN)
+  );
+  public static final Block UNIVERSE_WALL_SIGN = BlockRegHelper.registerWoodBlockOnly(
+      "universe_wall_sign", properties -> new WallSignBlock(WoodType.OAK, properties),
+      BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_WALL_SIGN)
+          .overrideLootTable(signLootTable("universe_sign"))
+  );
+  public static final Item UNIVERSE_SIGN_ITEM = BlockRegHelper.registerWoodSignItem(
+      "universe_sign", UNIVERSE_SIGN, UNIVERSE_WALL_SIGN, false
+  );
+  public static final Block UNIVERSE_HANGING_SIGN = BlockRegHelper.registerWoodBlockOnly(
+      "universe_hanging_sign", properties -> new CeilingHangingSignBlock(WoodType.OAK, properties),
+      BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_HANGING_SIGN)
+  );
+  public static final Block UNIVERSE_WALL_HANGING_SIGN = BlockRegHelper.registerWoodBlockOnly(
+      "universe_wall_hanging_sign", properties -> new WallHangingSignBlock(WoodType.OAK, properties),
+      BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_WALL_HANGING_SIGN)
+          .overrideLootTable(signLootTable("universe_hanging_sign"))
+  );
+  public static final Item UNIVERSE_HANGING_SIGN_ITEM = BlockRegHelper.registerWoodSignItem(
+      "universe_hanging_sign", UNIVERSE_HANGING_SIGN, UNIVERSE_WALL_HANGING_SIGN, true
+  );
   public static final Block UNIVERSE_SAPLING = BlockRegHelper.registerSapling(
       "universe_sapling", universe, setting -> new SaplingBlock(SaplingGenerators.UNIVERSE, setting),
       BlockBehaviour.Properties.of()
@@ -122,6 +212,13 @@ public final class UniverseBlocks {
       "universe_meta_portal",
       roeyqian.magnatour.block.universe.UniverseMetaPortal::new
   );
+
+  private static Optional<ResourceKey<LootTable>> signLootTable(String name) {
+    return Optional.of(ResourceKey.create(
+        Registries.LOOT_TABLE,
+        Identifier.fromNamespaceAndPath(Magnatour.MOD_ID, "blocks/" + name)
+    ));
+  }
 
   private UniverseBlocks() {}
 

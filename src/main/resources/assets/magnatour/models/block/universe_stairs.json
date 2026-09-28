@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/stairs",
+  "textures": {
+    "bottom": "magnatour:block/universe_planks",
+    "side": "magnatour:block/universe_planks",
+    "top": "magnatour:block/universe_planks"
+  }
+}

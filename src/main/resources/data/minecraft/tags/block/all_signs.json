@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "magnatour:universe_sign",
+    "magnatour:universe_wall_sign",
+    "magnatour:universe_hanging_sign",
+    "magnatour:universe_wall_hanging_sign"
+  ]
+}

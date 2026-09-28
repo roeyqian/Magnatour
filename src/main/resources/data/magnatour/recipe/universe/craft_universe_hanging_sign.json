@@ -1,0 +1,22 @@
+{
+  "type": "magnatour:universe_crafting",
+  "category": "building",
+  "group": "magnatour:items",
+  "pattern": [
+    "B B",
+    "AAA",
+    "AAA"
+  ],
+  "key": {
+    "A": [
+      "magnatour:stripped_universe_log",
+      "magnatour:stripped_universe_wood"
+    ],
+    "B": "minecraft:iron_chain"
+  },
+  "result": {
+    "count": 6,
+    "id": "magnatour:universe_hanging_sign"
+  },
+  "show_notification": true
+}

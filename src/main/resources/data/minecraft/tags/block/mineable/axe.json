@@ -14,7 +14,20 @@
     "magnatour:universe_wood",
     "magnatour:stripped_universe_wood",
     "magnatour:universe_planks",
+    "magnatour:universe_stairs",
+    "magnatour:universe_slab",
+    "magnatour:universe_fence",
+    "magnatour:universe_fence_gate",
+    "magnatour:universe_door",
+    "magnatour:universe_trapdoor",
+    "magnatour:universe_pressure_plate",
+    "magnatour:universe_button",
     "magnatour:universe_library",
-    "magnatour:universe_workstation"
+    "magnatour:universe_workstation",
+    "magnatour:universe_sign",
+    "magnatour:universe_wall_sign",
+    "magnatour:universe_hanging_sign",
+    "magnatour:universe_wall_hanging_sign",
+    "magnatour:universe_shelf"
   ]
 }

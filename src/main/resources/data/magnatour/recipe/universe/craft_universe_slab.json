@@ -1,0 +1,16 @@
+{
+  "type": "magnatour:universe_crafting",
+  "category": "building",
+  "group": "magnatour:items",
+  "pattern": [
+    "AAA"
+  ],
+  "key": {
+    "A": "magnatour:universe_planks"
+  },
+  "result": {
+    "count": 6,
+    "id": "magnatour:universe_slab"
+  },
+  "show_notification": true
+}

@@ -1,0 +1,19 @@
+{
+  "type": "magnatour:universe_crafting",
+  "category": "building",
+  "group": "magnatour:items",
+  "pattern": [
+    "AAA",
+    "AAA",
+    " B "
+  ],
+  "key": {
+    "A": "magnatour:universe_planks",
+    "B": "minecraft:stick"
+  },
+  "result": {
+    "count": 3,
+    "id": "magnatour:universe_sign"
+  },
+  "show_notification": true
+}

@@ -1,0 +1,17 @@
+{
+  "type": "magnatour:universe_crafting",
+  "category": "building",
+  "group": "magnatour:items",
+  "pattern": [
+    "AAA",
+    "AAA"
+  ],
+  "key": {
+    "A": "magnatour:universe_planks"
+  },
+  "result": {
+    "count": 2,
+    "id": "magnatour:universe_trapdoor"
+  },
+  "show_notification": true
+}

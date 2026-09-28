@@ -1,0 +1,18 @@
+{
+  "type": "magnatour:universe_crafting",
+  "category": "building",
+  "group": "magnatour:items",
+  "pattern": [
+    "BAB",
+    "BAB"
+  ],
+  "key": {
+    "A": "magnatour:universe_planks",
+    "B": "minecraft:stick"
+  },
+  "result": {
+    "count": 1,
+    "id": "magnatour:universe_fence_gate"
+  },
+  "show_notification": true
+}
