@@ -11,6 +11,9 @@ package roeyqian.magnatour.screen.universe;
 import java.util.ArrayList;
 import java.util.List;
 
+// Mojang
+import com.mojang.blaze3d.platform.InputConstants;
+
 // Fabric
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 
@@ -172,7 +175,7 @@ public class UniverseTeleportPointScreen extends AbstractContainerScreen<Univers
       @NonNull MouseButtonEvent event,
       boolean doubled
   ) {
-    if (!addMode && event.button() == 0) {
+    if (!addMode && event.button() == InputConstants.MOUSE_BUTTON_LEFT) {
       if (mouseOverScrollbar(event.x(), event.y()) && canScroll()) {
         this.isScrolling = true;
         updateScroll(event.y());
@@ -218,8 +221,9 @@ public class UniverseTeleportPointScreen extends AbstractContainerScreen<Univers
   public boolean mouseReleased(
       MouseButtonEvent event
   ) {
-    if (event.button() == 0) {
+    if (event.button() == InputConstants.MOUSE_BUTTON_LEFT && this.isScrolling) {
       this.isScrolling = false;
+      return true;
     }
     return super.mouseReleased(event);
   }

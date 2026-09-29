@@ -7,6 +7,9 @@
  */
 package roeyqian.magnatour.screen.universe;
 
+// Mojang
+import com.mojang.blaze3d.platform.InputConstants;
+
 // Minecraft
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -92,7 +95,7 @@ public class UniverseLibraryScreen extends AbstractContainerScreen<UniverseLibra
     double mouseY = event.y();
     int button = event.button();
 
-    if (button == 0 && isPointInScrollbarArea(mouseX, mouseY) && canScroll()) {
+    if (button == InputConstants.MOUSE_BUTTON_LEFT && isPointInScrollbarArea(mouseX, mouseY) && canScroll()) {
       this.isDragging = true;
       updateScrollFromMouseY(mouseY);
       return true;
@@ -118,8 +121,9 @@ public class UniverseLibraryScreen extends AbstractContainerScreen<UniverseLibra
   public boolean mouseReleased(
       MouseButtonEvent event
   ) {
-    if (event.button() == 0) {
+    if (event.button() == InputConstants.MOUSE_BUTTON_LEFT && this.isDragging) {
       this.isDragging = false;
+      return true;
     }
     return super.mouseReleased(event);
   }

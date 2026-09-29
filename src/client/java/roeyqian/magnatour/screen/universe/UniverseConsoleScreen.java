@@ -194,8 +194,9 @@ public class UniverseConsoleScreen extends AbstractContainerScreen<UniverseConso
   public boolean mouseReleased(
       MouseButtonEvent event
   ) {
-    if (event.button() == InputConstants.MOUSE_BUTTON_LEFT) {
+    if (event.button() == InputConstants.MOUSE_BUTTON_LEFT && this.isScrolling) {
       this.isScrolling = false;
+      return true;
     }
     return super.mouseReleased(event);
   }
