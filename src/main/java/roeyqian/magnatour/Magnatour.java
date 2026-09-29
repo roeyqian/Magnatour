@@ -231,13 +231,9 @@ public class Magnatour implements ModInitializer {
             .title(Component.translatable("group.magnatour.universe_block"))
             .icon(() -> new ItemStack(UniverseBlocks.UNIVERSE_BLOCK))
             .displayItems((_, entries) -> {
-              entries.accept(UniverseBlocks.UNIVERSE_LIGHT_BLOCK);
-              entries.accept(UniverseBlocks.UNIVERSE_DARK_BLOCK);
-              entries.accept(UniverseBlocks.UNIVERSE_LIGHT_AIR);
-              entries.accept(UniverseBlocks.UNIVERSE_DARK_AIR);
               entries.accept(UniverseBlocks.UNIVERSE_LOG);
-              entries.accept(UniverseBlocks.UNIVERSE_WOOD);
               entries.accept(UniverseBlocks.STRIPPED_UNIVERSE_LOG);
+              entries.accept(UniverseBlocks.UNIVERSE_WOOD);
               entries.accept(UniverseBlocks.STRIPPED_UNIVERSE_WOOD);
               entries.accept(UniverseBlocks.UNIVERSE_PLANKS);
               entries.accept(UniverseBlocks.UNIVERSE_STAIRS);
@@ -253,17 +249,21 @@ public class Magnatour implements ModInitializer {
               entries.accept(UniverseBlocks.UNIVERSE_HANGING_SIGN_ITEM);
               entries.accept(UniverseBlocks.UNIVERSE_LEAVES);
               entries.accept(UniverseBlocks.UNIVERSE_SAPLING);
+              entries.accept(UniverseBlocks.UNIVERSE_LIGHT_BLOCK);
+              entries.accept(UniverseBlocks.UNIVERSE_DARK_BLOCK);
+              entries.accept(UniverseBlocks.UNIVERSE_LIGHT_AIR);
+              entries.accept(UniverseBlocks.UNIVERSE_DARK_AIR);
               entries.accept(UniverseBlocks.UNIVERSE_PRIMARY_BLOCK);
+              entries.accept(Blocks.COMMAND_BLOCK);
+              entries.accept(Blocks.STRUCTURE_BLOCK);
+              entries.accept(Blocks.JIGSAW);
+              entries.accept(Blocks.BARRIER);
               entries.accept(UniverseBlocks.UNIVERSE_BLOCK);
               entries.accept(UniverseBlocks.UNIVERSE_WORKSTATION);
               entries.accept(UniverseBlocks.UNIVERSE_REFINERY);
               entries.accept(UniverseBlocks.UNIVERSE_VOID_POOL);
               entries.accept(UniverseBlocks.UNIVERSE_LIBRARY);
               entries.accept(UniverseBlocks.UNIVERSE_TELEPORT_POINT);
-              entries.accept(Blocks.COMMAND_BLOCK);
-              entries.accept(Blocks.STRUCTURE_BLOCK);
-              entries.accept(Blocks.JIGSAW);
-              entries.accept(Blocks.BARRIER);
             })
             .build()
     );
