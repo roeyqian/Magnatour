@@ -127,7 +127,7 @@ public class Magnatour implements ModInitializer {
               entries.accept(SupremeItems.GREAT_BANQUET);
               entries.accept(SupremeItems.FORTUNE_CRYSTAL);
               entries.accept(SupremeItems.FORTUNE_METAL);
-              entries.accept(SupremeItems.RAINBOW_THING);
+              entries.accept(SupremeItems.RAINBOW_MIRROR);
               entries.accept(SupremeItems.EMPEROR_SWORD);
               entries.accept(SupremeItems.EMPEROR_AXE);
               entries.accept(SupremeItems.EMPEROR_PICKAXE);

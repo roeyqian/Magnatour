@@ -3,7 +3,7 @@
   "category": "misc",
   "cookingtime": 32768,
   "experience": 1200,
-  "ingredient": "magnatour:rainbow_thing",
+  "ingredient": "magnatour:rainbow_mirror",
   "result": {
     "id": "magnatour:supreme_core"
   }

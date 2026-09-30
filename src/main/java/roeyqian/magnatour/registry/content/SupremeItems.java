@@ -94,8 +94,8 @@ public final class SupremeItems {
       "ore_core", 64, Item::new,
       new Item.Properties().rarity(Rarity.RARE)
   );
-  public static final Item RAINBOW_THING = ItemRegHelper.registerConsumableItem(
-      "rainbow_thing", 64, Item::new,
+  public static final Item RAINBOW_MIRROR = ItemRegHelper.registerConsumableItem(
+      "rainbow_mirror", 64, Item::new,
       new Item.Properties().rarity(Rarity.RARE)
   );
   public static final Item STRANGE_MATTER = ItemRegHelper.registerConsumableItem(

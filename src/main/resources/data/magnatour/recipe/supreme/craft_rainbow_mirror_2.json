@@ -10,11 +10,11 @@
       "magnatour:ore_core",
       "magnatour:harvest_core"
     ],
-    "B": "magnatour:rainbow_thing"
+    "B": "magnatour:rainbow_mirror"
   },
   "result": {
     "count": 2,
-    "id": "magnatour:rainbow_thing"
+    "id": "magnatour:rainbow_mirror"
   },
   "show_notification": true
 }
