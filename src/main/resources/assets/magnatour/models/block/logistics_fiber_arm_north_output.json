@@ -1,0 +1,6 @@
+{
+  "parent": "magnatour:block/logistics_fiber_arm_north",
+  "textures": {
+    "port": "magnatour:block/logistics_fiber_front"
+  }
+}

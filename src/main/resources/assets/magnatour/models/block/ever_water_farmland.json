@@ -1,7 +1,7 @@
 {
   "parent": "minecraft:block/template_cube_bottom_top_indented",
   "textures": {
-    "top": "minecraft:block/farmland_moist",
+    "top": "magnatour:block/ever_water_farmland_top",
     "bottom": "magnatour:block/ever_water_soil",
     "side": "magnatour:block/ever_water_soil"
   }

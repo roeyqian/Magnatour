@@ -51,8 +51,6 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.pathfinder.PathComputationType;
 import net.minecraft.world.level.redstone.Orientation;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.Vec3;
-import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -81,11 +79,13 @@ public class ItemHub extends BaseEntityBlock {
   ) {
     super(properties);
     this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.DOWN).setValue(ENABLED, true));
-    VoxelShape inside = Block.column(12.0, 11.0, 16.0);
-    this.shapes = this.makeShapes(inside);
+    this.shapes = this.makeShapes();
     this.interactionShapes = ImmutableMap.<Direction, VoxelShape>builderWithExpectedSize(5)
-        .putAll(Shapes.rotateHorizontal(Shapes.or(inside, Block.boxZ(4.0, 8.0, 10.0, 0.0, 4.0))))
-        .put(Direction.DOWN, inside)
+        .putAll(Shapes.rotateHorizontal(Shapes.or(
+            Block.box(3.0, 13.0, 3.0, 13.0, 16.0, 13.0),
+            Block.box(5.0, 5.0, 0.0, 11.0, 11.0, 4.0)
+        )))
+        .put(Direction.DOWN, Block.box(3.0, 13.0, 3.0, 13.0, 16.0, 13.0))
         .build();
   }
 
@@ -284,27 +284,42 @@ public class ItemHub extends BaseEntityBlock {
     return InteractionResult.SUCCESS;
   }
 
-  private Function<BlockState, VoxelShape> makeShapes(
-      VoxelShape inside
-  ) {
-    VoxelShape spoutlessHopperOutline = Shapes.or(
-        Block.column(16.0, 10.0, 16.0),
-        Block.column(8.0, 4.0, 10.0)
+  private Function<BlockState, VoxelShape> makeShapes() {
+    VoxelShape node = Shapes.or(
+        Block.box(1.0, 4.0, 1.0, 15.0, 6.0, 15.0),
+        Block.box(1.0, 0.0, 1.0, 3.0, 4.0, 3.0),
+        Block.box(1.0, 6.0, 1.0, 3.0, 14.0, 3.0),
+        Block.box(1.0, 14.0, 1.0, 3.0, 16.0, 3.0),
+        Block.box(1.0, 0.0, 13.0, 3.0, 4.0, 15.0),
+        Block.box(1.0, 6.0, 13.0, 3.0, 14.0, 15.0),
+        Block.box(1.0, 14.0, 13.0, 3.0, 16.0, 15.0),
+        Block.box(13.0, 0.0, 1.0, 15.0, 4.0, 3.0),
+        Block.box(13.0, 6.0, 1.0, 15.0, 14.0, 3.0),
+        Block.box(13.0, 14.0, 1.0, 15.0, 16.0, 3.0),
+        Block.box(13.0, 0.0, 13.0, 15.0, 4.0, 15.0),
+        Block.box(13.0, 6.0, 13.0, 15.0, 14.0, 15.0),
+        Block.box(13.0, 14.0, 13.0, 15.0, 16.0, 15.0),
+        Block.box(3.0, 14.0, 1.0, 13.0, 16.0, 3.0),
+        Block.box(3.0, 14.0, 13.0, 13.0, 16.0, 15.0),
+        Block.box(6.0, 13.0, 1.0, 10.0, 14.0, 3.0),
+        Block.box(6.0, 13.0, 13.0, 10.0, 14.0, 15.0),
+        Block.box(4.0, 6.0, 4.0, 12.0, 12.0, 12.0),
+        Block.box(5.0, 12.0, 5.0, 11.0, 13.0, 11.0)
     );
-    VoxelShape spoutlessHopper = Shapes.join(
-        spoutlessHopperOutline,
-        inside,
-        BooleanOp.ONLY_FIRST
+    VoxelShape horizontalPort = Shapes.or(
+        Block.box(6.0, 6.0, 1.0, 10.0, 10.0, 4.0),
+        Block.box(5.0, 5.0, 0.0, 11.0, 11.0, 1.0)
     );
-    Map<Direction, VoxelShape> spouts = Shapes.rotateAll(
-        Block.boxZ(4.0, 4.0, 8.0, 0.0, 8.0),
-        new Vec3(8.0, 6.0, 8.0).scale(0.0625)
+    VoxelShape downwardPort = Shapes.or(
+        Block.box(6.0, 1.0, 6.0, 10.0, 4.0, 10.0),
+        Block.box(5.0, 0.0, 5.0, 11.0, 1.0, 11.0)
     );
+    Map<Direction, VoxelShape> ports = ImmutableMap.<Direction, VoxelShape>builderWithExpectedSize(5)
+        .putAll(Shapes.rotateHorizontal(horizontalPort))
+        .put(Direction.DOWN, downwardPort)
+        .build();
     return this.getShapeForEachState(
-        state -> Shapes.or(
-            spoutlessHopper,
-            Shapes.join(spouts.get(state.getValue(FACING)), Shapes.block(), BooleanOp.AND)
-        ),
+        state -> Shapes.or(node, ports.get(state.getValue(FACING))),
         new Property[]{ENABLED}
     );
   }

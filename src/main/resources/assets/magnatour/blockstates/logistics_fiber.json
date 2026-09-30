@@ -1,17 +1,297 @@
 {
   "multipart": [
-    { "when": { "facing": "north" }, "apply": { "model": "magnatour:block/logistics_fiber" } },
-    { "when": { "facing": "east" }, "apply": { "model": "magnatour:block/logistics_fiber", "y": 90 } },
-    { "when": { "facing": "south" }, "apply": { "model": "magnatour:block/logistics_fiber", "y": 180 } },
-    { "when": { "facing": "west" }, "apply": { "model": "magnatour:block/logistics_fiber", "y": 270 } },
-    { "when": { "facing": "up" }, "apply": { "model": "magnatour:block/logistics_fiber", "x": 270 } },
-    { "when": { "facing": "down" }, "apply": { "model": "magnatour:block/logistics_fiber", "x": 90 } },
-
-    { "when": { "north": "true" }, "apply": { "model": "magnatour:block/logistics_fiber_arm_north" } },
-    { "when": { "east": "true" }, "apply": { "model": "magnatour:block/logistics_fiber_arm_east" } },
-    { "when": { "south": "true" }, "apply": { "model": "magnatour:block/logistics_fiber_arm_south" } },
-    { "when": { "west": "true" }, "apply": { "model": "magnatour:block/logistics_fiber_arm_west" } },
-    { "when": { "up": "true" }, "apply": { "model": "magnatour:block/logistics_fiber_arm_up" } },
-    { "when": { "down": "true" }, "apply": { "model": "magnatour:block/logistics_fiber_arm_down" } }
+    {
+      "when": {
+        "facing": "north"
+      },
+      "apply": {
+        "model": "magnatour:block/logistics_fiber"
+      }
+    },
+    {
+      "when": {
+        "facing": "east"
+      },
+      "apply": {
+        "model": "magnatour:block/logistics_fiber",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "south"
+      },
+      "apply": {
+        "model": "magnatour:block/logistics_fiber",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "west"
+      },
+      "apply": {
+        "model": "magnatour:block/logistics_fiber",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "up"
+      },
+      "apply": {
+        "model": "magnatour:block/logistics_fiber",
+        "x": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "down"
+      },
+      "apply": {
+        "model": "magnatour:block/logistics_fiber",
+        "x": 90
+      }
+    },
+    {
+      "when": {
+        "AND": [
+          {
+            "north": "true"
+          },
+          {
+            "OR": [
+              {
+                "facing": "east"
+              },
+              {
+                "facing": "south"
+              },
+              {
+                "facing": "west"
+              },
+              {
+                "facing": "up"
+              },
+              {
+                "facing": "down"
+              }
+            ]
+          }
+        ]
+      },
+      "apply": {
+        "model": "magnatour:block/logistics_fiber_arm_north"
+      }
+    },
+    {
+      "when": {
+        "north": "true",
+        "facing": "north"
+      },
+      "apply": {
+        "model": "magnatour:block/logistics_fiber_arm_north_output"
+      }
+    },
+    {
+      "when": {
+        "AND": [
+          {
+            "east": "true"
+          },
+          {
+            "OR": [
+              {
+                "facing": "north"
+              },
+              {
+                "facing": "south"
+              },
+              {
+                "facing": "west"
+              },
+              {
+                "facing": "up"
+              },
+              {
+                "facing": "down"
+              }
+            ]
+          }
+        ]
+      },
+      "apply": {
+        "model": "magnatour:block/logistics_fiber_arm_east"
+      }
+    },
+    {
+      "when": {
+        "east": "true",
+        "facing": "east"
+      },
+      "apply": {
+        "model": "magnatour:block/logistics_fiber_arm_east_output"
+      }
+    },
+    {
+      "when": {
+        "AND": [
+          {
+            "south": "true"
+          },
+          {
+            "OR": [
+              {
+                "facing": "north"
+              },
+              {
+                "facing": "east"
+              },
+              {
+                "facing": "west"
+              },
+              {
+                "facing": "up"
+              },
+              {
+                "facing": "down"
+              }
+            ]
+          }
+        ]
+      },
+      "apply": {
+        "model": "magnatour:block/logistics_fiber_arm_south"
+      }
+    },
+    {
+      "when": {
+        "south": "true",
+        "facing": "south"
+      },
+      "apply": {
+        "model": "magnatour:block/logistics_fiber_arm_south_output"
+      }
+    },
+    {
+      "when": {
+        "AND": [
+          {
+            "west": "true"
+          },
+          {
+            "OR": [
+              {
+                "facing": "north"
+              },
+              {
+                "facing": "east"
+              },
+              {
+                "facing": "south"
+              },
+              {
+                "facing": "up"
+              },
+              {
+                "facing": "down"
+              }
+            ]
+          }
+        ]
+      },
+      "apply": {
+        "model": "magnatour:block/logistics_fiber_arm_west"
+      }
+    },
+    {
+      "when": {
+        "west": "true",
+        "facing": "west"
+      },
+      "apply": {
+        "model": "magnatour:block/logistics_fiber_arm_west_output"
+      }
+    },
+    {
+      "when": {
+        "AND": [
+          {
+            "up": "true"
+          },
+          {
+            "OR": [
+              {
+                "facing": "north"
+              },
+              {
+                "facing": "east"
+              },
+              {
+                "facing": "south"
+              },
+              {
+                "facing": "west"
+              },
+              {
+                "facing": "down"
+              }
+            ]
+          }
+        ]
+      },
+      "apply": {
+        "model": "magnatour:block/logistics_fiber_arm_up"
+      }
+    },
+    {
+      "when": {
+        "up": "true",
+        "facing": "up"
+      },
+      "apply": {
+        "model": "magnatour:block/logistics_fiber_arm_up_output"
+      }
+    },
+    {
+      "when": {
+        "AND": [
+          {
+            "down": "true"
+          },
+          {
+            "OR": [
+              {
+                "facing": "north"
+              },
+              {
+                "facing": "east"
+              },
+              {
+                "facing": "south"
+              },
+              {
+                "facing": "west"
+              },
+              {
+                "facing": "up"
+              }
+            ]
+          }
+        ]
+      },
+      "apply": {
+        "model": "magnatour:block/logistics_fiber_arm_down"
+      }
+    },
+    {
+      "when": {
+        "down": "true",
+        "facing": "down"
+      },
+      "apply": {
+        "model": "magnatour:block/logistics_fiber_arm_down_output"
+      }
+    }
   ]
 }

@@ -55,13 +55,36 @@ public class LogisticsFiber extends BaseEntityBlock {
 
   public static final EnumProperty<Direction> FACING = BlockStateProperties.FACING;
 
-  private static final VoxelShape CORE_SHAPE = Block.box(5.0, 5.0, 5.0, 11.0, 11.0, 11.0);
-  private static final VoxelShape DOWN_SHAPE = Block.box(5.0, 0.0, 5.0, 11.0, 5.0, 11.0);
-  private static final VoxelShape EAST_SHAPE = Block.box(11.0, 5.0, 5.0, 16.0, 11.0, 11.0);
-  private static final VoxelShape NORTH_SHAPE = Block.box(5.0, 5.0, 0.0, 11.0, 11.0, 5.0);
-  private static final VoxelShape SOUTH_SHAPE = Block.box(5.0, 5.0, 11.0, 11.0, 11.0, 16.0);
-  private static final VoxelShape UP_SHAPE = Block.box(5.0, 11.0, 5.0, 11.0, 16.0, 11.0);
-  private static final VoxelShape WEST_SHAPE = Block.box(0.0, 5.0, 5.0, 5.0, 11.0, 11.0);
+  // Match the stepped routing hub, narrow fiber sleeves and end couplings in the models.
+  private static final VoxelShape CORE_SHAPE = Shapes.or(
+      Block.box(4.0, 5.0, 5.0, 12.0, 11.0, 11.0),
+      Block.box(5.0, 4.0, 5.0, 11.0, 12.0, 11.0),
+      Block.box(5.0, 5.0, 4.0, 11.0, 11.0, 12.0)
+  );
+  private static final VoxelShape DOWN_SHAPE = Shapes.or(
+      Block.box(6.0, 1.0, 6.0, 10.0, 4.0, 10.0),
+      Block.box(5.0, 0.0, 5.0, 11.0, 1.0, 11.0)
+  );
+  private static final VoxelShape EAST_SHAPE = Shapes.or(
+      Block.box(12.0, 6.0, 6.0, 15.0, 10.0, 10.0),
+      Block.box(15.0, 5.0, 5.0, 16.0, 11.0, 11.0)
+  );
+  private static final VoxelShape NORTH_SHAPE = Shapes.or(
+      Block.box(6.0, 6.0, 1.0, 10.0, 10.0, 4.0),
+      Block.box(5.0, 5.0, 0.0, 11.0, 11.0, 1.0)
+  );
+  private static final VoxelShape SOUTH_SHAPE = Shapes.or(
+      Block.box(6.0, 6.0, 12.0, 10.0, 10.0, 15.0),
+      Block.box(5.0, 5.0, 15.0, 11.0, 11.0, 16.0)
+  );
+  private static final VoxelShape UP_SHAPE = Shapes.or(
+      Block.box(6.0, 12.0, 6.0, 10.0, 15.0, 10.0),
+      Block.box(5.0, 15.0, 5.0, 11.0, 16.0, 11.0)
+  );
+  private static final VoxelShape WEST_SHAPE = Shapes.or(
+      Block.box(1.0, 6.0, 6.0, 4.0, 10.0, 10.0),
+      Block.box(0.0, 5.0, 5.0, 1.0, 11.0, 11.0)
+  );
 
   private static final Map<Direction, VoxelShape> CONNECTION_SHAPES = Map.of(
       Direction.DOWN, DOWN_SHAPE,

@@ -1,6 +1,8 @@
 {
-  "parent": "minecraft:block/cube_all",
+  "parent": "minecraft:block/template_cube_bottom_top_indented",
   "textures": {
-    "all": "magnatour:block/supreme_pumpkin_head"
+    "top": "magnatour:block/supreme_pumpkin_head_top",
+    "side": "magnatour:block/supreme_pumpkin_head_side",
+    "bottom": "magnatour:block/supreme_pumpkin_head_top"
   }
 }
