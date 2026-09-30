@@ -264,15 +264,15 @@ def parseCompleteAnnotationLine = { String line ->
 
 def spdxHeaderText = """\
 /*
- * SPDX-License-Identifier: GPL-3.0-or-later
+ * SPDX-License-Identifier: GPL-3.0-only
  * Copyright (C) 2026 Roey Qian
  *
- * This file is part of Universe Mod.
+ * This file is part of Magnatour.
  * Full license text available in the LICENSE file in the project root.
  */
 """
 
-def spdxHeaderStartsWith = "/*\n * SPDX-License-Identifier: GPL-3.0-or-later"
+def spdxHeaderStartsWith = "/*\n * SPDX-License-Identifier: GPL-3.0-only"
 
 def initClassFileNames = ["Magnatour.java", "MagnatourClient.java"] as Set
 
