@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
-    "magnatour:universe_button"
+    "magnatour:universe_button",
+    "magnatour:golden_button"
   ]
 }

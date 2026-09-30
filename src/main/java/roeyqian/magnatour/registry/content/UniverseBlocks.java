@@ -115,7 +115,7 @@ public final class UniverseBlocks {
       BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_FENCE_GATE)
   );
   public static final Block UNIVERSE_DOOR = BlockRegHelper.registerWoodDoor(
-      "universe_door",
+      "universe_door", universe,
       properties -> new DoorBlock(BlockSetType.OAK, properties),
       BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_DOOR)
   );
@@ -139,28 +139,28 @@ public final class UniverseBlocks {
       BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_SHELF)
   );
   public static final Block UNIVERSE_SIGN = BlockRegHelper.registerWoodBlockOnly(
-      "universe_sign", properties -> new StandingSignBlock(WoodType.OAK, properties),
+      "universe_sign", universe, properties -> new StandingSignBlock(WoodType.OAK, properties),
       BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_SIGN)
   );
   public static final Block UNIVERSE_WALL_SIGN = BlockRegHelper.registerWoodBlockOnly(
-      "universe_wall_sign", properties -> new WallSignBlock(WoodType.OAK, properties),
+      "universe_wall_sign", universe, properties -> new WallSignBlock(WoodType.OAK, properties),
       BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_WALL_SIGN)
           .overrideLootTable(signLootTable("universe_sign"))
   );
   public static final Item UNIVERSE_SIGN_ITEM = BlockRegHelper.registerWoodSignItem(
-      "universe_sign", UNIVERSE_SIGN, UNIVERSE_WALL_SIGN, false
+      "universe_sign", universe, UNIVERSE_SIGN, UNIVERSE_WALL_SIGN, false
   );
   public static final Block UNIVERSE_HANGING_SIGN = BlockRegHelper.registerWoodBlockOnly(
-      "universe_hanging_sign", properties -> new CeilingHangingSignBlock(WoodType.OAK, properties),
+      "universe_hanging_sign", universe, properties -> new CeilingHangingSignBlock(WoodType.OAK, properties),
       BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_HANGING_SIGN)
   );
   public static final Block UNIVERSE_WALL_HANGING_SIGN = BlockRegHelper.registerWoodBlockOnly(
-      "universe_wall_hanging_sign", properties -> new WallHangingSignBlock(WoodType.OAK, properties),
+      "universe_wall_hanging_sign", universe, properties -> new WallHangingSignBlock(WoodType.OAK, properties),
       BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_WALL_HANGING_SIGN)
           .overrideLootTable(signLootTable("universe_hanging_sign"))
   );
   public static final Item UNIVERSE_HANGING_SIGN_ITEM = BlockRegHelper.registerWoodSignItem(
-      "universe_hanging_sign", UNIVERSE_HANGING_SIGN, UNIVERSE_WALL_HANGING_SIGN, true
+      "universe_hanging_sign", universe, UNIVERSE_HANGING_SIGN, UNIVERSE_WALL_HANGING_SIGN, true
   );
   public static final Block UNIVERSE_SAPLING = BlockRegHelper.registerSapling(
       "universe_sapling", universe, setting -> new SaplingBlock(SaplingGenerators.UNIVERSE, setting),

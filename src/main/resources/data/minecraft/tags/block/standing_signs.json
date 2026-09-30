@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
-    "magnatour:universe_sign"
+    "magnatour:universe_sign",
+    "magnatour:golden_sign"
   ]
 }

@@ -1,10 +1,8 @@
 {
   "key.category.magnatour.general": "伟大旅行",
   "key.magnatour.universe_mode": "工具模式切换",
-
   "tag.item.magnatour.supreme_core": "超凡核心",
   "tag.item.magnatour.universe_star": "寰宇之星",
-
   "advancements.magnatour.supreme.title": "超凡",
   "advancements.magnatour.supreme.description": "踏上超凡的旅途",
   "advancements.magnatour.redstone_trigger.title": "红石触发器",
@@ -47,7 +45,6 @@
   "advancements.magnatour.pale_lord.description": "召唤苍白领主",
   "advancements.magnatour.universe_gemwhite.title": "月华幻境！！！",
   "advancements.magnatour.universe_gemwhite.description": "寰宇的洁白碎片",
-
   "advancements.magnatour.universe.title": "寰宇",
   "advancements.magnatour.universe.description": "踏上寰宇的旅途",
   "advancements.magnatour.universe_meta.title": "寰宇元界",
@@ -96,7 +93,6 @@
   "advancements.magnatour.universe_teleport_point.description": "锚定跨越维度的坐标",
   "advancements.magnatour.universe_sapling.title": "寰宇树苗",
   "advancements.magnatour.universe_sapling.description": "种下寰宇的起点",
-
   "msg.magnatour.mirror_mobile.mode_0": "镜像手机：方块模拟",
   "msg.magnatour.mirror_mobile.mode_1": "镜像手机：方块识别",
   "msg.magnatour.mirror_mobile.no_block_stored": "镜像手机: 尚未识别任何方块",
@@ -105,7 +101,6 @@
   "msg.magnatour.mirror_mobile.has_block_entity": "镜像手机: 该方块包含存储数据，不支持便携模拟",
   "msg.magnatour.mirror_mobile.error.invalid_block_id": "镜像手机: 存储的方块ID无效",
   "msg.magnatour.mirror_mobile.error.no_factory": "镜像手机: 无法创建界面",
-
   "msg.magnatour.universe_ultima_sword.mode_0": "寰宇终剑：平日烛火",
   "msg.magnatour.universe_ultima_sword.mode_1": "寰宇终剑：顷刻炼化",
   "msg.magnatour.universe_omni_blade.mode_0": "寰宇全能刃：厚德载物",
@@ -126,7 +121,6 @@
   "msg.magnatour.universe_teleport_point.invalid": "寰宇传送点：目标维度无效",
   "msg.magnatour.universe_guardian.guard": "寰宇守卫：守卫中",
   "msg.magnatour.universe_guardian.sleep": "寰宇守卫：休眠中",
-
   "gui.magnatour.redstone_trigger.apply": "应用",
   "gui.magnatour.redstone_trigger.disable": "关闭触发器",
   "gui.magnatour.redstone_trigger.enable": "开启触发器",
@@ -154,14 +148,12 @@
   "gui.magnatour.universe_teleport_point.save": "保存",
   "gui.magnatour.universe_teleport_point.cancel": "取消",
   "gui.magnatour.universe_teleport_point.current": "使用当前位置",
-
   "dimension.minecraft:overworld": "§a主世界",
   "dimension.minecraft:the_nether": "§c下界",
   "dimension.minecraft:the_end": "§e末地",
   "dimension.magnatour:ore_continent": "§b矿石大陆",
   "dimension.magnatour:harvest_continent": "§6丰收大陆",
   "dimension.magnatour:universe_meta": "§5寰宇元界",
-
   "biome.magnatour.wheat_plain": "小麦平原",
   "biome.magnatour.melon_jungle": "西瓜丛林",
   "biome.magnatour.pumpkin_gorge": "南瓜峡谷",
@@ -170,7 +162,6 @@
   "biome.magnatour.ore_land": "矿石陆地",
   "biome.magnatour.ore_forest": "矿石森林",
   "biome.magnatour.universe_meta_void": "寰宇元界虚空",
-
   "entity.magnatour.bell_ringer": "守钟人",
   "entity.magnatour.bell_soul": "钟灵",
   "entity.magnatour.the_unnameable_thing": "不可名状之物",
@@ -181,10 +172,8 @@
   "entity.magnatour.netherite_golem": "下界合金傀儡",
   "entity.magnatour.universe_guardian": "寰宇守卫",
   "entity.magnatour.primed_chunk_tnt": "点燃的区块TNT",
-
   "group.magnatour.supreme_item": "超凡物品类",
   "group.magnatour.supreme_block": "超凡方块类",
-
   "item.magnatour.supreme_core": "超凡核心",
   "item.magnatour.harvest_core": "丰收核心",
   "item.magnatour.ore_core": "矿石核心",
@@ -243,10 +232,8 @@
   "item.magnatour.logistics_fiber": "物流光纤",
   "item.magnatour.harvest_continent_portal": "丰收大陆传送门",
   "item.magnatour.ore_continent_portal": "矿石大陆传送门",
-
   "lore.magnatour.mirror_mobile.0": "移动型功能方块",
   "lore.magnatour.mirror_mobile.1": "自由模拟除存储设备外的一切功能方块",
-
   "block.magnatour.ever_water_grass_block": "永沃草方块",
   "block.magnatour.golden_grass_block": "黄金草方块",
   "block.magnatour.ever_water_soil": "永沃土壤",
@@ -273,10 +260,8 @@
   "block.magnatour.logistics_fiber": "物流光纤",
   "block.magnatour.harvest_continent_portal": "丰收大陆传送门",
   "block.magnatour.ore_continent_portal": "矿石大陆传送门",
-
   "group.magnatour.universe_item": "寰宇物品类",
   "group.magnatour.universe_block": "寰宇方块类",
-
   "item.magnatour.universe_gemred": "核心炽红",
   "item.magnatour.universe_gemblue": "苍穹远蓝",
   "item.magnatour.universe_gemyellow": "烈阳金辉",
@@ -317,7 +302,6 @@
   "item.magnatour.universe_void_pool": "寰宇虚空池",
   "item.magnatour.universe_teleport_point": "寰宇传送点",
   "item.magnatour.universe_meta_portal": "寰宇元界传送门",
-
   "lore.magnatour.universe_star.0": "万物之精华",
   "lore.magnatour.universe_star.1": "唯有时空本身能抹除其存在",
   "lore.magnatour.universe_star.2": "蕴含无尽生命与能源的泉水",
@@ -361,7 +345,6 @@
   "lore.magnatour.universe_guardian_spawn_egg.0": "召唤世间最强的守护之灵",
   "lore.magnatour.universe_guardian_spawn_egg.1": "唯有时空本身能抹除其存在",
   "lore.magnatour.universe_guardian_spawn_egg.2": "如影随形 摧枯拉朽 固若金汤",
-
   "block.magnatour.universe_light_block": "重生方块",
   "block.magnatour.universe_dark_block": "死亡方块",
   "block.magnatour.universe_light_air": "重生气息",
@@ -404,5 +387,29 @@
   "block.magnatour.universe_hanging_sign": "寰宇悬挂式告示牌",
   "block.magnatour.universe_wall_hanging_sign": "寰宇悬挂式告示牌",
   "item.magnatour.universe_shelf": "寰宇木展示架",
-  "block.magnatour.universe_shelf": "寰宇木展示架"
+  "block.magnatour.universe_shelf": "寰宇木展示架",
+  "item.magnatour.golden_stairs": "黄金楼梯",
+  "block.magnatour.golden_stairs": "黄金楼梯",
+  "item.magnatour.golden_slab": "黄金台阶",
+  "block.magnatour.golden_slab": "黄金台阶",
+  "item.magnatour.golden_fence": "黄金栅栏",
+  "block.magnatour.golden_fence": "黄金栅栏",
+  "item.magnatour.golden_fence_gate": "黄金栅栏门",
+  "block.magnatour.golden_fence_gate": "黄金栅栏门",
+  "item.magnatour.golden_door": "黄金门",
+  "block.magnatour.golden_door": "黄金门",
+  "item.magnatour.golden_trapdoor": "黄金活板门",
+  "block.magnatour.golden_trapdoor": "黄金活板门",
+  "item.magnatour.golden_pressure_plate": "黄金压力板",
+  "block.magnatour.golden_pressure_plate": "黄金压力板",
+  "item.magnatour.golden_button": "黄金按钮",
+  "block.magnatour.golden_button": "黄金按钮",
+  "item.magnatour.golden_shelf": "黄金木展示架",
+  "block.magnatour.golden_shelf": "黄金木展示架",
+  "item.magnatour.golden_sign": "黄金告示牌",
+  "block.magnatour.golden_sign": "黄金告示牌",
+  "block.magnatour.golden_wall_sign": "黄金告示牌",
+  "item.magnatour.golden_hanging_sign": "黄金悬挂式告示牌",
+  "block.magnatour.golden_hanging_sign": "黄金悬挂式告示牌",
+  "block.magnatour.golden_wall_hanging_sign": "黄金悬挂式告示牌"
 }

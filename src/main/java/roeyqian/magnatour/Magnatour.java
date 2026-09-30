@@ -163,17 +163,28 @@ public class Magnatour implements ModInitializer {
             .title(Component.translatable("group.magnatour.supreme_block"))
             .icon(() -> new ItemStack(SupremeBlocks.SUPREME_BLOCK))
             .displayItems((_, entries) -> {
-              entries.accept(SupremeBlocks.EVER_WATER_GRASS_BLOCK);
-              entries.accept(SupremeBlocks.GOLDEN_GRASS_BLOCK);
-              entries.accept(SupremeBlocks.EVER_WATER_SOIL);
-              entries.accept(SupremeBlocks.EVER_WATER_FARMLAND);
               entries.accept(SupremeBlocks.GOLDEN_LOG);
               entries.accept(SupremeBlocks.STRIPPED_GOLDEN_LOG);
               entries.accept(SupremeBlocks.GOLDEN_WOOD);
               entries.accept(SupremeBlocks.STRIPPED_GOLDEN_WOOD);
               entries.accept(SupremeBlocks.GOLDEN_PLANKS);
+              entries.accept(SupremeBlocks.GOLDEN_STAIRS);
+              entries.accept(SupremeBlocks.GOLDEN_SLAB);
+              entries.accept(SupremeBlocks.GOLDEN_FENCE);
+              entries.accept(SupremeBlocks.GOLDEN_FENCE_GATE);
+              entries.accept(SupremeBlocks.GOLDEN_DOOR);
+              entries.accept(SupremeBlocks.GOLDEN_TRAPDOOR);
+              entries.accept(SupremeBlocks.GOLDEN_PRESSURE_PLATE);
+              entries.accept(SupremeBlocks.GOLDEN_BUTTON);
+              entries.accept(SupremeBlocks.GOLDEN_SHELF);
+              entries.accept(SupremeBlocks.GOLDEN_SIGN_ITEM);
+              entries.accept(SupremeBlocks.GOLDEN_HANGING_SIGN_ITEM);
               entries.accept(SupremeBlocks.GOLDEN_LEAVES);
               entries.accept(SupremeBlocks.GOLDEN_SAPLING);
+              entries.accept(SupremeBlocks.EVER_WATER_GRASS_BLOCK);
+              entries.accept(SupremeBlocks.GOLDEN_GRASS_BLOCK);
+              entries.accept(SupremeBlocks.EVER_WATER_SOIL);
+              entries.accept(SupremeBlocks.EVER_WATER_FARMLAND);
               entries.accept(SupremeBlocks.ORE_BLOCK);
               entries.accept(SupremeBlocks.HARVEST_BLOCK);
               entries.accept(SupremeBlocks.CHUNK_TNT);

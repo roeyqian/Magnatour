@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "powered=false": {
+      "model": "magnatour:block/golden_pressure_plate"
+    },
+    "powered=true": {
+      "model": "magnatour:block/golden_pressure_plate_down"
+    }
+  }
+}

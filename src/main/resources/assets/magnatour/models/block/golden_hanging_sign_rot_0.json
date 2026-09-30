@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/template_hanging_sign_rot_0",
+  "textures": {
+    "all": "magnatour:block/golden_hanging_sign",
+    "particle": "magnatour:block/stripped_golden_log_side"
+  }
+}

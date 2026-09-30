@@ -9,6 +9,7 @@ package roeyqian.magnatour.registry.content;
 
 // Fabric
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
+import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityType;
 
 // Minecraft
 import net.minecraft.core.Registry;
@@ -17,6 +18,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.entity.BlockEntityTypes;
 
 // Magnatour
 import roeyqian.magnatour.Magnatour;
@@ -73,6 +75,11 @@ public final class SupremeBlockEntities {
   private SupremeBlockEntities() {}
 
   public static void init() {
+    ((FabricBlockEntityType) BlockEntityTypes.SHELF).addValidBlock(SupremeBlocks.GOLDEN_SHELF);
+    ((FabricBlockEntityType) BlockEntityTypes.SIGN).addValidBlock(SupremeBlocks.GOLDEN_SIGN);
+    ((FabricBlockEntityType) BlockEntityTypes.SIGN).addValidBlock(SupremeBlocks.GOLDEN_WALL_SIGN);
+    ((FabricBlockEntityType) BlockEntityTypes.HANGING_SIGN).addValidBlock(SupremeBlocks.GOLDEN_HANGING_SIGN);
+    ((FabricBlockEntityType) BlockEntityTypes.HANGING_SIGN).addValidBlock(SupremeBlocks.GOLDEN_WALL_HANGING_SIGN);
     Magnatour.LOGGER.info("[Server] Initializing 'SupremeBlockEntities'");
   }
 

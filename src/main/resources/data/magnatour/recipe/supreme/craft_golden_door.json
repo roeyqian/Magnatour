@@ -1,0 +1,18 @@
+{
+  "type": "magnatour:supreme_crafting",
+  "category": "building",
+  "group": "supreme:items",
+  "pattern": [
+    "AA",
+    "AA",
+    "AA"
+  ],
+  "key": {
+    "A": "magnatour:golden_planks"
+  },
+  "result": {
+    "count": 3,
+    "id": "magnatour:golden_door"
+  },
+  "show_notification": true
+}

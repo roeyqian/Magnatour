@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
-    "magnatour:universe_slab"
+    "magnatour:universe_slab",
+    "magnatour:golden_slab"
   ]
 }

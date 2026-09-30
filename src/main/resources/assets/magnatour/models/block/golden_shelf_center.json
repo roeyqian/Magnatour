@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/template_shelf_center",
+  "textures": {
+    "all": "magnatour:block/golden_shelf",
+    "particle": "magnatour:block/stripped_golden_log_side"
+  }
+}

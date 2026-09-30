@@ -1,0 +1,21 @@
+{
+  "type": "magnatour:supreme_crafting",
+  "category": "building",
+  "group": "supreme:items",
+  "pattern": [
+    "AAA",
+    "   ",
+    "AAA"
+  ],
+  "key": {
+    "A": [
+      "magnatour:stripped_golden_log",
+      "magnatour:stripped_golden_wood"
+    ]
+  },
+  "result": {
+    "count": 6,
+    "id": "magnatour:golden_shelf"
+  },
+  "show_notification": true
+}

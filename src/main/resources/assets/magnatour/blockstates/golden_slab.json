@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "magnatour:block/golden_slab"
+    },
+    "type=double": {
+      "model": "magnatour:block/golden_planks"
+    },
+    "type=top": {
+      "model": "magnatour:block/golden_slab_top"
+    }
+  }
+}

@@ -1,10 +1,8 @@
 {
   "key.category.magnatour.general": "Magnatour",
   "key.magnatour.universe_mode": "Cambiar modo de herramienta",
-
   "tag.item.magnatour.supreme_core": "Núcleo Supremo",
   "tag.item.magnatour.universe_star": "Estrella del Universo",
-
   "advancements.magnatour.supreme.title": "Supremo",
   "advancements.magnatour.supreme.description": "Emprende un viaje supremo",
   "advancements.magnatour.redstone_trigger.title": "Disparador de redstone",
@@ -47,7 +45,6 @@
   "advancements.magnatour.pale_lord.description": "Invoca al Señor Pálido",
   "advancements.magnatour.universe_gemwhite.title": "Espejismo Lunar !!!",
   "advancements.magnatour.universe_gemwhite.description": "Un fragmento blanco puro del cosmos",
-
   "advancements.magnatour.universe.title": "Universo",
   "advancements.magnatour.universe.description": "Emprende un viaje por el Universo",
   "advancements.magnatour.universe_meta.title": "Metauniverso",
@@ -96,7 +93,6 @@
   "advancements.magnatour.universe_teleport_point.description": "Ancla coordenadas más allá de las dimensiones",
   "advancements.magnatour.universe_sapling.title": "Brote del Universo",
   "advancements.magnatour.universe_sapling.description": "Planta el comienzo del cosmos",
-
   "msg.magnatour.mirror_mobile.mode_0": "Móvil Espejo: Simulación de bloque",
   "msg.magnatour.mirror_mobile.mode_1": "Móvil Espejo: Escaneo de bloque",
   "msg.magnatour.mirror_mobile.no_block_stored": "Móvil Espejo: Aún no se ha escaneado ningún bloque",
@@ -105,7 +101,6 @@
   "msg.magnatour.mirror_mobile.has_block_entity": "Móvil Espejo: Este bloque guarda datos y no puede simularse",
   "msg.magnatour.mirror_mobile.error.invalid_block_id": "Móvil Espejo: ID de bloque guardado no válido",
   "msg.magnatour.mirror_mobile.error.no_factory": "Móvil Espejo: No se puede crear la interfaz",
-
   "msg.magnatour.universe_ultima_sword.mode_0": "Espada Última del Universo: Luz de vela",
   "msg.magnatour.universe_ultima_sword.mode_1": "Espada Última del Universo: Refinado instantáneo",
   "msg.magnatour.universe_omni_blade.mode_0": "Hoja Omnímoda del Universo: Tierra nutricia",
@@ -126,7 +121,6 @@
   "msg.magnatour.universe_teleport_point.invalid": "Punto de Teletransporte del Universo: Dimensión objetivo no válida",
   "msg.magnatour.universe_guardian.guard": "Guardián del Universo: En guardia",
   "msg.magnatour.universe_guardian.sleep": "Guardián del Universo: Dormido",
-
   "gui.magnatour.redstone_trigger.apply": "Aplicar",
   "gui.magnatour.redstone_trigger.disable": "Desactivar activador",
   "gui.magnatour.redstone_trigger.enable": "Activar activador",
@@ -154,14 +148,12 @@
   "gui.magnatour.universe_teleport_point.save": "Guardar",
   "gui.magnatour.universe_teleport_point.cancel": "Cancelar",
   "gui.magnatour.universe_teleport_point.current": "Usar posición actual",
-
   "dimension.minecraft:overworld": "§aSuperficie",
   "dimension.minecraft:the_nether": "§cInframundo",
   "dimension.minecraft:the_end": "§eEnd",
   "dimension.magnatour:ore_continent": "§bContinente de los Minerales",
   "dimension.magnatour:harvest_continent": "§6Continente de la Cosecha",
   "dimension.magnatour:universe_meta": "§5Metauniverso",
-
   "biome.magnatour.wheat_plain": "Llanura de Trigo",
   "biome.magnatour.melon_jungle": "Selva de Melones",
   "biome.magnatour.pumpkin_gorge": "Garganta de Calabazas",
@@ -170,7 +162,6 @@
   "biome.magnatour.ore_land": "Tierra de Minerales",
   "biome.magnatour.ore_forest": "Bosque de Minerales",
   "biome.magnatour.universe_meta_void": "Vacío Meta del Universo",
-
   "entity.magnatour.bell_ringer": "Campanero",
   "entity.magnatour.bell_soul": "Alma de Campana",
   "entity.magnatour.the_unnameable_thing": "La Cosa Innombrable",
@@ -181,10 +172,8 @@
   "entity.magnatour.netherite_golem": "Gólem de Netherita",
   "entity.magnatour.universe_guardian": "Guardián del Universo",
   "entity.magnatour.primed_chunk_tnt": "TNT de chunk cebado",
-
   "group.magnatour.supreme_item": "Objetos Supremos",
   "group.magnatour.supreme_block": "Bloques Supremos",
-
   "item.magnatour.supreme_core": "Núcleo Supremo",
   "item.magnatour.harvest_core": "Núcleo de la Cosecha",
   "item.magnatour.ore_core": "Núcleo de los Minerales",
@@ -243,10 +232,8 @@
   "item.magnatour.logistics_fiber": "Fibra logística",
   "item.magnatour.harvest_continent_portal": "Portal del Continente de la Cosecha",
   "item.magnatour.ore_continent_portal": "Portal del Continente de los Minerales",
-
   "lore.magnatour.mirror_mobile.0": "Un bloque funcional portátil",
   "lore.magnatour.mirror_mobile.1": "Simula todos los bloques funcionales salvo los que almacenan datos",
-
   "block.magnatour.ever_water_grass_block": "Bloque de césped siempre húmedo",
   "block.magnatour.golden_grass_block": "Bloque de césped dorado",
   "block.magnatour.ever_water_soil": "Tierra siempre húmeda",
@@ -273,10 +260,8 @@
   "block.magnatour.logistics_fiber": "Fibra logística",
   "block.magnatour.harvest_continent_portal": "Portal del Continente de la Cosecha",
   "block.magnatour.ore_continent_portal": "Portal del Continente de los Minerales",
-
   "group.magnatour.universe_item": "Objetos del Universo",
   "group.magnatour.universe_block": "Bloques del Universo",
-
   "item.magnatour.universe_gemred": "Escarlata Nuclear",
   "item.magnatour.universe_gemblue": "Firmamento Azur",
   "item.magnatour.universe_gemyellow": "Oro Solar Radiante",
@@ -317,7 +302,6 @@
   "item.magnatour.universe_void_pool": "Poza del Vacío del Universo",
   "item.magnatour.universe_teleport_point": "Punto de Teletransporte del Universo",
   "item.magnatour.universe_meta_portal": "Portal Meta del Universo",
-
   "lore.magnatour.universe_star.0": "La quintaesencia de todas las cosas",
   "lore.magnatour.universe_star.1": "Sólo el propio tiempo puede borrar su existencia",
   "lore.magnatour.universe_star.2": "Una fuente de vida y poder sin límites",
@@ -361,7 +345,6 @@
   "lore.magnatour.universe_guardian_spawn_egg.0": "Invoca al guardián más poderoso del mundo",
   "lore.magnatour.universe_guardian_spawn_egg.1": "Sólo el propio tiempo puede borrar su existencia",
   "lore.magnatour.universe_guardian_spawn_egg.2": "Siempre a tu lado, implacable e inexpugnable",
-
   "block.magnatour.universe_light_block": "Bloque del Renacer",
   "block.magnatour.universe_dark_block": "Bloque de la Muerte",
   "block.magnatour.universe_light_air": "Aliento del Renacer",
@@ -404,5 +387,29 @@
   "block.magnatour.universe_hanging_sign": "Cartel colgante del Universo",
   "block.magnatour.universe_wall_hanging_sign": "Cartel colgante del Universo",
   "item.magnatour.universe_shelf": "Estante del Universo",
-  "block.magnatour.universe_shelf": "Estante del Universo"
+  "block.magnatour.universe_shelf": "Estante del Universo",
+  "item.magnatour.golden_stairs": "Escaleras de madera dorada",
+  "block.magnatour.golden_stairs": "Escaleras de madera dorada",
+  "item.magnatour.golden_slab": "Losa de madera dorada",
+  "block.magnatour.golden_slab": "Losa de madera dorada",
+  "item.magnatour.golden_fence": "Valla de madera dorada",
+  "block.magnatour.golden_fence": "Valla de madera dorada",
+  "item.magnatour.golden_fence_gate": "Puerta de valla de madera dorada",
+  "block.magnatour.golden_fence_gate": "Puerta de valla de madera dorada",
+  "item.magnatour.golden_door": "Puerta de madera dorada",
+  "block.magnatour.golden_door": "Puerta de madera dorada",
+  "item.magnatour.golden_trapdoor": "Trampilla de madera dorada",
+  "block.magnatour.golden_trapdoor": "Trampilla de madera dorada",
+  "item.magnatour.golden_pressure_plate": "Placa de presión de madera dorada",
+  "block.magnatour.golden_pressure_plate": "Placa de presión de madera dorada",
+  "item.magnatour.golden_button": "Botón de madera dorada",
+  "block.magnatour.golden_button": "Botón de madera dorada",
+  "item.magnatour.golden_shelf": "Estante de madera dorada",
+  "block.magnatour.golden_shelf": "Estante de madera dorada",
+  "item.magnatour.golden_sign": "Cartel de madera dorada",
+  "block.magnatour.golden_sign": "Cartel de madera dorada",
+  "block.magnatour.golden_wall_sign": "Cartel de madera dorada",
+  "item.magnatour.golden_hanging_sign": "Cartel colgante de madera dorada",
+  "block.magnatour.golden_hanging_sign": "Cartel colgante de madera dorada",
+  "block.magnatour.golden_wall_hanging_sign": "Cartel colgante de madera dorada"
 }

@@ -1,10 +1,8 @@
 {
   "key.category.magnatour.general": "Magnatour",
   "key.magnatour.universe_mode": "ツールモード切替",
-
   "tag.item.magnatour.supreme_core": "至高の核",
   "tag.item.magnatour.universe_star": "寰宇の星",
-
   "advancements.magnatour.supreme.title": "至高",
   "advancements.magnatour.supreme.description": "至高への旅に出る",
   "advancements.magnatour.redstone_trigger.title": "レッドストーントリガー",
@@ -47,7 +45,6 @@
   "advancements.magnatour.pale_lord.description": "ペイルロードを召喚する",
   "advancements.magnatour.universe_gemwhite.title": "月光の幻影！！！",
   "advancements.magnatour.universe_gemwhite.description": "宇宙をなす純白の欠片",
-
   "advancements.magnatour.universe.title": "寰宇",
   "advancements.magnatour.universe.description": "寰宇への旅に出る",
   "advancements.magnatour.universe_meta.title": "寰宇元界",
@@ -96,7 +93,6 @@
   "advancements.magnatour.universe_teleport_point.description": "次元を越える座標を錨打つ",
   "advancements.magnatour.universe_sapling.title": "寰宇の苗木",
   "advancements.magnatour.universe_sapling.description": "宇宙の始まりを植える",
-
   "msg.magnatour.mirror_mobile.mode_0": "鏡のモバイル：ブロック再現",
   "msg.magnatour.mirror_mobile.mode_1": "鏡のモバイル：ブロックスキャン",
   "msg.magnatour.mirror_mobile.no_block_stored": "鏡のモバイル：まだブロックを記録していない",
@@ -105,7 +101,6 @@
   "msg.magnatour.mirror_mobile.has_block_entity": "鏡のモバイル：このブロックはデータを保持するため再現できない",
   "msg.magnatour.mirror_mobile.error.invalid_block_id": "鏡のモバイル：保存されたブロックIDが無効",
   "msg.magnatour.mirror_mobile.error.no_factory": "鏡のモバイル：画面を生成できない",
-
   "msg.magnatour.universe_ultima_sword.mode_0": "寰宇の終剣：灯火",
   "msg.magnatour.universe_ultima_sword.mode_1": "寰宇の終剣：瞬間精錬",
   "msg.magnatour.universe_omni_blade.mode_0": "寰宇の全能刃：沃土の恵み",
@@ -126,7 +121,6 @@
   "msg.magnatour.universe_teleport_point.invalid": "寰宇転送点：対象次元が無効",
   "msg.magnatour.universe_guardian.guard": "寰宇の守護者：護衛中",
   "msg.magnatour.universe_guardian.sleep": "寰宇の守護者：休眠中",
-
   "gui.magnatour.redstone_trigger.apply": "適用",
   "gui.magnatour.redstone_trigger.disable": "トリガー無効化",
   "gui.magnatour.redstone_trigger.enable": "トリガー有効化",
@@ -154,14 +148,12 @@
   "gui.magnatour.universe_teleport_point.save": "保存",
   "gui.magnatour.universe_teleport_point.cancel": "キャンセル",
   "gui.magnatour.universe_teleport_point.current": "現在地を使用",
-
   "dimension.minecraft:overworld": "§aオーバーワールド",
   "dimension.minecraft:the_nether": "§cネザー",
   "dimension.minecraft:the_end": "§eエンド",
   "dimension.magnatour:ore_continent": "§b鉱石大陸",
   "dimension.magnatour:harvest_continent": "§6豊穣大陸",
   "dimension.magnatour:universe_meta": "§5寰宇メタ界",
-
   "biome.magnatour.wheat_plain": "小麦平原",
   "biome.magnatour.melon_jungle": "メロンの密林",
   "biome.magnatour.pumpkin_gorge": "カボチャ峡谷",
@@ -170,7 +162,6 @@
   "biome.magnatour.ore_land": "鉱石の大地",
   "biome.magnatour.ore_forest": "鉱石の森",
   "biome.magnatour.universe_meta_void": "寰宇メタ虚空",
-
   "entity.magnatour.bell_ringer": "鐘守",
   "entity.magnatour.bell_soul": "鐘霊",
   "entity.magnatour.the_unnameable_thing": "名状しがたきもの",
@@ -181,10 +172,8 @@
   "entity.magnatour.netherite_golem": "ネザライトのゴーレム",
   "entity.magnatour.universe_guardian": "寰宇の守護者",
   "entity.magnatour.primed_chunk_tnt": "起爆したチャンクTNT",
-
   "group.magnatour.supreme_item": "至高のアイテム",
   "group.magnatour.supreme_block": "至高のブロック",
-
   "item.magnatour.supreme_core": "至高の核",
   "item.magnatour.harvest_core": "収穫の核",
   "item.magnatour.ore_core": "鉱石の核",
@@ -243,10 +232,8 @@
   "item.magnatour.logistics_fiber": "物流ファイバー",
   "item.magnatour.harvest_continent_portal": "豊穣大陸ポータル",
   "item.magnatour.ore_continent_portal": "鉱石大陸ポータル",
-
   "lore.magnatour.mirror_mobile.0": "持ち運べる機能ブロック",
   "lore.magnatour.mirror_mobile.1": "データを保持するものを除き、あらゆる機能ブロックを再現できる",
-
   "block.magnatour.ever_water_grass_block": "常潤の草ブロック",
   "block.magnatour.golden_grass_block": "黄金の草ブロック",
   "block.magnatour.ever_water_soil": "常潤の土壌",
@@ -273,10 +260,8 @@
   "block.magnatour.logistics_fiber": "物流ファイバー",
   "block.magnatour.harvest_continent_portal": "豊穣大陸ポータル",
   "block.magnatour.ore_continent_portal": "鉱石大陸ポータル",
-
   "group.magnatour.universe_item": "寰宇のアイテム",
   "group.magnatour.universe_block": "寰宇のブロック",
-
   "item.magnatour.universe_gemred": "核なる緋紅",
   "item.magnatour.universe_gemblue": "蒼天の紺碧",
   "item.magnatour.universe_gemyellow": "烈日の黄金",
@@ -317,7 +302,6 @@
   "item.magnatour.universe_void_pool": "寰宇の虚無池",
   "item.magnatour.universe_teleport_point": "寰宇転送点",
   "item.magnatour.universe_meta_portal": "寰宇メタポータル",
-
   "lore.magnatour.universe_star.0": "万物の精髄",
   "lore.magnatour.universe_star.1": "その存在を消せるのは時そのものだけ",
   "lore.magnatour.universe_star.2": "尽きることのない生命と力の泉",
@@ -361,7 +345,6 @@
   "lore.magnatour.universe_guardian_spawn_egg.0": "世界最強の守護者を呼び出す",
   "lore.magnatour.universe_guardian_spawn_egg.1": "その存在を消せるのは時そのものだけ",
   "lore.magnatour.universe_guardian_spawn_egg.2": "常に傍らにあり、猛々しく、破られない",
-
   "block.magnatour.universe_light_block": "再生のブロック",
   "block.magnatour.universe_dark_block": "死のブロック",
   "block.magnatour.universe_light_air": "再生の気息",
@@ -404,5 +387,29 @@
   "block.magnatour.universe_hanging_sign": "寰宇の吊り看板",
   "block.magnatour.universe_wall_hanging_sign": "寰宇の吊り看板",
   "item.magnatour.universe_shelf": "寰宇の棚",
-  "block.magnatour.universe_shelf": "寰宇の棚"
+  "block.magnatour.universe_shelf": "寰宇の棚",
+  "item.magnatour.golden_stairs": "黄金の階段",
+  "block.magnatour.golden_stairs": "黄金の階段",
+  "item.magnatour.golden_slab": "黄金のハーフブロック",
+  "block.magnatour.golden_slab": "黄金のハーフブロック",
+  "item.magnatour.golden_fence": "黄金のフェンス",
+  "block.magnatour.golden_fence": "黄金のフェンス",
+  "item.magnatour.golden_fence_gate": "黄金のフェンスゲート",
+  "block.magnatour.golden_fence_gate": "黄金のフェンスゲート",
+  "item.magnatour.golden_door": "黄金のドア",
+  "block.magnatour.golden_door": "黄金のドア",
+  "item.magnatour.golden_trapdoor": "黄金のトラップドア",
+  "block.magnatour.golden_trapdoor": "黄金のトラップドア",
+  "item.magnatour.golden_pressure_plate": "黄金の感圧板",
+  "block.magnatour.golden_pressure_plate": "黄金の感圧板",
+  "item.magnatour.golden_button": "黄金のボタン",
+  "block.magnatour.golden_button": "黄金のボタン",
+  "item.magnatour.golden_shelf": "黄金の棚",
+  "block.magnatour.golden_shelf": "黄金の棚",
+  "item.magnatour.golden_sign": "黄金の看板",
+  "block.magnatour.golden_sign": "黄金の看板",
+  "block.magnatour.golden_wall_sign": "黄金の看板",
+  "item.magnatour.golden_hanging_sign": "黄金の吊り看板",
+  "block.magnatour.golden_hanging_sign": "黄金の吊り看板",
+  "block.magnatour.golden_wall_hanging_sign": "黄金の吊り看板"
 }

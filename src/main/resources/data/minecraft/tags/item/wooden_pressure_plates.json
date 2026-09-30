@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
-    "magnatour:universe_pressure_plate"
+    "magnatour:universe_pressure_plate",
+    "magnatour:golden_pressure_plate"
   ]
 }

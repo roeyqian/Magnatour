@@ -1,0 +1,16 @@
+{
+  "type": "magnatour:supreme_crafting",
+  "category": "building",
+  "group": "supreme:items",
+  "pattern": [
+    "AA"
+  ],
+  "key": {
+    "A": "magnatour:golden_planks"
+  },
+  "result": {
+    "count": 1,
+    "id": "magnatour:golden_pressure_plate"
+  },
+  "show_notification": true
+}

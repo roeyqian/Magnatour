@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
-    "magnatour:universe_door"
+    "magnatour:universe_door",
+    "magnatour:golden_door"
   ]
 }

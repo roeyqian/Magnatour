@@ -7,14 +7,34 @@
  */
 package roeyqian.magnatour.registry.content;
 
+// Java Standard
+import java.util.Optional;
+
 // Minecraft
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.ButtonBlock;
+import net.minecraft.world.level.block.CeilingHangingSignBlock;
+import net.minecraft.world.level.block.DoorBlock;
+import net.minecraft.world.level.block.FenceBlock;
+import net.minecraft.world.level.block.FenceGateBlock;
+import net.minecraft.world.level.block.PressurePlateBlock;
 import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.block.SaplingBlock;
+import net.minecraft.world.level.block.ShelfBlock;
+import net.minecraft.world.level.block.SlabBlock;
+import net.minecraft.world.level.block.StairBlock;
+import net.minecraft.world.level.block.StandingSignBlock;
+import net.minecraft.world.level.block.TrapDoorBlock;
+import net.minecraft.world.level.block.WallHangingSignBlock;
+import net.minecraft.world.level.block.WallSignBlock;
+import net.minecraft.world.level.block.state.properties.BlockSetType;
+import net.minecraft.world.level.block.state.properties.WoodType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 
 // Magnatour
@@ -110,6 +130,72 @@ public final class SupremeBlocks {
       "golden_planks", supreme, Block::new,
       BlockBehaviour.Properties.of()
   );
+  public static final Block GOLDEN_STAIRS = BlockRegHelper.registerWood(
+      "golden_stairs", supreme,
+      properties -> new StairBlock(GOLDEN_PLANKS.defaultBlockState(), properties),
+      BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_STAIRS)
+  );
+  public static final Block GOLDEN_SLAB = BlockRegHelper.registerWood(
+      "golden_slab", supreme, SlabBlock::new,
+      BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_SLAB)
+  );
+  public static final Block GOLDEN_FENCE = BlockRegHelper.registerWood(
+      "golden_fence", supreme, FenceBlock::new,
+      BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_FENCE)
+  );
+  public static final Block GOLDEN_FENCE_GATE = BlockRegHelper.registerWood(
+      "golden_fence_gate", supreme,
+      properties -> new FenceGateBlock(WoodType.OAK, properties),
+      BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_FENCE_GATE)
+  );
+  public static final Block GOLDEN_DOOR = BlockRegHelper.registerWoodDoor(
+      "golden_door", supreme,
+      properties -> new DoorBlock(BlockSetType.OAK, properties),
+      BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_DOOR)
+  );
+  public static final Block GOLDEN_TRAPDOOR = BlockRegHelper.registerWood(
+      "golden_trapdoor", supreme,
+      properties -> new TrapDoorBlock(BlockSetType.OAK, properties),
+      BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_TRAPDOOR)
+  );
+  public static final Block GOLDEN_PRESSURE_PLATE = BlockRegHelper.registerWood(
+      "golden_pressure_plate", supreme,
+      properties -> new PressurePlateBlock(BlockSetType.OAK, properties),
+      BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_PRESSURE_PLATE)
+  );
+  public static final Block GOLDEN_BUTTON = BlockRegHelper.registerWood(
+      "golden_button", supreme,
+      properties -> new ButtonBlock(BlockSetType.OAK, 30, properties),
+      BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_BUTTON)
+  );
+  public static final Block GOLDEN_SHELF = BlockRegHelper.registerWood(
+      "golden_shelf", supreme, ShelfBlock::new,
+      BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_SHELF)
+  );
+  public static final Block GOLDEN_SIGN = BlockRegHelper.registerWoodBlockOnly(
+      "golden_sign", supreme, properties -> new StandingSignBlock(WoodType.OAK, properties),
+      BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_SIGN)
+  );
+  public static final Block GOLDEN_WALL_SIGN = BlockRegHelper.registerWoodBlockOnly(
+      "golden_wall_sign", supreme, properties -> new WallSignBlock(WoodType.OAK, properties),
+      BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_WALL_SIGN)
+          .overrideLootTable(signLootTable("golden_sign"))
+  );
+  public static final Item GOLDEN_SIGN_ITEM = BlockRegHelper.registerWoodSignItem(
+      "golden_sign", supreme, GOLDEN_SIGN, GOLDEN_WALL_SIGN, false
+  );
+  public static final Block GOLDEN_HANGING_SIGN = BlockRegHelper.registerWoodBlockOnly(
+      "golden_hanging_sign", supreme, properties -> new CeilingHangingSignBlock(WoodType.OAK, properties),
+      BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_HANGING_SIGN)
+  );
+  public static final Block GOLDEN_WALL_HANGING_SIGN = BlockRegHelper.registerWoodBlockOnly(
+      "golden_wall_hanging_sign", supreme, properties -> new WallHangingSignBlock(WoodType.OAK, properties),
+      BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_WALL_HANGING_SIGN)
+          .overrideLootTable(signLootTable("golden_hanging_sign"))
+  );
+  public static final Item GOLDEN_HANGING_SIGN_ITEM = BlockRegHelper.registerWoodSignItem(
+      "golden_hanging_sign", supreme, GOLDEN_HANGING_SIGN, GOLDEN_WALL_HANGING_SIGN, true
+  );
   public static final Block GOLDEN_SAPLING = BlockRegHelper.registerSapling(
       "golden_sapling", supreme, setting -> new SaplingBlock(SaplingGenerators.GOLDEN, setting),
       BlockBehaviour.Properties.of()
@@ -198,6 +284,13 @@ public final class SupremeBlocks {
           .noLootTable()
           .noOcclusion()
   );
+
+  private static Optional<ResourceKey<LootTable>> signLootTable(String name) {
+    return Optional.of(ResourceKey.create(
+        Registries.LOOT_TABLE,
+        Identifier.fromNamespaceAndPath(Magnatour.MOD_ID, "blocks/" + name)
+    ));
+  }
 
   private SupremeBlocks() {}
 

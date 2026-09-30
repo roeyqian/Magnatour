@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
-    "magnatour:universe_shelf"
+    "magnatour:universe_shelf",
+    "magnatour:golden_shelf"
   ]
 }

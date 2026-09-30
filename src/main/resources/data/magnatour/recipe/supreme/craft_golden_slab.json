@@ -1,0 +1,16 @@
+{
+  "type": "magnatour:supreme_crafting",
+  "category": "building",
+  "group": "supreme:items",
+  "pattern": [
+    "AAA"
+  ],
+  "key": {
+    "A": "magnatour:golden_planks"
+  },
+  "result": {
+    "count": 6,
+    "id": "magnatour:golden_slab"
+  },
+  "show_notification": true
+}

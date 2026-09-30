@@ -1,10 +1,8 @@
 {
   "key.category.magnatour.general": "Magnatour",
   "key.magnatour.universe_mode": "Changer le mode de l'outil",
-
   "tag.item.magnatour.supreme_core": "Noyau Suprême",
   "tag.item.magnatour.universe_star": "Étoile de l'Univers",
-
   "advancements.magnatour.supreme.title": "Suprême",
   "advancements.magnatour.supreme.description": "Entamez un voyage suprême",
   "advancements.magnatour.redstone_trigger.title": "Déclencheur de redstone",
@@ -47,7 +45,6 @@
   "advancements.magnatour.pale_lord.description": "Invoquez le Seigneur Pâle",
   "advancements.magnatour.universe_gemwhite.title": "Mirage Lunaire !!!",
   "advancements.magnatour.universe_gemwhite.description": "Un éclat blanc immaculé du cosmos",
-
   "advancements.magnatour.universe.title": "Univers",
   "advancements.magnatour.universe.description": "Entamez un voyage dans l'Univers",
   "advancements.magnatour.universe_meta.title": "Méta-univers",
@@ -96,7 +93,6 @@
   "advancements.magnatour.universe_teleport_point.description": "Ancrez des coordonnées au-delà des dimensions",
   "advancements.magnatour.universe_sapling.title": "Pousse de l'Univers",
   "advancements.magnatour.universe_sapling.description": "Plantez le commencement du cosmos",
-
   "msg.magnatour.mirror_mobile.mode_0": "Mobile Miroir : Simulation de bloc",
   "msg.magnatour.mirror_mobile.mode_1": "Mobile Miroir : Analyse de bloc",
   "msg.magnatour.mirror_mobile.no_block_stored": "Mobile Miroir : Aucun bloc n'a encore été analysé",
@@ -105,7 +101,6 @@
   "msg.magnatour.mirror_mobile.has_block_entity": "Mobile Miroir : Ce bloc stocke des données et ne peut pas être simulé",
   "msg.magnatour.mirror_mobile.error.invalid_block_id": "Mobile Miroir : ID de bloc enregistré invalide",
   "msg.magnatour.mirror_mobile.error.no_factory": "Mobile Miroir : Impossible de créer l'interface",
-
   "msg.magnatour.universe_ultima_sword.mode_0": "Épée Ultima de l'Univers : Lueur paisible",
   "msg.magnatour.universe_ultima_sword.mode_1": "Épée Ultima de l'Univers : Affinage instantané",
   "msg.magnatour.universe_omni_blade.mode_0": "Lame Omniforme de l'Univers : Terre nourricière",
@@ -126,7 +121,6 @@
   "msg.magnatour.universe_teleport_point.invalid": "Point de Téléportation de l'Univers : Dimension cible invalide",
   "msg.magnatour.universe_guardian.guard": "Gardien de l'Univers : En garde",
   "msg.magnatour.universe_guardian.sleep": "Gardien de l'Univers : En sommeil",
-
   "gui.magnatour.redstone_trigger.apply": "Appliquer",
   "gui.magnatour.redstone_trigger.disable": "Désactiver le déclencheur",
   "gui.magnatour.redstone_trigger.enable": "Activer le déclencheur",
@@ -154,14 +148,12 @@
   "gui.magnatour.universe_teleport_point.save": "Enregistrer",
   "gui.magnatour.universe_teleport_point.cancel": "Annuler",
   "gui.magnatour.universe_teleport_point.current": "Utiliser la position actuelle",
-
   "dimension.minecraft:overworld": "§aMonde normal",
   "dimension.minecraft:the_nether": "§cNether",
   "dimension.minecraft:the_end": "§eEnd",
   "dimension.magnatour:ore_continent": "§bContinent des Minerais",
   "dimension.magnatour:harvest_continent": "§6Continent des Récoltes",
   "dimension.magnatour:universe_meta": "§5Métaunivers",
-
   "biome.magnatour.wheat_plain": "Plaine de Blé",
   "biome.magnatour.melon_jungle": "Jungle de Melons",
   "biome.magnatour.pumpkin_gorge": "Gorge aux Citrouilles",
@@ -170,7 +162,6 @@
   "biome.magnatour.ore_land": "Terre des minerais",
   "biome.magnatour.ore_forest": "Forêt de minerais",
   "biome.magnatour.universe_meta_void": "Vide Méta de l'Univers",
-
   "entity.magnatour.bell_ringer": "Sonneur de cloche",
   "entity.magnatour.bell_soul": "Âme de cloche",
   "entity.magnatour.the_unnameable_thing": "La Chose Innommable",
@@ -181,10 +172,8 @@
   "entity.magnatour.netherite_golem": "Golem de Netherite",
   "entity.magnatour.universe_guardian": "Gardien de l'Univers",
   "entity.magnatour.primed_chunk_tnt": "TNT de chunk amorcé",
-
   "group.magnatour.supreme_item": "Objets Suprêmes",
   "group.magnatour.supreme_block": "Blocs Suprêmes",
-
   "item.magnatour.supreme_core": "Noyau Suprême",
   "item.magnatour.harvest_core": "Noyau des Récoltes",
   "item.magnatour.ore_core": "Noyau des Minerais",
@@ -243,10 +232,8 @@
   "item.magnatour.logistics_fiber": "Fibre logistique",
   "item.magnatour.harvest_continent_portal": "Portail du Continent des Récoltes",
   "item.magnatour.ore_continent_portal": "Portail du Continent des Minerais",
-
   "lore.magnatour.mirror_mobile.0": "Un bloc fonctionnel mobile",
   "lore.magnatour.mirror_mobile.1": "Simule tous les blocs fonctionnels sauf ceux qui stockent des données",
-
   "block.magnatour.ever_water_grass_block": "Bloc d'herbe toujours humide",
   "block.magnatour.golden_grass_block": "Bloc d'herbe doré",
   "block.magnatour.ever_water_soil": "Sol toujours humide",
@@ -273,10 +260,8 @@
   "block.magnatour.logistics_fiber": "Fibre logistique",
   "block.magnatour.harvest_continent_portal": "Portail du Continent des Récoltes",
   "block.magnatour.ore_continent_portal": "Portail du Continent des Minerais",
-
   "group.magnatour.universe_item": "Objets de l'Univers",
   "group.magnatour.universe_block": "Blocs de l'Univers",
-
   "item.magnatour.universe_gemred": "Écarlate Primordiale",
   "item.magnatour.universe_gemblue": "Firmament d'Azur",
   "item.magnatour.universe_gemyellow": "Or solaire rayonnant",
@@ -317,7 +302,6 @@
   "item.magnatour.universe_void_pool": "Bassin du Vide de l'Univers",
   "item.magnatour.universe_teleport_point": "Point de Téléportation de l'Univers",
   "item.magnatour.universe_meta_portal": "Portail Méta de l'Univers",
-
   "lore.magnatour.universe_star.0": "La quintessence de toute chose",
   "lore.magnatour.universe_star.1": "Seul le temps lui-même peut effacer son existence",
   "lore.magnatour.universe_star.2": "Une source de vie et de puissance sans bornes",
@@ -361,7 +345,6 @@
   "lore.magnatour.universe_guardian_spawn_egg.0": "Invoquez le gardien le plus puissant du monde",
   "lore.magnatour.universe_guardian_spawn_egg.1": "Seul le temps lui-même peut effacer son existence",
   "lore.magnatour.universe_guardian_spawn_egg.2": "Toujours à vos côtés, implacable et imprenable",
-
   "block.magnatour.universe_light_block": "Bloc de Renaissance",
   "block.magnatour.universe_dark_block": "Bloc de Mort",
   "block.magnatour.universe_light_air": "Souffle de Renaissance",
@@ -404,5 +387,29 @@
   "block.magnatour.universe_hanging_sign": "Pancarte suspendue de l’Univers",
   "block.magnatour.universe_wall_hanging_sign": "Pancarte suspendue de l’Univers",
   "item.magnatour.universe_shelf": "Étagère de l’Univers",
-  "block.magnatour.universe_shelf": "Étagère de l’Univers"
+  "block.magnatour.universe_shelf": "Étagère de l’Univers",
+  "item.magnatour.golden_stairs": "Escalier en bois doré",
+  "block.magnatour.golden_stairs": "Escalier en bois doré",
+  "item.magnatour.golden_slab": "Dalle en bois doré",
+  "block.magnatour.golden_slab": "Dalle en bois doré",
+  "item.magnatour.golden_fence": "Barrière en bois doré",
+  "block.magnatour.golden_fence": "Barrière en bois doré",
+  "item.magnatour.golden_fence_gate": "Portillon en bois doré",
+  "block.magnatour.golden_fence_gate": "Portillon en bois doré",
+  "item.magnatour.golden_door": "Porte en bois doré",
+  "block.magnatour.golden_door": "Porte en bois doré",
+  "item.magnatour.golden_trapdoor": "Trappe en bois doré",
+  "block.magnatour.golden_trapdoor": "Trappe en bois doré",
+  "item.magnatour.golden_pressure_plate": "Plaque de pression en bois doré",
+  "block.magnatour.golden_pressure_plate": "Plaque de pression en bois doré",
+  "item.magnatour.golden_button": "Bouton en bois doré",
+  "block.magnatour.golden_button": "Bouton en bois doré",
+  "item.magnatour.golden_shelf": "Étagère en bois doré",
+  "block.magnatour.golden_shelf": "Étagère en bois doré",
+  "item.magnatour.golden_sign": "Pancarte en bois doré",
+  "block.magnatour.golden_sign": "Pancarte en bois doré",
+  "block.magnatour.golden_wall_sign": "Pancarte en bois doré",
+  "item.magnatour.golden_hanging_sign": "Pancarte suspendue en bois doré",
+  "block.magnatour.golden_hanging_sign": "Pancarte suspendue en bois doré",
+  "block.magnatour.golden_wall_hanging_sign": "Pancarte suspendue en bois doré"
 }

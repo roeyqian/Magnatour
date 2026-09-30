@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
-    "magnatour:universe_fence_gate"
+    "magnatour:universe_fence_gate",
+    "magnatour:golden_fence_gate"
   ]
 }

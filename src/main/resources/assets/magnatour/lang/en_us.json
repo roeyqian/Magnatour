@@ -1,10 +1,8 @@
 {
   "key.category.magnatour.general": "Magnatour",
   "key.magnatour.universe_mode": "Tool Mode Toggle",
-
   "tag.item.magnatour.supreme_core": "Supreme Core",
   "tag.item.magnatour.universe_star": "Universe Star",
-
   "advancements.magnatour.supreme.title": "Supreme",
   "advancements.magnatour.supreme.description": "Embark on a supreme journey",
   "advancements.magnatour.redstone_trigger.title": "Redstone Trigger",
@@ -47,7 +45,6 @@
   "advancements.magnatour.pale_lord.description": "Summon the Pale Lord",
   "advancements.magnatour.universe_gemwhite.title": "Moonlit Mirage!!!",
   "advancements.magnatour.universe_gemwhite.description": "A pure-white shard of the cosmos",
-
   "advancements.magnatour.universe.title": "Universe",
   "advancements.magnatour.universe.description": "Embark on a universe journey",
   "advancements.magnatour.universe_meta.title": "Universe Meta",
@@ -96,7 +93,6 @@
   "advancements.magnatour.universe_teleport_point.description": "Anchor coordinates beyond dimensions",
   "advancements.magnatour.universe_sapling.title": "Universe Sapling",
   "advancements.magnatour.universe_sapling.description": "Plant the beginning of the cosmos",
-
   "msg.magnatour.mirror_mobile.mode_0": "Mirror Mobile: Block Simulation",
   "msg.magnatour.mirror_mobile.mode_1": "Mirror Mobile: Block Scan",
   "msg.magnatour.mirror_mobile.no_block_stored": "Mirror Mobile: No block has been scanned yet",
@@ -105,7 +101,6 @@
   "msg.magnatour.mirror_mobile.has_block_entity": "Mirror Mobile: This block stores data and cannot be simulated",
   "msg.magnatour.mirror_mobile.error.invalid_block_id": "Mirror Mobile: Invalid stored block ID",
   "msg.magnatour.mirror_mobile.error.no_factory": "Mirror Mobile: Unable to create interface",
-
   "msg.magnatour.universe_ultima_sword.mode_0": "Universe Ultima Sword: Candlelight",
   "msg.magnatour.universe_ultima_sword.mode_1": "Universe Ultima Sword: Instant Refinement",
   "msg.magnatour.universe_omni_blade.mode_0": "Universe Omni Blade: Nourishing Earth",
@@ -126,7 +121,6 @@
   "msg.magnatour.universe_teleport_point.invalid": "Universe Teleport Point: Invalid target dimension",
   "msg.magnatour.universe_guardian.guard": "Universe Guardian: Guarding",
   "msg.magnatour.universe_guardian.sleep": "Universe Guardian: Sleeping",
-
   "gui.magnatour.redstone_trigger.apply": "Apply",
   "gui.magnatour.redstone_trigger.disable": "Disable Trigger",
   "gui.magnatour.redstone_trigger.enable": "Enable Trigger",
@@ -154,14 +148,12 @@
   "gui.magnatour.universe_teleport_point.save": "Save",
   "gui.magnatour.universe_teleport_point.cancel": "Cancel",
   "gui.magnatour.universe_teleport_point.current": "Use current position",
-
   "dimension.minecraft:overworld": "§aOverworld",
   "dimension.minecraft:the_nether": "§cNether",
   "dimension.minecraft:the_end": "§eThe End",
   "dimension.magnatour:ore_continent": "§bOre Continent",
   "dimension.magnatour:harvest_continent": "§6Harvest Continent",
   "dimension.magnatour:universe_meta": "§5Universe Meta",
-
   "biome.magnatour.wheat_plain": "Wheat Plain",
   "biome.magnatour.melon_jungle": "Melon Jungle",
   "biome.magnatour.pumpkin_gorge": "Pumpkin Gorge",
@@ -170,7 +162,6 @@
   "biome.magnatour.ore_land": "Ore Land",
   "biome.magnatour.ore_forest": "Ore Forest",
   "biome.magnatour.universe_meta_void": "Universe Meta Void",
-
   "entity.magnatour.bell_ringer": "Bell Ringer",
   "entity.magnatour.bell_soul": "Bell Soul",
   "entity.magnatour.the_unnameable_thing": "The Unnameable Thing",
@@ -181,10 +172,8 @@
   "entity.magnatour.netherite_golem": "Netherite Golem",
   "entity.magnatour.universe_guardian": "Universe Guardian",
   "entity.magnatour.primed_chunk_tnt": "Primed Chunk TNT",
-
   "group.magnatour.supreme_item": "Supreme Items",
   "group.magnatour.supreme_block": "Supreme Blocks",
-
   "item.magnatour.supreme_core": "Supreme Core",
   "item.magnatour.harvest_core": "Harvest Core",
   "item.magnatour.ore_core": "Ore Core",
@@ -243,10 +232,8 @@
   "item.magnatour.logistics_fiber": "Logistics Fiber",
   "item.magnatour.harvest_continent_portal": "Harvest Continent Portal",
   "item.magnatour.ore_continent_portal": "Ore Continent Portal",
-
   "lore.magnatour.mirror_mobile.0": "A mobile functional block",
   "lore.magnatour.mirror_mobile.1": "Simulates every functional block except those that store data",
-
   "block.magnatour.ever_water_grass_block": "Ever-Water Grass Block",
   "block.magnatour.golden_grass_block": "Golden Grass Block",
   "block.magnatour.ever_water_soil": "Ever-Water Soil",
@@ -273,10 +260,8 @@
   "block.magnatour.logistics_fiber": "Logistics Fiber",
   "block.magnatour.harvest_continent_portal": "Harvest Continent Portal",
   "block.magnatour.ore_continent_portal": "Ore Continent Portal",
-
   "group.magnatour.universe_item": "Universe Items",
   "group.magnatour.universe_block": "Universe Blocks",
-
   "item.magnatour.universe_gemred": "Core Scarlet",
   "item.magnatour.universe_gemblue": "Azure Firmament",
   "item.magnatour.universe_gemyellow": "Radiant Sun Gold",
@@ -317,7 +302,6 @@
   "item.magnatour.universe_void_pool": "Universe Void Pool",
   "item.magnatour.universe_teleport_point": "Universe Teleport Point",
   "item.magnatour.universe_meta_portal": "Universe Meta Portal",
-
   "lore.magnatour.universe_star.0": "The quintessence of all things",
   "lore.magnatour.universe_star.1": "Only time itself may erase its being",
   "lore.magnatour.universe_star.2": "A spring of boundless life and power",
@@ -361,7 +345,6 @@
   "lore.magnatour.universe_guardian_spawn_egg.0": "Summon the mightiest guardian in the world",
   "lore.magnatour.universe_guardian_spawn_egg.1": "Only time itself may erase its being",
   "lore.magnatour.universe_guardian_spawn_egg.2": "Ever at your side, relentless, impregnable",
-
   "block.magnatour.universe_light_block": "Rebirth Block",
   "block.magnatour.universe_dark_block": "Death Block",
   "block.magnatour.universe_light_air": "Rebirth Air",
@@ -404,5 +387,29 @@
   "block.magnatour.universe_hanging_sign": "Universe Hanging Sign",
   "block.magnatour.universe_wall_hanging_sign": "Universe Hanging Sign",
   "item.magnatour.universe_shelf": "Universe Shelf",
-  "block.magnatour.universe_shelf": "Universe Shelf"
+  "block.magnatour.universe_shelf": "Universe Shelf",
+  "item.magnatour.golden_stairs": "Golden Stairs",
+  "block.magnatour.golden_stairs": "Golden Stairs",
+  "item.magnatour.golden_slab": "Golden Slab",
+  "block.magnatour.golden_slab": "Golden Slab",
+  "item.magnatour.golden_fence": "Golden Fence",
+  "block.magnatour.golden_fence": "Golden Fence",
+  "item.magnatour.golden_fence_gate": "Golden Fence Gate",
+  "block.magnatour.golden_fence_gate": "Golden Fence Gate",
+  "item.magnatour.golden_door": "Golden Door",
+  "block.magnatour.golden_door": "Golden Door",
+  "item.magnatour.golden_trapdoor": "Golden Trapdoor",
+  "block.magnatour.golden_trapdoor": "Golden Trapdoor",
+  "item.magnatour.golden_pressure_plate": "Golden Pressure Plate",
+  "block.magnatour.golden_pressure_plate": "Golden Pressure Plate",
+  "item.magnatour.golden_button": "Golden Button",
+  "block.magnatour.golden_button": "Golden Button",
+  "item.magnatour.golden_shelf": "Golden Shelf",
+  "block.magnatour.golden_shelf": "Golden Shelf",
+  "item.magnatour.golden_sign": "Golden Sign",
+  "block.magnatour.golden_sign": "Golden Sign",
+  "block.magnatour.golden_wall_sign": "Golden Sign",
+  "item.magnatour.golden_hanging_sign": "Golden Hanging Sign",
+  "block.magnatour.golden_hanging_sign": "Golden Hanging Sign",
+  "block.magnatour.golden_wall_hanging_sign": "Golden Hanging Sign"
 }

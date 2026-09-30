@@ -2,6 +2,8 @@
   "replace": false,
   "values": [
     "magnatour:universe_sign",
-    "magnatour:universe_wall_sign"
+    "magnatour:universe_wall_sign",
+    "magnatour:golden_sign",
+    "magnatour:golden_wall_sign"
   ]
 }

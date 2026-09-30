@@ -267,6 +267,7 @@ public interface BlockRegHelper {
 
   static Block registerWoodBlockOnly(
       String name,
+      String type,
       Function<BlockBehaviour.Properties, Block> factory,
       BlockBehaviour.Properties properties
   ) {
@@ -274,13 +275,15 @@ public interface BlockRegHelper {
     ResourceKey<Block> key = ResourceKey.create(Registries.BLOCK, id);
     return Blocks.register(
         key, factory,
-        properties.strength(128.0F, 3600000.0F)
+        properties.strength(Objects.equals(type, "supreme") ? 32.0F : 128.0F,
+                Objects.equals(type, "supreme") ? 400.0F : 3600000.0F)
             .sound(SoundType.WOOD).ignitedByLava().requiresCorrectToolForDrops()
     );
   }
 
   static Block registerWoodDoor(
       String name,
+      String type,
       Function<BlockBehaviour.Properties, Block> factory,
       BlockBehaviour.Properties properties
   ) {
@@ -289,11 +292,13 @@ public interface BlockRegHelper {
     ResourceKey<Item> itemKey = ResourceKey.create(Registries.ITEM, id);
     Block block = Blocks.register(
         blockKey, factory,
-        properties.strength(128.0F, 3600000.0F)
+        properties.strength(Objects.equals(type, "supreme") ? 32.0F : 128.0F,
+                Objects.equals(type, "supreme") ? 400.0F : 3600000.0F)
             .sound(SoundType.WOOD).ignitedByLava().requiresCorrectToolForDrops()
     );
     BlockItem item = new DoubleHighBlockItem(
-        block, new Item.Properties().setId(itemKey).rarity(Rarity.EPIC)
+        block, new Item.Properties().setId(itemKey)
+            .rarity(Objects.equals(type, "supreme") ? Rarity.RARE : Rarity.EPIC)
     );
     item.registerBlocks(Item.BY_BLOCK, item);
     Registry.register(BuiltInRegistries.ITEM, itemKey, item);
@@ -302,13 +307,15 @@ public interface BlockRegHelper {
 
   static Item registerWoodSignItem(
       String name,
+      String type,
       Block standing,
       Block wall,
       boolean hanging
   ) {
     Identifier id = Identifier.fromNamespaceAndPath(Magnatour.MOD_ID, name);
     ResourceKey<Item> key = ResourceKey.create(Registries.ITEM, id);
-    Item.Properties properties = new Item.Properties().setId(key).rarity(Rarity.EPIC);
+    Item.Properties properties = new Item.Properties().setId(key)
+        .rarity(Objects.equals(type, "supreme") ? Rarity.RARE : Rarity.EPIC);
     BlockItem item = hanging
         ? new HangingSignItem(standing, wall, properties)
         : new StandingAndWallBlockItem(standing, wall, Direction.DOWN, properties);

@@ -4,6 +4,10 @@
     "magnatour:universe_sign",
     "magnatour:universe_wall_sign",
     "magnatour:universe_hanging_sign",
-    "magnatour:universe_wall_hanging_sign"
+    "magnatour:universe_wall_hanging_sign",
+    "magnatour:golden_sign",
+    "magnatour:golden_wall_sign",
+    "magnatour:golden_hanging_sign",
+    "magnatour:golden_wall_hanging_sign"
   ]
 }
