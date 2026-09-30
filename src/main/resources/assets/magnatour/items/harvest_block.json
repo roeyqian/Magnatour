@@ -1,6 +1,6 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "magnatour:block/supreme_gem_block"
+    "model": "magnatour:block/harvest_block"
   }
 }

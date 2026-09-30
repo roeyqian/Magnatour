@@ -174,8 +174,8 @@ public class Magnatour implements ModInitializer {
               entries.accept(SupremeBlocks.GOLDEN_PLANKS);
               entries.accept(SupremeBlocks.GOLDEN_LEAVES);
               entries.accept(SupremeBlocks.GOLDEN_SAPLING);
-              entries.accept(SupremeBlocks.SUPREME_GEM_BLOCK);
-              entries.accept(SupremeBlocks.SUPREME_FODDER_BLOCK);
+              entries.accept(SupremeBlocks.ORE_BLOCK);
+              entries.accept(SupremeBlocks.HARVEST_BLOCK);
               entries.accept(SupremeBlocks.CHUNK_TNT);
               entries.accept(SupremeBlocks.SUPREME_PUMPKIN_HEAD);
               entries.accept(SupremeBlocks.SUPREME_BLOCK);

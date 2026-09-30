@@ -31,9 +31,9 @@ import roeyqian.magnatour.block.supreme.OreContinentPortal;
 import roeyqian.magnatour.block.supreme.RedstoneTrigger;
 import roeyqian.magnatour.block.supreme.SupremeBlock;
 import roeyqian.magnatour.block.supreme.SupremeChest;
-import roeyqian.magnatour.block.supreme.SupremeFodderBlock;
+import roeyqian.magnatour.block.supreme.HarvestBlock;
 import roeyqian.magnatour.block.supreme.SupremeFurnace;
-import roeyqian.magnatour.block.supreme.SupremeGemBlock;
+import roeyqian.magnatour.block.supreme.OreBlock;
 import roeyqian.magnatour.block.supreme.SupremePumpkinHead;
 import roeyqian.magnatour.block.supreme.SupremeReserver;
 import roeyqian.magnatour.block.supreme.SupremeWorktable;
@@ -171,12 +171,12 @@ public final class SupremeBlocks {
       "supreme_block", supreme, SupremeBlock::new,
       BlockBehaviour.Properties.of()
   );
-  public static final Block SUPREME_FODDER_BLOCK = BlockRegHelper.registerGrass(
-      "supreme_fodder_block", supreme, SupremeFodderBlock::new,
+  public static final Block HARVEST_BLOCK = BlockRegHelper.registerGrass(
+      "harvest_block", supreme, HarvestBlock::new,
       BlockBehaviour.Properties.of()
   );
-  public static final Block SUPREME_GEM_BLOCK = BlockRegHelper.registerBase(
-      "supreme_gem_block", supreme, SupremeGemBlock::new,
+  public static final Block ORE_BLOCK = BlockRegHelper.registerBase(
+      "ore_block", supreme, OreBlock::new,
       BlockBehaviour.Properties.of()
   );
   public static final Block SUPREME_PUMPKIN_HEAD = BlockRegHelper.registerWood(

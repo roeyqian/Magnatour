@@ -13,7 +13,7 @@
       "translate": "advancements.magnatour.ore_continent.description"
     },
     "icon": {
-      "id": "magnatour:supreme_gem_block"
+      "id": "magnatour:ore_block"
     },
     "title": {
       "translate": "advancements.magnatour.ore_continent.title"

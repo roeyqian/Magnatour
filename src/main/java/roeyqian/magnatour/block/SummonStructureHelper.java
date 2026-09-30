@@ -343,7 +343,7 @@ public final class SummonStructureHelper {
   private static boolean isPaleLordTriggerBlock(
       BlockState state
   ) {
-    return state.is(SupremeBlocks.SUPREME_FODDER_BLOCK)
+    return state.is(SupremeBlocks.HARVEST_BLOCK)
         || state.is(Blocks.CREAKING_HEART);
   }
 
@@ -352,7 +352,7 @@ public final class SummonStructureHelper {
       paleLordPatterns = createHorizontalPatternVariants(
           PALE_LORD_AISLES,
           builder -> builder
-          .where('#', BlockInWorld.hasState(BlockStatePredicate.forBlock(SupremeBlocks.SUPREME_FODDER_BLOCK)))
+          .where('#', BlockInWorld.hasState(BlockStatePredicate.forBlock(SupremeBlocks.HARVEST_BLOCK)))
           .where('C', BlockInWorld.hasState(BlockStatePredicate.forBlock(Blocks.CREAKING_HEART)))
           .where('~', BlockInWorld.hasState(BlockBehaviour.BlockStateBase::isAir))
       );
@@ -364,7 +364,7 @@ public final class SummonStructureHelper {
   private static boolean isSculkBehemothTriggerBlock(
       BlockState state
   ) {
-    return state.is(SupremeBlocks.SUPREME_GEM_BLOCK)
+    return state.is(SupremeBlocks.ORE_BLOCK)
         || state.is(Blocks.SCULK_CATALYST)
         || state.is(Blocks.SCULK);
   }
@@ -374,7 +374,7 @@ public final class SummonStructureHelper {
       sculkBehemothPatterns = createHorizontalPatternVariants(
           SCULK_BEHEMOTH_AISLES,
           builder -> builder
-          .where('#', BlockInWorld.hasState(BlockStatePredicate.forBlock(SupremeBlocks.SUPREME_GEM_BLOCK)))
+          .where('#', BlockInWorld.hasState(BlockStatePredicate.forBlock(SupremeBlocks.ORE_BLOCK)))
           .where('C', BlockInWorld.hasState(BlockStatePredicate.forBlock(Blocks.SCULK_CATALYST)))
           .where('S', BlockInWorld.hasState(BlockStatePredicate.forBlock(Blocks.SCULK)))
           .where('~', BlockInWorld.hasState(BlockBehaviour.BlockStateBase::isAir))

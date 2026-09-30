@@ -20,9 +20,9 @@ import org.jspecify.annotations.NonNull;
 // Magnatour
 import roeyqian.magnatour.block.SummonStructureHelper;
 
-public class SupremeGemBlock extends Block {
+public class HarvestBlock extends Block {
 
-  public SupremeGemBlock(
+  public HarvestBlock(
       BlockBehaviour.Properties properties
   ) {
     super(properties);
@@ -37,7 +37,7 @@ public class SupremeGemBlock extends Block {
       boolean movedByPiston
   ) {
     if (!oldState.is(state.getBlock())) {
-      SummonStructureHelper.trySpawnSculkBehemothFromPlacedBlock(level, pos, state);
+      SummonStructureHelper.trySpawnPaleLordFromPlacedBlock(level, pos, state);
     }
   }
 

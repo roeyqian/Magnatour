@@ -6,7 +6,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "magnatour:supreme_gem_block"
+          "name": "magnatour:harvest_block"
         }
       ]
     }

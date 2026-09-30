@@ -335,12 +335,12 @@ public interface CustomPortalVertex {
   private static List<PortalSpec> portalSpecs() {
     return List.of(
         new PortalSpec(
-            SupremeBlocks.SUPREME_GEM_BLOCK,
+            SupremeBlocks.ORE_BLOCK,
             SupremeBlocks.ORE_CONTINENT_PORTAL,
             CustomDimensions.ORE_CONTINENT
         ),
         new PortalSpec(
-            SupremeBlocks.SUPREME_FODDER_BLOCK,
+            SupremeBlocks.HARVEST_BLOCK,
             SupremeBlocks.HARVEST_CONTINENT_PORTAL,
             CustomDimensions.HARVEST_CONTINENT
         )

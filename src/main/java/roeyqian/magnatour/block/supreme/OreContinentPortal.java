@@ -109,7 +109,7 @@ public class OreContinentPortal extends Block {
     boolean[] clientFlag = new boolean[]{clientInPortal};
     CustomPortalVertex.handleEntityCollision(world, pos, entity,
         PORTAL_TICKS, IN_PORTAL_THIS_TICK, clientFlag,
-        SupremeBlocks.SUPREME_GEM_BLOCK, SupremeBlocks.ORE_CONTINENT_PORTAL,
+        SupremeBlocks.ORE_BLOCK, SupremeBlocks.ORE_CONTINENT_PORTAL,
         CustomDimensions.ORE_CONTINENT, Level.OVERWORLD);
     clientInPortal = clientFlag[0];
   }
@@ -126,7 +126,7 @@ public class OreContinentPortal extends Block {
       @NonNull RandomSource random
   ) {
     if (CustomPortalVertex.shouldBreakPortal(
-        SupremeBlocks.ORE_CONTINENT_PORTAL, SupremeBlocks.SUPREME_GEM_BLOCK,
+        SupremeBlocks.ORE_CONTINENT_PORTAL, SupremeBlocks.ORE_BLOCK,
         state, neighborState, pos, direction, world
     )) {
       return Blocks.AIR.defaultBlockState();

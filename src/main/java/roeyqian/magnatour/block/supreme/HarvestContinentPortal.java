@@ -110,7 +110,7 @@ public class HarvestContinentPortal extends Block {
     CustomPortalVertex.handleEntityCollision(
         world, pos, entity,
         PORTAL_TICKS, IN_PORTAL_THIS_TICK, clientFlag,
-        SupremeBlocks.SUPREME_FODDER_BLOCK, SupremeBlocks.HARVEST_CONTINENT_PORTAL,
+        SupremeBlocks.HARVEST_BLOCK, SupremeBlocks.HARVEST_CONTINENT_PORTAL,
         CustomDimensions.HARVEST_CONTINENT, Level.OVERWORLD
     );
     clientInPortal = clientFlag[0];
@@ -128,7 +128,7 @@ public class HarvestContinentPortal extends Block {
       @NonNull RandomSource random
   ) {
     if (CustomPortalVertex.shouldBreakPortal(
-        SupremeBlocks.HARVEST_CONTINENT_PORTAL, SupremeBlocks.SUPREME_FODDER_BLOCK,
+        SupremeBlocks.HARVEST_CONTINENT_PORTAL, SupremeBlocks.HARVEST_BLOCK,
         state, neighborState, pos, direction, world
     )) {
       return Blocks.AIR.defaultBlockState();

@@ -13,7 +13,7 @@
       "translate": "advancements.magnatour.harvest_continent.description"
     },
     "icon": {
-      "id": "magnatour:supreme_fodder_block"
+      "id": "magnatour:harvest_block"
     },
     "title": {
       "translate": "advancements.magnatour.harvest_continent.title"

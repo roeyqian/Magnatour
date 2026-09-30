@@ -1,7 +1,7 @@
 {
   "replace": false,
   "values": [
-    "magnatour:supreme_gem_block",
+    "magnatour:ore_block",
     "magnatour:supreme_block",
     "magnatour:primed_chunk_tnt_visual",
     "magnatour:chunk_tnt",
