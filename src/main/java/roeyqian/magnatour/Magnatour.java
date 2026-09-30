@@ -125,23 +125,9 @@ public class Magnatour implements ModInitializer {
               entries.accept(SupremeItems.SEED_OF_ALL_THINGS);
               entries.accept(SupremeItems.FRUIT_OF_ALL_THINGS);
               entries.accept(SupremeItems.GREAT_BANQUET);
-              entries.accept(SupremeItems.FORTUNE_CRYSTAL);
               entries.accept(SupremeItems.FORTUNE_METAL);
+              entries.accept(SupremeItems.FORTUNE_CRYSTAL);
               entries.accept(SupremeItems.RAINBOW_MIRROR);
-              entries.accept(SupremeItems.EMPEROR_SWORD);
-              entries.accept(SupremeItems.EMPEROR_AXE);
-              entries.accept(SupremeItems.EMPEROR_PICKAXE);
-              entries.accept(SupremeItems.EMPEROR_SHOVEL);
-              entries.accept(SupremeItems.EMPEROR_HOE);
-              entries.accept(SupremeItems.EMPEROR_HELMET);
-              entries.accept(SupremeItems.EMPEROR_CHESTPLATE);
-              entries.accept(SupremeItems.EMPEROR_LEGGINGS);
-              entries.accept(SupremeItems.EMPEROR_BOOTS);
-              entries.accept(SupremeItems.MIRROR_MOBILE);
-              entries.accept(SupremeItems.STRANGE_MATTER);
-              entries.accept(SupremeItems.STRANGE_POTION);
-              entries.accept(SupremeItems.STRANGE_SPLASH_POTION);
-              entries.accept(SupremeItems.STRANGE_LINGERING_POTION);
               entries.accept(SupremeItems.WITHER_SPAWN_EGG);
               entries.accept(SupremeItems.ENDER_DRAGON_SPAWN_EGG);
               entries.accept(SupremeItems.SCULK_BEHEMOTH_SPAWN_EGG);
@@ -151,6 +137,20 @@ public class Magnatour implements ModInitializer {
               entries.accept(SupremeItems.BELL_SOUL_SPAWN_EGG);
               entries.accept(SupremeItems.OBSIDIAN_GOLEM_SPAWN_EGG);
               entries.accept(SupremeItems.NETHERITE_GOLEM_SPAWN_EGG);
+              entries.accept(SupremeItems.EMPEROR_SWORD);
+              entries.accept(SupremeItems.EMPEROR_AXE);
+              entries.accept(SupremeItems.EMPEROR_PICKAXE);
+              entries.accept(SupremeItems.EMPEROR_SHOVEL);
+              entries.accept(SupremeItems.EMPEROR_HOE);
+              entries.accept(SupremeItems.EMPEROR_HELMET);
+              entries.accept(SupremeItems.EMPEROR_CHESTPLATE);
+              entries.accept(SupremeItems.EMPEROR_LEGGINGS);
+              entries.accept(SupremeItems.EMPEROR_BOOTS);
+              entries.accept(SupremeItems.STRANGE_MATTER);
+              entries.accept(SupremeItems.STRANGE_POTION);
+              entries.accept(SupremeItems.STRANGE_SPLASH_POTION);
+              entries.accept(SupremeItems.STRANGE_LINGERING_POTION);
+              entries.accept(SupremeItems.MIRROR_MOBILE);
             })
             .build()
     );
