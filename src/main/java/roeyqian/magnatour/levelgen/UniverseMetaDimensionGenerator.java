@@ -23,7 +23,7 @@ public final class UniverseMetaDimensionGenerator {
 
   // 32 batches finish the cube in about 1.6 seconds at 20 TPS without a single-tick spike.
   private static final int BLOCKS_PER_TICK = 8192;
-  private static final int BORDER_THICKNESS = 4;
+  private static final int BORDER_THICKNESS = 8;
   private static final int CUBE_MAX = 31;
   private static final int CUBE_MIN = -32;
   private static final int CUBE_SIZE = CUBE_MAX - CUBE_MIN + 1;
