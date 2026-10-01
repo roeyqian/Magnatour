@@ -78,7 +78,7 @@ public class ItemHub extends BaseEntityBlock {
       BlockBehaviour.Properties properties
   ) {
     super(properties);
-    this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.DOWN).setValue(ENABLED, true));
+    this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(ENABLED, true));
     this.shapes = this.makeShapes();
     this.interactionShapes = ImmutableMap.<Direction, VoxelShape>builderWithExpectedSize(5)
         .putAll(Shapes.rotateHorizontal(Shapes.or(
@@ -93,9 +93,8 @@ public class ItemHub extends BaseEntityBlock {
   public BlockState getStateForPlacement(
       BlockPlaceContext context
   ) {
-    Direction direction = context.getClickedFace().getOpposite();
     return this.defaultBlockState()
-        .setValue(FACING, direction.getAxis() == Direction.Axis.Y ? Direction.DOWN : direction)
+        .setValue(FACING, context.getHorizontalDirection().getOpposite())
         .setValue(ENABLED, true);
   }
 
@@ -257,7 +256,7 @@ public class ItemHub extends BaseEntityBlock {
               itemHubEntity,
               pos,
               level.dimension(),
-              itemHubEntity.getFilterItemId()
+              itemHubEntity.getAnchoredItemIds()
           );
         }
 
@@ -273,7 +272,7 @@ public class ItemHub extends BaseEntityBlock {
           return new ItemHubMenu.OpeningData(
               pos,
               level.dimension(),
-              itemHubEntity.getFilterItemId()
+              itemHubEntity.getAnchoredItemIds()
           );
         }
 

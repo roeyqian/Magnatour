@@ -7,15 +7,13 @@
  */
 package roeyqian.magnatour.screen.supreme;
 
-// Fabric
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-
 // Minecraft
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.input.CharacterEvent;
 import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -25,35 +23,33 @@ import net.minecraft.world.entity.player.Inventory;
 import org.jspecify.annotations.NonNull;
 
 // Magnatour
-import roeyqian.magnatour.blockentity.supreme.ItemHubEntity;
-import roeyqian.magnatour.level.network.ItemHubPayload;
 import roeyqian.magnatour.menu.supreme.ItemHubMenu;
 
 public class ItemHubScreen extends AbstractContainerScreen<ItemHubMenu> {
 
-  private static final int ERROR_COLOR = 0xFFFF7A7A;
-  private static final int HINT_COLOR = 0xFF6A6A6A;
-  private static final int PANEL_COLOR = 0xFFC6C6C6;
-  private static final int PANEL_OUTLINE_COLOR = 0xFF8B8B8B;
-  private static final int PANEL_TOP = 133;
-  private static final int TEXT_COLOR = -12566464;
-
-  private static final Identifier TEXTURE = Identifier.withDefaultNamespace(
-      "textures/gui/container/hopper.png"
+  private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(
+      "magnatour", "textures/gui/container/item_hub.png"
   );
 
-  private String errorText = "";
-  private String filterItemId;
-
-  private EditBox filterField;
+  private ItemHubAnchorsScreen anchorsScreen;
 
   public ItemHubScreen(
       ItemHubMenu menu,
       Inventory inventory,
       Component title
   ) {
-    super(menu, inventory, title, 176, 186);
-    this.filterItemId = menu.getFilterItemId();
+    super(menu, inventory, title, 176, 176);
+  }
+
+  @Override
+  public boolean charTyped(
+      @NonNull CharacterEvent event
+  ) {
+    return this.anchorsScreen == null ? super.charTyped(event) : this.anchorsScreen.charTyped(event);
+  }
+
+  public void closeAnchors() {
+    this.anchorsScreen = null;
   }
 
   @Override
@@ -63,53 +59,77 @@ public class ItemHubScreen extends AbstractContainerScreen<ItemHubMenu> {
       int mouseY,
       float delta
   ) {
-    graphics.blit(
-        RenderPipelines.GUI_TEXTURED,
-        TEXTURE,
-        this.leftPos,
-        this.topPos,
-        0.0F,
-        0.0F,
-        176,
-        PANEL_TOP,
-        256,
-        256
-    );
-    graphics.fill(
-        this.leftPos + 1,
-        this.topPos + PANEL_TOP + 1,
-        this.leftPos + this.imageWidth - 1,
-        this.topPos + this.imageHeight - 1,
-        PANEL_COLOR
-    );
-    graphics.outline(
-        this.leftPos,
-        this.topPos + PANEL_TOP,
-        this.imageWidth,
-        this.imageHeight - PANEL_TOP,
-        PANEL_OUTLINE_COLOR
-    );
-
+    graphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, this.leftPos, this.topPos,
+        0.0F, 0.0F, this.imageWidth, this.imageHeight, 256, 256);
     super.extractContents(graphics, mouseX, mouseY, delta);
+  }
+
+  @Override
+  public void extractRenderState(
+      GuiGraphicsExtractor graphics,
+      int mouseX,
+      int mouseY,
+      float delta
+  ) {
+    // Keep the same container open while the modal owns input and tooltips.
+    super.extractRenderState(graphics, this.anchorsScreen == null ? mouseX : -1,
+        this.anchorsScreen == null ? mouseY : -1, delta);
+    if (this.anchorsScreen != null) {
+      this.anchorsScreen.extractRenderState(graphics, mouseX, mouseY, delta);
+    }
   }
 
   @Override
   public boolean keyPressed(
       @NonNull KeyEvent event
   ) {
-    if (this.filterField != null
-        && this.filterField.isFocused()
-        && this.minecraft.options.keyInventory.matches(event)
-    ) {
-      return true;
-    }
+    return this.anchorsScreen == null ? super.keyPressed(event) : this.anchorsScreen.keyPressed(event);
+  }
 
-    if (event.key() == 257 || event.key() == 335) {
-      applyFilter();
-      return true;
-    }
+  @Override
+  public boolean mouseClicked(
+      @NonNull MouseButtonEvent event,
+      boolean doubleClick
+  ) {
+    return this.anchorsScreen == null ? super.mouseClicked(event, doubleClick)
+        : this.anchorsScreen.mouseClicked(event, doubleClick);
+  }
 
-    return super.keyPressed(event);
+  @Override
+  public boolean mouseDragged(
+      @NonNull MouseButtonEvent event,
+      double deltaX,
+      double deltaY
+  ) {
+    return this.anchorsScreen == null ? super.mouseDragged(event, deltaX, deltaY)
+        : this.anchorsScreen.mouseDragged(event, deltaX, deltaY);
+  }
+
+  @Override
+  public boolean mouseReleased(
+      @NonNull MouseButtonEvent event
+  ) {
+    return this.anchorsScreen == null ? super.mouseReleased(event)
+        : this.anchorsScreen.mouseReleased(event);
+  }
+
+  @Override
+  public boolean mouseScrolled(
+      double mouseX,
+      double mouseY,
+      double horizontal,
+      double vertical
+  ) {
+    return this.anchorsScreen == null ? super.mouseScrolled(mouseX, mouseY, horizontal, vertical)
+        : this.anchorsScreen.mouseScrolled(mouseX, mouseY, horizontal, vertical);
+  }
+
+  @Override
+  protected void containerTick() {
+    super.containerTick();
+    if (this.anchorsScreen != null) {
+      this.anchorsScreen.tick();
+    }
   }
 
   @Override
@@ -119,76 +139,25 @@ public class ItemHubScreen extends AbstractContainerScreen<ItemHubMenu> {
       int mouseY
   ) {
     super.extractLabels(graphics, mouseX, mouseY);
-    graphics.text(
-        this.font,
-        Component.translatable("gui.magnatour.item_hub.filter"),
-        8,
-        138,
-        TEXT_COLOR,
-        false
-    );
-
-    if (this.errorText.isEmpty()) {
-      graphics.text(
-          this.font,
-          Component.translatable("gui.magnatour.item_hub.empty"),
-          8,
-          168,
-          HINT_COLOR,
-          false
-      );
-    } else {
-      graphics.text(this.font, this.errorText, 8, 168, ERROR_COLOR, false);
-    }
+    graphics.text(this.font, Component.translatable("gui.magnatour.item_hub.anchor_count",
+        this.menu.getAnchoredItemIds().size()), 8, 136, 0xFF404040, false);
   }
 
   @Override
   protected void init() {
     super.init();
     this.inventoryLabelY = 39;
-
-    this.filterField = new EditBox(
-        this.font,
-        this.leftPos + 8,
-        this.topPos + 147,
-        110,
-        18,
-        Component.translatable("gui.magnatour.item_hub.filter")
-    );
-    this.filterField.setMaxLength(128);
-    this.filterField.setValue(this.filterItemId);
-    this.addRenderableWidget(this.filterField);
-
     this.addRenderableWidget(Button.builder(
-            Component.translatable("gui.magnatour.item_hub.apply"),
-            _ -> applyFilter()
-        )
-        .bounds(this.leftPos + 122, this.topPos + 147, 46, 20)
-        .build());
+        Component.translatable("gui.magnatour.item_hub.manage_anchors"), _ -> openAnchors()
+    ).bounds(this.leftPos + 8, this.topPos + 148, 160, 20).build());
+    if (this.anchorsScreen != null) {
+      this.anchorsScreen.init(this.width, this.height);
+    }
   }
 
-  private void applyFilter() {
-    String normalizedFilterItemId = ItemHubEntity.normalizeFilterItemId(
-        this.filterField.getValue()
-    );
-    if (normalizedFilterItemId == null) {
-      this.errorText = Component.translatable(
-          "gui.magnatour.item_hub.invalid_item"
-      ).getString();
-      return;
-    }
-
-    this.errorText = "";
-    this.filterItemId = normalizedFilterItemId;
-    this.filterField.setValue(normalizedFilterItemId);
-    if (!normalizedFilterItemId.equals(this.menu.getFilterItemId())) {
-      this.menu.setFilterItemId(normalizedFilterItemId);
-      ClientPlayNetworking.send(new ItemHubPayload(
-          this.menu.getBlockPos(),
-          this.menu.getDimension(),
-          normalizedFilterItemId
-      ));
-    }
+  private void openAnchors() {
+    this.anchorsScreen = new ItemHubAnchorsScreen(this, this.menu);
+    this.anchorsScreen.init(this.width, this.height);
   }
 
 }

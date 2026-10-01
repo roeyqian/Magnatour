@@ -8,9 +8,14 @@
 package roeyqian.magnatour.blockentity.supreme;
 
 // Java Standard
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Objects;
+import java.util.Set;
 import java.util.function.BooleanSupplier;
+
+// Mojang
+import com.mojang.serialization.Codec;
 
 // Minecraft
 import net.minecraft.core.BlockPos;
@@ -36,6 +41,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.ChestBlock;
@@ -59,13 +65,16 @@ import roeyqian.magnatour.registry.content.SupremeBlockEntities;
 public class ItemHubEntity extends RandomizableContainerBlockEntity implements Hopper {
 
   public static final int HOPPER_CONTAINER_SIZE = 5;
+  public static final int MAX_ANCHORED_ITEMS = 64;
   public static final int MOVE_ITEM_SPEED = 1;
 
   private static final int NO_COOLDOWN_TIME = -1;
+  private static final int OUTPUT_ITEMS_PER_TRANSFER = 2;
 
   private static final int[][] CACHED_SLOTS = new int[54][];
 
-  private static final String FILTER_ITEM_ID_KEY = "FilterItemId";
+  private static final String ANCHORED_ITEM_IDS_KEY = "AnchoredItemIds";
+  private static final String LEGACY_FILTER_ITEM_ID_KEY = "FilterItemId";
   private static final String TRANSFER_COOLDOWN_KEY = "TransferCooldown";
 
   private static final Component DEFAULT_NAME =
@@ -75,10 +84,9 @@ public class ItemHubEntity extends RandomizableContainerBlockEntity implements H
 
   private long tickedGameTime;
 
-  private String filterItemId = "";
+  private List<String> anchoredItemIds = List.of();
 
-  @Nullable
-  private Item filterItem;
+  private Set<Item> anchoredItems = Set.of();
 
   private NonNullList<ItemStack> items = NonNullList.withSize(HOPPER_CONTAINER_SIZE, ItemStack.EMPTY);
 
@@ -139,7 +147,7 @@ public class ItemHubEntity extends RandomizableContainerBlockEntity implements H
   ) {
     if (entity instanceof ItemEntity itemEntity
         && !itemEntity.getItem().isEmpty()
-        && itemHubEntity.matchesFilter(itemEntity.getItem())
+        && itemHubEntity.matchesAnchor(itemEntity.getItem())
         && entity.getBoundingBox().move(-pos.getX(), -pos.getY(), -pos.getZ())
             .intersects(itemHubEntity.getSuckAabb())
     ) {
@@ -172,16 +180,17 @@ public class ItemHubEntity extends RandomizableContainerBlockEntity implements H
   }
 
   @Nullable
-  public static String normalizeFilterItemId(
-      @Nullable String filterItemId
+  public static String normalizeAnchorItemId(
+      @Nullable String itemId
   ) {
-    String trimmed = filterItemId == null ? "" : filterItemId.trim();
+    String trimmed = itemId == null ? "" : itemId.trim();
     if (trimmed.isEmpty()) {
-      return "";
+      return null;
     }
 
     Identifier identifier = Identifier.tryParse(trimmed);
-    if (identifier == null || !BuiltInRegistries.ITEM.containsKey(identifier)) {
+    if (identifier == null || !BuiltInRegistries.ITEM.containsKey(identifier)
+        || BuiltInRegistries.ITEM.getValue(identifier) == Items.AIR) {
       return null;
     }
 
@@ -229,7 +238,7 @@ public class ItemHubEntity extends RandomizableContainerBlockEntity implements H
           && !blockState.is(BlockTags.DOES_NOT_BLOCK_HOPPERS);
       if (!isBlocked) {
         for (ItemEntity entity : getItemsAtAndAbove(level, itemHubEntity)) {
-          if (itemHubEntity.matchesFilter(entity.getItem()) && addItem(itemHubEntity, entity)) {
+          if (itemHubEntity.matchesAnchor(entity.getItem()) && addItem(itemHubEntity, entity)) {
             return true;
           }
         }
@@ -239,18 +248,17 @@ public class ItemHubEntity extends RandomizableContainerBlockEntity implements H
     }
   }
 
-  public boolean applyFilterItemId(
-      @Nullable String rawFilterItemId
+  public boolean addAnchoredItem(
+      String rawItemId
   ) {
-    String normalizedFilterItemId = normalizeFilterItemId(rawFilterItemId);
-    if (normalizedFilterItemId == null) {
+    String itemId = normalizeAnchorItemId(rawItemId);
+    if (itemId == null || this.anchoredItemIds.contains(itemId)
+        || this.anchoredItemIds.size() >= MAX_ANCHORED_ITEMS) {
       return false;
     }
-    if (Objects.equals(this.filterItemId, normalizedFilterItemId)) {
-      return true;
-    }
-
-    this.setFilterItemIdInternal(normalizedFilterItemId);
+    List<String> updated = new ArrayList<>(this.anchoredItemIds);
+    updated.add(itemId);
+    this.setAnchoredItemsInternal(updated);
     this.syncChanged();
     return true;
   }
@@ -260,16 +268,16 @@ public class ItemHubEntity extends RandomizableContainerBlockEntity implements H
       int slot,
       @NonNull ItemStack itemStack
   ) {
-    return this.matchesFilter(itemStack);
+    return this.matchesAnchor(itemStack);
+  }
+
+  public List<String> getAnchoredItemIds() {
+    return this.anchoredItemIds;
   }
 
   @Override
   public int getContainerSize() {
     return this.items.size();
-  }
-
-  public String getFilterItemId() {
-    return this.filterItemId;
   }
 
   @Override
@@ -304,6 +312,20 @@ public class ItemHubEntity extends RandomizableContainerBlockEntity implements H
     return true;
   }
 
+  public boolean removeAnchoredItem(
+      String rawItemId
+  ) {
+    String itemId = normalizeAnchorItemId(rawItemId);
+    if (itemId == null || !this.anchoredItemIds.contains(itemId)) {
+      return false;
+    }
+    List<String> updated = new ArrayList<>(this.anchoredItemIds);
+    updated.remove(itemId);
+    this.setAnchoredItemsInternal(updated);
+    this.syncChanged();
+    return true;
+  }
+
   @Override
   public @NonNull ItemStack removeItem(
       int slot,
@@ -334,7 +356,7 @@ public class ItemHubEntity extends RandomizableContainerBlockEntity implements H
         this,
         this.worldPosition,
         this.level == null ? Level.OVERWORLD : this.level.dimension(),
-        this.filterItemId
+        this.anchoredItemIds
     );
   }
 
@@ -359,8 +381,10 @@ public class ItemHubEntity extends RandomizableContainerBlockEntity implements H
     }
 
     this.cooldownTime = input.getIntOr(TRANSFER_COOLDOWN_KEY, NO_COOLDOWN_TIME);
-    String normalizedFilterItemId = normalizeFilterItemId(input.getStringOr(FILTER_ITEM_ID_KEY, ""));
-    this.setFilterItemIdInternal(normalizedFilterItemId == null ? "" : normalizedFilterItemId);
+    // Migrate worlds saved before Item Hub supported multiple anchored items.
+    List<String> savedItems = input.read(ANCHORED_ITEM_IDS_KEY, Codec.STRING.listOf())
+        .orElseGet(() -> List.of(input.getStringOr(LEGACY_FILTER_ITEM_ID_KEY, "")));
+    this.setAnchoredItemsInternal(savedItems);
   }
 
   @Override
@@ -373,7 +397,7 @@ public class ItemHubEntity extends RandomizableContainerBlockEntity implements H
     }
 
     output.putInt(TRANSFER_COOLDOWN_KEY, this.cooldownTime);
-    output.putString(FILTER_ITEM_ID_KEY, this.filterItemId);
+    output.store(ANCHORED_ITEM_IDS_KEY, Codec.STRING.listOf(), this.anchoredItemIds);
   }
 
   @Override
@@ -524,7 +548,7 @@ public class ItemHubEntity extends RandomizableContainerBlockEntity implements H
   ) {
     ItemStack itemStack = container.getItem(slot);
     if (!itemStack.isEmpty()
-        && itemHubEntity.matchesFilter(itemStack)
+        && itemHubEntity.matchesAnchor(itemStack)
         && canTakeItemFromContainer(itemHubEntity, container, itemStack, slot, direction)
     ) {
       int originalCount = itemStack.getCount();
@@ -576,29 +600,32 @@ public class ItemHubEntity extends RandomizableContainerBlockEntity implements H
       if (isFullContainer(container, direction)) {
         return false;
       } else {
-        for (int slot = 0; slot < itemHubEntity.getContainerSize(); slot++) {
-          ItemStack itemStack = itemHubEntity.getItem(slot);
+        int remaining = OUTPUT_ITEMS_PER_TRANSFER;
+        for (int slot = 0; slot < itemHubEntity.getContainerSize() && remaining > 0; slot++) {
+          // Keep restoration independent of the stack handed to the target.
+          ItemStack itemStack = itemHubEntity.getItem(slot).copy();
           if (!itemStack.isEmpty()) {
             int originalCount = itemStack.getCount();
+            int requestedCount = Math.min(remaining, originalCount);
             ItemStack result = addItem(
                 itemHubEntity,
                 container,
-                itemHubEntity.removeItem(slot, 1),
+                itemHubEntity.removeItem(slot, requestedCount),
                 direction
             );
-            if (result.isEmpty()) {
+            int movedCount = requestedCount - result.getCount();
+            if (movedCount > 0) {
               container.setChanged();
-              return true;
+              remaining -= movedCount;
             }
 
-            itemStack.setCount(originalCount);
-            if (originalCount == 1) {
-              itemHubEntity.setItem(slot, itemStack);
-            }
+            // Restore only the unaccepted items, including partial transfers.
+            itemStack.setCount(originalCount - movedCount);
+            itemHubEntity.setItem(slot, itemStack.isEmpty() ? ItemStack.EMPTY : itemStack);
           }
         }
 
-        return false;
+        return remaining < OUTPUT_ITEMS_PER_TRANSFER;
       }
     }
   }
@@ -691,10 +718,10 @@ public class ItemHubEntity extends RandomizableContainerBlockEntity implements H
     return true;
   }
 
-  private boolean matchesFilter(
+  private boolean matchesAnchor(
       ItemStack itemStack
   ) {
-    return this.filterItem == null || itemStack.is(this.filterItem);
+    return this.anchoredItems.isEmpty() || this.anchoredItems.contains(itemStack.getItem());
   }
 
   private boolean isOnCooldown() {
@@ -707,17 +734,25 @@ public class ItemHubEntity extends RandomizableContainerBlockEntity implements H
     this.cooldownTime = cooldownTime;
   }
 
-  private void setFilterItemIdInternal(
-      String filterItemId
+  private void setAnchoredItemsInternal(
+      List<String> itemIds
   ) {
-    this.filterItemId = filterItemId;
-    if (filterItemId.isEmpty()) {
-      this.filterItem = null;
-      return;
+    Set<String> normalizedIds = new LinkedHashSet<>();
+    for (String rawItemId : itemIds) {
+      String itemId = normalizeAnchorItemId(rawItemId);
+      if (itemId != null) {
+        normalizedIds.add(itemId);
+      }
+      if (normalizedIds.size() >= MAX_ANCHORED_ITEMS) {
+        break;
+      }
     }
-
-    Identifier identifier = Identifier.tryParse(filterItemId);
-    this.filterItem = identifier == null ? null : BuiltInRegistries.ITEM.getValue(identifier);
+    this.anchoredItemIds = List.copyOf(normalizedIds);
+    Set<Item> items = new LinkedHashSet<>();
+    for (String itemId : this.anchoredItemIds) {
+      items.add(BuiltInRegistries.ITEM.getValue(Identifier.parse(itemId)));
+    }
+    this.anchoredItems = Set.copyOf(items);
   }
 
   private void syncChanged() {

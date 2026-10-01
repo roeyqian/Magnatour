@@ -86,7 +86,14 @@ public final class NetworkManagerForItem {
     BlockEntity blockEntity = targetLevel.getBlockEntity(payload.blockPos());
     if (!(blockEntity instanceof ItemHubEntity itemHubEntity)) return;
 
-    itemHubEntity.applyFilterItemId(payload.filterItemId());
+    if (!menu.stillValid(player)) return;
+    // Apply individual actions to the current list to preserve concurrent edits.
+    switch (payload.action()) {
+      case ItemHubPayload.ADD -> itemHubEntity.addAnchoredItem(payload.itemId());
+      case ItemHubPayload.REMOVE -> itemHubEntity.removeAnchoredItem(payload.itemId());
+      default -> { return; }
+    }
+    menu.broadcastChanges();
   }
 
   private static void handleRedstoneTrigger(

@@ -27,8 +27,12 @@ import roeyqian.magnatour.Magnatour;
 public record ItemHubPayload(
     BlockPos blockPos,
     ResourceKey<Level> dimension,
-    String filterItemId
+    int action,
+    String itemId
 ) implements CustomPacketPayload {
+
+  public static final int ADD = 0;
+  public static final int REMOVE = 1;
 
   public static final Type<ItemHubPayload> ID = new Type<>(
       Identifier.fromNamespaceAndPath(Magnatour.MOD_ID, "item_hub")
@@ -40,8 +44,10 @@ public record ItemHubPayload(
           ItemHubPayload::blockPos,
           ResourceKey.streamCodec(Registries.DIMENSION),
           ItemHubPayload::dimension,
-          ByteBufCodecs.STRING_UTF8,
-          ItemHubPayload::filterItemId,
+          ByteBufCodecs.VAR_INT,
+          ItemHubPayload::action,
+          ByteBufCodecs.stringUtf8(128),
+          ItemHubPayload::itemId,
           ItemHubPayload::new
       );
 
