@@ -14,6 +14,8 @@ public final class SculkBehemothRenderState extends LivingEntityRenderState {
 
   public int phaseType;
 
+  public float heartAnimation;
+
   public boolean inAir;
 
 }

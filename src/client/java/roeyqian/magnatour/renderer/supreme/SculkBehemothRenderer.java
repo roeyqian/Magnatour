@@ -14,6 +14,8 @@ import net.fabricmc.api.Environment;
 // Minecraft
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
+import net.minecraft.client.renderer.entity.layers.LivingEntityEmissiveLayer;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.resources.Identifier;
 
 // JSpecify
@@ -29,6 +31,9 @@ import roeyqian.magnatour.registry.output.RegEntityLayers;
 @Environment(EnvType.CLIENT)
 public final class SculkBehemothRenderer extends MobRenderer<SculkBehemoth, SculkBehemothRenderState, SculkBehemothModel> {
 
+  private static final Identifier HEART_TEXTURE = Identifier.withDefaultNamespace(
+      "textures/entity/warden/warden_heart.png"
+  );
   private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(
       Magnatour.MOD_ID,
       "textures/entity/sculk_behemoth/sculk_behemoth.png"
@@ -38,6 +43,14 @@ public final class SculkBehemothRenderer extends MobRenderer<SculkBehemoth, Scul
       EntityRendererProvider.Context context
   ) {
     super(context, new SculkBehemothModel(context.bakeLayer(RegEntityLayers.SCULK_BEHEMOTH)), 2.0F);
+    addLayer(new LivingEntityEmissiveLayer<>(
+        this,
+        state -> HEART_TEXTURE,
+        (state, ageInTicks) -> state.heartAnimation,
+        new SculkBehemothModel(context.bakeLayer(RegEntityLayers.SCULK_BEHEMOTH_HEART)),
+        RenderTypes::entityTranslucentEmissive,
+        false
+    ));
   }
 
   @Override
@@ -54,6 +67,7 @@ public final class SculkBehemothRenderer extends MobRenderer<SculkBehemoth, Scul
     super.extractRenderState(entity, state, partialTick);
     state.phaseType = entity.getPhaseType();
     state.inAir = !entity.onGround();
+    state.heartAnimation = entity.getHeartAnimation(partialTick);
   }
 
   @Override @NonNull

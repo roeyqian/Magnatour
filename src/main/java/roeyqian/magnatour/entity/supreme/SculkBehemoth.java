@@ -22,6 +22,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.DamageTypeTags;
+import net.minecraft.util.Mth;
 import net.minecraft.world.BossEvent;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -74,6 +75,8 @@ public class SculkBehemoth extends Mob implements Enemy, CustomBossEntity {
   );
 
   private int chargeStunTimer = 0;
+  private int heartAnimation = 0;
+  private int heartAnimationO = 0;
   private int phaseTicks = 0;
   private int regenCooldown = 0;
   private int smashAttackCount = 0;
@@ -140,6 +143,12 @@ public class SculkBehemoth extends Mob implements Enemy, CustomBossEntity {
 
   @Override
   public void checkDespawn() {}
+
+  public float getHeartAnimation(
+      float partialTick
+  ) {
+    return Mth.lerp(partialTick, this.heartAnimationO, this.heartAnimation) / 10.0F;
+  }
 
   public int getPhaseType() {
     return this.entityData.get(PHASE_TYPE);
@@ -229,6 +238,28 @@ public class SculkBehemoth extends Mob implements Enemy, CustomBossEntity {
     }
 
     if (this.level().isClientSide()) {
+      // Match Warden's ten-tick pulse and interpolated fade. Our synced attack
+      // phase replaces its anger level as the heartbeat's pace driver.
+      int heartBeatDelay = switch (getPhaseType()) {
+        case 1 -> 20;
+        case 2 -> 10;
+        case 3 -> 15;
+        default -> 40;
+      };
+      if (this.tickCount % heartBeatDelay == 0) {
+        this.heartAnimation = 10;
+        if (!this.isSilent()) {
+          this.level().playLocalSound(
+              this.getX(), this.getY(), this.getZ(),
+              SoundEvents.WARDEN_HEARTBEAT, this.getSoundSource(),
+              5.0F, this.getVoicePitch(), false
+          );
+        }
+      }
+      this.heartAnimationO = this.heartAnimation;
+      if (this.heartAnimation > 0) {
+        this.heartAnimation--;
+      }
       spawnAmbientParticles();
     }
   }

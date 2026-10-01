@@ -60,6 +60,9 @@ public final class RegEntityLayers {
   public static final ModelLayerLocation SCULK_BEHEMOTH = new ModelLayerLocation(
       Identifier.fromNamespaceAndPath(Magnatour.MOD_ID, "sculk_behemoth"), "main"
   );
+  public static final ModelLayerLocation SCULK_BEHEMOTH_HEART = new ModelLayerLocation(
+      Identifier.fromNamespaceAndPath(Magnatour.MOD_ID, "sculk_behemoth"), "heart"
+  );
   public static final ModelLayerLocation SUPREME_CHEST_TRIPLE_MIDDLE = new ModelLayerLocation(
       Identifier.fromNamespaceAndPath(Magnatour.MOD_ID, "supreme_chest_triple_middle"), "main"
   );
@@ -74,6 +77,7 @@ public final class RegEntityLayers {
 
   public static void init() {
     ModelLayerRegistry.registerModelLayer(SCULK_BEHEMOTH, SculkBehemothModel::createBodyLayer);
+    ModelLayerRegistry.registerModelLayer(SCULK_BEHEMOTH_HEART, SculkBehemothModel::createHeartLayer);
     ModelLayerRegistry.registerModelLayer(BELL_RINGER, BellRingerModel::createBodyLayer);
     ModelLayerRegistry.registerModelLayer(UNIVERSE_GUARDIAN, UniverseGuardianModel::createBodyLayer);
     ModelLayerRegistry.registerModelLayer(THE_UNNAMEABLE_THING, TheUnnameableThingModel::createBodyLayer);
