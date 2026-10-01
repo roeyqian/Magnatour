@@ -25,6 +25,9 @@ import net.minecraft.world.phys.Vec3;
 // JSpecify
 import org.jspecify.annotations.NonNull;
 
+// Magnatour
+import roeyqian.magnatour.registry.content.UniverseItems;
+
 public class UniverseFireball extends LargeFireball {
 
   private final int power;
@@ -36,6 +39,7 @@ public class UniverseFireball extends LargeFireball {
       int explosionPower
   ) {
     super(world, owner, velocity, explosionPower);
+    this.setItem(UniverseItems.UNIVERSE_STAR.getDefaultInstance());
     this.power = explosionPower;
   }
 
