@@ -49,19 +49,20 @@ import roeyqian.magnatour.registry.content.SupremeEntities;
 public final class SummonStructureHelper {
 
   private static final String[][] NETHERITE_GOLEM_AISLES = {
-      {"~P~", "###", "~#~"}
+      {"~P~", "A#A", "~A~"}
   };
   private static final String[][] OBSIDIAN_GOLEM_AISLES = {
-      {"~P~", "###", "~#~"}
+      {"~P~", "O#O", "~O~"}
   };
   private static final String[][] PALE_LORD_AISLES = {
-      {"~#~", "#C#", "~#~"}
+      {"LCL", "C#C", "LCL"}
   };
   private static final String[][] SCULK_BEHEMOTH_AISLES = {
-      {"~~~", "###", "C~C"},
-      {"~~~", "###", "~~~"},
-      {"~~~", "###", "C~C"},
-      {"~S~", "~S~", "~~~"}
+      // Each aisle is one depth slice, with rows ordered from top to bottom.
+      {"~~~", "SSS", "SSS", "RSR"},
+      {"~~~", "SSS", "S#S", "SSS"},
+      {"~~~", "SSS", "SSS", "RSR"},
+      {"~C~", "~C~", "~~~", "~~~"}
   };
 
   private static final Queue<ScheduledSummonCheck> SCHEDULED_SUMMON_CHECKS =
@@ -96,10 +97,14 @@ public final class SummonStructureHelper {
   ) {
     return state.is(Blocks.SCULK_CATALYST)
         || state.is(Blocks.SCULK)
+        || state.is(Blocks.REINFORCED_DEEPSLATE)
         || state.is(Blocks.CREAKING_HEART)
+        || state.is(Blocks.PALE_OAK_LOG)
         || state.is(SupremeBlocks.SUPREME_PUMPKIN_HEAD)
         || state.is(Blocks.CRYING_OBSIDIAN)
-        || state.is(Blocks.NETHERITE_BLOCK);
+        || state.is(Blocks.OBSIDIAN)
+        || state.is(Blocks.NETHERITE_BLOCK)
+        || state.is(Blocks.ANCIENT_DEBRIS);
   }
 
   public static void registerTickEvent() {
@@ -212,7 +217,7 @@ public final class SummonStructureHelper {
     if (sculkBehemoth == null) return;
 
     clearPatternBlocks(level, match);
-    snapEntityToPattern(sculkBehemoth, match, match.getBlock(1, 2, 1).getPos());
+    snapEntityToPattern(sculkBehemoth, match, match.getBlock(1, 3, 1).getPos());
     level.addFreshEntity(sculkBehemoth);
     triggerSummonedEntity(level, sculkBehemoth);
     updatePatternBlocks(level, match);
@@ -222,7 +227,8 @@ public final class SummonStructureHelper {
       BlockState state
   ) {
     return state.is(SupremeBlocks.SUPREME_PUMPKIN_HEAD)
-        || state.is(Blocks.NETHERITE_BLOCK);
+        || state.is(Blocks.NETHERITE_BLOCK)
+        || state.is(Blocks.ANCIENT_DEBRIS);
   }
 
   private static BlockPattern.BlockPatternMatch findMatchingPattern(
@@ -254,6 +260,7 @@ public final class SummonStructureHelper {
           NETHERITE_GOLEM_AISLES,
           builder -> builder
           .where('#', BlockInWorld.hasState(BlockStatePredicate.forBlock(Blocks.NETHERITE_BLOCK)))
+          .where('A', BlockInWorld.hasState(BlockStatePredicate.forBlock(Blocks.ANCIENT_DEBRIS)))
           .where('P', BlockInWorld.hasState(BlockStatePredicate.forBlock(SupremeBlocks.SUPREME_PUMPKIN_HEAD)))
           .where('~', BlockInWorld.hasState(BlockBehaviour.BlockStateBase::isAir))
       );
@@ -323,7 +330,8 @@ public final class SummonStructureHelper {
       BlockState state
   ) {
     return state.is(SupremeBlocks.SUPREME_PUMPKIN_HEAD)
-        || state.is(Blocks.CRYING_OBSIDIAN);
+        || state.is(Blocks.CRYING_OBSIDIAN)
+        || state.is(Blocks.OBSIDIAN);
   }
 
   private static BlockPattern[] getOrCreateObsidianGolemPatterns() {
@@ -332,6 +340,7 @@ public final class SummonStructureHelper {
           OBSIDIAN_GOLEM_AISLES,
           builder -> builder
           .where('#', BlockInWorld.hasState(BlockStatePredicate.forBlock(Blocks.CRYING_OBSIDIAN)))
+          .where('O', BlockInWorld.hasState(BlockStatePredicate.forBlock(Blocks.OBSIDIAN)))
           .where('P', BlockInWorld.hasState(BlockStatePredicate.forBlock(SupremeBlocks.SUPREME_PUMPKIN_HEAD)))
           .where('~', BlockInWorld.hasState(BlockBehaviour.BlockStateBase::isAir))
       );
@@ -344,7 +353,8 @@ public final class SummonStructureHelper {
       BlockState state
   ) {
     return state.is(SupremeBlocks.HARVEST_BLOCK)
-        || state.is(Blocks.CREAKING_HEART);
+        || state.is(Blocks.CREAKING_HEART)
+        || state.is(Blocks.PALE_OAK_LOG);
   }
 
   private static BlockPattern[] getOrCreatePaleLordPatterns() {
@@ -354,7 +364,7 @@ public final class SummonStructureHelper {
           builder -> builder
           .where('#', BlockInWorld.hasState(BlockStatePredicate.forBlock(SupremeBlocks.HARVEST_BLOCK)))
           .where('C', BlockInWorld.hasState(BlockStatePredicate.forBlock(Blocks.CREAKING_HEART)))
-          .where('~', BlockInWorld.hasState(BlockBehaviour.BlockStateBase::isAir))
+          .where('L', BlockInWorld.hasState(BlockStatePredicate.forBlock(Blocks.PALE_OAK_LOG)))
       );
     }
 
@@ -366,7 +376,8 @@ public final class SummonStructureHelper {
   ) {
     return state.is(SupremeBlocks.ORE_BLOCK)
         || state.is(Blocks.SCULK_CATALYST)
-        || state.is(Blocks.SCULK);
+        || state.is(Blocks.SCULK)
+        || state.is(Blocks.REINFORCED_DEEPSLATE);
   }
 
   private static BlockPattern[] getOrCreateSculkBehemothPatterns() {
@@ -377,6 +388,7 @@ public final class SummonStructureHelper {
           .where('#', BlockInWorld.hasState(BlockStatePredicate.forBlock(SupremeBlocks.ORE_BLOCK)))
           .where('C', BlockInWorld.hasState(BlockStatePredicate.forBlock(Blocks.SCULK_CATALYST)))
           .where('S', BlockInWorld.hasState(BlockStatePredicate.forBlock(Blocks.SCULK)))
+          .where('R', BlockInWorld.hasState(BlockStatePredicate.forBlock(Blocks.REINFORCED_DEEPSLATE)))
           .where('~', BlockInWorld.hasState(BlockBehaviour.BlockStateBase::isAir))
       );
     }
