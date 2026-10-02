@@ -16,7 +16,6 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 
 // Minecraft
-import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.renderer.block.BlockModelResolver;
 import net.minecraft.client.renderer.block.model.BlockDisplayContext;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -31,6 +30,7 @@ import org.jspecify.annotations.NonNull;
 import roeyqian.magnatour.Magnatour;
 import roeyqian.magnatour.entity.supreme.ObsidianGolem;
 import roeyqian.magnatour.model.supreme.CustomGolemModel;
+import roeyqian.magnatour.registry.output.RegEntityLayers;
 import roeyqian.magnatour.renderstate.supreme.CustomGolemRenderState;
 
 @Environment(EnvType.CLIENT)
@@ -47,7 +47,7 @@ public final class ObsidianGolemRenderer extends MobRenderer<ObsidianGolem, Cust
   public ObsidianGolemRenderer(
       final EntityRendererProvider.Context context
   ) {
-    super(context, new CustomGolemModel(context.bakeLayer(ModelLayers.IRON_GOLEM)), 0.7F);
+    super(context, new CustomGolemModel(context.bakeLayer(RegEntityLayers.OBSIDIAN_GOLEM)), 0.7F * ObsidianGolem.SIZE_SCALE);
     this.blockModelResolver = context.getBlockModelResolver();
   }
 
@@ -77,6 +77,15 @@ public final class ObsidianGolemRenderer extends MobRenderer<ObsidianGolem, Cust
       final CustomGolemRenderState state
   ) {
     return GOLEM_LOCATION;
+  }
+
+  @Override
+  protected void scale(
+      final CustomGolemRenderState state,
+      final PoseStack poseStack
+  ) {
+    super.scale(state, poseStack);
+    poseStack.scale(ObsidianGolem.SIZE_SCALE, ObsidianGolem.SIZE_SCALE, ObsidianGolem.SIZE_SCALE);
   }
 
   protected void setupRotations(

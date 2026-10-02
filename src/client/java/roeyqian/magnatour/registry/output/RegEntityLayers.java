@@ -83,8 +83,8 @@ public final class RegEntityLayers {
     ModelLayerRegistry.registerModelLayer(THE_UNNAMEABLE_THING, TheUnnameableThingModel::createBodyLayer);
     ModelLayerRegistry.registerModelLayer(PALE_LORD, PaleLordModel::createBodyLayer);
     ModelLayerRegistry.registerModelLayer(BELL_SOUL, BellSoulModel::createBodyLayer);
-    ModelLayerRegistry.registerModelLayer(OBSIDIAN_GOLEM, CustomGolemModel::createBodyLayer);
-    ModelLayerRegistry.registerModelLayer(NETHERITE_GOLEM, CustomGolemModel::createBodyLayer);
+    ModelLayerRegistry.registerModelLayer(OBSIDIAN_GOLEM, CustomGolemModel::createObsidianBodyLayer);
+    ModelLayerRegistry.registerModelLayer(NETHERITE_GOLEM, CustomGolemModel::createNetheriteBodyLayer);
     ModelLayerRegistry.registerModelLayer(SUPREME_CHEST_TRIPLE_MIDDLE, SupremeChestModel::createTripleMiddleBodyLayer);
 
     EntityRenderers.register(SupremeEntities.SCULK_BEHEMOTH, SculkBehemothRenderer::new);

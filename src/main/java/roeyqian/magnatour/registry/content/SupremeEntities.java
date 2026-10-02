@@ -86,12 +86,12 @@ public final class SupremeEntities {
 
   public static final EntityType<NetheriteGolem> NETHERITE_GOLEM = EntityRegHelper.register(
       NETHERITE_GOLEM_KEY, NetheriteGolem::new, MobCategory.CREATURE,
-      1.4F, 2.7F
+      1.4F * NetheriteGolem.SIZE_SCALE, 2.7F * NetheriteGolem.SIZE_SCALE
   );
 
   public static final EntityType<ObsidianGolem> OBSIDIAN_GOLEM = EntityRegHelper.register(
       OBSIDIAN_GOLEM_KEY, ObsidianGolem::new, MobCategory.CREATURE,
-      1.4F, 2.7F
+      1.4F * ObsidianGolem.SIZE_SCALE, 2.7F * ObsidianGolem.SIZE_SCALE
   );
 
   public static final EntityType<PrimedChunkTnt> PRIMED_CHUNK_TNT = EntityRegHelper.register(

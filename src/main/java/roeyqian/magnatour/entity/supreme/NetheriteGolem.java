@@ -46,6 +46,8 @@ import roeyqian.magnatour.entity.EntityLootTableHelper;
 
 public class NetheriteGolem extends AbstractGolem implements NeutralMob {
 
+  public static final float SIZE_SCALE = 1.3F;
+
   protected static final EntityDataAccessor<Byte> DATA_FLAGS_ID =
       CustomGolem.createDataFlagsId(NetheriteGolem.class);
 
