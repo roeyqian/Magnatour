@@ -27,6 +27,9 @@ import roeyqian.magnatour.mixin.item.RenderTypeInvoker;
 @Environment(EnvType.CLIENT)
 public final class GlintRenderTypes {
 
+  public static final Identifier SUPREME_ARMOR_GLINT_TEXTURE = Identifier.fromNamespaceAndPath(
+      Magnatour.MOD_ID, "textures/misc/supreme_glint_armor.png"
+  );
   public static final Identifier SUPREME_GLINT_TEXTURE = Identifier.fromNamespaceAndPath(
       Magnatour.MOD_ID, "textures/misc/supreme_glint.png"
   );
@@ -38,7 +41,7 @@ public final class GlintRenderTypes {
   );
 
   public static final RenderType ARMOR_ENTITY_GLINT = createArmorGlint("universe", UNIVERSE_ARMOR_GLINT_TEXTURE);
-  public static final RenderType SUPREME_ARMOR_ENTITY_GLINT = createArmorGlint("supreme", SUPREME_GLINT_TEXTURE);
+  public static final RenderType SUPREME_ARMOR_ENTITY_GLINT = createArmorGlint("supreme", SUPREME_ARMOR_GLINT_TEXTURE);
 
   private static final RenderType[] SUPREME_ITEM_GLINT = createItemGlintSet("supreme", SUPREME_GLINT_TEXTURE);
   private static final RenderType[] UNIVERSE_ITEM_GLINT = createItemGlintSet("universe", UNIVERSE_GLINT_TEXTURE);
