@@ -31,8 +31,9 @@ import roeyqian.magnatour.registry.output.RegEntityLayers;
 @Environment(EnvType.CLIENT)
 public final class SculkBehemothRenderer extends MobRenderer<SculkBehemoth, SculkBehemothRenderState, SculkBehemothModel> {
 
-  private static final Identifier HEART_TEXTURE = Identifier.withDefaultNamespace(
-      "textures/entity/warden/warden_heart.png"
+  private static final Identifier HEART_TEXTURE = Identifier.fromNamespaceAndPath(
+      Magnatour.MOD_ID,
+      "textures/entity/sculk_behemoth/sculk_behemoth_heart.png"
   );
   private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(
       Magnatour.MOD_ID,
