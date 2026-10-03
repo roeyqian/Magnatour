@@ -14,6 +14,7 @@ import net.minecraft.world.level.Level;
 
 // Magnatour
 import roeyqian.magnatour.Magnatour;
+import roeyqian.magnatour.levelgen.UniverseMetaDimensionGenerator;
 import roeyqian.magnatour.levelgen.biome.BiomeMobSpawner;
 import roeyqian.magnatour.registry.WorldgenRegHelper;
 
@@ -36,6 +37,7 @@ public final class CustomDimensions {
   private CustomDimensions() {}
 
   public static void init() {
+    UniverseMetaDimensionGenerator.register();
     BiomeMobSpawner.registerTickEvent();
     Magnatour.LOGGER.info("[Server] Initializing 'CustomDimensions'");
   }

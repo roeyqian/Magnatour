@@ -36,7 +36,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 // Magnatour
-import roeyqian.magnatour.levelgen.UniverseMetaDimensionGenerator;
 import roeyqian.magnatour.registry.content.SupremeBlockEntities;
 import roeyqian.magnatour.registry.content.SupremeBlocks;
 import roeyqian.magnatour.registry.content.SupremeEntities;
@@ -78,9 +77,6 @@ public class Magnatour implements ModInitializer {
 
   @Override
   public void onInitialize() {
-    // Register worldgen events
-    UniverseMetaDimensionGenerator.register();
-
     SupremeItems.init();
     UniverseItems.init();
     CustomNetworks.init();
