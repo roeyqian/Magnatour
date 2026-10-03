@@ -20,6 +20,9 @@ import net.minecraft.world.item.LingeringPotionItem;
 import net.minecraft.world.item.component.Consumables;
 import net.minecraft.world.level.Level;
 
+// JSpecify
+import org.jspecify.annotations.NonNull;
+
 // Magnatour
 import roeyqian.magnatour.entity.supreme.ThrownStrangeLingeringPotion;
 import roeyqian.magnatour.item.CustomItemSetting;
@@ -32,11 +35,11 @@ public class StrangeLingeringPotion extends LingeringPotionItem {
     super(applySettings(settings));
   }
 
-  @Override
+  @NonNull @Override
   public InteractionResult use(
-      Level level,
-      Player user,
-      InteractionHand hand
+      @NonNull Level level,
+      @NonNull Player user,
+      @NonNull InteractionHand hand
   ) {
     ItemStack stack = user.getItemInHand(hand);
 

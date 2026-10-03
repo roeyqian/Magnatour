@@ -32,7 +32,7 @@ public class UniverseStar extends Item {
   @Override @NonNull
   public InteractionResult use(
       @NonNull Level world,
-      Player player,
+      @NonNull Player player,
       @NonNull InteractionHand hand
   ) {
     player.heal(2);

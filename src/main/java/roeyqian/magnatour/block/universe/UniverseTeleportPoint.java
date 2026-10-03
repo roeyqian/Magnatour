@@ -26,6 +26,7 @@ import net.minecraft.world.phys.BlockHitResult;
 
 // JSpecify
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 // Magnatour
 import roeyqian.magnatour.blockentity.universe.UniverseTeleportPointEntity;
@@ -39,7 +40,7 @@ public class UniverseTeleportPoint extends BaseEntityBlock {
     super(settings);
   }
 
-  @Override
+  @Nullable @Override
   public BlockEntity newBlockEntity(
       @NonNull BlockPos pos,
       @NonNull BlockState state
@@ -50,7 +51,7 @@ public class UniverseTeleportPoint extends BaseEntityBlock {
   @Override @NonNull
   protected InteractionResult useWithoutItem(
       @NonNull BlockState state,
-      Level world,
+      @NonNull Level world,
       @NonNull BlockPos pos,
       @NonNull Player player,
       @NonNull BlockHitResult hit
@@ -66,7 +67,7 @@ public class UniverseTeleportPoint extends BaseEntityBlock {
           return teleportPoint.getDisplayName();
         }
 
-        @Override
+        @Nullable @Override
         public AbstractContainerMenu createMenu(
             int syncId,
             @NonNull Inventory inv,
@@ -81,7 +82,7 @@ public class UniverseTeleportPoint extends BaseEntityBlock {
         }
 
         @Override
-        public UniverseTeleportPointMenu.OpeningData getScreenOpeningData(
+        public UniverseTeleportPointMenu.@NonNull OpeningData getScreenOpeningData(
             @NonNull ServerPlayer player
         ) {
           return new UniverseTeleportPointMenu.OpeningData(

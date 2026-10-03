@@ -91,7 +91,7 @@ public class UniverseLibraryMenu extends AbstractContainerMenu {
 
   @Override
   public boolean clickMenuButton(
-      Player player,
+      @NonNull Player player,
       int id
   ) {
     if (player.level().isClientSide()) return true;

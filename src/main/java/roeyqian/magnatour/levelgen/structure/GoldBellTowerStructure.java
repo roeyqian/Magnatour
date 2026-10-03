@@ -58,7 +58,7 @@ public final class GoldBellTowerStructure extends Structure {
 
   @Override @NonNull
   public Optional<GenerationStub> findGenerationPoint(
-      GenerationContext context
+      @NonNull GenerationContext context
   ) {
     ChunkPos chunkPos = context.chunkPos();
 

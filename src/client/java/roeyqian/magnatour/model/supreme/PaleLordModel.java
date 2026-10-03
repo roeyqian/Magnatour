@@ -21,6 +21,9 @@ import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.util.Mth;
 
+// JSpecify
+import org.jspecify.annotations.NonNull;
+
 // Magnatour
 import roeyqian.magnatour.renderstate.supreme.PaleLordRenderState;
 
@@ -70,7 +73,7 @@ public final class PaleLordModel extends EntityModel<PaleLordRenderState> {
 
   @Override
   public void setupAnim(
-      PaleLordRenderState state
+      @NonNull PaleLordRenderState state
   ) {
     super.setupAnim(state);
     this.head.xRot = state.xRot * Mth.DEG_TO_RAD;

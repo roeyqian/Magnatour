@@ -84,9 +84,9 @@ public class SupremeChestEntity extends BlockEntity implements CustomContainer {
 
     @Override
     protected void openerCountChanged(
-        Level level,
+        @NonNull Level level,
         @NonNull BlockPos pos,
-        BlockState blockState,
+        @NonNull BlockState blockState,
         int previous,
         int current
     ) {
@@ -95,7 +95,7 @@ public class SupremeChestEntity extends BlockEntity implements CustomContainer {
 
     @Override
     public boolean isOwnContainer(
-        Player player
+        @NonNull Player player
     ) {
       if (!(player.containerMenu instanceof SupremeChestMenu menu)) return false;
 

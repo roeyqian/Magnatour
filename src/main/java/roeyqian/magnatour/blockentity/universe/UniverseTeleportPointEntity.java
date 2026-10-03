@@ -38,6 +38,7 @@ import net.minecraft.world.level.storage.ValueOutput;
 
 // JSpecify
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 // Magnatour
 import roeyqian.magnatour.menu.universe.UniverseTeleportPointMenu;
@@ -69,7 +70,7 @@ public class UniverseTeleportPointEntity extends BlockEntity implements MenuProv
     return true;
   }
 
-  @Override
+  @Nullable @Override
   public AbstractContainerMenu createMenu(
       int syncId,
       @NonNull Inventory playerInventory,

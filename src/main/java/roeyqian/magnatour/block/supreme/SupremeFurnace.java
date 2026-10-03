@@ -24,6 +24,7 @@ import net.minecraft.world.level.block.state.StateDefinition;
 
 // JSpecify
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 // Magnatour
 import roeyqian.magnatour.blockentity.supreme.SupremeFurnaceEntity;
@@ -37,9 +38,9 @@ public class SupremeFurnace extends AbstractFurnaceBlock {
     super(settings);
   }
 
-  @Override
+  @Nullable @Override
   public <T extends BlockEntity> BlockEntityTicker<T> getTicker(
-      Level world,
+      @NonNull Level world,
       @NonNull BlockState state,
       @NonNull BlockEntityType<T> type
   ) {
@@ -56,7 +57,7 @@ public class SupremeFurnace extends AbstractFurnaceBlock {
     }
   }
 
-  @Override
+  @Nullable @Override
   public BlockEntity newBlockEntity(
       @NonNull BlockPos pos,
       @NonNull BlockState state
@@ -73,7 +74,7 @@ public class SupremeFurnace extends AbstractFurnaceBlock {
 
   @Override
   protected void openContainer(
-      Level world,
+      @NonNull Level world,
       @NonNull BlockPos pos,
       @NonNull Player player
   ) {

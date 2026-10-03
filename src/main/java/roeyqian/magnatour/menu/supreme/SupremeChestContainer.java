@@ -19,6 +19,10 @@ import net.minecraft.world.entity.ContainerUser;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
+// JSpecify
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
+
 public class SupremeChestContainer implements WorldlyContainer {
 
   private final int size;
@@ -38,7 +42,7 @@ public class SupremeChestContainer implements WorldlyContainer {
   @Override
   public boolean canPlaceItem(
       int slot,
-      ItemStack stack
+      @NonNull ItemStack stack
   ) {
     SlotLocation location = findSlot(slot);
     return location.container.canPlaceItem(location.slot, stack);
@@ -47,8 +51,8 @@ public class SupremeChestContainer implements WorldlyContainer {
   @Override
   public boolean canPlaceItemThroughFace(
       int slot,
-      ItemStack stack,
-      Direction direction
+      @NonNull ItemStack stack,
+      @Nullable Direction direction
   ) {
     SlotLocation location = findSlot(slot);
     return !(location.container instanceof WorldlyContainer worldly)
@@ -58,9 +62,9 @@ public class SupremeChestContainer implements WorldlyContainer {
 
   @Override
   public boolean canTakeItem(
-      Container into,
+      @NonNull Container into,
       int slot,
-      ItemStack stack
+      @NonNull ItemStack stack
   ) {
     SlotLocation location = findSlot(slot);
     return location.container.canTakeItem(into, location.slot, stack);
@@ -69,8 +73,8 @@ public class SupremeChestContainer implements WorldlyContainer {
   @Override
   public boolean canTakeItemThroughFace(
       int slot,
-      ItemStack stack,
-      Direction direction
+      @NonNull ItemStack stack,
+      @NonNull Direction direction
   ) {
     SlotLocation location = findSlot(slot);
     return !(location.container instanceof WorldlyContainer worldly)
@@ -93,7 +97,7 @@ public class SupremeChestContainer implements WorldlyContainer {
     return this.size;
   }
 
-  @Override
+  @NonNull @Override
   public ItemStack getItem(
       int slot
   ) {
@@ -102,8 +106,8 @@ public class SupremeChestContainer implements WorldlyContainer {
   }
 
   @Override
-  public int[] getSlotsForFace(
-      Direction direction
+  public int @NonNull [] getSlotsForFace(
+      @NonNull Direction direction
   ) {
     return this.slotsForFace;
   }
@@ -116,7 +120,7 @@ public class SupremeChestContainer implements WorldlyContainer {
     return true;
   }
 
-  @Override
+  @NonNull @Override
   public ItemStack removeItem(
       int slot,
       int count
@@ -125,7 +129,7 @@ public class SupremeChestContainer implements WorldlyContainer {
     return location.container.removeItem(location.slot, count);
   }
 
-  @Override
+  @NonNull @Override
   public ItemStack removeItemNoUpdate(
       int slot
   ) {
@@ -141,7 +145,7 @@ public class SupremeChestContainer implements WorldlyContainer {
   @Override
   public void setItem(
       int slot,
-      ItemStack stack
+      @NonNull ItemStack stack
   ) {
     SlotLocation location = findSlot(slot);
     location.container.setItem(location.slot, stack);
@@ -149,14 +153,14 @@ public class SupremeChestContainer implements WorldlyContainer {
 
   @Override
   public void startOpen(
-      ContainerUser containerUser
+      @NonNull ContainerUser containerUser
   ) {
     for (Container container : this.containers) container.startOpen(containerUser);
   }
 
   @Override
   public boolean stillValid(
-      Player player
+      @NonNull Player player
   ) {
     for (Container container : this.containers) {
       if (!container.stillValid(player)) return false;
@@ -166,7 +170,7 @@ public class SupremeChestContainer implements WorldlyContainer {
 
   @Override
   public void stopOpen(
-      ContainerUser containerUser
+      @NonNull ContainerUser containerUser
   ) {
     for (Container container : this.containers) container.stopOpen(containerUser);
   }

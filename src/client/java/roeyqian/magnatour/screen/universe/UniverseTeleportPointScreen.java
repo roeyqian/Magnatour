@@ -119,7 +119,7 @@ public class UniverseTeleportPointScreen extends AbstractContainerScreen<Univers
 
   @Override
   public void extractContents(
-      GuiGraphicsExtractor graphics,
+      @NonNull GuiGraphicsExtractor graphics,
       int mouseX,
       int mouseY,
       float delta
@@ -219,7 +219,7 @@ public class UniverseTeleportPointScreen extends AbstractContainerScreen<Univers
 
   @Override
   public boolean mouseReleased(
-      MouseButtonEvent event
+      @NonNull MouseButtonEvent event
   ) {
     if (event.button() == InputConstants.MOUSE_BUTTON_LEFT && this.isScrolling) {
       this.isScrolling = false;
@@ -249,7 +249,7 @@ public class UniverseTeleportPointScreen extends AbstractContainerScreen<Univers
 
   @Override
   protected void extractLabels(
-      GuiGraphicsExtractor graphics,
+      @NonNull GuiGraphicsExtractor graphics,
       int mouseX,
       int mouseY
   ) {

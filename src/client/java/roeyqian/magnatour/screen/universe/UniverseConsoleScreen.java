@@ -95,7 +95,7 @@ public class UniverseConsoleScreen extends AbstractContainerScreen<UniverseConso
 
   @Override
   public void extractContents(
-      GuiGraphicsExtractor graphics,
+      @NonNull GuiGraphicsExtractor graphics,
       int mouseX,
       int mouseY,
       float delta
@@ -150,7 +150,7 @@ public class UniverseConsoleScreen extends AbstractContainerScreen<UniverseConso
 
   @Override
   public boolean mouseClicked(
-      MouseButtonEvent event,
+      @NonNull MouseButtonEvent event,
       boolean doubled
   ) {
     double mouseX = event.x();
@@ -192,7 +192,7 @@ public class UniverseConsoleScreen extends AbstractContainerScreen<UniverseConso
 
   @Override
   public boolean mouseReleased(
-      MouseButtonEvent event
+      @NonNull MouseButtonEvent event
   ) {
     if (event.button() == InputConstants.MOUSE_BUTTON_LEFT && this.isScrolling) {
       this.isScrolling = false;
@@ -226,7 +226,7 @@ public class UniverseConsoleScreen extends AbstractContainerScreen<UniverseConso
 
   @Override
   protected void extractLabels(
-      GuiGraphicsExtractor graphics,
+      @NonNull GuiGraphicsExtractor graphics,
       int mouseX,
       int mouseY
   ) {

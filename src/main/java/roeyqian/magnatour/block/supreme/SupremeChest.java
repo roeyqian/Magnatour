@@ -176,9 +176,9 @@ public class SupremeChest extends BaseEntityBlock implements SimpleWaterloggedBl
     return getCombinedContainer(actualLevel, pos);
   }
 
-  @Override
+  @Nullable @Override
   public BlockState getStateForPlacement(
-      BlockPlaceContext context
+      @NonNull BlockPlaceContext context
   ) {
     Direction facing = context.getHorizontalDirection().getOpposite();
     FluidState fluidState = context.getLevel().getFluidState(context.getClickedPos());
@@ -188,7 +188,7 @@ public class SupremeChest extends BaseEntityBlock implements SimpleWaterloggedBl
         .setValue(WATERLOGGED, fluidState.is(Fluids.WATER));
   }
 
-  @Override
+  @Nullable @Override
   public <T extends BlockEntity> BlockEntityTicker<T> getTicker(
       @NonNull Level level,
       @NonNull BlockState state,
@@ -199,7 +199,7 @@ public class SupremeChest extends BaseEntityBlock implements SimpleWaterloggedBl
         : null;
   }
 
-  @Override
+  @Nullable @Override
   public BlockEntity newBlockEntity(
       @NonNull BlockPos pos,
       @NonNull BlockState state
@@ -209,7 +209,7 @@ public class SupremeChest extends BaseEntityBlock implements SimpleWaterloggedBl
 
   @Override @NonNull
   public BlockState playerWillDestroy(
-      Level level,
+      @NonNull Level level,
       @NonNull BlockPos pos,
       @NonNull BlockState state,
       @NonNull Player player
@@ -227,7 +227,7 @@ public class SupremeChest extends BaseEntityBlock implements SimpleWaterloggedBl
       @NonNull Level level,
       @NonNull BlockPos pos,
       @NonNull BlockState state,
-      LivingEntity placer,
+      @Nullable LivingEntity placer,
       @NonNull ItemStack stack
   ) {
     super.setPlacedBy(level, pos, state, placer, stack);
@@ -251,7 +251,7 @@ public class SupremeChest extends BaseEntityBlock implements SimpleWaterloggedBl
 
   @Override
   protected void createBlockStateDefinition(
-      StateDefinition.Builder<Block, BlockState> builder
+      StateDefinition.@NonNull Builder<Block, BlockState> builder
   ) {
     builder.add(FACING, TYPE, WATERLOGGED);
   }
@@ -274,7 +274,7 @@ public class SupremeChest extends BaseEntityBlock implements SimpleWaterloggedBl
     return state.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(state);
   }
 
-  @Override
+  @Nullable @Override
   protected MenuProvider getMenuProvider(
       @NonNull BlockState state,
       @NonNull Level level,
@@ -286,7 +286,7 @@ public class SupremeChest extends BaseEntityBlock implements SimpleWaterloggedBl
 
     Container finalContainer = new SupremeChestContainer(chests);
     return new ExtendedMenuProvider<SupremeChestMenu.OpeningData>() {
-      @Override
+      @Nullable @Override
       public AbstractContainerMenu createMenu(int containerId, @NonNull Inventory inventory,
           @NonNull Player player) {
         return new SupremeChestMenu(containerId, inventory, finalContainer, finalContainer.getContainerSize());
@@ -298,7 +298,7 @@ public class SupremeChest extends BaseEntityBlock implements SimpleWaterloggedBl
       }
 
       @Override
-      public SupremeChestMenu.OpeningData getScreenOpeningData(@NonNull ServerPlayer player) {
+      public SupremeChestMenu.@NonNull OpeningData getScreenOpeningData(@NonNull ServerPlayer player) {
         return new SupremeChestMenu.OpeningData(finalContainer.getContainerSize());
       }
     };
@@ -334,16 +334,16 @@ public class SupremeChest extends BaseEntityBlock implements SimpleWaterloggedBl
 
   @Override @NonNull
   protected BlockState mirror(
-      BlockState state,
-      Mirror mirror
+      @NonNull BlockState state,
+      @NonNull Mirror mirror
   ) {
     return state.rotate(mirror.getRotation(state.getValue(FACING)));
   }
 
   @Override @NonNull
   protected BlockState rotate(
-      BlockState state,
-      Rotation rotation
+      @NonNull BlockState state,
+      @NonNull Rotation rotation
   ) {
     return state.setValue(FACING, rotation.rotate(state.getValue(FACING)));
   }
@@ -351,7 +351,7 @@ public class SupremeChest extends BaseEntityBlock implements SimpleWaterloggedBl
   @Override
   protected void tick(
       @NonNull BlockState state,
-      ServerLevel level,
+      @NonNull ServerLevel level,
       @NonNull BlockPos pos,
       @NonNull RandomSource random
   ) {

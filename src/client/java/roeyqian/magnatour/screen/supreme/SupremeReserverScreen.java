@@ -42,7 +42,7 @@ public class SupremeReserverScreen extends AbstractContainerScreen<SupremeReserv
 
   @Override
   public void extractContents(
-      GuiGraphicsExtractor graphics,
+      @NonNull GuiGraphicsExtractor graphics,
       int mouseX,
       int mouseY,
       float delta
@@ -71,7 +71,7 @@ public class SupremeReserverScreen extends AbstractContainerScreen<SupremeReserv
 
   @Override
   protected void extractLabels(
-      GuiGraphicsExtractor graphics,
+      @NonNull GuiGraphicsExtractor graphics,
       int mouseX,
       int mouseY
   ) {

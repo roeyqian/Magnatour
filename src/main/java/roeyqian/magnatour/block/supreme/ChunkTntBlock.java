@@ -90,7 +90,7 @@ public class ChunkTntBlock extends Block {
 
   @Override
   public void wasExploded(
-      ServerLevel serverLevel,
+      @NonNull ServerLevel serverLevel,
       @NonNull BlockPos pos,
       @NonNull Explosion explosion
   ) {
@@ -109,7 +109,7 @@ public class ChunkTntBlock extends Block {
   @Override
   protected void neighborChanged(
       @NonNull BlockState state,
-      Level level,
+      @NonNull Level level,
       @NonNull BlockPos pos,
       @NonNull Block sourceBlock,
       @Nullable Orientation orientation,

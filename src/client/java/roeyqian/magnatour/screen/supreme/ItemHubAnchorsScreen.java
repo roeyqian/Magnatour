@@ -79,7 +79,7 @@ public class ItemHubAnchorsScreen extends Screen {
 
   @Override
   public void extractRenderState(
-      GuiGraphicsExtractor graphics,
+      @NonNull GuiGraphicsExtractor graphics,
       int mouseX,
       int mouseY,
       float delta

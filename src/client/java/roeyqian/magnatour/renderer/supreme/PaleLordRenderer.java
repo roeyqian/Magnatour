@@ -40,14 +40,14 @@ public final class PaleLordRenderer extends MobRenderer<Monster, PaleLordRenderS
     super(context, new PaleLordModel(context.bakeLayer(RegEntityLayers.PALE_LORD)), 0.6F);
   }
 
-  @Override
+  @NonNull @Override
   public PaleLordRenderState createRenderState() {
     return new PaleLordRenderState();
   }
 
   @Override @NonNull
   public Identifier getTextureLocation(
-      PaleLordRenderState state
+      @NonNull PaleLordRenderState state
   ) {
     return TEXTURE;
   }

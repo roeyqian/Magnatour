@@ -88,15 +88,15 @@ public final class SupremeChestRenderer implements BlockEntityRenderer<SupremeCh
     this.sprites = ctx.sprites();
   }
 
-  @Override
+  @NonNull @Override
   public SupremeChestRenderState createRenderState() {
     return new SupremeChestRenderState();
   }
 
   @Override
   public void extractRenderState(
-      SupremeChestEntity blockEntity,
-      SupremeChestRenderState state,
+      @NonNull SupremeChestEntity blockEntity,
+      @NonNull SupremeChestRenderState state,
       float partialTicks,
       @NonNull Vec3 cameraPosition,
       ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress
@@ -134,9 +134,9 @@ public final class SupremeChestRenderer implements BlockEntityRenderer<SupremeCh
 
   @Override
   public void submit(
-      SupremeChestRenderState state,
-      PoseStack poseStack,
-      SubmitNodeCollector collector,
+      @NonNull SupremeChestRenderState state,
+      @NonNull PoseStack poseStack,
+      @NonNull SubmitNodeCollector collector,
       @NonNull CameraRenderState camera
   ) {
     poseStack.pushPose();

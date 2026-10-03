@@ -244,12 +244,12 @@ public class NetheriteGolem extends AbstractGolem implements NeutralMob {
     EntityLootTableHelper.dropMagnatourEntityLoot(this, world, source, causedByPlayer);
   }
 
-  @Override
+  @Nullable @Override
   protected SoundEvent getDeathSound() {
     return this.customGolem().getDeathSound();
   }
 
-  @Override
+  @Nullable @Override
   protected SoundEvent getHurtSound(
       final @NonNull DamageSource source
   ) {

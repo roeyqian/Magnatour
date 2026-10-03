@@ -65,7 +65,7 @@ public final class SupremeCraftingBookComponent extends RecipeBookComponent<Supr
   @Override
   protected void fillGhostRecipe(
       @NonNull GhostSlots ghostSlots,
-      RecipeDisplay display,
+      @NonNull RecipeDisplay display,
       @NonNull ContextMap context
   ) {
     GhostSlotsInvoker invoker = (GhostSlotsInvoker) ghostSlots;
@@ -100,7 +100,7 @@ public final class SupremeCraftingBookComponent extends RecipeBookComponent<Supr
 
   @Override
   protected void selectMatchingRecipes(
-      RecipeCollection recipeCollection,
+      @NonNull RecipeCollection recipeCollection,
       @NonNull StackedItemContents stackedContents
   ) {
     int width = this.menu.getGridWidth();

@@ -40,6 +40,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 
 // JSpecify
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 // Magnatour
 import roeyqian.magnatour.block.CustomPortalHorizon;
@@ -88,13 +89,13 @@ public class UniverseMetaPortal extends Block {
       @NonNull ServerPlayer player,
       @NonNull BlockPos pos,
       @NonNull BlockState state,
-      BlockEntity blockEntity,
+      @Nullable BlockEntity blockEntity,
       @NonNull ItemStack tool
   ) {}
 
   @Override
   protected void createBlockStateDefinition(
-      StateDefinition.Builder<Block, BlockState> builder
+      StateDefinition.@NonNull Builder<Block, BlockState> builder
   ) {
     builder.add(CustomPortalHorizon.AXIS);
   }

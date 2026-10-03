@@ -105,7 +105,7 @@ public final class UniverseCookingBookComponent extends RecipeBookComponent<Univ
 
   @Override
   protected void selectMatchingRecipes(
-      RecipeCollection recipeCollection,
+      @NonNull RecipeCollection recipeCollection,
       @NonNull StackedItemContents stackedContents
   ) {
     recipeCollection.selectRecipes(

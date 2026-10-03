@@ -23,6 +23,7 @@ import net.minecraft.util.RandomSource;
 
 // JSpecify
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 @Environment(EnvType.CLIENT)
 public final class UniverseSonicBoomParticle extends SonicBoomParticle {
@@ -86,9 +87,9 @@ public final class UniverseSonicBoomParticle extends SonicBoomParticle {
       this.spriteSet = spriteSet;
     }
 
-    @Override
+    @Nullable @Override
     public Particle createParticle(
-        SimpleParticleType type,
+        @NonNull SimpleParticleType type,
         @NonNull ClientLevel level,
         double x,
         double y,

@@ -82,7 +82,7 @@ public final class HarvestContinentBiomeSource extends BiomeSource {
 
   @Override @NonNull
   public BiomeResolver createResolver(
-      Climate.Sampler sampler
+      Climate.@NonNull Sampler sampler
   ) {
     return (x, y, z) -> getNoiseBiome(x, y, z, sampler);
   }

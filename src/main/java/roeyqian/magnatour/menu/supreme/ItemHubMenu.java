@@ -138,7 +138,7 @@ public class ItemHubMenu extends AbstractContainerMenu {
     for (int x = 0; x < 5; x++) {
       this.addSlot(new Slot(hopper, x, 44 + x * 18, 20) {
         @Override
-        public boolean mayPlace(ItemStack stack) {
+        public boolean mayPlace(@NonNull ItemStack stack) {
           List<String> anchors = ItemHubMenu.this.getAnchoredItemIds();
           return super.mayPlace(stack) && (anchors.isEmpty()
               || anchors.contains(BuiltInRegistries.ITEM.getKey(stack.getItem()).toString()));
@@ -201,7 +201,7 @@ public class ItemHubMenu extends AbstractContainerMenu {
 
   @Override
   public void removed(
-      Player player
+      @NonNull Player player
   ) {
     super.removed(player);
     this.hopper.stopOpen(player);

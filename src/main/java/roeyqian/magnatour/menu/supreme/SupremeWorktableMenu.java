@@ -79,7 +79,7 @@ public class SupremeWorktableMenu extends AbstractCraftingMenu implements Custom
   @Override
   public boolean canTakeItemForPickAll(
       @NonNull ItemStack stack,
-      Slot slot
+      @NonNull Slot slot
   ) {
     return slot.container != this.resultSlots && super.canTakeItemForPickAll(stack, slot);
   }

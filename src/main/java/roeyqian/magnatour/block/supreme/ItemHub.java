@@ -89,9 +89,9 @@ public class ItemHub extends BaseEntityBlock {
         .build();
   }
 
-  @Override
+  @Nullable @Override
   public BlockState getStateForPlacement(
-      BlockPlaceContext context
+      @NonNull BlockPlaceContext context
   ) {
     return this.defaultBlockState()
         .setValue(FACING, context.getHorizontalDirection().getOpposite())
@@ -100,7 +100,7 @@ public class ItemHub extends BaseEntityBlock {
 
   @Nullable @Override
   public <T extends BlockEntity> BlockEntityTicker<T> getTicker(
-      Level level,
+      @NonNull Level level,
       @NonNull BlockState blockState,
       @NonNull BlockEntityType<T> type
   ) {
@@ -109,7 +109,7 @@ public class ItemHub extends BaseEntityBlock {
         : createTickerHelper(type, SupremeBlockEntities.ITEM_HUB_ENTITY, ItemHubEntity::pushItemsTick);
   }
 
-  @Override
+  @Nullable @Override
   public BlockEntity newBlockEntity(
       @NonNull BlockPos pos,
       @NonNull BlockState state
@@ -129,7 +129,7 @@ public class ItemHub extends BaseEntityBlock {
 
   @Override
   protected void createBlockStateDefinition(
-      StateDefinition.Builder<Block, BlockState> builder
+      StateDefinition.@NonNull Builder<Block, BlockState> builder
   ) {
     builder.add(FACING, ENABLED);
   }
@@ -137,7 +137,7 @@ public class ItemHub extends BaseEntityBlock {
   @Override
   protected void entityInside(
       @NonNull BlockState state,
-      Level level,
+      @NonNull Level level,
       @NonNull BlockPos pos,
       @NonNull Entity entity,
       @NonNull InsideBlockEffectApplier effectApplier,
@@ -150,62 +150,62 @@ public class ItemHub extends BaseEntityBlock {
 
   @Override
   protected int getAnalogOutputSignal(
-      BlockState state,
-      Level level,
-      BlockPos pos,
-      Direction direction
+      @NonNull BlockState state,
+      @NonNull Level level,
+      @NonNull BlockPos pos,
+      @NonNull Direction direction
   ) {
     return AbstractContainerMenu.getRedstoneSignalFromBlockEntity(level.getBlockEntity(pos));
   }
 
-  @Override
+  @NonNull @Override
   protected VoxelShape getInteractionShape(
-      BlockState state,
-      BlockGetter level,
-      BlockPos pos
+      @NonNull BlockState state,
+      @NonNull BlockGetter level,
+      @NonNull BlockPos pos
   ) {
     return this.interactionShapes.get(state.getValue(FACING));
   }
 
-  @Override
+  @NonNull @Override
   protected VoxelShape getShape(
-      BlockState state,
-      BlockGetter level,
-      BlockPos pos,
-      CollisionContext context
+      @NonNull BlockState state,
+      @NonNull BlockGetter level,
+      @NonNull BlockPos pos,
+      @NonNull CollisionContext context
   ) {
     return this.shapes.apply(state);
   }
 
   @Override
   protected boolean hasAnalogOutputSignal(
-      BlockState state
+      @NonNull BlockState state
   ) {
     return true;
   }
 
   @Override
   protected boolean isPathfindable(
-      BlockState state,
-      PathComputationType type
+      @NonNull BlockState state,
+      @NonNull PathComputationType type
   ) {
     return false;
   }
 
-  @Override
+  @NonNull @Override
   protected BlockState mirror(
-      BlockState state,
-      Mirror mirror
+      @NonNull BlockState state,
+      @NonNull Mirror mirror
   ) {
     return state.rotate(mirror.getRotation(state.getValue(FACING)));
   }
 
   @Override
   protected void neighborChanged(
-      BlockState state,
-      Level level,
-      BlockPos pos,
-      Block block,
+      @NonNull BlockState state,
+      @NonNull Level level,
+      @NonNull BlockPos pos,
+      @NonNull Block block,
       @Nullable Orientation orientation,
       boolean movedByPiston
   ) {
@@ -214,10 +214,10 @@ public class ItemHub extends BaseEntityBlock {
 
   @Override
   protected void onPlace(
-      BlockState state,
-      Level level,
-      BlockPos pos,
-      BlockState oldState,
+      @NonNull BlockState state,
+      @NonNull Level level,
+      @NonNull BlockPos pos,
+      @NonNull BlockState oldState,
       boolean movedByPiston
   ) {
     if (!oldState.is(state.getBlock())) {
@@ -225,30 +225,30 @@ public class ItemHub extends BaseEntityBlock {
     }
   }
 
-  @Override
+  @NonNull @Override
   protected BlockState rotate(
-      BlockState state,
-      Rotation rotation
+      @NonNull BlockState state,
+      @NonNull Rotation rotation
   ) {
     return state.setValue(FACING, rotation.rotate(state.getValue(FACING)));
   }
 
-  @Override
+  @NonNull @Override
   protected InteractionResult useWithoutItem(
-      BlockState state,
-      Level level,
-      BlockPos pos,
-      Player player,
-      BlockHitResult hitResult
+      @NonNull BlockState state,
+      @NonNull Level level,
+      @NonNull BlockPos pos,
+      @NonNull Player player,
+      @NonNull BlockHitResult hitResult
   ) {
     if (!level.isClientSide() && level.getBlockEntity(pos) instanceof ItemHubEntity itemHubEntity) {
       player.openMenu(new ExtendedMenuProvider<ItemHubMenu.OpeningData>() {
 
-        @Override
+        @Nullable @Override
         public AbstractContainerMenu createMenu(
             int containerId,
-            Inventory inventory,
-            Player player
+            @NonNull Inventory inventory,
+            @NonNull Player player
         ) {
           return new ItemHubMenu(
               containerId,
@@ -260,14 +260,14 @@ public class ItemHub extends BaseEntityBlock {
           );
         }
 
-        @Override
+        @NonNull @Override
         public Component getDisplayName() {
           return itemHubEntity.getDisplayName();
         }
 
         @Override
-        public ItemHubMenu.OpeningData getScreenOpeningData(
-            ServerPlayer player
+        public ItemHubMenu.@NonNull OpeningData getScreenOpeningData(
+            @NonNull ServerPlayer player
         ) {
           return new ItemHubMenu.OpeningData(
               pos,

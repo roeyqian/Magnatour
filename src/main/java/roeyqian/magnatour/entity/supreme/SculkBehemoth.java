@@ -124,7 +124,7 @@ public class SculkBehemoth extends Mob implements Enemy, CustomBossEntity {
   @Override
   public boolean addEffect(
       @NonNull MobEffectInstance effect,
-      Entity source
+      @Nullable Entity source
   ) {
     return false;
   }
@@ -157,7 +157,7 @@ public class SculkBehemoth extends Mob implements Enemy, CustomBossEntity {
   @Override
   public boolean hurtServer(
       @NonNull ServerLevel world,
-      DamageSource source,
+      @NonNull DamageSource source,
       float amount
   ) {
     if (source.is(DamageTypeTags.IS_FALL)) return false;
@@ -182,7 +182,7 @@ public class SculkBehemoth extends Mob implements Enemy, CustomBossEntity {
       double strength,
       double x,
       double z,
-      DamageSource source,
+      @NonNull DamageSource source,
       float knockbackResistance
   ) {}
 
@@ -191,7 +191,7 @@ public class SculkBehemoth extends Mob implements Enemy, CustomBossEntity {
       double strength,
       double x,
       double z,
-      DamageSource source,
+      @NonNull DamageSource source,
       float knockbackResistance,
       boolean indicateDamage
   ) {}
@@ -205,7 +205,7 @@ public class SculkBehemoth extends Mob implements Enemy, CustomBossEntity {
 
   @Override
   public void setCustomName(
-      Component name
+      @Nullable Component name
   ) {
     super.setCustomName(name);
     bossBar.setName(getDisplayName());
@@ -288,7 +288,7 @@ public class SculkBehemoth extends Mob implements Enemy, CustomBossEntity {
   @Override
   protected void dropExperience(
       @NonNull ServerLevel world,
-      Entity attacker
+      @Nullable Entity attacker
   ) {
     this.dropExperienceAsSmallOrbs(
         this,
@@ -307,17 +307,17 @@ public class SculkBehemoth extends Mob implements Enemy, CustomBossEntity {
     EntityLootTableHelper.dropMagnatourEntityLoot(this, world, source, causedByPlayer);
   }
 
-  @Override
+  @Nullable @Override
   protected SoundEvent getAmbientSound() {
     return SoundEvents.WARDEN_AMBIENT;
   }
 
-  @Override
+  @Nullable @Override
   protected SoundEvent getDeathSound() {
     return SoundEvents.WARDEN_DEATH;
   }
 
-  @Override
+  @Nullable @Override
   protected SoundEvent getHurtSound(
       @NonNull DamageSource source
   ) {

@@ -45,22 +45,22 @@ public final class TheUnnameableThingRenderer extends MobRenderer<TheUnnameableT
     super(context, new TheUnnameableThingModel(context.bakeLayer(RegEntityLayers.THE_UNNAMEABLE_THING)), 0.35F * MODEL_SCALE);
   }
 
-  @Override
+  @NonNull @Override
   public TheUnnameableThingRenderState createRenderState() {
     return new TheUnnameableThingRenderState();
   }
 
   @Override @NonNull
   public Identifier getTextureLocation(
-      TheUnnameableThingRenderState state
+      @NonNull TheUnnameableThingRenderState state
   ) {
     return TEXTURE;
   }
 
   @Override
   protected void scale(
-      TheUnnameableThingRenderState state,
-      PoseStack poseStack
+      @NonNull TheUnnameableThingRenderState state,
+      @NonNull PoseStack poseStack
   ) {
     super.scale(state, poseStack);
     poseStack.scale(MODEL_SCALE, MODEL_SCALE, MODEL_SCALE);

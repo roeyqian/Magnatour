@@ -40,15 +40,15 @@ public final class UniverseGuardianRenderer extends MobRenderer<UniverseGuardian
     super(context, new UniverseGuardianModel(context.bakeLayer(RegEntityLayers.UNIVERSE_GUARDIAN)), 0.5F);
   }
 
-  @Override
+  @NonNull @Override
   public UniverseGuardianRenderState createRenderState() {
     return new UniverseGuardianRenderState();
   }
 
   @Override
   public void extractRenderState(
-      UniverseGuardian entity,
-      UniverseGuardianRenderState state,
+      @NonNull UniverseGuardian entity,
+      @NonNull UniverseGuardianRenderState state,
       float partialTick
   ) {
     super.extractRenderState(entity, state, partialTick);
@@ -56,7 +56,7 @@ public final class UniverseGuardianRenderer extends MobRenderer<UniverseGuardian
 
   @Override @NonNull
   public Identifier getTextureLocation(
-      UniverseGuardianRenderState state
+      @NonNull UniverseGuardianRenderState state
   ) {
     return TEXTURE;
   }

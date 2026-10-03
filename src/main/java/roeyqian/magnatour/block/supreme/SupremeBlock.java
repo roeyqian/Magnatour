@@ -27,6 +27,7 @@ import net.minecraft.world.phys.BlockHitResult;
 
 // JSpecify
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 // Magnatour
 import roeyqian.magnatour.block.VirtualBlockLightManager;
@@ -46,7 +47,7 @@ public class SupremeBlock extends BaseEntityBlock {
     this.registerDefaultState(this.stateDefinition.any().setValue(LIT, false));
   }
 
-  @Override
+  @Nullable @Override
   public <T extends BlockEntity> BlockEntityTicker<T> getTicker(
       @NonNull Level world,
       @NonNull BlockState state,
@@ -59,7 +60,7 @@ public class SupremeBlock extends BaseEntityBlock {
     );
   }
 
-  @Override
+  @Nullable @Override
   public BlockEntity newBlockEntity(
       @NonNull BlockPos pos,
       @NonNull BlockState state
@@ -69,8 +70,8 @@ public class SupremeBlock extends BaseEntityBlock {
 
   @Override
   protected void affectNeighborsAfterRemoval(
-      BlockState state,
-      ServerLevel world,
+      @NonNull BlockState state,
+      @NonNull ServerLevel world,
       @NonNull BlockPos pos,
       boolean moved
   ) {
@@ -83,7 +84,7 @@ public class SupremeBlock extends BaseEntityBlock {
 
   @Override
   protected void createBlockStateDefinition(
-      StateDefinition.Builder<Block, BlockState> builder
+      StateDefinition.@NonNull Builder<Block, BlockState> builder
   ) {
     builder.add(LIT);
   }
@@ -91,7 +92,7 @@ public class SupremeBlock extends BaseEntityBlock {
   @Override @NonNull
   protected InteractionResult useWithoutItem(
       @NonNull BlockState state,
-      Level world,
+      @NonNull Level world,
       @NonNull BlockPos pos,
       @NonNull Player player,
       @NonNull BlockHitResult hit

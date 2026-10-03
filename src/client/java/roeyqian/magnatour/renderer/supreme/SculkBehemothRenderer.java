@@ -54,15 +54,15 @@ public final class SculkBehemothRenderer extends MobRenderer<SculkBehemoth, Scul
     ));
   }
 
-  @Override
+  @NonNull @Override
   public SculkBehemothRenderState createRenderState() {
     return new SculkBehemothRenderState();
   }
 
   @Override
   public void extractRenderState(
-      SculkBehemoth entity,
-      SculkBehemothRenderState state,
+      @NonNull SculkBehemoth entity,
+      @NonNull SculkBehemothRenderState state,
       float partialTick
   ) {
     super.extractRenderState(entity, state, partialTick);
@@ -73,7 +73,7 @@ public final class SculkBehemothRenderer extends MobRenderer<SculkBehemoth, Scul
 
   @Override @NonNull
   public Identifier getTextureLocation(
-      SculkBehemothRenderState state
+      @NonNull SculkBehemothRenderState state
   ) {
     return TEXTURE;
   }

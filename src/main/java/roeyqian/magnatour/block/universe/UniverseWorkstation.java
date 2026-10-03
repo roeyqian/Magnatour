@@ -27,6 +27,7 @@ import net.minecraft.world.phys.BlockHitResult;
 
 // JSpecify
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 // Magnatour
 import roeyqian.magnatour.menu.universe.UniverseWorkstationMenu;
@@ -42,21 +43,21 @@ public class UniverseWorkstation extends Block {
     this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH));
   }
 
-  @Override
+  @Nullable @Override
   public BlockState getStateForPlacement(
-      BlockPlaceContext context
+      @NonNull BlockPlaceContext context
   ) {
     return this.defaultBlockState().setValue(FACING, context.getHorizontalDirection().getOpposite());
   }
 
   @Override
   protected void createBlockStateDefinition(
-      StateDefinition.Builder<Block, BlockState> builder
+      StateDefinition.@NonNull Builder<Block, BlockState> builder
   ) {
     builder.add(FACING);
   }
 
-  @Override
+  @Nullable @Override
   protected MenuProvider getMenuProvider(
       @NonNull BlockState state,
       @NonNull Level world,
@@ -75,7 +76,7 @@ public class UniverseWorkstation extends Block {
   @Override @NonNull
   protected InteractionResult useWithoutItem(
       @NonNull BlockState state,
-      Level world,
+      @NonNull Level world,
       @NonNull BlockPos pos,
       @NonNull Player player,
       @NonNull BlockHitResult hit

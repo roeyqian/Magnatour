@@ -25,6 +25,9 @@ import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
 
+// JSpecify
+import org.jspecify.annotations.NonNull;
+
 // Magnatour
 import roeyqian.magnatour.renderstate.supreme.SculkBehemothRenderState;
 
@@ -74,7 +77,7 @@ public final class SculkBehemothModel extends EntityModel<SculkBehemothRenderSta
 
   @Override
   public void setupAnim(
-      SculkBehemothRenderState state
+      @NonNull SculkBehemothRenderState state
   ) {
     super.setupAnim(state);
     this.head.yRot = Mth.clamp(state.yRot, -35.0F, 35.0F) * Mth.DEG_TO_RAD;

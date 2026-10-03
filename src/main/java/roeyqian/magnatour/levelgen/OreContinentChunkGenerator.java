@@ -91,13 +91,13 @@ public final class OreContinentChunkGenerator extends ChunkGenerator {
 
   @Override @NonNull
   public CompletableFuture<ChunkAccess> buildTerrain(
-      ChunkAccess chunk,
+      @NonNull ChunkAccess chunk,
       @NonNull Blender blender,
       @NonNull RandomState randomState,
       @NonNull StructureManager structureManager,
       @NonNull BiomeManager biomeManager,
       @NonNull WorldGenRegion region,
-      Set<Holder<net.minecraft.world.level.biome.Biome>> availableBiomes
+      @NonNull Set<Holder<net.minecraft.world.level.biome.Biome>> availableBiomes
   ) {
     List<BlockState> layers = this.settings.getLayers();
     BlockPos.MutableBlockPos mutable = new BlockPos.MutableBlockPos();
@@ -125,8 +125,8 @@ public final class OreContinentChunkGenerator extends ChunkGenerator {
 
   @Override @NonNull
   public ChunkGeneratorStructureState createState(
-      HolderLookup<StructureSet> structureSets,
-      RandomState randomState,
+      @NonNull HolderLookup<StructureSet> structureSets,
+      @NonNull RandomState randomState,
       long seed
   ) {
     Stream<Holder<StructureSet>> stream = this.settings.structureOverrides()

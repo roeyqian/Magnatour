@@ -48,8 +48,8 @@ public class MirrorMobile extends Item {
 
   @Override @NonNull
   public InteractionResult use(
-      Level world,
-      Player user,
+      @NonNull Level world,
+      @NonNull Player user,
       @NonNull InteractionHand hand
   ) {
     ItemStack stack = user.getItemInHand(hand);
@@ -80,7 +80,7 @@ public class MirrorMobile extends Item {
 
   @Override @NonNull
   public InteractionResult useOn(
-      UseOnContext context
+      @NonNull UseOnContext context
   ) {
     Level world = context.getLevel();
     BlockPos pos = context.getClickedPos();

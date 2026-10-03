@@ -19,6 +19,9 @@ import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
 
+// JSpecify
+import org.jspecify.annotations.NonNull;
+
 @Environment(EnvType.CLIENT)
 public final class BellRingerModel extends HumanoidModel<HumanoidRenderState> {
 
@@ -35,7 +38,7 @@ public final class BellRingerModel extends HumanoidModel<HumanoidRenderState> {
 
   @Override
   public void setupAnim(
-      HumanoidRenderState state
+      @NonNull HumanoidRenderState state
   ) {
     super.setupAnim(state);
   }

@@ -19,6 +19,7 @@ import net.minecraft.world.item.ItemStack;
 
 // JSpecify
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 // Magnatour
 import roeyqian.magnatour.item.CustomItemSetting;
@@ -34,9 +35,9 @@ public class UniverseChestplate extends Item {
   @Override
   public void inventoryTick(
       @NonNull ItemStack stack,
-      ServerLevel world,
+      @NonNull ServerLevel world,
       @NonNull Entity entity,
-      EquipmentSlot slot
+      @Nullable EquipmentSlot slot
   ) {
     if (!world.isClientSide() && entity instanceof LivingEntity living) {
       if (living.getItemBySlot(EquipmentSlot.CHEST) == stack) {

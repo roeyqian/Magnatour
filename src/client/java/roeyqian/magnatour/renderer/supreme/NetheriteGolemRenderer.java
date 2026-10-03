@@ -51,13 +51,13 @@ public final class NetheriteGolemRenderer extends MobRenderer<NetheriteGolem, Cu
     this.blockModelResolver = context.getBlockModelResolver();
   }
 
-  public CustomGolemRenderState createRenderState() {
+  @NonNull public CustomGolemRenderState createRenderState() {
     return new CustomGolemRenderState();
   }
 
   public void extractRenderState(
-      final NetheriteGolem entity,
-      final CustomGolemRenderState state,
+      final @NonNull NetheriteGolem entity,
+      final @NonNull CustomGolemRenderState state,
       final float partialTicks
   ) {
     super.extractRenderState(entity, state, partialTicks);
@@ -76,22 +76,22 @@ public final class NetheriteGolemRenderer extends MobRenderer<NetheriteGolem, Cu
 
   @NonNull
   public Identifier getTextureLocation(
-      final CustomGolemRenderState state
+      final @NonNull CustomGolemRenderState state
   ) {
     return GOLEM_LOCATION;
   }
 
   @Override
   protected void scale(
-      final CustomGolemRenderState state,
-      final PoseStack poseStack
+      final @NonNull CustomGolemRenderState state,
+      final @NonNull PoseStack poseStack
   ) {
     super.scale(state, poseStack);
     poseStack.scale(NetheriteGolem.SIZE_SCALE, NetheriteGolem.SIZE_SCALE, NetheriteGolem.SIZE_SCALE);
   }
 
   protected void setupRotations(
-      final CustomGolemRenderState state,
+      final @NonNull CustomGolemRenderState state,
       final @NonNull PoseStack poseStack,
       final float bodyRot,
       final float entityScale

@@ -158,7 +158,7 @@ public class SupremeFurnaceEntity extends AbstractFurnaceBlockEntity {
 
   @Override
   protected int getBurnDuration(
-      ServerLevel world,
+      @NonNull ServerLevel world,
       @NonNull ItemStack stack
   ) {
     int baseFuelTime = super.getBurnDuration(world, stack);

@@ -23,6 +23,9 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+// JSpecify
+import org.jspecify.annotations.NonNull;
+
 // Magnatour
 import roeyqian.magnatour.mixinhelper.block.BlockHelperForFunction;
 
@@ -49,7 +52,7 @@ public abstract class ResultSlotMixin extends Slot {
 
   @Shadow
   protected abstract void checkTakeAchievements(
-      ItemStack stack
+      @NonNull ItemStack stack
   );
 
   @Inject(method = "onQuickCraft(Lnet/minecraft/world/item/ItemStack;I)V", at = @At("HEAD"), cancellable = true)

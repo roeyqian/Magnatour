@@ -54,7 +54,7 @@ public class ItemHubScreen extends AbstractContainerScreen<ItemHubMenu> {
 
   @Override
   public void extractContents(
-      GuiGraphicsExtractor graphics,
+      @NonNull GuiGraphicsExtractor graphics,
       int mouseX,
       int mouseY,
       float delta
@@ -66,7 +66,7 @@ public class ItemHubScreen extends AbstractContainerScreen<ItemHubMenu> {
 
   @Override
   public void extractRenderState(
-      GuiGraphicsExtractor graphics,
+      @NonNull GuiGraphicsExtractor graphics,
       int mouseX,
       int mouseY,
       float delta
@@ -134,7 +134,7 @@ public class ItemHubScreen extends AbstractContainerScreen<ItemHubMenu> {
 
   @Override
   protected void extractLabels(
-      GuiGraphicsExtractor graphics,
+      @NonNull GuiGraphicsExtractor graphics,
       int mouseX,
       int mouseY
   ) {

@@ -48,7 +48,7 @@ public class EverWaterFarmland extends FarmlandBlock {
   @Override
   public void onPlace(
       @NonNull BlockState state,
-      Level world,
+      @NonNull Level world,
       @NonNull BlockPos pos,
       @NonNull BlockState oldState,
       boolean notify
@@ -68,8 +68,8 @@ public class EverWaterFarmland extends FarmlandBlock {
 
   @Override
   protected void tick(
-      BlockState state,
-      ServerLevel world,
+      @NonNull BlockState state,
+      @NonNull ServerLevel world,
       @NonNull BlockPos pos,
       @NonNull RandomSource random
   ) {

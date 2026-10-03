@@ -16,6 +16,9 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 
+// JSpecify
+import org.jspecify.annotations.NonNull;
+
 // Magnatour
 import roeyqian.magnatour.menu.supreme.SupremeWorktableMenu;
 
@@ -35,7 +38,7 @@ public class SupremeWorktableScreen extends AbstractRecipeBookScreen<SupremeWork
 
   @Override
   public void extractBackground(
-      GuiGraphicsExtractor graphics,
+      @NonNull GuiGraphicsExtractor graphics,
       int mouseX,
       int mouseY,
       float delta
@@ -52,7 +55,7 @@ public class SupremeWorktableScreen extends AbstractRecipeBookScreen<SupremeWork
     );
   }
 
-  @Override
+  @NonNull @Override
   protected ScreenPosition getRecipeBookButtonPosition() {
     return new ScreenPosition(this.leftPos + 5, this.height / 2 - 49);
   }

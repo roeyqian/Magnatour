@@ -66,7 +66,7 @@ public class RedstoneTriggerScreen extends AbstractContainerScreen<RedstoneTrigg
 
   @Override
   public void extractContents(
-      GuiGraphicsExtractor graphics,
+      @NonNull GuiGraphicsExtractor graphics,
       int mouseX,
       int mouseY,
       float delta
@@ -108,7 +108,7 @@ public class RedstoneTriggerScreen extends AbstractContainerScreen<RedstoneTrigg
 
   @Override
   protected void extractLabels(
-      GuiGraphicsExtractor graphics,
+      @NonNull GuiGraphicsExtractor graphics,
       int mouseX,
       int mouseY
   ) {

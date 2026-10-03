@@ -86,7 +86,7 @@ public class UniverseOmniBlade extends Item {
 
   @Override @NonNull
   public InteractionResult useOn(
-      UseOnContext context
+      @NonNull UseOnContext context
   ) {
     Level world = context.getLevel();
     BlockPos blockPos = context.getClickedPos();

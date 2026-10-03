@@ -39,6 +39,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 
 // JSpecify
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 // Magnatour
 import roeyqian.magnatour.blockentity.universe.UniverseLibraryEntity;
@@ -57,14 +58,14 @@ public class UniverseLibrary extends BaseEntityBlock {
     this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH));
   }
 
-  @Override
+  @Nullable @Override
   public BlockState getStateForPlacement(
-      BlockPlaceContext ctx
+      @NonNull BlockPlaceContext ctx
   ) {
     return this.defaultBlockState().setValue(FACING, ctx.getHorizontalDirection().getOpposite());
   }
 
-  @Override
+  @Nullable @Override
   public <T extends BlockEntity> BlockEntityTicker<T> getTicker(
       @NonNull Level world,
       @NonNull BlockState state,
@@ -79,7 +80,7 @@ public class UniverseLibrary extends BaseEntityBlock {
         : null;
   }
 
-  @Override
+  @Nullable @Override
   public BlockEntity newBlockEntity(
       @NonNull BlockPos pos,
       @NonNull BlockState state
@@ -89,7 +90,7 @@ public class UniverseLibrary extends BaseEntityBlock {
 
   @Override @NonNull
   public BlockState playerWillDestroy(
-      Level world,
+      @NonNull Level world,
       @NonNull BlockPos pos,
       @NonNull BlockState state,
       @NonNull Player player
@@ -102,7 +103,7 @@ public class UniverseLibrary extends BaseEntityBlock {
 
   @Override
   protected void createBlockStateDefinition(
-      StateDefinition.Builder<Block, BlockState> builder
+      StateDefinition.@NonNull Builder<Block, BlockState> builder
   ) {
     builder.add(FACING);
   }
@@ -128,7 +129,7 @@ public class UniverseLibrary extends BaseEntityBlock {
   @Override
   protected void tick(
       @NonNull BlockState state,
-      ServerLevel level,
+      @NonNull ServerLevel level,
       @NonNull BlockPos pos,
       @NonNull RandomSource random
   ) {
@@ -139,7 +140,7 @@ public class UniverseLibrary extends BaseEntityBlock {
   @Override @NonNull
   protected InteractionResult useWithoutItem(
       @NonNull BlockState state,
-      Level world,
+      @NonNull Level world,
       @NonNull BlockPos pos,
       @NonNull Player player,
       @NonNull BlockHitResult hit

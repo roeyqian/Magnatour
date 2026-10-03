@@ -22,6 +22,9 @@ import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.util.Mth;
 
+// JSpecify
+import org.jspecify.annotations.NonNull;
+
 // Magnatour
 import roeyqian.magnatour.renderstate.supreme.CustomGolemRenderState;
 
@@ -91,7 +94,7 @@ public final class CustomGolemModel extends EntityModel<CustomGolemRenderState> 
   }
 
   public void setupAnim(
-      final CustomGolemRenderState state
+      final @NonNull CustomGolemRenderState state
   ) {
     super.setupAnim(state);
     float attackTick = state.attackTicksRemaining;

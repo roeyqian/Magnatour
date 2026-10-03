@@ -103,7 +103,7 @@ public final class SupremeCookingBookComponent extends RecipeBookComponent<Supre
 
   @Override
   protected void selectMatchingRecipes(
-      RecipeCollection recipeCollection,
+      @NonNull RecipeCollection recipeCollection,
       @NonNull StackedItemContents stackedContents
   ) {
     recipeCollection.selectRecipes(

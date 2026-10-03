@@ -22,6 +22,9 @@ import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.util.Mth;
 
+// JSpecify
+import org.jspecify.annotations.NonNull;
+
 // Magnatour
 import roeyqian.magnatour.renderstate.supreme.BellSoulRenderState;
 
@@ -92,7 +95,7 @@ public final class BellSoulModel extends EntityModel<BellSoulRenderState> {
 
   @Override
   public void setupAnim(
-      BellSoulRenderState state
+      @NonNull BellSoulRenderState state
   ) {
     this.head.yRot = state.yRot * ((float) Math.PI / 180.0F);
     this.head.xRot = state.xRot * ((float) Math.PI / 180.0F);

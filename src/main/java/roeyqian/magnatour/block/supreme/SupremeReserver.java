@@ -22,6 +22,7 @@ import net.minecraft.world.phys.BlockHitResult;
 
 // JSpecify
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 // Magnatour
 import roeyqian.magnatour.menu.supreme.SupremeReserverMenu;
@@ -37,7 +38,7 @@ public class SupremeReserver extends Block {
     super(settings);
   }
 
-  @Override
+  @Nullable @Override
   protected MenuProvider getMenuProvider(
       @NonNull BlockState state,
       @NonNull Level world,
@@ -55,7 +56,7 @@ public class SupremeReserver extends Block {
   @Override
   protected @NonNull InteractionResult useWithoutItem(
       @NonNull BlockState state,
-      Level world,
+      @NonNull Level world,
       @NonNull BlockPos pos,
       @NonNull Player player,
       @NonNull BlockHitResult hit

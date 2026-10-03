@@ -194,17 +194,17 @@ public class SupremeChestMenu extends AbstractContainerMenu {
     public static final StreamCodec<RegistryFriendlyByteBuf, OpeningData> PACKET_CODEC =
         new StreamCodec<>() {
 
-          @Override
+          @NonNull @Override
           public OpeningData decode(
-              RegistryFriendlyByteBuf input
+              @NonNull RegistryFriendlyByteBuf input
           ) {
             return new OpeningData(ByteBufCodecs.VAR_INT.decode(input));
           }
 
           @Override
           public void encode(
-              RegistryFriendlyByteBuf output,
-              OpeningData value
+              @NonNull RegistryFriendlyByteBuf output,
+              @NonNull OpeningData value
           ) {
             ByteBufCodecs.VAR_INT.encode(output, value.inventorySize());
           }

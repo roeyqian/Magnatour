@@ -63,7 +63,7 @@ public class UniverseBucket extends Item {
 
   @Override @NonNull
   public InteractionResult useOn(
-      UseOnContext context
+      @NonNull UseOnContext context
   ) {
     Player player = context.getPlayer();
     if (player == null) return InteractionResult.PASS;

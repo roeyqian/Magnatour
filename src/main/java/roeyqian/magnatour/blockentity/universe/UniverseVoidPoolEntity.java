@@ -29,6 +29,7 @@ import net.minecraft.world.level.storage.ValueOutput;
 
 // JSpecify
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 // Magnatour
 import roeyqian.magnatour.block.CustomContainer;
@@ -48,7 +49,7 @@ public class UniverseVoidPoolEntity extends BlockEntity implements MenuProvider,
     super(UniverseBlockEntities.UNIVERSE_VOID_POOL_ENTITY, pos, state);
   }
 
-  @Override
+  @Nullable @Override
   public AbstractContainerMenu createMenu(
       int syncId,
       @NonNull Inventory playerInventory,

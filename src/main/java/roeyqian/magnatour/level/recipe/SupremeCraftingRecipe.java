@@ -99,7 +99,7 @@ public class SupremeCraftingRecipe implements CraftingRecipe {
 
   @Override @NonNull
   public ItemStack assemble(
-      CraftingInput input
+      @NonNull CraftingInput input
   ) {
     return CraftingResultHelper.createResultStack(this.resultStack, input);
   }
@@ -163,7 +163,7 @@ public class SupremeCraftingRecipe implements CraftingRecipe {
 
   @Override
   public boolean matches(
-      CraftingInput input,
+      @NonNull CraftingInput input,
       @NonNull Level world
   ) {
     return this.rawContents.matches(input);

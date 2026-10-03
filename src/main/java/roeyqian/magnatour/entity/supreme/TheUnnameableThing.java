@@ -45,7 +45,7 @@ public class TheUnnameableThing extends Mob {
   @Override
   public boolean hurtServer(
       @NonNull ServerLevel world,
-      DamageSource source,
+      @NonNull DamageSource source,
       float amount
   ) {
     if (source.getEntity() instanceof LivingEntity attacker

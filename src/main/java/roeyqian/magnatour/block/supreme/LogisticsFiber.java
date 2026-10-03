@@ -120,7 +120,7 @@ public class LogisticsFiber extends BaseEntityBlock {
 
   @Override @Nullable
   public BlockState getStateForPlacement(
-      BlockPlaceContext context
+      @NonNull BlockPlaceContext context
   ) {
     return updateConnections(
         this.defaultBlockState().setValue(FACING, determineVisualFacing(context)),
@@ -129,7 +129,7 @@ public class LogisticsFiber extends BaseEntityBlock {
     );
   }
 
-  @Override
+  @Nullable @Override
   public <T extends BlockEntity> BlockEntityTicker<T> getTicker(
       @NonNull Level world,
       @NonNull BlockState state,
@@ -140,7 +140,7 @@ public class LogisticsFiber extends BaseEntityBlock {
         : createTickerHelper(type, SupremeBlockEntities.LOGISTICS_FIBER_ENTITY, LogisticsFiberEntity::tick);
   }
 
-  @Override
+  @Nullable @Override
   public BlockEntity newBlockEntity(
       @NonNull BlockPos pos,
       @NonNull BlockState state
@@ -150,7 +150,7 @@ public class LogisticsFiber extends BaseEntityBlock {
 
   @Override
   protected void createBlockStateDefinition(
-      StateDefinition.Builder<Block, BlockState> builder
+      StateDefinition.@NonNull Builder<Block, BlockState> builder
   ) {
     builder.add(DOWN, NORTH, EAST, FACING, SOUTH, WEST, UP);
   }
@@ -175,8 +175,8 @@ public class LogisticsFiber extends BaseEntityBlock {
 
   @Override @NonNull
   protected BlockState mirror(
-      BlockState state,
-      Mirror mirror
+      @NonNull BlockState state,
+      @NonNull Mirror mirror
   ) {
     Direction facing = state.getValue(FACING);
     boolean north = state.getValue(NORTH);
@@ -203,8 +203,8 @@ public class LogisticsFiber extends BaseEntityBlock {
 
   @Override @NonNull
   protected BlockState rotate(
-      BlockState state,
-      Rotation rotation
+      @NonNull BlockState state,
+      @NonNull Rotation rotation
   ) {
     Direction facing = state.getValue(FACING);
     boolean north = state.getValue(NORTH);

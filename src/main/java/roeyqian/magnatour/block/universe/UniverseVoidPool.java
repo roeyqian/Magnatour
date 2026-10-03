@@ -24,6 +24,7 @@ import net.minecraft.world.phys.BlockHitResult;
 
 // JSpecify
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 // Magnatour
 import roeyqian.magnatour.blockentity.universe.UniverseVoidPoolEntity;
@@ -37,7 +38,7 @@ public class UniverseVoidPool extends BaseEntityBlock {
     super(settings);
   }
 
-  @Override
+  @Nullable @Override
   public <T extends BlockEntity> BlockEntityTicker<T> getTicker(
       @NonNull Level world,
       @NonNull BlockState state,
@@ -50,7 +51,7 @@ public class UniverseVoidPool extends BaseEntityBlock {
     );
   }
 
-  @Override
+  @Nullable @Override
   public BlockEntity newBlockEntity(
       @NonNull BlockPos pos,
       @NonNull BlockState state
@@ -61,7 +62,7 @@ public class UniverseVoidPool extends BaseEntityBlock {
   @Override
   protected void affectNeighborsAfterRemoval(
       @NonNull BlockState state,
-      ServerLevel world,
+      @NonNull ServerLevel world,
       @NonNull BlockPos pos,
       boolean moved
   ) {
@@ -76,7 +77,7 @@ public class UniverseVoidPool extends BaseEntityBlock {
   @Override @NonNull
   protected InteractionResult useWithoutItem(
       @NonNull BlockState state,
-      Level world,
+      @NonNull Level world,
       @NonNull BlockPos pos,
       @NonNull Player player,
       @NonNull BlockHitResult hit

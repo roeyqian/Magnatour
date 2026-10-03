@@ -60,15 +60,15 @@ public final class UniverseLibraryRenderer implements BlockEntityRenderer<Univer
     this.sprites = ctx.sprites();
   }
 
-  @Override
+  @NonNull @Override
   public UniverseLibraryRenderState createRenderState() {
     return new UniverseLibraryRenderState();
   }
 
   @Override
   public void extractRenderState(
-      UniverseLibraryEntity blockEntity,
-      UniverseLibraryRenderState state,
+      @NonNull UniverseLibraryEntity blockEntity,
+      @NonNull UniverseLibraryRenderState state,
       float partialTicks,
       @NonNull Vec3 cameraPosition,
       ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress
@@ -86,9 +86,9 @@ public final class UniverseLibraryRenderer implements BlockEntityRenderer<Univer
 
   @Override
   public void submit(
-      UniverseLibraryRenderState state,
-      PoseStack poseStack,
-      SubmitNodeCollector collector,
+      @NonNull UniverseLibraryRenderState state,
+      @NonNull PoseStack poseStack,
+      @NonNull SubmitNodeCollector collector,
       @NonNull CameraRenderState camera
   ) {
     poseStack.pushPose();

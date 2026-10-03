@@ -35,6 +35,7 @@ import net.minecraft.world.phys.BlockHitResult;
 
 // JSpecify
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 // Magnatour
 import roeyqian.magnatour.blockentity.supreme.RedstoneTriggerEntity;
@@ -63,7 +64,7 @@ public class RedstoneTrigger extends BaseEntityBlock {
     }
   }
 
-  @Override
+  @Nullable @Override
   public <T extends BlockEntity> BlockEntityTicker<T> getTicker(
       @NonNull Level world,
       @NonNull BlockState state,
@@ -76,7 +77,7 @@ public class RedstoneTrigger extends BaseEntityBlock {
     );
   }
 
-  @Override
+  @Nullable @Override
   public BlockEntity newBlockEntity(
       @NonNull BlockPos pos,
       @NonNull BlockState state
@@ -87,7 +88,7 @@ public class RedstoneTrigger extends BaseEntityBlock {
   @Override
   protected void affectNeighborsAfterRemoval(
       @NonNull BlockState state,
-      ServerLevel world,
+      @NonNull ServerLevel world,
       @NonNull BlockPos pos,
       boolean moved
   ) {
@@ -99,7 +100,7 @@ public class RedstoneTrigger extends BaseEntityBlock {
 
   @Override
   protected void createBlockStateDefinition(
-      StateDefinition.Builder<Block, BlockState> builder
+      StateDefinition.@NonNull Builder<Block, BlockState> builder
   ) {
     builder.add(POWERED);
   }
@@ -134,7 +135,7 @@ public class RedstoneTrigger extends BaseEntityBlock {
   @Override @NonNull
   protected InteractionResult useWithoutItem(
       @NonNull BlockState state,
-      Level world,
+      @NonNull Level world,
       @NonNull BlockPos pos,
       @NonNull Player player,
       @NonNull BlockHitResult hit
@@ -167,7 +168,7 @@ public class RedstoneTrigger extends BaseEntityBlock {
         }
 
         @Override
-        public RedstoneTriggerMenu.OpeningData getScreenOpeningData(
+        public RedstoneTriggerMenu.@NonNull OpeningData getScreenOpeningData(
             @NonNull ServerPlayer player
         ) {
           return new RedstoneTriggerMenu.OpeningData(

@@ -43,6 +43,7 @@ import net.minecraft.world.phys.Vec3;
 
 // JSpecify
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 // Magnatour
 import roeyqian.magnatour.entity.CustomBossEntity;
@@ -137,7 +138,7 @@ public class PaleLord extends Monster implements CustomBossEntity {
 
   @Override
   public void setCustomName(
-      Component name
+      @Nullable Component name
   ) {
     super.setCustomName(name);
     this.bossBar.setName(this.getDisplayName());
@@ -184,7 +185,7 @@ public class PaleLord extends Monster implements CustomBossEntity {
   @Override
   protected void dropExperience(
       @NonNull ServerLevel world,
-      Entity attacker
+      @Nullable Entity attacker
   ) {
     this.dropExperienceAsSmallOrbs(
         this,

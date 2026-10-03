@@ -40,14 +40,14 @@ public final class BellRingerRenderer extends HumanoidMobRenderer<BellRinger, Hu
     super(context, new BellRingerModel(context.bakeLayer(RegEntityLayers.BELL_RINGER)), 0.5F);
   }
 
-  @Override
+  @NonNull @Override
   public HumanoidRenderState createRenderState() {
     return new HumanoidRenderState();
   }
 
   @Override @NonNull
   public Identifier getTextureLocation(
-      HumanoidRenderState state
+      @NonNull HumanoidRenderState state
   ) {
     return TEXTURE;
   }

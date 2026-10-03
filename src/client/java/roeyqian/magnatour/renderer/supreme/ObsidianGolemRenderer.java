@@ -51,13 +51,13 @@ public final class ObsidianGolemRenderer extends MobRenderer<ObsidianGolem, Cust
     this.blockModelResolver = context.getBlockModelResolver();
   }
 
-  public CustomGolemRenderState createRenderState() {
+  @NonNull public CustomGolemRenderState createRenderState() {
     return new CustomGolemRenderState();
   }
 
   public void extractRenderState(
-      final ObsidianGolem entity,
-      final CustomGolemRenderState state,
+      final @NonNull ObsidianGolem entity,
+      final @NonNull CustomGolemRenderState state,
       final float partialTicks
   ) {
     super.extractRenderState(entity, state, partialTicks);
@@ -74,22 +74,22 @@ public final class ObsidianGolemRenderer extends MobRenderer<ObsidianGolem, Cust
 
   @NonNull
   public Identifier getTextureLocation(
-      final CustomGolemRenderState state
+      final @NonNull CustomGolemRenderState state
   ) {
     return GOLEM_LOCATION;
   }
 
   @Override
   protected void scale(
-      final CustomGolemRenderState state,
-      final PoseStack poseStack
+      final @NonNull CustomGolemRenderState state,
+      final @NonNull PoseStack poseStack
   ) {
     super.scale(state, poseStack);
     poseStack.scale(ObsidianGolem.SIZE_SCALE, ObsidianGolem.SIZE_SCALE, ObsidianGolem.SIZE_SCALE);
   }
 
   protected void setupRotations(
-      final CustomGolemRenderState state,
+      final @NonNull CustomGolemRenderState state,
       final @NonNull PoseStack poseStack,
       final float bodyRot,
       final float entityScale

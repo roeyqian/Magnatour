@@ -22,6 +22,9 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.HitResult;
 
+// JSpecify
+import org.jspecify.annotations.NonNull;
+
 // Magnatour
 import roeyqian.magnatour.item.StrangePotionEffect;
 import roeyqian.magnatour.registry.content.SupremeItems;
@@ -55,14 +58,14 @@ public class ThrownStrangeSplashPotion extends ThrownSplashPotion {
     this.setItem(stack);
   }
 
-  @Override
+  @NonNull @Override
   protected Item getDefaultItem() {
     return SupremeItems.STRANGE_SPLASH_POTION;
   }
 
   @Override
   protected void onHit(
-      HitResult hitResult
+      @NonNull HitResult hitResult
   ) {
     if (this.level().isClientSide()) {
       return;

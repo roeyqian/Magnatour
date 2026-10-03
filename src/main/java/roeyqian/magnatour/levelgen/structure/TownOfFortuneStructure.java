@@ -68,7 +68,7 @@ public final class TownOfFortuneStructure extends Structure {
 
   @Override @NonNull
   public Optional<GenerationStub> findGenerationPoint(
-      GenerationContext context
+      @NonNull GenerationContext context
   ) {
     ChunkPos chunkPos = context.chunkPos();
     int originX = chunkPos.getMiddleBlockX();

@@ -53,17 +53,17 @@ public class EverWaterGrassBlock extends SpreadingSnowyBlock implements Bonemeal
       @NonNull RandomSource random,
       @NonNull BlockPos pos,
       @NonNull BlockState state,
-      BonemealSource source
+      @NonNull BonemealSource source
   ) {
     return true;
   }
 
   @Override
   public boolean isValidBonemealTarget(
-      LevelReader world,
-      BlockPos pos,
+      @NonNull LevelReader world,
+      @NonNull BlockPos pos,
       @NonNull BlockState state,
-      BonemealSource source
+      @NonNull BonemealSource source
   ) {
     return world.getBlockState(pos.above()).isAir();
   }
@@ -72,9 +72,9 @@ public class EverWaterGrassBlock extends SpreadingSnowyBlock implements Bonemeal
   public void performBonemeal(
       @NonNull ServerLevel world,
       @NonNull RandomSource random,
-      BlockPos pos,
+      @NonNull BlockPos pos,
       @NonNull BlockState state,
-      BonemealSource source
+      @NonNull BonemealSource source
   ) {
     BlockPos above = pos.above();
     var placedFeatureRegistry = world.registryAccess().lookupOrThrow(Registries.PLACED_FEATURE);

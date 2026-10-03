@@ -36,6 +36,7 @@ import net.minecraft.world.level.storage.ValueOutput;
 
 // JSpecify
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 // Magnatour
 import roeyqian.magnatour.block.CustomContainer;
@@ -93,7 +94,7 @@ public class UniverseLibraryEntity extends BlockEntity implements MenuProvider, 
 
     @Override
     public boolean isOwnContainer(
-        Player player
+        @NonNull Player player
     ) {
       return player.containerMenu instanceof UniverseLibraryMenu menu && menu.isFor(UniverseLibraryEntity.this);
     }
@@ -115,7 +116,7 @@ public class UniverseLibraryEntity extends BlockEntity implements MenuProvider, 
     libraryBe.lidAnimator.tickLid();
   }
 
-  @Override
+  @Nullable @Override
   public AbstractContainerMenu createMenu(
       int syncId,
       @NonNull Inventory playerInventory,

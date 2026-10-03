@@ -31,7 +31,7 @@ public class SupremePumpkinHead extends Block {
   @Override
   public void onPlace(
       @NonNull BlockState state,
-      Level level,
+      @NonNull Level level,
       @NonNull BlockPos pos,
       @NonNull BlockState oldState,
       boolean movedByPiston

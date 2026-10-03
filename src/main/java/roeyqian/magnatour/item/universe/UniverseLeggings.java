@@ -21,6 +21,7 @@ import net.minecraft.world.item.ItemStack;
 
 // JSpecify
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 // Magnatour
 import roeyqian.magnatour.Magnatour;
@@ -37,9 +38,9 @@ public class UniverseLeggings extends Item {
   @Override
   public void inventoryTick(
       @NonNull ItemStack stack,
-      ServerLevel world,
+      @NonNull ServerLevel world,
       @NonNull Entity entity,
-      EquipmentSlot slot
+      @Nullable EquipmentSlot slot
   ) {
     if (world.isClientSide() || !(entity instanceof Player player)) return;
     if (player.getItemBySlot(EquipmentSlot.LEGS) == stack) {

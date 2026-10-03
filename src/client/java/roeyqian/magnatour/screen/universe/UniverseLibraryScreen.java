@@ -59,7 +59,7 @@ public class UniverseLibraryScreen extends AbstractContainerScreen<UniverseLibra
 
   @Override
   public void extractContents(
-      GuiGraphicsExtractor graphics,
+      @NonNull GuiGraphicsExtractor graphics,
       int mouseX,
       int mouseY,
       float delta
@@ -88,7 +88,7 @@ public class UniverseLibraryScreen extends AbstractContainerScreen<UniverseLibra
 
   @Override
   public boolean mouseClicked(
-      MouseButtonEvent event,
+      @NonNull MouseButtonEvent event,
       boolean doubled
   ) {
     double mouseX = event.x();
@@ -119,7 +119,7 @@ public class UniverseLibraryScreen extends AbstractContainerScreen<UniverseLibra
 
   @Override
   public boolean mouseReleased(
-      MouseButtonEvent event
+      @NonNull MouseButtonEvent event
   ) {
     if (event.button() == InputConstants.MOUSE_BUTTON_LEFT && this.isDragging) {
       this.isDragging = false;

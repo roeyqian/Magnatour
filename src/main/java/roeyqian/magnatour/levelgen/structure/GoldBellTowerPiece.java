@@ -77,7 +77,7 @@ public final class GoldBellTowerPiece extends StructurePiece {
 
   @Override
   public void postProcess(
-      WorldGenLevel level,
+      @NonNull WorldGenLevel level,
       @NonNull StructureManager structureManager,
       @NonNull ChunkGenerator generator,
       @NonNull RandomSource random,

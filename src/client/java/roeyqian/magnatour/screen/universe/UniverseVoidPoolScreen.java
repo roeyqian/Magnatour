@@ -15,6 +15,9 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 
+// JSpecify
+import org.jspecify.annotations.NonNull;
+
 // Magnatour
 import roeyqian.magnatour.Magnatour;
 import roeyqian.magnatour.menu.universe.UniverseVoidPoolMenu;
@@ -36,7 +39,7 @@ public class UniverseVoidPoolScreen extends AbstractContainerScreen<UniverseVoid
 
   @Override
   public void extractContents(
-      GuiGraphicsExtractor graphics,
+      @NonNull GuiGraphicsExtractor graphics,
       int mouseX,
       int mouseY,
       float delta

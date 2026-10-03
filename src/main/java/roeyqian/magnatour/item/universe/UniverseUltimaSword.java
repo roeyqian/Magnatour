@@ -82,7 +82,7 @@ public class UniverseUltimaSword extends Item {
   @Override @NonNull
   public InteractionResult use(
       @NonNull Level world,
-      Player player,
+      @NonNull Player player,
       @NonNull InteractionHand hand
   ) {
     int mode = player.getItemInHand(hand).getOrDefault(CustomComponents.UNIVERSE_ULTIMA_SWORD_MODE, 0);
@@ -91,7 +91,7 @@ public class UniverseUltimaSword extends Item {
 
   @Override @NonNull
   public InteractionResult useOn(
-      UseOnContext context
+      @NonNull UseOnContext context
   ) {
     int mode = context.getItemInHand().getOrDefault(CustomComponents.UNIVERSE_ULTIMA_SWORD_MODE, 1);
     return mode == 0 ? execFlintMode(context) : InteractionResult.PASS;

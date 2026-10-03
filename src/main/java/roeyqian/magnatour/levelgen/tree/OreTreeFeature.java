@@ -18,6 +18,9 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.feature.Feature;
 
+// JSpecify
+import org.jspecify.annotations.NonNull;
+
 public final class OreTreeFeature implements Feature {
 
   public static final MapCodec<OreTreeFeature> CODEC =
@@ -31,17 +34,17 @@ public final class OreTreeFeature implements Feature {
     this.config = config;
   }
 
-  @Override
+  @NonNull @Override
   public MapCodec<OreTreeFeature> codec() {
     return CODEC;
   }
 
   @Override
   public boolean place(
-      WorldGenLevel level,
-      ChunkGenerator generator,
-      RandomSource random,
-      BlockPos origin
+      @NonNull WorldGenLevel level,
+      @NonNull ChunkGenerator generator,
+      @NonNull RandomSource random,
+      @NonNull BlockPos origin
   ) {
     OreTreeConfiguration config = this.config;
 

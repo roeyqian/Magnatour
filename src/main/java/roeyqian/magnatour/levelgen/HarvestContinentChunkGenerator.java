@@ -143,13 +143,13 @@ public final class HarvestContinentChunkGenerator extends ChunkGenerator {
 
   @Override @NonNull
   public CompletableFuture<ChunkAccess> buildTerrain(
-      ChunkAccess chunk,
+      @NonNull ChunkAccess chunk,
       @NonNull Blender blender,
       @NonNull RandomState randomState,
       @NonNull StructureManager structureManager,
       @NonNull BiomeManager biomeManager,
       @NonNull WorldGenRegion region,
-      Set<Holder<Biome>> availableBiomes
+      @NonNull Set<Holder<Biome>> availableBiomes
   ) {
     BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
     Heightmap oceanFloor = chunk.getOrCreateHeightmapUnprimed(Heightmap.Types.OCEAN_FLOOR_WG);
@@ -191,8 +191,8 @@ public final class HarvestContinentChunkGenerator extends ChunkGenerator {
 
   @Override @NonNull
   public ChunkGeneratorStructureState createState(
-      HolderLookup<StructureSet> structureSets,
-      RandomState randomState,
+      @NonNull HolderLookup<StructureSet> structureSets,
+      @NonNull RandomState randomState,
       long seed
   ) {
     this.terrainSeed = seed;

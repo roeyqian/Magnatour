@@ -60,7 +60,7 @@ public class MirrorMobileMenuAccess implements ContainerLevelAccess {
 
   @Override @NonNull
   public <T> Optional<T> evaluate(
-      BiFunction<Level, BlockPos, T> getter
+      @NonNull BiFunction<Level, BlockPos, T> getter
   ) {
     T result = getter.apply(world, pos);
     if (Boolean.FALSE.equals(result)) return Optional.empty();

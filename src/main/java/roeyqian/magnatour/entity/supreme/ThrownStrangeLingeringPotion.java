@@ -17,6 +17,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.HitResult;
 
+// JSpecify
+import org.jspecify.annotations.NonNull;
+
 // Magnatour
 import roeyqian.magnatour.registry.content.SupremeItems;
 
@@ -49,14 +52,14 @@ public class ThrownStrangeLingeringPotion extends ThrownLingeringPotion {
     this.setItem(stack);
   }
 
-  @Override
+  @NonNull @Override
   protected Item getDefaultItem() {
     return SupremeItems.STRANGE_LINGERING_POTION;
   }
 
   @Override
   protected void onHit(
-      HitResult hitResult
+      @NonNull HitResult hitResult
   ) {
     if (this.level().isClientSide()) {
       return;

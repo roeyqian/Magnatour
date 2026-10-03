@@ -43,15 +43,15 @@ public final class BellSoulRenderer extends MobRenderer<BellSoul, BellSoulRender
     super(context, new BellSoulModel(context.bakeLayer(RegEntityLayers.BELL_SOUL)), 0.3F);
   }
 
-  @Override
+  @NonNull @Override
   public BellSoulRenderState createRenderState() {
     return new BellSoulRenderState();
   }
 
   @Override
   public void extractRenderState(
-      BellSoul entity,
-      BellSoulRenderState state,
+      @NonNull BellSoul entity,
+      @NonNull BellSoulRenderState state,
       float partialTick
   ) {
     super.extractRenderState(entity, state, partialTick);
@@ -60,15 +60,15 @@ public final class BellSoulRenderer extends MobRenderer<BellSoul, BellSoulRender
 
   @Override @NonNull
   public Identifier getTextureLocation(
-      BellSoulRenderState state
+      @NonNull BellSoulRenderState state
   ) {
     return TEXTURE;
   }
 
   @Override
   protected void scale(
-      BellSoulRenderState state,
-      PoseStack poseStack
+      @NonNull BellSoulRenderState state,
+      @NonNull PoseStack poseStack
   ) {
     super.scale(state, poseStack);
     // Align the visual model center with BellSoul's small hitbox.

@@ -97,15 +97,15 @@ public class ObsidianGolem extends AbstractGolem implements NeutralMob {
 
   @Override
   public boolean checkSpawnObstruction(
-      final LevelReader level
+      final @NonNull LevelReader level
   ) {
     return this.customGolem().checkSpawnObstruction(level);
   }
 
   @Override
   public boolean doHurtTarget(
-      final ServerLevel level,
-      final Entity target
+      final @NonNull ServerLevel level,
+      final @NonNull Entity target
   ) {
     return this.customGolem().doHurtTarget(level, target);
   }
@@ -226,12 +226,12 @@ public class ObsidianGolem extends AbstractGolem implements NeutralMob {
     EntityLootTableHelper.dropMagnatourEntityLoot(this, world, source, causedByPlayer);
   }
 
-  @Override
+  @Nullable @Override
   protected SoundEvent getDeathSound() {
     return this.customGolem().getDeathSound();
   }
 
-  @Override
+  @Nullable @Override
   protected SoundEvent getHurtSound(
       final @NonNull DamageSource source
   ) {
@@ -240,7 +240,7 @@ public class ObsidianGolem extends AbstractGolem implements NeutralMob {
 
   @Override
   protected @NonNull InteractionResult mobInteract(
-      final Player player,
+      final @NonNull Player player,
       final @NonNull InteractionHand hand
   ) {
     return this.customGolem().mobInteract(player, hand);

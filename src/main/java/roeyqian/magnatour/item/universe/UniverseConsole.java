@@ -47,6 +47,7 @@ import net.minecraft.world.level.block.state.BlockState;
 
 // JSpecify
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 // Magnatour
 import roeyqian.magnatour.Magnatour;
@@ -65,7 +66,7 @@ public class UniverseConsole extends Item {
   @Override @NonNull
   public InteractionResult use(
       @NonNull Level world,
-      Player player,
+      @NonNull Player player,
       @NonNull InteractionHand hand
   ) {
     ItemStack stack = player.getItemInHand(hand);
@@ -80,7 +81,7 @@ public class UniverseConsole extends Item {
 
   @Override @NonNull
   public InteractionResult useOn(
-      UseOnContext context
+      @NonNull UseOnContext context
   ) {
     Player player = context.getPlayer();
     if (player == null) return InteractionResult.PASS;
@@ -150,7 +151,7 @@ public class UniverseConsole extends Item {
         return Component.translatable("item.magnatour.universe_console");
       }
 
-      @Override
+      @Nullable @Override
       public AbstractContainerMenu createMenu(
           int syncId,
           @NonNull Inventory inv,
@@ -159,7 +160,7 @@ public class UniverseConsole extends Item {
         return new UniverseConsoleMenu(syncId, boundList, hand);
       }
 
-      @Override
+      @NonNull @Override
       public BoundBlockList getScreenOpeningData(
           @NonNull ServerPlayer player
       ) {
