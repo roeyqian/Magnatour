@@ -53,6 +53,8 @@ public final class HarvestContinentTerrain {
 
   private static final long STRANGE_NOISE_SALT = 0xA54FF53A5F1D36F1L;
 
+  private static final float TREE_RESERVATION_CHANCE = 0.15F;
+
   private static final double LAKE_SHORE_START = 25.0;
   private static final double MELON_PUMPKIN_BLEND_END = 88.0;
   private static final double MELON_PUMPKIN_BLEND_START = 84.0;
@@ -134,7 +136,7 @@ public final class HarvestContinentTerrain {
     return pumpkinGorgeHeight(seed, worldX, worldZ);
   }
 
-  /** Exactly one grass/root column in each 32-block grid cell. */
+  /** Keep the original grass/root column in 15% of the 32-block grid cells. */
   public static boolean isTreeReservation(
       int worldX,
       int worldZ
@@ -142,7 +144,7 @@ public final class HarvestContinentTerrain {
     int gridX = Math.floorDiv(worldX, TREE_GRID_SIZE);
     int gridZ = Math.floorDiv(worldZ, TREE_GRID_SIZE);
     Random random = new Random(gridX * 341873128712L + gridZ * 132897987541L);
-    random.nextFloat();
+    if (random.nextFloat() >= TREE_RESERVATION_CHANCE) return false;
     int treeX = gridX * TREE_GRID_SIZE + random.nextInt(TREE_GRID_SIZE);
     int treeZ = gridZ * TREE_GRID_SIZE + random.nextInt(TREE_GRID_SIZE);
     return worldX == treeX && worldZ == treeZ;
@@ -362,25 +364,6 @@ public final class HarvestContinentTerrain {
     return clamped * clamped * (3.0 - 2.0 * clamped);
   }
 
-  private static double valueNoise3D(
-      long seed,
-      double x,
-      double y,
-      double z
-  ) {
-    int x0 = fastFloor(x);
-    int y0 = fastFloor(y);
-    int z0 = fastFloor(z);
-    double tx = fade(x - x0);
-    double ty = fade(y - y0);
-    double tz = fade(z - z0);
-    double x00 = lerp(tx, value(seed, x0, y0, z0), value(seed, x0 + 1, y0, z0));
-    double x10 = lerp(tx, value(seed, x0, y0 + 1, z0), value(seed, x0 + 1, y0 + 1, z0));
-    double x01 = lerp(tx, value(seed, x0, y0, z0 + 1), value(seed, x0 + 1, y0, z0 + 1));
-    double x11 = lerp(tx, value(seed, x0, y0 + 1, z0 + 1), value(seed, x0 + 1, y0 + 1, z0 + 1));
-    return lerp(tz, lerp(ty, x00, x10), lerp(ty, x01, x11));
-  }
-
   private static long mix(
       long seed,
       int x,
@@ -402,6 +385,25 @@ public final class HarvestContinentTerrain {
   ) {
     long h = mix(mix(seed, x, z), y, x ^ z);
     return ((h >>> 11) * 0x1.0p-53) * 2.0 - 1.0;
+  }
+
+  private static double valueNoise3D(
+      long seed,
+      double x,
+      double y,
+      double z
+  ) {
+    int x0 = fastFloor(x);
+    int y0 = fastFloor(y);
+    int z0 = fastFloor(z);
+    double tx = fade(x - x0);
+    double ty = fade(y - y0);
+    double tz = fade(z - z0);
+    double x00 = lerp(tx, value(seed, x0, y0, z0), value(seed, x0 + 1, y0, z0));
+    double x10 = lerp(tx, value(seed, x0, y0 + 1, z0), value(seed, x0 + 1, y0 + 1, z0));
+    double x01 = lerp(tx, value(seed, x0, y0, z0 + 1), value(seed, x0 + 1, y0, z0 + 1));
+    double x11 = lerp(tx, value(seed, x0, y0 + 1, z0 + 1), value(seed, x0 + 1, y0 + 1, z0 + 1));
+    return lerp(tz, lerp(ty, x00, x10), lerp(ty, x01, x11));
   }
 
   private static double fbmValue3D(
