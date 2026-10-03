@@ -22,6 +22,7 @@ import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Climate;
 import net.minecraft.world.level.levelgen.densityfunction.SamplerContext;
+import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.StructureType;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePiecesBuilder;
@@ -33,7 +34,6 @@ import org.jspecify.annotations.NonNull;
 
 // Magnatour
 import roeyqian.magnatour.Magnatour;
-import roeyqian.magnatour.levelgen.HarvestContinentTerrain;
 import roeyqian.magnatour.registry.worldgen.CustomStructures;
 
 public final class GoldBellTowerStructure extends Structure {
@@ -92,11 +92,8 @@ public final class GoldBellTowerStructure extends Structure {
     Vec3i lowerSize = lowerOpt.get().getSize();
     Vec3i upperSize = upperOpt.get().getSize();
 
-    int surfaceY = HarvestContinentTerrain.lakeCenterIslandHeight(
-        seed, originX, originZ
-    );
-
-    int baseY = surfaceY + 1;
+    int baseY = context.chunkGenerator().getBaseHeight(originX, originZ,
+        Heightmap.Types.OCEAN_FLOOR_WG, context.heightAccessor(), context.randomState());
 
     BlockPos lowerPos = new BlockPos(
         originX - lowerSize.getX() / 2,

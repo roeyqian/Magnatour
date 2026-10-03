@@ -11,7 +11,6 @@ package roeyqian.magnatour.levelgen;
 import java.util.Random;
 
 // Minecraft
-import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
@@ -23,9 +22,15 @@ import roeyqian.magnatour.Magnatour;
 
 public final class HarvestContinentTerrain {
 
-  public static final int MAX_TERRAIN_SLOPE = 2;
+  public static final int CAVE_MAX_Y = 128;
+  // Exclusive bounds; the bottom remains solid and high plateaus avoid cave work.
+  public static final int CAVE_MIN_Y = -58;
+  public static final int CAVE_SURFACE_COVER = 7;
   public static final int SEA_LEVEL = 64;
-  public static final int SHORE_BLEND_DISTANCE = 128;
+
+  public static final double LAKE_STRANGE_LIMIT = 31.0;
+  public static final double MELON_STRANGE_LIMIT = 86.0;
+  public static final double WHEAT_STRANGE_LIMIT = 71.0;
 
   public static final ResourceKey<Biome> BIG_LAKE = key("big_lake");
   public static final ResourceKey<Biome> LAKE_CENTER_ISLAND = key("lake_center_island");
@@ -41,31 +46,43 @@ public final class HarvestContinentTerrain {
   private static final int PUMPKIN_GORGE_BASE_HEIGHT = 256;
   private static final int PUMPKIN_GORGE_INTERIOR_MIN_HEIGHT = 250;
   private static final int PUMPKIN_GORGE_MAX_HEIGHT = 301;
-  private static final int TREE_CLEARING_RADIUS = 2;
   private static final int TREE_GRID_SIZE = 32;
   private static final int WHEAT_BASE_HEIGHT = 128;
   private static final int WHEAT_INTERIOR_MAX_HEIGHT = 135;
   private static final int WHEAT_INTERIOR_MIN_HEIGHT = 123;
 
+  private static final long STRANGE_NOISE_SALT = 0xA54FF53A5F1D36F1L;
+
+  private static final double LAKE_SHORE_START = 25.0;
+  private static final double MELON_PUMPKIN_BLEND_END = 88.0;
+  private static final double MELON_PUMPKIN_BLEND_START = 84.0;
+  private static final double STRANGE_NOISE_AMPLITUDE = 150.0;
+  // Three octaves span 4096, 2048 and 1024 blocks for broad biome transitions.
+  private static final double STRANGE_NOISE_SCALE = 1.0 / 4096.0;
+  private static final double WHEAT_MELON_BLEND_END = 73.0;
+  private static final double WHEAT_MELON_BLEND_START = 69.0;
+  private static final double WHEAT_SHORE_END = 40.0;
+
   private HarvestContinentTerrain() {}
 
-  /**
-   * Applies the explicit 128-block lake shore profile before the global slope
-   * limiter. This is a height blend only: the owning biome and its material
-   * profile never change.
-   */
-  public static int blendLakeShoreHeight(
-      ResourceKey<Biome> biome,
-      int rawHeight,
-      int lakeDistance
+  /** Computed once per column and reused by all carved cave blocks. */
+  public static int aquiferWaterLevel(
+      long seed,
+      int worldX,
+      int worldZ
   ) {
-    if (biome.equals(BIG_LAKE) || biome.equals(LAKE_CENTER_ISLAND)
-        || lakeDistance < 0 || lakeDistance > SHORE_BLEND_DISTANCE) {
-      return rawHeight;
-    }
-    double t = lakeDistance / (double) SHORE_BLEND_DISTANCE;
-    double smooth = t * t * (3.0 - 2.0 * t);
-    return Math.round((float) (SEA_LEVEL + (rawHeight - SEA_LEVEL) * smooth));
+    double region = fbmPerlin(seed ^ 0xA4093822299F31D0L, worldX, worldZ, 0.006, 2);
+    return 36 + Math.round((float) (region * 13.0));
+  }
+
+  /** Material ownership uses thresholds, independently of the height curve. */
+  public static ResourceKey<Biome> biomeForStrange(
+      double strange
+  ) {
+    if (strange < LAKE_STRANGE_LIMIT) return BIG_LAKE;
+    if (strange < WHEAT_STRANGE_LIMIT) return WHEAT_PLAIN;
+    if (strange < MELON_STRANGE_LIMIT) return MELON_JUNGLE;
+    return PUMPKIN_GORGE;
   }
 
   public static double fbmPerlin(
@@ -88,57 +105,64 @@ public final class HarvestContinentTerrain {
     return normalization == 0.0 ? 0.0 : Mth.clamp(sum / normalization, -1.0, 1.0);
   }
 
-  /** Returns the custom aquifer liquid for an already-carved cave block. */
-  public static boolean isAquiferWater(
+  /** Continuous terrain function shared by chunk filling and height queries. */
+  public static double heightForStrange(
+      double strange,
       long seed,
       int worldX,
-      int y,
       int worldZ
   ) {
-    if (y <= -54) return false;
-    double region = fbmPerlin(seed ^ 0xA4093822299F31D0L, worldX, worldZ, 0.006, 2);
-    int waterLevel = 36 + Math.round((float) (region * 13.0));
-    return y <= waterLevel;
+    double value = Mth.clamp(strange, 0.0, 100.0);
+    if (value < LAKE_STRANGE_LIMIT) {
+      return blendHeight(value, LAKE_SHORE_START, LAKE_STRANGE_LIMIT,
+          lakeBedHeight(seed, worldX, worldZ), SEA_LEVEL);
+    }
+    if (value < WHEAT_SHORE_END) {
+      return blendHeight(value, LAKE_STRANGE_LIMIT, WHEAT_SHORE_END,
+          SEA_LEVEL, wheatPlainHeight(seed, worldX, worldZ));
+    }
+    if (value <= WHEAT_MELON_BLEND_START) return wheatPlainHeight(seed, worldX, worldZ);
+    if (value < WHEAT_MELON_BLEND_END) {
+      return blendHeight(value, WHEAT_MELON_BLEND_START, WHEAT_MELON_BLEND_END,
+          wheatPlainHeight(seed, worldX, worldZ), melonJungleHeight(seed, worldX, worldZ));
+    }
+    if (value <= MELON_PUMPKIN_BLEND_START) return melonJungleHeight(seed, worldX, worldZ);
+    if (value < MELON_PUMPKIN_BLEND_END) {
+      return blendHeight(value, MELON_PUMPKIN_BLEND_START, MELON_PUMPKIN_BLEND_END,
+          melonJungleHeight(seed, worldX, worldZ), pumpkinGorgeHeight(seed, worldX, worldZ));
+    }
+    return pumpkinGorgeHeight(seed, worldX, worldZ);
   }
 
-  /** Custom cave mask; it is intentionally independent from vanilla carvers. */
-  public static boolean isCave(
-      long seed,
-      int worldX,
-      int y,
-      int worldZ,
-      int surfaceY
-  ) {
-    if (y <= -58 || y >= surfaceY - 7) return false;
-
-    double winding = fbmValue3D(seed ^ 0x243F6A8885A308D3L, worldX, y, worldZ, 0.043, 3);
-    double chambers = fbmValue3D(seed ^ 0x13198A2E03707344L, worldX, y, worldZ, 0.017, 2);
-    double depthBias = Mth.clamp((surfaceY - y - 12) / 92.0, 0.0, 0.17);
-    return winding + chambers * 0.38 > 0.53 - depthBias;
-  }
-
-  public static boolean isInTreeClearing(
+  /** Exactly one grass/root column in each 32-block grid cell. */
+  public static boolean isTreeReservation(
       int worldX,
       int worldZ
   ) {
     int gridX = Math.floorDiv(worldX, TREE_GRID_SIZE);
     int gridZ = Math.floorDiv(worldZ, TREE_GRID_SIZE);
-    for (int gx = gridX - 1; gx <= gridX + 1; gx++) {
-      for (int gz = gridZ - 1; gz <= gridZ + 1; gz++) {
-        if (isNearTreeInGrid(worldX, worldZ, gx, gz)) return true;
-      }
-    }
-    return false;
+    Random random = new Random(gridX * 341873128712L + gridZ * 132897987541L);
+    random.nextFloat();
+    int treeX = gridX * TREE_GRID_SIZE + random.nextInt(TREE_GRID_SIZE);
+    int treeZ = gridZ * TREE_GRID_SIZE + random.nextInt(TREE_GRID_SIZE);
+    return worldX == treeX && worldZ == treeZ;
   }
 
-  /** A locally computed lake bed, used only in big-lake columns. */
-  public static int lakeBedHeight(
+  public static int islandSurfaceHeight(
+      HarvestLakeIslands.Island island,
+      double strange,
       long seed,
-      int worldX,
-      int worldZ
+      int x,
+      int z
   ) {
-    double shape = fbmPerlin(seed ^ 0x67E6096A85AE67BBL, worldX, worldZ, 0.012, 3);
-    return Mth.clamp(38 + Math.round((float) (shape * 9.0)), 26, 52);
+    double distance = island.distance(x, z);
+    if (distance <= island.radius()) {
+      double t = Mth.clamp((island.radius() - distance) / HarvestLakeIslands.SHORE_WIDTH, 0.0, 1.0);
+      return (int) Math.round(lerp(fade(t), LAKE_CENTER_ISLAND_BASE_HEIGHT,
+          lakeCenterIslandHeight(seed, x, z)));
+    }
+    double t = Mth.clamp((distance - island.radius()) / HarvestLakeIslands.SHORE_WIDTH, 0.0, 1.0);
+    return (int) Math.round(lerp(fade(t), SEA_LEVEL, heightForStrange(strange, seed, x, z)));
   }
 
   /** Kept public because the Gold Bell Tower anchors itself to this terrain. */
@@ -152,60 +176,33 @@ public final class HarvestContinentTerrain {
     return Mth.clamp(height, LAKE_CENTER_ISLAND_BASE_HEIGHT, LAKE_CENTER_ISLAND_MAX_HEIGHT);
   }
 
-  /**
-   * Limits a sampled height field to two vertical blocks per horizontal block.
-   * A 128-block halo is supplied by the generator, so a lake contributes its
-   * full shore distance to every central chunk column without changing biome
-   * ownership or borrowing another biome's raw profile.
-   */
-  public static void limitTerrainSlope(
-      int[][] heights
-  ) {
-    int sizeX = heights.length;
-    int sizeZ = heights[0].length;
-
-    for (int z = 0; z < sizeZ; z++) {
-      for (int x = 1; x < sizeX; x++) {
-        heights[x][z] = Math.min(heights[x][z], heights[x - 1][z] + MAX_TERRAIN_SLOPE);
-      }
-      for (int x = sizeX - 2; x >= 0; x--) {
-        heights[x][z] = Math.min(heights[x][z], heights[x + 1][z] + MAX_TERRAIN_SLOPE);
-      }
-    }
-
-    for (int x = 0; x < sizeX; x++) {
-      for (int z = 1; z < sizeZ; z++) {
-        heights[x][z] = Math.min(heights[x][z], heights[x][z - 1] + MAX_TERRAIN_SLOPE);
-      }
-      for (int z = sizeZ - 2; z >= 0; z--) {
-        heights[x][z] = Math.min(heights[x][z], heights[x][z + 1] + MAX_TERRAIN_SLOPE);
-      }
-    }
-  }
-
-  /** The unblended terrain profile owned by one biome at one column. */
-  public static int rawSurfaceHeight(
-      ResourceKey<Biome> biome,
+  /** A continuous horizontal field; biome intervals are not area percentages. */
+  public static double sampleStrange(
       long seed,
       int worldX,
       int worldZ
   ) {
-    if (biome.equals(BIG_LAKE)) return SEA_LEVEL;
-    if (biome.equals(LAKE_CENTER_ISLAND)) return lakeCenterIslandHeight(seed, worldX, worldZ);
-    if (biome.equals(MELON_JUNGLE)) return melonJungleHeight(seed, worldX, worldZ);
-    if (biome.equals(PUMPKIN_GORGE)) return pumpkinGorgeHeight(seed, worldX, worldZ);
-    return wheatPlainHeight(seed, worldX, worldZ);
+    return Mth.clamp(unclampedStrange(seed, worldX, worldZ), 0.0, 100.0);
   }
 
-  /** Resolves the small fixed biome set used by this dimension. */
-  public static ResourceKey<Biome> resolveBiome(
-      Holder<Biome> biome
+  /** Rounded only after blending, so each profile keeps its original shape. */
+  public static int surfaceHeight(
+      double strange,
+      long seed,
+      int worldX,
+      int worldZ
   ) {
-    if (biome.is(BIG_LAKE)) return BIG_LAKE;
-    if (biome.is(LAKE_CENTER_ISLAND)) return LAKE_CENTER_ISLAND;
-    if (biome.is(MELON_JUNGLE)) return MELON_JUNGLE;
-    if (biome.is(PUMPKIN_GORGE)) return PUMPKIN_GORGE;
-    return WHEAT_PLAIN;
+    return (int) Math.round(heightForStrange(strange, seed, worldX, worldZ));
+  }
+
+  public static double unclampedStrange(
+      long seed,
+      int worldX,
+      int worldZ
+  ) {
+    double noise = fbmPerlin(seed ^ STRANGE_NOISE_SALT,
+        worldX + 173.25, worldZ - 419.75, STRANGE_NOISE_SCALE, 3);
+    return 50.0 + noise * STRANGE_NOISE_AMPLITUDE;
   }
 
   private static ResourceKey<Biome> key(
@@ -232,43 +229,40 @@ public final class HarvestContinentTerrain {
     return lerp(v, lerp(u, n00, n10), lerp(u, n01, n11));
   }
 
-  private static double fbmValue3D(
+  private static double blendHeight(
+      double strange,
+      double start,
+      double end,
+      double first,
+      double second
+  ) {
+    double t = Mth.clamp((strange - start) / (end - start), 0.0, 1.0);
+    return lerp(fade(t), first, second);
+  }
+
+  /** The deep-lake profile before its strange-driven shore transition. */
+  private static double lakeBedHeight(
       long seed,
-      double x,
-      double y,
-      double z,
-      double scale,
-      int octaves
-  ) {
-    double amplitude = 1.0;
-    double frequency = scale;
-    double sum = 0.0;
-    double normalization = 0.0;
-    for (int octave = 0; octave < octaves; octave++) {
-      sum += amplitude * valueNoise3D(seed + octave * 2089L, x * frequency, y * frequency, z * frequency);
-      normalization += amplitude;
-      amplitude *= 0.5;
-      frequency *= 2.0;
-    }
-    return sum / normalization;
-  }
-
-  private static boolean isNearTreeInGrid(
       int worldX,
-      int worldZ,
-      int gridX,
-      int gridZ
+      int worldZ
   ) {
-    Random random = new Random(gridX * 341873128712L + gridZ * 132897987541L);
-    random.nextFloat();
-    int treeX = gridX * TREE_GRID_SIZE + random.nextInt(TREE_GRID_SIZE);
-    int treeZ = gridZ * TREE_GRID_SIZE + random.nextInt(TREE_GRID_SIZE);
-    int dx = worldX - treeX;
-    int dz = worldZ - treeZ;
-    return dx * dx + dz * dz <= TREE_CLEARING_RADIUS * TREE_CLEARING_RADIUS;
+    double shape = fbmPerlin(seed ^ 0x67E6096A85AE67BBL, worldX, worldZ, 0.012, 3);
+    return Mth.clamp(38.0 + shape * 9.0, 26.0, 52.0);
   }
 
-  private static int melonJungleHeight(
+  private static double wheatPlainHeight(
+      long seed,
+      int x,
+      int z
+  ) {
+    double large = fbmPerlin(seed ^ 0x1A2B3C4D5E6F7890L, x, z, 0.0026, 3) * 5.2;
+    double medium = fbmPerlin(seed ^ 0x9876543210FEDCBAL, x, z, 0.0100, 2) * 3.4;
+    double micro = fbmPerlin(seed ^ 0xABCDEF0123456789L, x, z, 0.0340, 2) * 1.35;
+    return Mth.clamp(WHEAT_BASE_HEIGHT + large + medium + micro,
+        WHEAT_INTERIOR_MIN_HEIGHT, WHEAT_INTERIOR_MAX_HEIGHT);
+  }
+
+  private static double melonJungleHeight(
       long seed,
       int x,
       int z
@@ -293,14 +287,13 @@ public final class HarvestContinentTerrain {
         * fbmPerlin(seed ^ 0x9E3779B97F4A7C15L, x, z, 0.014, 3) * 13.0;
     double surfaceDetail = fbmPerlin(seed ^ 0xBB67AE8584CAA73BL, x, z, 0.041, 2) * 3.5;
 
-    int height = Math.round(MELON_JUNGLE_BASE_HEIGHT + (float) (
-        continentalLift + ridgeLift - valleyCut + jaggedness + surfaceDetail
-    ));
+    double height = MELON_JUNGLE_BASE_HEIGHT
+        + continentalLift + ridgeLift - valleyCut + jaggedness + surfaceDetail;
     return Mth.clamp(height,
         MELON_JUNGLE_INTERIOR_MIN_HEIGHT, MELON_JUNGLE_INTERIOR_MAX_HEIGHT);
   }
 
-  private static int pumpkinGorgeHeight(
+  private static double pumpkinGorgeHeight(
       long seed,
       int x,
       int z
@@ -311,20 +304,22 @@ public final class HarvestContinentTerrain {
     double detail = (1.0 - Math.abs(fbmPerlin(seed ^ 0x3C6EF372FE94F82BL, x, z, 0.040, 4)));
     detail = detail * detail * 22.0 - 10.0;
     detail += fbmPerlin(seed ^ 0x510E527FADE682D1L, x, z, 0.085, 3) * 8.0;
-    int height = Math.round(PUMPKIN_GORGE_BASE_HEIGHT + (float) (macro * 6.0 + ridges + spikes + detail));
+    double height = PUMPKIN_GORGE_BASE_HEIGHT + macro * 6.0 + ridges + spikes + detail;
     return Mth.clamp(height, PUMPKIN_GORGE_INTERIOR_MIN_HEIGHT, PUMPKIN_GORGE_MAX_HEIGHT);
   }
 
-  private static int wheatPlainHeight(
-      long seed,
-      int x,
-      int z
+  private static double lerp(
+      double delta,
+      double start,
+      double end
   ) {
-    double large = fbmPerlin(seed ^ 0x1A2B3C4D5E6F7890L, x, z, 0.0026, 3) * 5.2;
-    double medium = fbmPerlin(seed ^ 0x9876543210FEDCBAL, x, z, 0.0100, 2) * 3.4;
-    double micro = fbmPerlin(seed ^ 0xABCDEF0123456789L, x, z, 0.0340, 2) * 1.35;
-    return Mth.clamp((int) Math.round(WHEAT_BASE_HEIGHT + large + medium + micro),
-        WHEAT_INTERIOR_MIN_HEIGHT, WHEAT_INTERIOR_MAX_HEIGHT);
+    return start + delta * (end - start);
+  }
+
+  private static double fade(
+      double value
+  ) {
+    return value * value * value * (value * (value * 6.0 - 15.0) + 10.0);
   }
 
   private static int fastFloor(
@@ -332,12 +327,6 @@ public final class HarvestContinentTerrain {
   ) {
     int integer = (int) value;
     return value < integer ? integer - 1 : integer;
-  }
-
-  private static double fade(
-      double value
-  ) {
-    return value * value * value * (value * (value * 6.0 - 15.0) + 10.0);
   }
 
   private static double gradientDot(
@@ -359,12 +348,18 @@ public final class HarvestContinentTerrain {
     };
   }
 
-  private static double lerp(
-      double delta,
-      double start,
-      double end
+  /** Exact scalar transform used by vanilla TerrainProvider.peaksAndValleys. */
+  private static double vanillaPeaksAndValleys(
+      double weirdness
   ) {
-    return start + delta * (end - start);
+    return -(Math.abs(Math.abs(weirdness) - 2.0 / 3.0) - 1.0 / 3.0) * 3.0;
+  }
+
+  private static double smoothStep(
+      double value
+  ) {
+    double clamped = Mth.clamp(value, 0.0, 1.0);
+    return clamped * clamped * (3.0 - 2.0 * clamped);
   }
 
   private static double valueNoise3D(
@@ -384,20 +379,6 @@ public final class HarvestContinentTerrain {
     double x01 = lerp(tx, value(seed, x0, y0, z0 + 1), value(seed, x0 + 1, y0, z0 + 1));
     double x11 = lerp(tx, value(seed, x0, y0 + 1, z0 + 1), value(seed, x0 + 1, y0 + 1, z0 + 1));
     return lerp(tz, lerp(ty, x00, x10), lerp(ty, x01, x11));
-  }
-
-  /** Exact scalar transform used by vanilla TerrainProvider.peaksAndValleys. */
-  private static double vanillaPeaksAndValleys(
-      double weirdness
-  ) {
-    return -(Math.abs(Math.abs(weirdness) - 2.0 / 3.0) - 1.0 / 3.0) * 3.0;
-  }
-
-  private static double smoothStep(
-      double value
-  ) {
-    double clamped = Mth.clamp(value, 0.0, 1.0);
-    return clamped * clamped * (3.0 - 2.0 * clamped);
   }
 
   private static long mix(
@@ -421,6 +402,57 @@ public final class HarvestContinentTerrain {
   ) {
     long h = mix(mix(seed, x, z), y, x ^ z);
     return ((h >>> 11) * 0x1.0p-53) * 2.0 - 1.0;
+  }
+
+  private static double fbmValue3D(
+      long seed,
+      double x,
+      double y,
+      double z,
+      double scale,
+      int octaves
+  ) {
+    double amplitude = 1.0;
+    double frequency = scale;
+    double sum = 0.0;
+    double normalization = 0.0;
+    for (int octave = 0; octave < octaves; octave++) {
+      sum += amplitude * valueNoise3D(seed + octave * 2089L, x * frequency, y * frequency, z * frequency);
+      normalization += amplitude;
+      amplitude *= 0.5;
+      frequency *= 2.0;
+    }
+    return sum / normalization;
+  }
+
+  static boolean canCarveCave(
+      int y,
+      int surfaceY
+  ) {
+    return y > CAVE_MIN_Y && y < CAVE_MAX_Y && y < surfaceY - CAVE_SURFACE_COVER;
+  }
+
+  /** Sampled only at sparse grid nodes, before interpolation and height masking. */
+  static double caveDensity(
+      long seed,
+      int worldX,
+      int y,
+      int worldZ
+  ) {
+    // Broader shapes compensate for interpolation and the removal of fine octaves.
+    double winding = fbmValue3D(seed ^ 0x243F6A8885A308D3L, worldX, y, worldZ, 0.025, 2);
+    double chambers = fbmValue3D(seed ^ 0x13198A2E03707344L, worldX, y, worldZ, 0.012, 1);
+    return winding + chambers * 0.55;
+  }
+
+  static double caveThreshold(
+      int y,
+      int surfaceY
+  ) {
+    double depthBias = Mth.clamp((surfaceY - y - 12) / 92.0, 0.0, 0.16);
+    // Close chambers smoothly over the final 16 blocks instead of slicing a flat roof.
+    double ceilingClosure = smoothStep((y - (CAVE_MAX_Y - 16)) / 16.0) * 2.0;
+    return 0.42 - depthBias + ceilingClosure;
   }
 
 }

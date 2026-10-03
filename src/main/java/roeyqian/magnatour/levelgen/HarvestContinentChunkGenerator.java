@@ -24,6 +24,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.WorldGenRegion;
+import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.LevelHeightAccessor;
 import net.minecraft.world.level.NoiseColumn;
 import net.minecraft.world.level.StructureManager;
@@ -45,6 +46,8 @@ import net.minecraft.world.level.levelgen.structure.StructureSet;
 import org.jspecify.annotations.NonNull;
 
 // Magnatour
+import roeyqian.magnatour.levelgen.biome.HarvestContinentBiomeSource;
+import roeyqian.magnatour.levelgen.tree.ReservedGoldenTree;
 import roeyqian.magnatour.registry.content.SupremeBlocks;
 
 public final class HarvestContinentChunkGenerator extends ChunkGenerator {
@@ -67,11 +70,17 @@ public final class HarvestContinentChunkGenerator extends ChunkGenerator {
 
   private final Identifier settings;
 
+  private final HarvestContinentBiomeSource strangeSource;
+
   public HarvestContinentChunkGenerator(
       BiomeSource biomeSource,
       Identifier settings
   ) {
     super(biomeSource);
+    if (!(biomeSource instanceof HarvestContinentBiomeSource source)) {
+      throw new IllegalArgumentException("Harvest terrain requires a harvest biome source");
+    }
+    this.strangeSource = source;
     this.settings = settings;
   }
 
@@ -82,10 +91,39 @@ public final class HarvestContinentChunkGenerator extends ChunkGenerator {
       @NonNull BlockPos pos,
       @NonNull SamplerContext samplerContext
   ) {
-    info.add("Harvest terrain: custom heightfield + custom caves/aquifers");
+    double strange = this.strangeSource.sampleStrange(pos.getX(), pos.getZ());
+    info.add("Harvest strange: " + strange);
+    info.add("Harvest terrain: blended profiles + custom caves/aquifers");
   }
 
-  /** Caves are filled in fillFromNoise, so vanilla carvers are intentionally not run. */
+  @Override
+  public void applyBiomeDecoration(
+      @NonNull WorldGenLevel level,
+      @NonNull ChunkAccess chunk,
+      @NonNull StructureManager structureManager
+  ) {
+    super.applyBiomeDecoration(level, chunk, structureManager);
+    // Neighbor terrain already exists here, so crowns can cross chunk boundaries.
+    // Read the grass marker instead of repeating the per-column reservation test.
+    int minX = chunk.getPos().getMinBlockX();
+    int minZ = chunk.getPos().getMinBlockZ();
+    BlockPos.MutableBlockPos ground = new BlockPos.MutableBlockPos();
+    for (int x = minX; x < minX + 16; x++) {
+      for (int z = minZ; z < minZ + 16; z++) {
+        double strange = this.strangeSource.sampleStrange(x, z);
+        if (!HarvestContinentTerrain.biomeForStrange(strange).equals(HarvestContinentTerrain.WHEAT_PLAIN)) {
+          continue;
+        }
+        int y = HarvestContinentTerrain.surfaceHeight(strange, this.terrainSeed, x, z);
+        ground.set(x, y, z);
+        if (level.getBlockState(ground).is(SupremeBlocks.EVER_WATER_GRASS_BLOCK)) {
+          ReservedGoldenTree.place(level, this.terrainSeed, ground);
+        }
+      }
+    }
+  }
+
+  /** Caves are filled in buildTerrain, so vanilla carvers are intentionally not run. */
   public void applyCarvers(
       @NonNull WorldGenRegion region,
       long seed,
@@ -113,29 +151,39 @@ public final class HarvestContinentChunkGenerator extends ChunkGenerator {
       @NonNull WorldGenRegion region,
       Set<Holder<Biome>> availableBiomes
   ) {
-    SurfaceGrid surface = sampleSurfaceGrid(chunk, randomState);
     BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
     Heightmap oceanFloor = chunk.getOrCreateHeightmapUnprimed(Heightmap.Types.OCEAN_FLOOR_WG);
     Heightmap worldSurface = chunk.getOrCreateHeightmapUnprimed(Heightmap.Types.WORLD_SURFACE_WG);
     long seed = this.terrainSeed;
+    int minX = chunk.getPos().getMinBlockX();
+    int minZ = chunk.getPos().getMinBlockZ();
+    ResourceKeyBiome[][] profiles = new ResourceKeyBiome[16][16];
+    int maxSurfaceY = MIN_Y;
+    for (int localX = 0; localX < 16; localX++) {
+      for (int localZ = 0; localZ < 16; localZ++) {
+        ResourceKeyBiome profile = sampleSingleColumn(minX + localX, minZ + localZ);
+        profiles[localX][localZ] = profile;
+        maxSurfaceY = Math.max(maxSurfaceY, profile.surfaceY());
+      }
+    }
+    HarvestContinentCaveSampler caves =
+        new HarvestContinentCaveSampler(seed, minX, minZ, 16, 16, maxSurfaceY);
 
     for (int localX = 0; localX < 16; localX++) {
       int worldX = chunk.getPos().getMinBlockX() + localX;
       for (int localZ = 0; localZ < 16; localZ++) {
         int worldZ = chunk.getPos().getMinBlockZ() + localZ;
-        ResourceKeyBiome profile = surface.profile(localX, localZ);
-        int surfaceY = profile.surfaceY();
-        int lakeBed = profile.bigLake() ? HarvestContinentTerrain.lakeBedHeight(seed, worldX, worldZ) : MIN_Y;
+        ResourceKeyBiome profile = profiles[localX][localZ];
 
         for (int y = MIN_Y; y <= MAX_Y; y++) {
-          BlockState state = blockAt(seed, profile, worldX, y, worldZ, lakeBed);
+          BlockState state = blockAt(caves, profile, worldX, y, worldZ);
           pos.set(localX, y, localZ);
           chunk.setBlockState(pos, state);
           oceanFloor.update(localX, y, localZ, state);
           worldSurface.update(localX, y, localZ, state);
         }
 
-        placeSurface(profile, worldX, worldZ, pos, chunk, oceanFloor, worldSurface);
+        placeSurface(profile, pos, chunk, oceanFloor, worldSurface);
       }
     }
     return CompletableFuture.completedFuture(chunk);
@@ -148,6 +196,7 @@ public final class HarvestContinentChunkGenerator extends ChunkGenerator {
       long seed
   ) {
     this.terrainSeed = seed;
+    this.strangeSource.setWorldSeed(seed);
     return super.createState(structureSets, randomState, seed);
   }
 
@@ -158,14 +207,15 @@ public final class HarvestContinentChunkGenerator extends ChunkGenerator {
       @NonNull LevelHeightAccessor level,
       @NonNull RandomState randomState
   ) {
-    ResourceKeyBiome profile = sampleSingleColumn(x, z, randomState);
+    ResourceKeyBiome profile = sampleSingleColumn(x, z);
+    HarvestContinentCaveSampler caves =
+        new HarvestContinentCaveSampler(this.terrainSeed, x, z, 1, 1, profile.surfaceY());
     BlockState[] states = new BlockState[level.getHeight()];
-    int lakeBed = profile.bigLake() ? HarvestContinentTerrain.lakeBedHeight(this.terrainSeed, x, z) : MIN_Y;
     for (int i = 0; i < states.length; i++) {
       int y = level.getMinY() + i;
-      states[i] = blockAt(this.terrainSeed, profile, x, y, z, lakeBed);
+      states[i] = blockAt(caves, profile, x, y, z);
     }
-    applySurfaceToColumn(profile, x, z, level.getMinY(), states);
+    applySurfaceToColumn(profile, level.getMinY(), states);
     return new NoiseColumn(level.getMinY(), states);
   }
 
@@ -177,11 +227,11 @@ public final class HarvestContinentChunkGenerator extends ChunkGenerator {
       @NonNull LevelHeightAccessor level,
       @NonNull RandomState randomState
   ) {
-    ResourceKeyBiome profile = sampleSingleColumn(x, z, randomState);
-    if (profile.bigLake() && heightmap == Heightmap.Types.OCEAN_FLOOR_WG) {
-      return HarvestContinentTerrain.lakeBedHeight(this.terrainSeed, x, z) + 1;
+    NoiseColumn column = getBaseColumn(x, z, level, randomState);
+    for (int y = Math.min(MAX_Y, level.getMaxY()); y >= level.getMinY(); y--) {
+      if (heightmap.isOpaque().test(column.getBlock(y))) return y + 1;
     }
-    return Math.min(level.getMaxY(), profile.surfaceY()) + 1;
+    return level.getMinY();
   }
 
   @Override public int getGenDepth() { return GEN_DEPTH; }
@@ -202,27 +252,6 @@ public final class HarvestContinentChunkGenerator extends ChunkGenerator {
 
   @Override @NonNull protected MapCodec<? extends ChunkGenerator> codec() { return CODEC; }
 
-  private static BlockState blockAt(
-      long seed,
-      ResourceKeyBiome profile,
-      int x,
-      int y,
-      int z,
-      int lakeBed
-  ) {
-    if (y < MIN_Y || y > MAX_Y) return Blocks.AIR.defaultBlockState();
-    if (profile.bigLake() && y > lakeBed && y <= HarvestContinentTerrain.SEA_LEVEL) {
-      return Blocks.WATER.defaultBlockState();
-    }
-    if (y > profile.surfaceY()) return Blocks.AIR.defaultBlockState();
-    if (HarvestContinentTerrain.isCave(seed, x, y, z, profile.surfaceY())) {
-      if (y <= -54) return Blocks.LAVA.defaultBlockState();
-      return HarvestContinentTerrain.isAquiferWater(seed, x, y, z)
-          ? Blocks.WATER.defaultBlockState() : Blocks.AIR.defaultBlockState();
-    }
-    return profile.pumpkinGorge() ? Blocks.TERRACOTTA.defaultBlockState() : Blocks.STONE.defaultBlockState();
-  }
-
   private static void set(
       ChunkAccess chunk,
       BlockPos.MutableBlockPos pos,
@@ -240,10 +269,28 @@ public final class HarvestContinentChunkGenerator extends ChunkGenerator {
     worldSurface.update(localX, y, localZ, state);
   }
 
-  private static void placeSurface(
+  private static BlockState blockAt(
+      HarvestContinentCaveSampler caves,
       ResourceKeyBiome profile,
       int x,
-      int z,
+      int y,
+      int z
+  ) {
+    if (y < MIN_Y || y > MAX_Y) return Blocks.AIR.defaultBlockState();
+    if (y > profile.surfaceY()) {
+      return profile.bigLake() && y <= HarvestContinentTerrain.SEA_LEVEL
+          ? Blocks.WATER.defaultBlockState() : Blocks.AIR.defaultBlockState();
+    }
+    if (caves.isCave(x, y, z, profile.surfaceY())) {
+      if (y <= -54) return Blocks.LAVA.defaultBlockState();
+      return y <= profile.waterLevel()
+          ? Blocks.WATER.defaultBlockState() : Blocks.AIR.defaultBlockState();
+    }
+    return profile.pumpkinGorge() ? Blocks.TERRACOTTA.defaultBlockState() : Blocks.STONE.defaultBlockState();
+  }
+
+  private static void placeSurface(
+      ResourceKeyBiome profile,
       BlockPos.MutableBlockPos pos,
       ChunkAccess chunk,
       Heightmap oceanFloor,
@@ -258,7 +305,7 @@ public final class HarvestContinentChunkGenerator extends ChunkGenerator {
       filler = Blocks.DYED_TERRACOTTA.orange().defaultBlockState();
     } else {
       filler = SupremeBlocks.EVER_WATER_SOIL.defaultBlockState();
-      top = profile.wheatPlain() && !HarvestContinentTerrain.isInTreeClearing(x, z)
+      top = profile.crop()
           ? SupremeBlocks.EVER_WATER_FARMLAND.defaultBlockState()
           : SupremeBlocks.EVER_WATER_GRASS_BLOCK.defaultBlockState();
     }
@@ -266,7 +313,7 @@ public final class HarvestContinentChunkGenerator extends ChunkGenerator {
     set(chunk, pos, oceanFloor, worldSurface, y - 1, filler);
     set(chunk, pos, oceanFloor, worldSurface, y - 2, filler);
     set(chunk, pos, oceanFloor, worldSurface, y - 3, filler);
-    if (profile.wheatPlain() && !HarvestContinentTerrain.isInTreeClearing(x, z)) {
+    if (profile.crop()) {
       set(chunk, pos, oceanFloor, worldSurface, y + 1,
           Blocks.WHEAT.defaultBlockState().setValue(BlockStateProperties.AGE_7, 7));
     }
@@ -274,8 +321,6 @@ public final class HarvestContinentChunkGenerator extends ChunkGenerator {
 
   private static void applySurfaceToColumn(
       ResourceKeyBiome profile,
-      int x,
-      int z,
       int minY,
       BlockState[] states
   ) {
@@ -284,10 +329,12 @@ public final class HarvestContinentChunkGenerator extends ChunkGenerator {
     if (base < 0 || base >= states.length) return;
     if (profile.pumpkinGorge()) {
       states[base] = Blocks.RED_SAND.defaultBlockState();
-      if (base > 0) states[base - 1] = Blocks.DYED_TERRACOTTA.orange().defaultBlockState();
+      for (int depth = 1; depth <= 3 && base - depth >= 0; depth++) {
+        states[base - depth] = Blocks.DYED_TERRACOTTA.orange().defaultBlockState();
+      }
       return;
     }
-    boolean crop = profile.wheatPlain() && !HarvestContinentTerrain.isInTreeClearing(x, z);
+    boolean crop = profile.crop();
     states[base] = crop ? SupremeBlocks.EVER_WATER_FARMLAND.defaultBlockState()
         : SupremeBlocks.EVER_WATER_GRASS_BLOCK.defaultBlockState();
     for (int depth = 1; depth <= 3 && base - depth >= 0; depth++) {
@@ -297,139 +344,36 @@ public final class HarvestContinentChunkGenerator extends ChunkGenerator {
         .setValue(BlockStateProperties.AGE_7, 7);
   }
 
-  /** Eight-connected distance makes the requested 128 blocks radial, not square-only. */
-  private static int[][] distancesToBigLake(
-      ResourceKey<Biome>[][] biomes
-  ) {
-    int sizeX = biomes.length;
-    int sizeZ = biomes[0].length;
-    int[][] distances = new int[sizeX][sizeZ];
-    int[] queue = new int[sizeX * sizeZ];
-    int head = 0;
-    int tail = 0;
-
-    for (int x = 0; x < sizeX; x++) {
-      for (int z = 0; z < sizeZ; z++) {
-        if (biomes[x][z].equals(HarvestContinentTerrain.BIG_LAKE)) {
-          distances[x][z] = 0;
-          queue[tail++] = x * sizeZ + z;
-        } else {
-          distances[x][z] = -1;
-        }
-      }
-    }
-    while (head < tail) {
-      int index = queue[head++];
-      int x = index / sizeZ;
-      int z = index % sizeZ;
-      int nextDistance = distances[x][z] + 1;
-      if (nextDistance > HarvestContinentTerrain.SHORE_BLEND_DISTANCE) continue;
-      for (int dx = -1; dx <= 1; dx++) {
-        for (int dz = -1; dz <= 1; dz++) {
-          if (dx == 0 && dz == 0) continue;
-          int nextX = x + dx;
-          int nextZ = z + dz;
-          if (nextX < 0 || nextX >= sizeX || nextZ < 0 || nextZ >= sizeZ
-              || distances[nextX][nextZ] != -1) continue;
-          distances[nextX][nextZ] = nextDistance;
-          queue[tail++] = nextX * sizeZ + nextZ;
-        }
-      }
-    }
-    return distances;
-  }
-
-  private SurfaceGrid sampleSurfaceGrid(
-      ChunkAccess chunk,
-      RandomState randomState
-  ) {
-    int halo = HarvestContinentTerrain.SHORE_BLEND_DISTANCE;
-    int size = 16 + halo * 2;
-    int originX = chunk.getPos().getMinBlockX() - halo;
-    int originZ = chunk.getPos().getMinBlockZ() - halo;
-    @SuppressWarnings("unchecked")
-    ResourceKey<Biome>[][] biomes = new ResourceKey[size][size];
-    int[][] heights = new int[size][size];
-    long seed = this.terrainSeed;
-    var resolver = this.biomeSource.createResolver(randomState.createClimateSampler(SamplerContext.EMPTY_UNCACHED));
-
-    for (int gx = 0; gx < size; gx++) {
-      int worldX = originX + gx;
-      for (int gz = 0; gz < size; gz++) {
-        int worldZ = originZ + gz;
-        ResourceKey<Biome> biome = HarvestContinentTerrain.resolveBiome(resolver.getNoiseBiome(
-            worldX >> 2, HarvestContinentTerrain.SEA_LEVEL >> 2, worldZ >> 2));
-        biomes[gx][gz] = biome;
-        heights[gx][gz] = HarvestContinentTerrain.rawSurfaceHeight(biome, seed, worldX, worldZ);
-      }
-    }
-    int[][] lakeDistances = distancesToBigLake(biomes);
-    for (int gx = 0; gx < size; gx++) {
-      for (int gz = 0; gz < size; gz++) {
-        heights[gx][gz] = HarvestContinentTerrain.blendLakeShoreHeight(
-            biomes[gx][gz], heights[gx][gz], lakeDistances[gx][gz]
-        );
-      }
-    }
-    HarvestContinentTerrain.limitTerrainSlope(heights);
-
-    ResourceKeyBiome[][] profiles = new ResourceKeyBiome[16][16];
-    for (int localX = 0; localX < 16; localX++) {
-      for (int localZ = 0; localZ < 16; localZ++) {
-        int gx = localX + halo;
-        int gz = localZ + halo;
-        profiles[localX][localZ] = new ResourceKeyBiome(biomes[gx][gz], heights[gx][gz]);
-      }
-    }
-    return new SurfaceGrid(profiles);
-  }
-
+  /** The same pointwise function is used for chunks, columns and structures. */
   private ResourceKeyBiome sampleSingleColumn(
       int x,
-      int z,
-      RandomState randomState
+      int z
   ) {
-    long seed = this.terrainSeed;
-    int best = Integer.MAX_VALUE;
-    ResourceKey<Biome> center = null;
-    int radius = HarvestContinentTerrain.SHORE_BLEND_DISTANCE;
-    var resolver = this.biomeSource.createResolver(randomState.createClimateSampler(SamplerContext.EMPTY_UNCACHED));
-    for (int dx = -radius; dx <= radius; dx++) {
-      for (int dz = -radius; dz <= radius; dz++) {
-        int worldX = x + dx;
-        int worldZ = z + dz;
-        ResourceKey<Biome> biome = HarvestContinentTerrain.resolveBiome(resolver.getNoiseBiome(
-            worldX >> 2, HarvestContinentTerrain.SEA_LEVEL >> 2, worldZ >> 2));
-        if (dx == 0 && dz == 0) center = biome;
-        int candidate = HarvestContinentTerrain.rawSurfaceHeight(biome, seed, worldX, worldZ)
-            + HarvestContinentTerrain.MAX_TERRAIN_SLOPE * (Math.abs(dx) + Math.abs(dz));
-        best = Math.min(best, candidate);
-      }
-    }
-    return new ResourceKeyBiome(center == null ? HarvestContinentTerrain.WHEAT_PLAIN : center, best);
+    HarvestContinentBiomeSource.SurfaceSample surface = this.strangeSource.sampleSurface(x, z, this.terrainSeed);
+    ResourceKey<Biome> biome = surface.biome();
+    return new ResourceKeyBiome(
+        biome,
+        surface.height(),
+        HarvestContinentTerrain.aquiferWaterLevel(this.terrainSeed, x, z),
+        biome.equals(HarvestContinentTerrain.WHEAT_PLAIN)
+            && HarvestContinentTerrain.isTreeReservation(x, z)
+    );
   }
 
   private record ResourceKeyBiome(
       ResourceKey<Biome> biome,
-      int surfaceY
+      int surfaceY,
+      int waterLevel,
+      boolean treeReservation
   ) {
-
-    boolean bigLake() { return this.biome.equals(HarvestContinentTerrain.BIG_LAKE); }
-
-    boolean pumpkinGorge() { return this.biome.equals(HarvestContinentTerrain.PUMPKIN_GORGE); }
 
     boolean wheatPlain() { return this.biome.equals(HarvestContinentTerrain.WHEAT_PLAIN); }
 
-  }
+    boolean bigLake() { return this.biome.equals(HarvestContinentTerrain.BIG_LAKE); }
 
-  private record SurfaceGrid(
-      ResourceKeyBiome[][] profiles
-  ) {
+    boolean crop() { return wheatPlain() && !this.treeReservation; }
 
-    ResourceKeyBiome profile(
-        int x,
-        int z
-    ) { return this.profiles[x][z]; }
+    boolean pumpkinGorge() { return this.biome.equals(HarvestContinentTerrain.PUMPKIN_GORGE); }
 
   }
 
