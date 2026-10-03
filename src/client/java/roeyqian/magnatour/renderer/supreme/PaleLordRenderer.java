@@ -8,8 +8,8 @@
 package roeyqian.magnatour.renderer.supreme;
 
 // Fabric
-import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.api.EnvType;
 
 // Minecraft
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -23,8 +23,8 @@ import org.jspecify.annotations.NonNull;
 // Magnatour
 import roeyqian.magnatour.Magnatour;
 import roeyqian.magnatour.model.supreme.PaleLordModel;
-import roeyqian.magnatour.renderstate.supreme.PaleLordRenderState;
 import roeyqian.magnatour.registry.output.RegEntityLayers;
+import roeyqian.magnatour.renderstate.supreme.PaleLordRenderState;
 
 @Environment(EnvType.CLIENT)
 public final class PaleLordRenderer extends MobRenderer<Monster, PaleLordRenderState, PaleLordModel> {

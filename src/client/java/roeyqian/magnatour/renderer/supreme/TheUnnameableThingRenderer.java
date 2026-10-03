@@ -11,8 +11,8 @@ package roeyqian.magnatour.renderer.supreme;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 // Fabric
-import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.api.EnvType;
 
 // Minecraft
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -26,8 +26,8 @@ import org.jspecify.annotations.NonNull;
 import roeyqian.magnatour.Magnatour;
 import roeyqian.magnatour.entity.supreme.TheUnnameableThing;
 import roeyqian.magnatour.model.supreme.TheUnnameableThingModel;
-import roeyqian.magnatour.renderstate.supreme.TheUnnameableThingRenderState;
 import roeyqian.magnatour.registry.output.RegEntityLayers;
+import roeyqian.magnatour.renderstate.supreme.TheUnnameableThingRenderState;
 
 @Environment(EnvType.CLIENT)
 public final class TheUnnameableThingRenderer extends MobRenderer<TheUnnameableThing, TheUnnameableThingRenderState, TheUnnameableThingModel> {

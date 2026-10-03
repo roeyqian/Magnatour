@@ -13,9 +13,9 @@ import java.util.List;
 import java.util.Optional;
 
 // Minecraft
-import net.minecraft.util.Prediction;
 import net.minecraft.core.Holder;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.Prediction;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;

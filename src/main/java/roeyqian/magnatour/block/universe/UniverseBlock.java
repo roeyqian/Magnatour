@@ -29,9 +29,9 @@ import net.minecraft.world.phys.BlockHitResult;
 import org.jspecify.annotations.NonNull;
 
 // Magnatour
-import roeyqian.magnatour.blockentity.universe.UniverseBlockEntity;
-import roeyqian.magnatour.block.VirtualBlockLightManager;
 import roeyqian.magnatour.block.CustomPortalHorizon;
+import roeyqian.magnatour.block.VirtualBlockLightManager;
+import roeyqian.magnatour.blockentity.universe.UniverseBlockEntity;
 import roeyqian.magnatour.registry.content.UniverseBlockEntities;
 import roeyqian.magnatour.registry.content.UniverseBlocks;
 import roeyqian.magnatour.registry.worldgen.CustomDimensions;

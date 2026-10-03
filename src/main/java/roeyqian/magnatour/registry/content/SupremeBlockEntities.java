@@ -8,8 +8,8 @@
 package roeyqian.magnatour.registry.content;
 
 // Fabric
-import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityType;
+import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 
 // Minecraft
 import net.minecraft.core.Registry;

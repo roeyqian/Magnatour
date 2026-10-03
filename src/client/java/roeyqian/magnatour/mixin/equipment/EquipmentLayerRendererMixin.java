@@ -11,8 +11,8 @@ package roeyqian.magnatour.mixin.equipment;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 // Fabric
-import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.api.EnvType;
 
 // Minecraft
 import net.minecraft.client.model.Model;
@@ -34,8 +34,8 @@ import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 // Magnatour
-import roeyqian.magnatour.mixinhelper.glint.RenderHelperForGlint;
 import roeyqian.magnatour.item.CustomArmorMaterial;
+import roeyqian.magnatour.mixinhelper.glint.RenderHelperForGlint;
 
 @Environment(EnvType.CLIENT) @Mixin(value = EquipmentLayerRenderer.class, priority = 3600000)
 public class EquipmentLayerRendererMixin {

@@ -15,8 +15,8 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Transformation;
 
 // Fabric
-import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.api.EnvType;
 
 // Minecraft
 import net.minecraft.client.model.geom.ModelLayers;
@@ -45,8 +45,8 @@ import org.jspecify.annotations.Nullable;
 import roeyqian.magnatour.Magnatour;
 import roeyqian.magnatour.block.supreme.SupremeChest;
 import roeyqian.magnatour.blockentity.supreme.SupremeChestEntity;
-import roeyqian.magnatour.renderstate.supreme.SupremeChestRenderState;
 import roeyqian.magnatour.registry.output.RegEntityLayers;
+import roeyqian.magnatour.renderstate.supreme.SupremeChestRenderState;
 
 @Environment(EnvType.CLIENT)
 public final class SupremeChestRenderer implements BlockEntityRenderer<SupremeChestEntity, SupremeChestRenderState> {

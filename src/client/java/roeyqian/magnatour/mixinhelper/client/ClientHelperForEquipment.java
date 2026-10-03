@@ -13,8 +13,8 @@ import java.util.Map;
 import java.util.WeakHashMap;
 
 // Fabric
-import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.api.EnvType;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 
 // Minecraft
@@ -22,8 +22,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.MouseHandler;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.item.component.SwingAnimation;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.SwingAnimation;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.block.BucketPickup;
 import net.minecraft.world.level.block.state.BlockState;
@@ -40,8 +40,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.lwjgl.sdl.SDLMouse;
 
 // Magnatour
-import roeyqian.magnatour.level.network.UniverseBucketPickupPayload;
 import roeyqian.magnatour.item.universe.UniverseBucket;
+import roeyqian.magnatour.level.network.UniverseBucketPickupPayload;
 import roeyqian.magnatour.screen.universe.UniverseConsoleScreen;
 
 @Environment(EnvType.CLIENT)

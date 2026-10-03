@@ -8,8 +8,8 @@
 package roeyqian.magnatour.mixin.client;
 
 // Minecraft
-import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.network.protocol.game.ClientboundLevelParticlesPacket;
 import net.minecraft.util.RandomSource;
 

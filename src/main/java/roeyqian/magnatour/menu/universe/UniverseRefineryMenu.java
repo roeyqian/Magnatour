@@ -27,8 +27,8 @@ import org.jspecify.annotations.NonNull;
 
 // Magnatour
 import roeyqian.magnatour.registry.content.UniverseBlocks;
-import roeyqian.magnatour.registry.logic.CustomRecipes;
 import roeyqian.magnatour.registry.content.UniverseMenus;
+import roeyqian.magnatour.registry.logic.CustomRecipes;
 
 public class UniverseRefineryMenu extends AbstractFurnaceMenu {
 

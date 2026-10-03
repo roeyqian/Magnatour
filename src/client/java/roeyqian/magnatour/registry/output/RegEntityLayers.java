@@ -8,8 +8,8 @@
 package roeyqian.magnatour.registry.output;
 
 // Fabric
-import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.api.EnvType;
 import net.fabricmc.fabric.api.client.rendering.v1.ModelLayerRegistry;
 
 // Minecraft
@@ -24,20 +24,20 @@ import roeyqian.magnatour.model.supreme.BellRingerModel;
 import roeyqian.magnatour.model.supreme.BellSoulModel;
 import roeyqian.magnatour.model.supreme.CustomGolemModel;
 import roeyqian.magnatour.model.supreme.PaleLordModel;
-import roeyqian.magnatour.model.supreme.SupremeChestModel;
 import roeyqian.magnatour.model.supreme.SculkBehemothModel;
+import roeyqian.magnatour.model.supreme.SupremeChestModel;
 import roeyqian.magnatour.model.supreme.TheUnnameableThingModel;
 import roeyqian.magnatour.model.universe.UniverseGuardianModel;
 import roeyqian.magnatour.registry.content.SupremeEntities;
+import roeyqian.magnatour.registry.content.UniverseLiveEntities;
 import roeyqian.magnatour.renderer.supreme.BellRingerRenderer;
 import roeyqian.magnatour.renderer.supreme.BellSoulRenderer;
 import roeyqian.magnatour.renderer.supreme.NetheriteGolemRenderer;
+import roeyqian.magnatour.renderer.supreme.ObsidianGolemRenderer;
 import roeyqian.magnatour.renderer.supreme.PaleLordRenderer;
 import roeyqian.magnatour.renderer.supreme.SculkBehemothRenderer;
 import roeyqian.magnatour.renderer.supreme.TheUnnameableThingRenderer;
 import roeyqian.magnatour.renderer.universe.UniverseGuardianRenderer;
-import roeyqian.magnatour.renderer.supreme.ObsidianGolemRenderer;
-import roeyqian.magnatour.registry.content.UniverseLiveEntities;
 
 @Environment(EnvType.CLIENT)
 public final class RegEntityLayers {

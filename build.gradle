@@ -86,82 +86,13 @@ def importGroupFor = { String importLine, List groups ->
 	matched ?: groups.find { group -> group.title == "Other" }
 }
 
-def rewriteJavaImports = { File sourceFile, List groups, boolean checkOnly ->
-	def original = sourceFile.getText("UTF-8")
-	def newline = original.contains("\r\n") ? "\r\n" : "\n"
-	List<String> lines = original.readLines()
-	List<Integer> importIndexes = []
-
-	lines.eachWithIndex { line, index ->
-		if (line.startsWith("import ")) {
-			importIndexes << index
-		}
+def javaImportSortKey = { String importLine ->
+	def imported = importLine.substring("import ".length()).replace(";", "").trim()
+	if (imported.startsWith("static ")) {
+		imported = imported.substring("static ".length()).trim()
 	}
-	if (importIndexes.isEmpty()) {
-		return false
-	}
-
-	int start = importIndexes.first()
-	while (start > 0 && (lines[start - 1].trim().isEmpty() || lines[start - 1].startsWith("// "))) {
-		start--
-	}
-	if (start > 0 && lines[start].trim().isEmpty() && lines[start - 1].startsWith("package ")) {
-		start++
-	}
-
-	int end = importIndexes.last() + 1
-	while (end < lines.size() && (lines[end].trim().isEmpty() || lines[end].startsWith("// "))) {
-		if (lines[end].startsWith("// ")) {
-			end++
-		} else if (end + 1 < lines.size() && (lines[end + 1].startsWith("import ") || lines[end + 1].startsWith("// "))) {
-			end++
-		} else {
-			break
-		}
-	}
-
-	def imports = []
-	def seen = [] as Set
-	lines.subList(start, end).each { line ->
-		def stripped = line.trim()
-		if (stripped.startsWith("import ") && seen.add(stripped)) {
-			imports << stripped
-		}
-	}
-
-	def grouped = groups.collectEntries { group -> [(group.title): []] }
-	imports.each { importLine ->
-		grouped[importGroupFor(importLine, groups).title] << importLine
-	}
-
-	def block = []
-	groups.each { group ->
-		def importsInGroup = grouped[group.title]
-		if (!importsInGroup.isEmpty()) {
-			if (!block.isEmpty()) {
-				block << ""
-			}
-			block << "// ${group.title}"
-			block.addAll(importsInGroup)
-		}
-	}
-
-	def rewrittenLines = []
-	rewrittenLines.addAll(lines.subList(0, start))
-	rewrittenLines.addAll(block)
-	rewrittenLines.addAll(lines.subList(end, lines.size()))
-
-	def rewritten = rewrittenLines.join(newline)
-	if (original.endsWith("\n") || original.endsWith("\r\n")) {
-		rewritten += newline
-	}
-	if (rewritten == original) {
-		return false
-	}
-	if (!checkOnly) {
-		sourceFile.write(rewritten, "UTF-8")
-	}
-	true
+	// Compare the import path from its first segment; ignore the static keyword.
+	[segments: imported.tokenize("."), name: imported, line: importLine]
 }
 
 def parseCompleteAnnotationLine = { String line ->
@@ -272,27 +203,207 @@ def spdxHeaderText = """\
  */
 """
 
-def spdxHeaderStartsWith = "/*\n * SPDX-License-Identifier: GPL-3.0-only"
+def initClassHeaderText = """\
+/*
+ * SPDX-License-Identifier: GPL-3.0-only
+ * Magnatour - Copyright (C) 2026 Roey Qian
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, version 3 of the License.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+"""
 
-def initClassFileNames = ["Magnatour.java", "MagnatourClient.java"] as Set
+def initClassPaths = [
+		"src/main/java/roeyqian/magnatour/Magnatour.java",
+		"src/client/java/roeyqian/magnatour/MagnatourClient.java"
+] as Set
 
-def ensureSpdxHeader = { File sourceFile ->
-	if (initClassFileNames.contains(sourceFile.name)) {
-		return false
+// Skip comments and literals when locating the actual package declaration.
+def javaPackagePattern = ~/\/\*[\s\S]*?\*\/|\/\/[^\r\n]*|"""[\s\S]*?"""|"(?:\\[\s\S]|[^"\\])*"|'(?:\\[\s\S]|[^'\\])*'|\b(package\s+\p{javaJavaIdentifierStart}\p{javaJavaIdentifierPart}*(?:\s*\.\s*\p{javaJavaIdentifierStart}\p{javaJavaIdentifierPart}*)*\s*;)/
+def scanJavaHeadToken = { String source, int cursor ->
+	while (cursor < source.length() && Character.isWhitespace(source.charAt(cursor))) {
+		cursor++
+	}
+	if (cursor >= source.length()) {
+		return null
+	}
+	int start = cursor
+	if (source.startsWith("//", cursor)) {
+		while (cursor < source.length() && source.charAt(cursor) != '\n' as char && source.charAt(cursor) != '\r' as char) {
+			cursor++
+		}
+		return [kind: "comment", text: source.substring(start, cursor), start: start, end: cursor]
+	}
+	if (source.startsWith("/*", cursor)) {
+		int close = source.indexOf("*/", cursor + 2)
+		if (close < 0) {
+			return null
+		}
+		cursor = close + 2
+		return [kind: "comment", text: source.substring(start, cursor), start: start, end: cursor]
+	}
+	if (!source.startsWith("import", cursor)
+			|| (cursor + 6 < source.length() && Character.isJavaIdentifierPart(source.charAt(cursor + 6)))) {
+		return null
 	}
 
+	// Keep the original import text, but use a comment-free name for grouping and sorting.
+	def name = new StringBuilder("import ")
+	cursor += 6
+	while (cursor < source.length()) {
+		if (source.startsWith("/*", cursor)) {
+			int close = source.indexOf("*/", cursor + 2)
+			if (close < 0) {
+				return null
+			}
+			cursor = close + 2
+			name.append(' ')
+		} else if (source.startsWith("//", cursor)) {
+			while (cursor < source.length() && source.charAt(cursor) != '\n' as char && source.charAt(cursor) != '\r' as char) {
+				cursor++
+			}
+			name.append(' ')
+		} else {
+			char c = source.charAt(cursor++)
+			name.append(c)
+			if (c == ';' as char) {
+				def importKey = name.toString().replaceAll(/\s+/, " ").replaceAll(/\s*\.\s*/, ".").replaceAll(/\s*;$/, ";")
+				return [kind: "import", text: source.substring(start, cursor), importKey: importKey, start: start, end: cursor]
+			}
+			if (!Character.isJavaIdentifierPart(c) && !Character.isWhitespace(c) && c != '.' as char && c != '*' as char) {
+				return null
+			}
+		}
+	}
+	null
+}
+
+def rewriteJavaHead = { File sourceFile, List groups, boolean checkOnly ->
 	def original = sourceFile.getText("UTF-8")
-	def normalized = original.replace("\r\n", "\n")
-	if (normalized.startsWith(spdxHeaderStartsWith)) {
+	def newline = original.contains("\r\n") ? "\r\n" : "\n"
+	def source = original
+	def packageMatcher = javaPackagePattern.matcher(source)
+	def packageToken = null
+	while (packageMatcher.find()) {
+		if (packageMatcher.group(1) != null) {
+			packageToken = [text: packageMatcher.group(1), end: packageMatcher.end(1)]
+			break
+		}
+	}
+	if (packageToken == null) {
 		return false
 	}
 
-	def newline = original.contains("\r\n") ? "\r\n" : "\n"
-	def header = spdxHeaderText.replace("\n", newline)
-	def rewritten = header + newline + original
+	// Discard everything before package and rebuild the selected license header.
+	def sourcePath = project.relativePath(sourceFile).replace('\\', '/')
+	def header = initClassPaths.contains(sourcePath) ? initClassHeaderText : spdxHeaderText
+	def blocks = [header.readLines().join(newline) + newline + packageToken.text]
 
-	sourceFile.write(rewritten, "UTF-8")
-	return true
+	def tokens = []
+	int cursor = packageToken.end as int
+	// Only collect imports and comments after package; the class body stays untouched.
+	while (true) {
+		def token = scanJavaHeadToken(source, cursor)
+		if (token == null) {
+			break
+		}
+		tokens << token
+		cursor = token.end as int
+	}
+
+	def groupComments = groups.collect { "// ${it.title}".toString() } as Set
+	def grouped = groups.collectEntries { group -> [(group.title): []] }
+	def importsByLine = [:]
+	def pendingComments = []
+	def previousImport = null
+	int previousEnd = packageToken.end as int
+	tokens.each { token ->
+		String text = token.text
+		if (token.kind == "import") {
+			def importLine = text.replaceFirst(/^import\s*/, "import ").trim()
+			def entry = [line: importLine, comments: new ArrayList(pendingComments), suffix: "", sortKey: javaImportSortKey(token.importKey)]
+			pendingComments.clear()
+			if (!importsByLine.containsKey(importLine)) {
+				importsByLine[importLine] = entry
+				grouped[importGroupFor(token.importKey, groups).title] << entry
+			} else {
+				importsByLine[importLine].comments.addAll(entry.comments)
+			}
+			previousImport = importsByLine[importLine]
+		} else {
+			def gap = source.substring(previousEnd, token.start as int)
+			// Both line and block comments beginning on the import's final line follow that import.
+			if (previousImport != null && !gap.contains("\n") && !gap.contains("\r")) {
+				previousImport.suffix += " ${text}"
+			} else {
+				if (!groupComments.contains(text)) {
+					pendingComments << text
+				}
+				previousImport = null
+			}
+		}
+		previousEnd = token.end as int
+	}
+
+	// Emit groups in configuration order, then sort imports within each group.
+	groups.each { group ->
+		def entries = grouped[group.title]
+		if (!entries.isEmpty()) {
+			entries.sort { left, right ->
+				def leftPath = left.sortKey.segments
+				def rightPath = right.sortKey.segments
+				for (int index = 0; index < Math.min(leftPath.size(), rightPath.size()); index++) {
+					// Direct imports precede subpaths at each shared directory.
+					boolean leftLeaf = index == leftPath.size() - 1
+					boolean rightLeaf = index == rightPath.size() - 1
+					if (leftLeaf != rightLeaf) {
+						return leftLeaf ? -1 : 1
+					}
+					int compared = leftPath[index].compareToIgnoreCase(rightPath[index])
+					if (compared != 0) {
+						return compared
+					}
+				}
+				// Shared path prefixes sort from shallow to deep, then deterministically by case/static.
+				(leftPath.size() <=> rightPath.size())
+						?: (left.sortKey.name <=> right.sortKey.name)
+						?: (left.sortKey.line <=> right.sortKey.line)
+						?: (left.line <=> right.line)
+			}
+			def lines = ["// ${group.title}"]
+			entries.each { entry ->
+				lines.addAll(entry.comments)
+				lines << "${entry.line}${entry.suffix}"
+			}
+			blocks << lines.join(newline)
+		}
+	}
+
+	def body = source.substring(cursor)
+	if (!pendingComments.isEmpty()) {
+		body = pendingComments.join(newline) + body
+	}
+	body = body.replaceFirst(/^\s+/, "")
+	if (!body.isEmpty()) {
+		blocks << body
+	}
+	def rewritten = blocks.join(newline + newline)
+	if (rewritten == original) {
+		return false
+	}
+	if (!checkOnly) {
+		sourceFile.write(rewritten, "UTF-8")
+	}
+	true
 }
 
 def rewriteJavaAnnotations = { File sourceFile, boolean checkOnly ->
@@ -1237,9 +1348,9 @@ def formatJavaDeclarations = { File sourceFile, boolean checkOnly ->
 	true
 }
 
-tasks.register("formatJavaImports") {
+tasks.register("formatJavaHead") {
 	group = "formatting"
-	description = "Normalizes Java import comment groups under src."
+	description = "Normalizes Java license headers, package spacing, and import comment groups under src."
 	inputs.files(javaSourceFiles)
 	inputs.file(importGroupConfigFile)
 	outputs.upToDateWhen { false }
@@ -1247,8 +1358,7 @@ tasks.register("formatJavaImports") {
 	doLast {
 		List groups = loadImportGroups() as List
 		javaSourceFiles.each { File sourceFile ->
-			rewriteJavaImports(sourceFile, groups, false)
-			ensureSpdxHeader(sourceFile)
+			rewriteJavaHead(sourceFile, groups, false)
 		}
 	}
 }
@@ -1281,23 +1391,23 @@ tasks.register("formatJavaDeclarations") {
 
 tasks.register("checkJavaImportGroups") {
 	group = "verification"
-	description = "Checks Java import comment groups under src."
+	description = "Checks Java license headers, package spacing, and import comment groups under src."
 	inputs.files(javaSourceFiles)
 	inputs.file(importGroupConfigFile)
 
 	doLast {
 		List groups = loadImportGroups() as List
 		def changed = javaSourceFiles.findAll { File sourceFile ->
-			rewriteJavaImports(sourceFile, groups, true)
+			rewriteJavaHead(sourceFile, groups, true)
 		}
 		if (!changed.isEmpty()) {
-			throw new GradleException("Java import groups are not normalized. Run ./gradlew formatJavaImports. Files: ${changed.join(", ")}")
+			throw new GradleException("Java file heads are not normalized. Run ./gradlew formatJavaHead. Files: ${changed.join(", ")}")
 		}
 	}
 }
 
 tasks.withType(JavaCompile).configureEach {
-	it.dependsOn(tasks.named("formatJavaImports"))
+	it.dependsOn(tasks.named("formatJavaHead"))
 	it.dependsOn(tasks.named("formatJavaAnnotations"))
 	it.dependsOn(tasks.named("formatJavaDeclarations"))
 }

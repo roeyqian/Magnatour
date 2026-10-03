@@ -8,8 +8,8 @@
 package roeyqian.magnatour.registry.output;
 
 // Fabric
-import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.api.EnvType;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleProviderRegistry;
 
 // Magnatour

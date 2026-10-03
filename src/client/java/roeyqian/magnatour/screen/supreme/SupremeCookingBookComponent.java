@@ -32,8 +32,8 @@ import org.jspecify.annotations.NonNull;
 // Magnatour
 import roeyqian.magnatour.menu.supreme.SupremeFurnaceMenu;
 import roeyqian.magnatour.mixin.screen.GhostSlotsInvoker;
-import roeyqian.magnatour.registry.logic.CustomRecipes;
 import roeyqian.magnatour.registry.content.SupremeItems;
+import roeyqian.magnatour.registry.logic.CustomRecipes;
 
 public final class SupremeCookingBookComponent extends RecipeBookComponent<SupremeFurnaceMenu> {
 

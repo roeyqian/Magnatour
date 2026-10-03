@@ -28,8 +28,8 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 // Magnatour
-import roeyqian.magnatour.screen.universe.UniverseCraftingBookComponent;
 import roeyqian.magnatour.mixinhelper.screen.ScreenHelperForRecipe;
+import roeyqian.magnatour.screen.universe.UniverseCraftingBookComponent;
 
 @Mixin(value = RecipeBookComponent.class, priority = 3600000)
 public class RecipeBookComponentMixin {

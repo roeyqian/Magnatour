@@ -8,8 +8,8 @@
 package roeyqian.magnatour.renderer.supreme;
 
 // Fabric
-import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.api.EnvType;
 
 // Minecraft
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -25,8 +25,8 @@ import org.jspecify.annotations.NonNull;
 import roeyqian.magnatour.Magnatour;
 import roeyqian.magnatour.entity.supreme.SculkBehemoth;
 import roeyqian.magnatour.model.supreme.SculkBehemothModel;
-import roeyqian.magnatour.renderstate.supreme.SculkBehemothRenderState;
 import roeyqian.magnatour.registry.output.RegEntityLayers;
+import roeyqian.magnatour.renderstate.supreme.SculkBehemothRenderState;
 
 @Environment(EnvType.CLIENT)
 public final class SculkBehemothRenderer extends MobRenderer<SculkBehemoth, SculkBehemothRenderState, SculkBehemothModel> {

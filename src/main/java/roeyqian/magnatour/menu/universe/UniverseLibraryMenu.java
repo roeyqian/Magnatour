@@ -8,8 +8,8 @@
 package roeyqian.magnatour.menu.universe;
 
 // Minecraft
-import net.minecraft.util.Prediction;
 import net.minecraft.core.NonNullList;
+import net.minecraft.util.Prediction;
 import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.SimpleContainer;

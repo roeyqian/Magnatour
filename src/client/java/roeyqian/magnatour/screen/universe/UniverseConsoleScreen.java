@@ -8,8 +8,8 @@
 package roeyqian.magnatour.screen.universe;
 
 // Java Standard
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 // Mojang
 import com.mojang.blaze3d.platform.InputConstants;
@@ -34,8 +34,8 @@ import org.jspecify.annotations.NonNull;
 
 // Magnatour
 import roeyqian.magnatour.Magnatour;
-import roeyqian.magnatour.level.network.UniverseConsoleBoundBlockPayload;
 import roeyqian.magnatour.item.universe.UniverseConsole;
+import roeyqian.magnatour.level.network.UniverseConsoleBoundBlockPayload;
 import roeyqian.magnatour.menu.universe.UniverseConsoleMenu;
 
 public class UniverseConsoleScreen extends AbstractContainerScreen<UniverseConsoleMenu> {

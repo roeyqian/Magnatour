@@ -29,11 +29,11 @@ import net.minecraft.world.item.crafting.display.RecipeDisplay;
 import org.jspecify.annotations.NonNull;
 
 // Magnatour
+import roeyqian.magnatour.menu.universe.UniverseWorkstationMenu;
 import roeyqian.magnatour.mixin.screen.GhostSlotsInvoker;
 import roeyqian.magnatour.registry.content.SupremeItems;
 import roeyqian.magnatour.registry.content.UniverseItems;
 import roeyqian.magnatour.registry.logic.CustomRecipes;
-import roeyqian.magnatour.menu.universe.UniverseWorkstationMenu;
 import roeyqian.magnatour.screen.CustomRecipeDisplay;
 
 public final class UniverseCraftingBookComponent extends RecipeBookComponent<UniverseWorkstationMenu> {

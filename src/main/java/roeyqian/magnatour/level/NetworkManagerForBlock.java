@@ -39,20 +39,20 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 
 // Magnatour
-import roeyqian.magnatour.level.network.DurableItemModePayload;
-import roeyqian.magnatour.level.network.UniverseBootsDashPayload;
-import roeyqian.magnatour.level.network.UniverseBucketPickupPayload;
-import roeyqian.magnatour.level.network.UniverseConsoleBoundBlockPayload;
 import roeyqian.magnatour.item.RemoteAccessManager;
 import roeyqian.magnatour.item.supreme.MirrorMobile;
 import roeyqian.magnatour.item.universe.UniverseBucket;
 import roeyqian.magnatour.item.universe.UniverseConsole;
 import roeyqian.magnatour.item.universe.UniverseOmniBlade;
 import roeyqian.magnatour.item.universe.UniverseUltimaSword;
+import roeyqian.magnatour.level.network.DurableItemModePayload;
+import roeyqian.magnatour.level.network.UniverseBootsDashPayload;
+import roeyqian.magnatour.level.network.UniverseBucketPickupPayload;
+import roeyqian.magnatour.level.network.UniverseConsoleBoundBlockPayload;
 import roeyqian.magnatour.menu.universe.UniverseConsoleMenu;
 import roeyqian.magnatour.mixinhelper.server.ServerHelperForEquipment;
-import roeyqian.magnatour.registry.logic.CustomComponents;
 import roeyqian.magnatour.registry.content.UniverseItems;
+import roeyqian.magnatour.registry.logic.CustomComponents;
 
 public final class NetworkManagerForBlock {
 

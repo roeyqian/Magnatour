@@ -12,8 +12,8 @@ import java.util.function.IntConsumer;
 import java.util.function.IntSupplier;
 
 // Fabric
-import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.api.EnvType;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
@@ -36,12 +36,12 @@ import net.minecraft.world.phys.AABB;
 
 // Magnatour
 import roeyqian.magnatour.Magnatour;
+import roeyqian.magnatour.block.CustomPortalVertex;
 import roeyqian.magnatour.block.supreme.HarvestContinentPortal;
 import roeyqian.magnatour.block.supreme.OreContinentPortal;
 import roeyqian.magnatour.block.universe.UniverseMetaPortal;
 import roeyqian.magnatour.registry.content.SupremeBlocks;
 import roeyqian.magnatour.registry.content.UniverseBlocks;
-import roeyqian.magnatour.block.CustomPortalVertex;
 
 @Environment(EnvType.CLIENT)
 public final class RegBlockLayers {

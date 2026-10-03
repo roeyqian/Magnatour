@@ -11,7 +11,6 @@ package roeyqian.magnatour.mixinhelper.server;
 import java.util.OptionalInt;
 
 // Minecraft
-import net.minecraft.world.item.component.SwingAnimation;
 import net.minecraft.advancements.triggers.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -23,6 +22,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.SwingAnimation;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -39,8 +39,8 @@ import net.minecraft.world.phys.Vec3;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 // Magnatour
-import roeyqian.magnatour.registry.logic.CustomComponents;
 import roeyqian.magnatour.registry.content.UniverseItems;
+import roeyqian.magnatour.registry.logic.CustomComponents;
 
 public final class ServerHelperForEquipment {
 

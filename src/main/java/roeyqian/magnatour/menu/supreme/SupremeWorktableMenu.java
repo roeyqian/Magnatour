@@ -30,8 +30,8 @@ import org.jspecify.annotations.NonNull;
 // Magnatour
 import roeyqian.magnatour.block.CustomCraftingBlock;
 import roeyqian.magnatour.registry.content.SupremeBlocks;
-import roeyqian.magnatour.registry.logic.CustomRecipes;
 import roeyqian.magnatour.registry.content.SupremeMenus;
+import roeyqian.magnatour.registry.logic.CustomRecipes;
 
 public class SupremeWorktableMenu extends AbstractCraftingMenu implements CustomCraftingBlock {
 

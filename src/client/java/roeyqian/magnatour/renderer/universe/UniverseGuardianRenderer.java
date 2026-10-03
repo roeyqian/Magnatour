@@ -8,8 +8,8 @@
 package roeyqian.magnatour.renderer.universe;
 
 // Fabric
-import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.api.EnvType;
 
 // Minecraft
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -23,8 +23,8 @@ import org.jspecify.annotations.NonNull;
 import roeyqian.magnatour.Magnatour;
 import roeyqian.magnatour.entity.universe.UniverseGuardian;
 import roeyqian.magnatour.model.universe.UniverseGuardianModel;
-import roeyqian.magnatour.renderstate.universe.UniverseGuardianRenderState;
 import roeyqian.magnatour.registry.output.RegEntityLayers;
+import roeyqian.magnatour.renderstate.universe.UniverseGuardianRenderState;
 
 @Environment(EnvType.CLIENT)
 public final class UniverseGuardianRenderer extends MobRenderer<UniverseGuardian, UniverseGuardianRenderState, UniverseGuardianModel> {

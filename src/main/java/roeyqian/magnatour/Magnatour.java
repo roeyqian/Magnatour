@@ -37,25 +37,25 @@ import org.slf4j.LoggerFactory;
 
 // Magnatour
 import roeyqian.magnatour.levelgen.UniverseMetaDimensionGenerator;
-import roeyqian.magnatour.registry.content.SupremeBlocks;
-import roeyqian.magnatour.registry.content.UniverseBlocks;
 import roeyqian.magnatour.registry.content.SupremeBlockEntities;
-import roeyqian.magnatour.registry.content.UniverseBlockEntities;
-import roeyqian.magnatour.registry.content.SupremeItems;
-import roeyqian.magnatour.registry.content.UniverseItems;
-import roeyqian.magnatour.registry.content.SupremeMenus;
-import roeyqian.magnatour.registry.content.UniverseMenus;
+import roeyqian.magnatour.registry.content.SupremeBlocks;
 import roeyqian.magnatour.registry.content.SupremeEntities;
+import roeyqian.magnatour.registry.content.SupremeItems;
+import roeyqian.magnatour.registry.content.SupremeMenus;
+import roeyqian.magnatour.registry.content.UniverseBlockEntities;
+import roeyqian.magnatour.registry.content.UniverseBlocks;
+import roeyqian.magnatour.registry.content.UniverseItems;
 import roeyqian.magnatour.registry.content.UniverseLiveEntities;
+import roeyqian.magnatour.registry.content.UniverseMenus;
 import roeyqian.magnatour.registry.logic.CustomComponents;
 import roeyqian.magnatour.registry.logic.CustomNetworks;
+import roeyqian.magnatour.registry.logic.CustomParticles;
 import roeyqian.magnatour.registry.logic.CustomRecipes;
 import roeyqian.magnatour.registry.worldgen.CustomBiomeSources;
 import roeyqian.magnatour.registry.worldgen.CustomChunkGenerators;
 import roeyqian.magnatour.registry.worldgen.CustomDimensions;
 import roeyqian.magnatour.registry.worldgen.CustomFeatures;
 import roeyqian.magnatour.registry.worldgen.CustomStructures;
-import roeyqian.magnatour.registry.logic.CustomParticles;
 
 public class Magnatour implements ModInitializer {
 

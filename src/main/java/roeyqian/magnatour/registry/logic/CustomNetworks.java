@@ -9,8 +9,8 @@ package roeyqian.magnatour.registry.logic;
 
 // Magnatour
 import roeyqian.magnatour.Magnatour;
-import roeyqian.magnatour.level.NetworkManagerForItem;
 import roeyqian.magnatour.level.NetworkManagerForBlock;
+import roeyqian.magnatour.level.NetworkManagerForItem;
 
 public final class CustomNetworks {
 

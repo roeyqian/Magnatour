@@ -17,8 +17,8 @@ import net.minecraft.world.item.crafting.RecipeType;
 import roeyqian.magnatour.Magnatour;
 import roeyqian.magnatour.level.recipe.SupremeCookingRecipe;
 import roeyqian.magnatour.level.recipe.SupremeCraftingRecipe;
-import roeyqian.magnatour.level.recipe.UniverseCraftingRecipe;
 import roeyqian.magnatour.level.recipe.UniverseCookingRecipe;
+import roeyqian.magnatour.level.recipe.UniverseCraftingRecipe;
 import roeyqian.magnatour.registry.LogicRegHelper;
 
 /*

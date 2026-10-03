@@ -11,8 +11,8 @@ package roeyqian.magnatour.renderer.supreme;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 // Fabric
-import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.api.EnvType;
 
 // Minecraft
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -26,8 +26,8 @@ import org.jspecify.annotations.NonNull;
 import roeyqian.magnatour.Magnatour;
 import roeyqian.magnatour.entity.supreme.BellSoul;
 import roeyqian.magnatour.model.supreme.BellSoulModel;
-import roeyqian.magnatour.renderstate.supreme.BellSoulRenderState;
 import roeyqian.magnatour.registry.output.RegEntityLayers;
+import roeyqian.magnatour.renderstate.supreme.BellSoulRenderState;
 
 @Environment(EnvType.CLIENT)
 public final class BellSoulRenderer extends MobRenderer<BellSoul, BellSoulRenderState, BellSoulModel> {

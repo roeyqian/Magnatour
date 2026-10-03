@@ -11,8 +11,8 @@ package roeyqian.magnatour.registry.input;
 import com.mojang.blaze3d.platform.InputConstants;
 
 // Fabric
-import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.api.EnvType;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
@@ -24,12 +24,12 @@ import net.minecraft.world.item.Item;
 
 // Magnatour
 import roeyqian.magnatour.Magnatour;
-import roeyqian.magnatour.level.network.DurableItemModePayload;
+import roeyqian.magnatour.item.supreme.MirrorMobile;
 import roeyqian.magnatour.item.universe.UniverseBucket;
+import roeyqian.magnatour.item.universe.UniverseConsole;
 import roeyqian.magnatour.item.universe.UniverseOmniBlade;
 import roeyqian.magnatour.item.universe.UniverseUltimaSword;
-import roeyqian.magnatour.item.supreme.MirrorMobile;
-import roeyqian.magnatour.item.universe.UniverseConsole;
+import roeyqian.magnatour.level.network.DurableItemModePayload;
 
 @Environment(EnvType.CLIENT)
   public final class RegKeyBindings {

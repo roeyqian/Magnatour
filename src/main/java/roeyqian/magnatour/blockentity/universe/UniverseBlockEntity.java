@@ -14,8 +14,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
 // Magnatour
-import roeyqian.magnatour.block.universe.UniverseBlock;
 import roeyqian.magnatour.block.VirtualBlockLightManager;
+import roeyqian.magnatour.block.universe.UniverseBlock;
 import roeyqian.magnatour.registry.content.UniverseBlockEntities;
 
 public class UniverseBlockEntity extends BlockEntity {

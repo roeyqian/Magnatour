@@ -8,8 +8,8 @@
 package roeyqian.magnatour.mixin.item;
 
 // Fabric
-import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.api.EnvType;
 
 // Minecraft
 import net.minecraft.client.renderer.item.ItemStackRenderState;

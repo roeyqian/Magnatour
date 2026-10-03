@@ -3,7 +3,7 @@
  * Copyright (C) 2026 Roey Qian
  *
  * This file is part of Magnatour.
- * full license text available in the LICENSE file in the project root.
+ * Full license text available in the LICENSE file in the project root.
  */
 package roeyqian.magnatour.mixinhelper.portal;
 

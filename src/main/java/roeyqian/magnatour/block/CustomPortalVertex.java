@@ -24,9 +24,9 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.tags.BlockTags;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
@@ -40,8 +40,8 @@ import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 // Magnatour
-import roeyqian.magnatour.registry.content.SupremeBlocks;
 import roeyqian.magnatour.level.PortalLinkSavedData;
+import roeyqian.magnatour.registry.content.SupremeBlocks;
 import roeyqian.magnatour.registry.worldgen.CustomDimensions;
 
 public interface CustomPortalVertex {

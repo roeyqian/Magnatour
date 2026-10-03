@@ -19,14 +19,14 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 // Magnatour
-import roeyqian.magnatour.blockentity.supreme.RedstoneTriggerEntity;
 import roeyqian.magnatour.blockentity.supreme.ItemHubEntity;
+import roeyqian.magnatour.blockentity.supreme.RedstoneTriggerEntity;
 import roeyqian.magnatour.blockentity.universe.UniverseTeleportPointEntity;
 import roeyqian.magnatour.level.network.ItemHubPayload;
 import roeyqian.magnatour.level.network.RedstoneTriggerPayload;
+import roeyqian.magnatour.level.network.UniverseTeleportPointPayload;
 import roeyqian.magnatour.menu.supreme.ItemHubMenu;
 import roeyqian.magnatour.menu.supreme.RedstoneTriggerMenu;
-import roeyqian.magnatour.level.network.UniverseTeleportPointPayload;
 import roeyqian.magnatour.menu.universe.UniverseTeleportPointMenu;
 
 public final class NetworkManagerForItem {

@@ -20,8 +20,8 @@ import net.minecraft.world.level.block.state.BlockState;
 
 // FastUtil
 import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
-import it.unimi.dsi.fastutil.longs.LongConsumer;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.longs.LongConsumer;
 
 public final class VirtualBlockLightManager {
 

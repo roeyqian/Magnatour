@@ -8,8 +8,8 @@
 package roeyqian.magnatour.registry.output;
 
 // Fabric
-import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.api.EnvType;
 
 // Minecraft
 import net.minecraft.client.gui.screens.MenuScreens;
@@ -18,23 +18,23 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 // Magnatour
 import roeyqian.magnatour.Magnatour;
 import roeyqian.magnatour.registry.content.SupremeBlockEntities;
+import roeyqian.magnatour.registry.content.SupremeMenus;
 import roeyqian.magnatour.registry.content.UniverseBlockEntities;
 import roeyqian.magnatour.registry.content.UniverseMenus;
-import roeyqian.magnatour.registry.content.SupremeMenus;
-import roeyqian.magnatour.screen.supreme.ItemHubScreen;
 import roeyqian.magnatour.renderer.supreme.SupremeChestRenderer;
+import roeyqian.magnatour.renderer.universe.UniverseLibraryRenderer;
+import roeyqian.magnatour.screen.supreme.ItemHubScreen;
 import roeyqian.magnatour.screen.supreme.RedstoneTriggerScreen;
 import roeyqian.magnatour.screen.supreme.SupremeChestScreen;
 import roeyqian.magnatour.screen.supreme.SupremeFurnaceScreen;
 import roeyqian.magnatour.screen.supreme.SupremeReserverScreen;
 import roeyqian.magnatour.screen.supreme.SupremeWorktableScreen;
-import roeyqian.magnatour.renderer.universe.UniverseLibraryRenderer;
+import roeyqian.magnatour.screen.universe.UniverseConsoleScreen;
 import roeyqian.magnatour.screen.universe.UniverseLibraryScreen;
 import roeyqian.magnatour.screen.universe.UniverseRefineryScreen;
 import roeyqian.magnatour.screen.universe.UniverseTeleportPointScreen;
 import roeyqian.magnatour.screen.universe.UniverseVoidPoolScreen;
 import roeyqian.magnatour.screen.universe.UniverseWorkstationScreen;
-import roeyqian.magnatour.screen.universe.UniverseConsoleScreen;
 
 @Environment(EnvType.CLIENT)
 public final class RegScreens {

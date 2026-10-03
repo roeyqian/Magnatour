@@ -8,8 +8,8 @@
 package roeyqian.magnatour.mixinhelper.client;
 
 // Fabric
-import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.api.EnvType;
 
 // Minecraft
 import net.minecraft.client.multiplayer.ClientLevel;

@@ -21,10 +21,10 @@ import roeyqian.magnatour.Magnatour;
 import roeyqian.magnatour.item.CustomArmorMaterial;
 import roeyqian.magnatour.item.CustomItemSetting;
 import roeyqian.magnatour.item.CustomToolMaterial;
+import roeyqian.magnatour.item.supreme.MirrorMobile;
 import roeyqian.magnatour.item.supreme.StrangeLingeringPotion;
 import roeyqian.magnatour.item.supreme.StrangePotion;
 import roeyqian.magnatour.item.supreme.StrangeSplashPotion;
-import roeyqian.magnatour.item.supreme.MirrorMobile;
 import roeyqian.magnatour.registry.ItemRegHelper;
 
 /*

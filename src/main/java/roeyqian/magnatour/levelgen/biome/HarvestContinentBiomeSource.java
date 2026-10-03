@@ -8,8 +8,8 @@
 package roeyqian.magnatour.levelgen.biome;
 
 // Java Standard
-import java.util.stream.Stream;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 // Mojang
 import com.mojang.serialization.Codec;
@@ -21,8 +21,8 @@ import net.minecraft.core.Holder;
 import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.biome.Biome;
-import net.minecraft.world.level.biome.BiomeSource;
 import net.minecraft.world.level.biome.BiomeResolver;
+import net.minecraft.world.level.biome.BiomeSource;
 import net.minecraft.world.level.biome.Climate;
 
 // JSpecify
