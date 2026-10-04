@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:chest",
+  "pools": [
+    {
+      "rolls": 1,
+      "bonus_rolls": 0,
+      "entries": [
+        {
+          "type": "minecraft:loot_table",
+          "condition": {
+            "type": "minecraft:random_chance",
+            "chance": 0.5
+          },
+          "value": "magnatour:structure/gold_bell_tower"
+        }
+      ]
+    }
+  ]
+}
