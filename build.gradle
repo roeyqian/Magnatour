@@ -23,14 +23,6 @@ plugins {
 version = project.mod_version
 group = project.maven_group
 
-repositories {
-	// Add repositories to retrieve artifacts from in here.
-	// You should only use this when depending on other mods because
-	// Loom adds the essential maven repositories to download Minecraft and libraries from automatically.
-	// See https://docs.gradle.org/current/userguide/declaring_repositories.html
-	// for more information about repositories.
-}
-
 loom {
 	splitEnvironmentSourceSets()
 	runs {
@@ -65,37 +57,36 @@ tasks.withType(JavaCompile).configureEach {
 	it.options.compilerArgs.addAll(['-Xlint:deprecation', '-Xlint:unchecked'])
 }
 
-def importGroupConfigFile = layout.projectDirectory.file("gradle/config/import-groups.json")
+def importGroupsConfigFile = layout.projectDirectory.file("gradle/config/import-groups.json")
 def javaSourceFiles = fileTree("src") {
 	include "**/*.java"
 }
 
-def loadImportGroups = {
-	new JsonSlurper().parse(importGroupConfigFile.asFile)
+def loadImportGroupDefinitions = {
+	new JsonSlurper().parse(importGroupsConfigFile.asFile)
 }
 
-def importGroupFor = { String importLine, List groups ->
-	def imported = importLine.substring("import ".length()).replace(";", "").trim()
-	if (imported.startsWith("static ")) {
-		imported = imported.substring("static ".length())
+def findImportGroup = { String importLine, List importGroups ->
+	def importedQualifiedName = importLine.substring("import ".length()).replace(";", "").trim()
+	if (importedQualifiedName.startsWith("static ")) {
+		importedQualifiedName = importedQualifiedName.substring("static ".length())
 	}
 
-	def matched = groups.find { group ->
-		group.prefixes.any { prefix -> imported.startsWith(prefix) }
+	def matchingImportGroup = importGroups.find { group ->
+		group.prefixes.any { prefix -> importedQualifiedName.startsWith(prefix) }
 	}
-	matched ?: groups.find { group -> group.title == "Other" }
+	matchingImportGroup ?: importGroups.find { group -> group.title == "Other" }
 }
 
-def javaImportSortKey = { String importLine ->
-	def imported = importLine.substring("import ".length()).replace(";", "").trim()
-	if (imported.startsWith("static ")) {
-		imported = imported.substring("static ".length()).trim()
+def buildImportSortKey = { String importLine ->
+	def importedQualifiedName = importLine.substring("import ".length()).replace(";", "").trim()
+	if (importedQualifiedName.startsWith("static ")) {
+		importedQualifiedName = importedQualifiedName.substring("static ".length()).trim()
 	}
-	// Compare the import path from its first segment; ignore the static keyword.
-	[segments: imported.tokenize("."), name: imported, line: importLine]
+	[segments: importedQualifiedName.tokenize("."), name: importedQualifiedName, line: importLine]
 }
 
-def parseCompleteAnnotationLine = { String line ->
+def parseAnnotationOnlyLine = { String line ->
 	def matcher = line =~ /^(\s*)(\S(?:.*\S)?)\s*$/
 	if (!matcher.matches()) {
 		return null
@@ -104,7 +95,7 @@ def parseCompleteAnnotationLine = { String line ->
 	def indent = matcher.group(1)
 	def text = matcher.group(2).trim()
 	def index = 0
-	def seenAnnotation = false
+	def hasAnnotation = false
 
 	while (true) {
 		while (index < text.length() && Character.isWhitespace(text.charAt(index))) {
@@ -116,19 +107,19 @@ def parseCompleteAnnotationLine = { String line ->
 		if (text.charAt(index) != '@' as char) {
 			return null
 		}
-		seenAnnotation = true
+		hasAnnotation = true
 		index++
 
-		def nameStart = index
+		def annotationNameStart = index
 		while (index < text.length()) {
-			def c = text.charAt(index)
-			if (Character.isLetterOrDigit(c) || c == '_' as char || c == '.' as char || c == '$' as char) {
+			def currentCharacter = text.charAt(index)
+			if (Character.isLetterOrDigit(currentCharacter) || currentCharacter == '_' as char || currentCharacter == '.' as char || currentCharacter == '$' as char) {
 				index++
 			} else {
 				break
 			}
 		}
-		if (index == nameStart) {
+		if (index == annotationNameStart) {
 			return null
 		}
 
@@ -136,45 +127,45 @@ def parseCompleteAnnotationLine = { String line ->
 			index++
 		}
 		if (index < text.length() && text.charAt(index) == '(' as char) {
-			def depth = 0
-			def inString = false
-			def inChar = false
-			def escaping = false
+			def parenthesisDepth = 0
+			def insideStringLiteral = false
+			def insideCharacterLiteral = false
+			def isEscapedCharacter = false
 			while (index < text.length()) {
-				def c = text.charAt(index)
-				if (escaping) {
-					escaping = false
-				} else if (inString) {
-					if (c == '\\' as char) {
-						escaping = true
-					} else if (c == '"' as char) {
-						inString = false
+				def currentCharacter = text.charAt(index)
+				if (isEscapedCharacter) {
+					isEscapedCharacter = false
+				} else if (insideStringLiteral) {
+					if (currentCharacter == '\\' as char) {
+						isEscapedCharacter = true
+					} else if (currentCharacter == '"' as char) {
+						insideStringLiteral = false
 					}
-				} else if (inChar) {
-					if (c == '\\' as char) {
-						escaping = true
-					} else if (c == "'" as char) {
-						inChar = false
+				} else if (insideCharacterLiteral) {
+					if (currentCharacter == '\\' as char) {
+						isEscapedCharacter = true
+					} else if (currentCharacter == "'" as char) {
+						insideCharacterLiteral = false
 					}
-				} else if (c == '"' as char) {
-					inString = true
-				} else if (c == "'" as char) {
-					inChar = true
-				} else if (c == '(' as char) {
-					depth++
-				} else if (c == ')' as char) {
-					depth--
-					if (depth == 0) {
+				} else if (currentCharacter == '"' as char) {
+					insideStringLiteral = true
+				} else if (currentCharacter == "'" as char) {
+					insideCharacterLiteral = true
+				} else if (currentCharacter == '(' as char) {
+					parenthesisDepth++
+				} else if (currentCharacter == ')' as char) {
+					parenthesisDepth--
+					if (parenthesisDepth == 0) {
 						index++
 						break
 					}
-					if (depth < 0) {
+					if (parenthesisDepth < 0) {
 						return null
 					}
 				}
 				index++
 			}
-			if (depth != 0 || inString || inChar) {
+			if (parenthesisDepth != 0 || insideStringLiteral || insideCharacterLiteral) {
 				return null
 			}
 		}
@@ -190,10 +181,10 @@ def parseCompleteAnnotationLine = { String line ->
 		}
 	}
 
-	seenAnnotation ? [indent: indent, text: text] : null
+	hasAnnotation ? [indent: indent, text: text] : null
 }
 
-def spdxHeaderText = """\
+def shortLicenseHeaderText = """\
 /*
  * SPDX-License-Identifier: GPL-3.0-only
  * Copyright (C) 2026 Roey Qian
@@ -203,7 +194,7 @@ def spdxHeaderText = """\
  */
 """
 
-def initClassHeaderText = """\
+def entrypointLicenseHeaderText = """\
 /*
  * SPDX-License-Identifier: GPL-3.0-only
  * Magnatour - Copyright (C) 2026 Roey Qian
@@ -222,14 +213,13 @@ def initClassHeaderText = """\
  */
 """
 
-def initClassPaths = [
+def modEntrypointSourcePaths = [
 		"src/main/java/roeyqian/magnatour/Magnatour.java",
 		"src/client/java/roeyqian/magnatour/MagnatourClient.java"
 ] as Set
 
-// Skip comments and literals when locating the actual package declaration.
-def javaPackagePattern = ~/\/\*[\s\S]*?\*\/|\/\/[^\r\n]*|"""[\s\S]*?"""|"(?:\\[\s\S]|[^"\\])*"|'(?:\\[\s\S]|[^'\\])*'|\b(package\s+\p{javaJavaIdentifierStart}\p{javaJavaIdentifierPart}*(?:\s*\.\s*\p{javaJavaIdentifierStart}\p{javaJavaIdentifierPart}*)*\s*;)/
-def scanJavaHeadToken = { String source, int cursor ->
+def packageDeclarationTokenPattern = ~/\/\*[\s\S]*?\*\/|\/\/[^\r\n]*|"""[\s\S]*?"""|"(?:\\[\s\S]|[^"\\])*"|'(?:\\[\s\S]|[^'\\])*'|\b(package\s+\p{javaJavaIdentifierStart}\p{javaJavaIdentifierPart}*(?:\s*\.\s*\p{javaJavaIdentifierStart}\p{javaJavaIdentifierPart}*)*\s*;)/
+def scanNextImportOrComment = { String source, int cursor ->
 	while (cursor < source.length() && Character.isWhitespace(source.charAt(cursor))) {
 		cursor++
 	}
@@ -256,8 +246,7 @@ def scanJavaHeadToken = { String source, int cursor ->
 		return null
 	}
 
-	// Keep the original import text, but use a comment-free name for grouping and sorting.
-	def name = new StringBuilder("import ")
+	def importTextWithoutComments = new StringBuilder("import ")
 	cursor += 6
 	while (cursor < source.length()) {
 		if (source.startsWith("/*", cursor)) {
@@ -266,20 +255,20 @@ def scanJavaHeadToken = { String source, int cursor ->
 				return null
 			}
 			cursor = close + 2
-			name.append(' ')
+			importTextWithoutComments.append(' ')
 		} else if (source.startsWith("//", cursor)) {
 			while (cursor < source.length() && source.charAt(cursor) != '\n' as char && source.charAt(cursor) != '\r' as char) {
 				cursor++
 			}
-			name.append(' ')
+			importTextWithoutComments.append(' ')
 		} else {
-			char c = source.charAt(cursor++)
-			name.append(c)
-			if (c == ';' as char) {
-				def importKey = name.toString().replaceAll(/\s+/, " ").replaceAll(/\s*\.\s*/, ".").replaceAll(/\s*;$/, ";")
-				return [kind: "import", text: source.substring(start, cursor), importKey: importKey, start: start, end: cursor]
+			char currentCharacter = source.charAt(cursor++)
+			importTextWithoutComments.append(currentCharacter)
+			if (currentCharacter == ';' as char) {
+				def normalizedImportText = importTextWithoutComments.toString().replaceAll(/\s+/, " ").replaceAll(/\s*\.\s*/, ".").replaceAll(/\s*;$/, ";")
+				return [kind: "import", text: source.substring(start, cursor), importKey: normalizedImportText, start: start, end: cursor]
 			}
-			if (!Character.isJavaIdentifierPart(c) && !Character.isWhitespace(c) && c != '.' as char && c != '*' as char) {
+			if (!Character.isJavaIdentifierPart(currentCharacter) && !Character.isWhitespace(currentCharacter) && currentCharacter != '.' as char && currentCharacter != '*' as char) {
 				return null
 			}
 		}
@@ -287,11 +276,11 @@ def scanJavaHeadToken = { String source, int cursor ->
 	null
 }
 
-def rewriteJavaHead = { File sourceFile, List groups, boolean checkOnly ->
-	def original = sourceFile.getText("UTF-8")
-	def newline = original.contains("\r\n") ? "\r\n" : "\n"
-	def source = original
-	def packageMatcher = javaPackagePattern.matcher(source)
+def normalizeJavaFileHeaderAndImports = { File sourceFile, List importGroups, boolean checkOnly ->
+	def originalSourceText = sourceFile.getText("UTF-8")
+	def lineSeparator = originalSourceText.contains("\r\n") ? "\r\n" : "\n"
+	def sourceText = originalSourceText
+	def packageMatcher = packageDeclarationTokenPattern.matcher(sourceText)
 	def packageToken = null
 	while (packageMatcher.find()) {
 		if (packageMatcher.group(1) != null) {
@@ -303,136 +292,131 @@ def rewriteJavaHead = { File sourceFile, List groups, boolean checkOnly ->
 		return false
 	}
 
-	// Discard everything before package and rebuild the selected license header.
 	def sourcePath = project.relativePath(sourceFile).replace('\\', '/')
-	def header = initClassPaths.contains(sourcePath) ? initClassHeaderText : spdxHeaderText
-	def blocks = [header.readLines().join(newline) + newline + packageToken.text]
+	def licenseHeader = modEntrypointSourcePaths.contains(sourcePath) ? entrypointLicenseHeaderText : shortLicenseHeaderText
+	def formattedSections = [licenseHeader.readLines().join(lineSeparator) + lineSeparator + packageToken.text]
 
-	def tokens = []
+	def importAndCommentTokens = []
 	int cursor = packageToken.end as int
-	// Only collect imports and comments after package; the class body stays untouched.
 	while (true) {
-		def token = scanJavaHeadToken(source, cursor)
+		def token = scanNextImportOrComment(sourceText, cursor)
 		if (token == null) {
 			break
 		}
-		tokens << token
+		importAndCommentTokens << token
 		cursor = token.end as int
 	}
 
-	def groupComments = groups.collect { "// ${it.title}".toString() } as Set
-	def grouped = groups.collectEntries { group -> [(group.title): []] }
+	def importGroupCommentLines = importGroups.collect { "// ${it.title}".toString() } as Set
+	def importsByGroupTitle = importGroups.collectEntries { group -> [(group.title): []] }
 	def importsByLine = [:]
 	def pendingComments = []
-	def previousImport = null
-	int previousEnd = packageToken.end as int
-	tokens.each { token ->
+	Map<String, Object> importCommentContext = new LinkedHashMap<String, Object>()
+	importCommentContext.put("previousTokenEnd", packageToken.end as int)
+	importAndCommentTokens.each { token ->
 		String text = token.text
 		if (token.kind == "import") {
 			def importLine = text.replaceFirst(/^import\s*/, "import ").trim()
-			def entry = [line: importLine, comments: new ArrayList(pendingComments), suffix: "", sortKey: javaImportSortKey(token.importKey)]
+			def importEntry = [line: importLine, comments: new ArrayList(pendingComments), suffix: "", sortKey: buildImportSortKey(token.importKey)]
 			pendingComments.clear()
 			if (!importsByLine.containsKey(importLine)) {
-				importsByLine[importLine] = entry
-				grouped[importGroupFor(token.importKey, groups).title] << entry
+				importsByLine[importLine] = importEntry
+				importsByGroupTitle[findImportGroup(token.importKey, importGroups).title] << importEntry
 			} else {
-				importsByLine[importLine].comments.addAll(entry.comments)
+				importsByLine[importLine].comments.addAll(importEntry.comments)
 			}
-			previousImport = importsByLine[importLine]
+			importCommentContext.put("previousImport", importsByLine[importLine])
 		} else {
-			def gap = source.substring(previousEnd, token.start as int)
-			// Both line and block comments beginning on the import's final line follow that import.
-			if (previousImport != null && !gap.contains("\n") && !gap.contains("\r")) {
+			Map previousImport = importCommentContext.get("previousImport") as Map
+			def textBetweenTokens = sourceText.substring(importCommentContext.get("previousTokenEnd") as int, token.start as int)
+			if (previousImport != null && !textBetweenTokens.contains("\n") && !textBetweenTokens.contains("\r")) {
 				previousImport.suffix += " ${text}"
 			} else {
-				if (!groupComments.contains(text)) {
+				if (!importGroupCommentLines.contains(text)) {
 					pendingComments << text
 				}
-				previousImport = null
+				importCommentContext.remove("previousImport")
 			}
 		}
-		previousEnd = token.end as int
+		importCommentContext.put("previousTokenEnd", token.end as int)
 	}
 
-	// Emit groups in configuration order, then sort imports within each group.
-	groups.each { group ->
-		def entries = grouped[group.title]
-		if (!entries.isEmpty()) {
-			entries.sort { left, right ->
-				def leftPath = left.sortKey.segments
-				def rightPath = right.sortKey.segments
-				for (int index = 0; index < Math.min(leftPath.size(), rightPath.size()); index++) {
-					// Direct imports precede subpaths at each shared directory.
-					boolean leftLeaf = index == leftPath.size() - 1
-					boolean rightLeaf = index == rightPath.size() - 1
-					if (leftLeaf != rightLeaf) {
-						return leftLeaf ? -1 : 1
+	importGroups.each { group ->
+		def groupImports = importsByGroupTitle[group.title]
+		if (!groupImports.isEmpty()) {
+			groupImports.sort { left, right ->
+				List<String> leftImportSegments = left.sortKey.segments as List<String>
+				List<String> rightImportSegments = right.sortKey.segments as List<String>
+				for (int index = 0; index < Math.min(leftImportSegments.size(), rightImportSegments.size()); index++) {
+					boolean leftIsFinalSegment = index == leftImportSegments.size() - 1
+					boolean rightIsFinalSegment = index == rightImportSegments.size() - 1
+					if (leftIsFinalSegment != rightIsFinalSegment) {
+						return leftIsFinalSegment ? -1 : 1
 					}
-					int compared = leftPath[index].compareToIgnoreCase(rightPath[index])
-					if (compared != 0) {
-						return compared
+					int segmentComparison = leftImportSegments.get(index).compareToIgnoreCase(rightImportSegments.get(index))
+					if (segmentComparison != 0) {
+						return segmentComparison
 					}
 				}
-				// Shared path prefixes sort from shallow to deep, then deterministically by case/static.
-				(leftPath.size() <=> rightPath.size())
+				(leftImportSegments.size() <=> rightImportSegments.size())
 						?: (left.sortKey.name <=> right.sortKey.name)
 						?: (left.sortKey.line <=> right.sortKey.line)
 						?: (left.line <=> right.line)
 			}
 			def lines = ["// ${group.title}"]
-			entries.each { entry ->
-				lines.addAll(entry.comments)
-				lines << "${entry.line}${entry.suffix}"
+			groupImports.each { importEntry ->
+				lines.addAll(importEntry.comments)
+				lines << "${importEntry.line}${importEntry.suffix}"
 			}
-			blocks << lines.join(newline)
+			formattedSections << lines.join(lineSeparator)
 		}
 	}
 
-	def body = source.substring(cursor)
+	def remainingSourceText = sourceText.substring(cursor)
 	if (!pendingComments.isEmpty()) {
-		body = pendingComments.join(newline) + body
+		remainingSourceText = pendingComments.join(lineSeparator) + remainingSourceText
 	}
-	body = body.replaceFirst(/^\s+/, "")
-	if (!body.isEmpty()) {
-		blocks << body
+	remainingSourceText = remainingSourceText.replaceFirst(/^\s+/, "")
+	if (!remainingSourceText.isEmpty()) {
+		formattedSections << remainingSourceText
 	}
-	def rewritten = blocks.join(newline + newline)
-	if (rewritten == original) {
+	def formattedSourceText = formattedSections.join(lineSeparator + lineSeparator)
+	if (formattedSourceText == originalSourceText) {
 		return false
 	}
 	if (!checkOnly) {
-		sourceFile.write(rewritten, "UTF-8")
+		sourceFile.write(formattedSourceText, "UTF-8")
 	}
 	true
 }
 
-def rewriteJavaAnnotations = { File sourceFile, boolean checkOnly ->
-	def original = sourceFile.getText("UTF-8")
-	def newline = original.contains("\r\n") ? "\r\n" : "\n"
-	def lines = original.readLines()
+def mergeConsecutiveAnnotationLines = { File sourceFile, boolean checkOnly ->
+	def originalSourceText = sourceFile.getText("UTF-8")
+	def lineSeparator = originalSourceText.contains("\r\n") ? "\r\n" : "\n"
+	def lines = originalSourceText.readLines()
 	def rewrittenLines = []
 
 	for (def index = 0; index < lines.size();) {
-		def current = parseCompleteAnnotationLine(lines[index])
-		if (current == null) {
+		def currentAnnotationLine = parseAnnotationOnlyLine(lines[index])
+		if (currentAnnotationLine == null) {
 			rewrittenLines << lines[index]
 			index++
 			continue
 		}
 
-		def annotations = [current.text]
+		def annotationTexts = [currentAnnotationLine.text]
 		def nextIndex = index + 1
 		while (nextIndex < lines.size()) {
-			def next = parseCompleteAnnotationLine(lines[nextIndex])
-			if (next == null || next.indent != current.indent) {
+			def nextAnnotationLine = parseAnnotationOnlyLine(lines[nextIndex])
+			if (nextAnnotationLine == null || nextAnnotationLine.indent != currentAnnotationLine.indent) {
 				break
 			}
-			annotations << next.text
+			annotationTexts << nextAnnotationLine.text
 			nextIndex++
 		}
 
-		if (annotations.size() > 1) {
-			rewrittenLines << "${current.indent}${annotations.join(" ")}"
+		if (annotationTexts.size() > 1) {
+			rewrittenLines << "${currentAnnotationLine.indent}${annotationTexts.join(" ")}"
 			index = nextIndex
 		} else {
 			rewrittenLines << lines[index]
@@ -440,20 +424,20 @@ def rewriteJavaAnnotations = { File sourceFile, boolean checkOnly ->
 		}
 	}
 
-	def rewritten = rewrittenLines.join(newline)
-	if (original.endsWith("\n") || original.endsWith("\r\n")) {
-		rewritten += newline
+	def formattedSourceText = rewrittenLines.join(lineSeparator)
+	if (originalSourceText.endsWith("\n") || originalSourceText.endsWith("\r\n")) {
+		formattedSourceText += lineSeparator
 	}
-	if (rewritten == original) {
+	if (formattedSourceText == originalSourceText) {
 		return false
 	}
 	if (!checkOnly) {
-		sourceFile.write(rewritten, "UTF-8")
+		sourceFile.write(formattedSourceText, "UTF-8")
 	}
 	true
 }
 
-def newStringJavaFileObject = { File sourceFile, String source ->
+def createInMemoryJavaSourceFile = { File sourceFile, String source ->
 	new SimpleJavaFileObject(sourceFile.toURI(), JavaFileObject.Kind.SOURCE) {
 		@Override
 		CharSequence getCharContent(boolean ignoreEncodingErrors) {
@@ -462,34 +446,34 @@ def newStringJavaFileObject = { File sourceFile, String source ->
 	}
 }
 
-def parseJavaSource = { File sourceFile, String source ->
-	def compiler = ToolProvider.systemJavaCompiler
-	if (compiler == null) {
+def parseJavaCompilationUnit = { File sourceFile, String source ->
+	def javaCompiler = ToolProvider.systemJavaCompiler
+	if (javaCompiler == null) {
 		throw new GradleException("formatJavaBody requires Gradle to run on a JDK, not a JRE.")
 	}
 
-	def diagnostics = new DiagnosticCollector<JavaFileObject>()
-	def task = compiler.getTask(
+	def parseDiagnostics = new DiagnosticCollector<JavaFileObject>()
+	def javacParseTask = javaCompiler.getTask(
 			null,
 			null,
-			diagnostics,
+			parseDiagnostics,
 			["-proc:none"],
 			null,
-			[newStringJavaFileObject(sourceFile, source)]
+			[createInMemoryJavaSourceFile(sourceFile, source)]
 	) as JavacTask
-	def units = task.parse().toList()
-	def errors = diagnostics.diagnostics.findAll { it.kind == Diagnostic.Kind.ERROR }
-	if (!errors.isEmpty()) {
-		throw new GradleException("Unable to parse ${sourceFile}: ${errors.collect { it.getMessage(Locale.ROOT) }.join("; ")}")
+	def compilationUnits = javacParseTask.parse().toList()
+	def parseErrors = parseDiagnostics.diagnostics.findAll { it.kind == Diagnostic.Kind.ERROR }
+	if (!parseErrors.isEmpty()) {
+		throw new GradleException("Unable to parse ${sourceFile}: ${parseErrors.collect { it.getMessage(Locale.ROOT) }.join("; ")}")
 	}
-	if (units.isEmpty()) {
+	if (compilationUnits.isEmpty()) {
 		return null
 	}
 
-	[unit: units.first(), positions: Trees.instance(task).sourcePositions]
+	[unit: compilationUnits.first(), positions: Trees.instance(javacParseTask).sourcePositions]
 }
 
-def lineStartAt = { String source, int index ->
+def findLineStart = { String source, int index ->
 	int cursor = Math.max(0, Math.min(index, source.length()))
 	while (cursor > 0 && source.charAt(cursor - 1) != '\n' as char && source.charAt(cursor - 1) != '\r' as char) {
 		cursor--
@@ -497,7 +481,7 @@ def lineStartAt = { String source, int index ->
 	cursor
 }
 
-def previousLineStart = { String source, int lineStart ->
+def findPreviousLineStart = { String source, int lineStart ->
 	if (lineStart <= 0) {
 		return 0
 	}
@@ -511,12 +495,12 @@ def previousLineStart = { String source, int lineStart ->
 	cursor
 }
 
-def lineIndentAt = { String source, int index ->
-	int start = lineStartAt(source, index)
+def getLineIndentation = { String source, int index ->
+	int start = findLineStart(source, index)
 	int cursor = start
 	while (cursor < source.length()) {
-		def c = source.charAt(cursor)
-		if (c != ' ' as char && c != '\t' as char) {
+		def currentCharacter = source.charAt(cursor)
+		if (currentCharacter != ' ' as char && currentCharacter != '\t' as char) {
 			break
 		}
 		cursor++
@@ -524,18 +508,18 @@ def lineIndentAt = { String source, int index ->
 	source.substring(start, cursor)
 }
 
-def includeLeadingDeclarationTrivia = { String source, int lowerBound, int declarationStart ->
-	int cursor = lineStartAt(source, declarationStart)
+def findDeclarationStartWithLeadingComments = { String source, int lowerBound, int declarationStart ->
+	int cursor = findLineStart(source, declarationStart)
 	while (cursor > lowerBound) {
-		int prevStart = previousLineStart(source, cursor)
-		def line = source.substring(prevStart, cursor)
+		int previousLineStartIndex = findPreviousLineStart(source, cursor)
+		def line = source.substring(previousLineStartIndex, cursor)
 		def trimmed = line.trim()
 		if (trimmed.isEmpty()
 				|| trimmed.startsWith("//")
 				|| trimmed.startsWith("/*")
 				|| trimmed.startsWith("*")
 				|| trimmed.endsWith("*/")) {
-			cursor = prevStart
+			cursor = previousLineStartIndex
 			continue
 		}
 		break
@@ -543,7 +527,7 @@ def includeLeadingDeclarationTrivia = { String source, int lowerBound, int decla
 	Math.max(cursor, lowerBound)
 }
 
-def trimBlankEdges = { String text ->
+def trimLeadingAndTrailingBlankLines = { String text ->
 	def lines = text.readLines()
 	int start = 0
 	int end = lines.size()
@@ -556,214 +540,214 @@ def trimBlankEdges = { String text ->
 	lines.subList(start, end).join("\n")
 }
 
-def findDeclarationMarker = { String text, int start, int end ->
-	boolean inLineComment = false
-	boolean inBlockComment = false
-	boolean inString = false
-	boolean inChar = false
-	boolean escaping = false
-	int parenDepth = 0
-	int bracketDepth = 0
+def findDeclarationBodyOrSemicolon = { String text, int start, int end ->
+	boolean insideLineComment = false
+	boolean insideBlockComment = false
+	boolean insideStringLiteral = false
+	boolean insideCharacterLiteral = false
+	boolean isEscapedCharacter = false
+	int parenthesisDepth = 0
+	int squareBracketDepth = 0
 
 	for (int index = start; index < end; index++) {
-		char c = text.charAt(index)
-		char next = index + 1 < end ? text.charAt(index + 1) : (char) 0
+		char currentCharacter = text.charAt(index)
+		char nextCharacter = index + 1 < end ? text.charAt(index + 1) : (char) 0
 
-		if (inLineComment) {
-			if (c == '\n' as char || c == '\r' as char) {
-				inLineComment = false
+		if (insideLineComment) {
+			if (currentCharacter == '\n' as char || currentCharacter == '\r' as char) {
+				insideLineComment = false
 			}
 			continue
 		}
-		if (inBlockComment) {
-			if (c == '*' as char && next == '/' as char) {
-				inBlockComment = false
+		if (insideBlockComment) {
+			if (currentCharacter == '*' as char && nextCharacter == '/' as char) {
+				insideBlockComment = false
 				index++
 			}
 			continue
 		}
-		if (escaping) {
-			escaping = false
+		if (isEscapedCharacter) {
+			isEscapedCharacter = false
 			continue
 		}
-		if (inString) {
-			if (c == '\\' as char) {
-				escaping = true
-			} else if (c == '"' as char) {
-				inString = false
+		if (insideStringLiteral) {
+			if (currentCharacter == '\\' as char) {
+				isEscapedCharacter = true
+			} else if (currentCharacter == '"' as char) {
+				insideStringLiteral = false
 			}
 			continue
 		}
-		if (inChar) {
-			if (c == '\\' as char) {
-				escaping = true
-			} else if (c == "'" as char) {
-				inChar = false
+		if (insideCharacterLiteral) {
+			if (currentCharacter == '\\' as char) {
+				isEscapedCharacter = true
+			} else if (currentCharacter == "'" as char) {
+				insideCharacterLiteral = false
 			}
 			continue
 		}
 
-		if (c == '/' as char && next == '/' as char) {
-			inLineComment = true
+		if (currentCharacter == '/' as char && nextCharacter == '/' as char) {
+			insideLineComment = true
 			index++
-		} else if (c == '/' as char && next == '*' as char) {
-			inBlockComment = true
+		} else if (currentCharacter == '/' as char && nextCharacter == '*' as char) {
+			insideBlockComment = true
 			index++
-		} else if (c == '"' as char) {
-			inString = true
-		} else if (c == "'" as char) {
-			inChar = true
-		} else if (c == '(' as char) {
-			parenDepth++
-		} else if (c == ')' as char) {
-			parenDepth = Math.max(0, parenDepth - 1)
-		} else if (c == '[' as char) {
-			bracketDepth++
-		} else if (c == ']' as char) {
-			bracketDepth = Math.max(0, bracketDepth - 1)
-		} else if ((c == '{' as char || c == ';' as char) && parenDepth == 0 && bracketDepth == 0) {
-			return [index: index, marker: c]
+		} else if (currentCharacter == '"' as char) {
+			insideStringLiteral = true
+		} else if (currentCharacter == "'" as char) {
+			insideCharacterLiteral = true
+		} else if (currentCharacter == '(' as char) {
+			parenthesisDepth++
+		} else if (currentCharacter == ')' as char) {
+			parenthesisDepth = Math.max(0, parenthesisDepth - 1)
+		} else if (currentCharacter == '[' as char) {
+			squareBracketDepth++
+		} else if (currentCharacter == ']' as char) {
+			squareBracketDepth = Math.max(0, squareBracketDepth - 1)
+		} else if ((currentCharacter == '{' as char || currentCharacter == ';' as char) && parenthesisDepth == 0 && squareBracketDepth == 0) {
+			return [index: index, marker: currentCharacter]
 		}
 	}
 	null
 }
 
-def findLastTopLevelParenPair = { String text, int start, int end ->
-	boolean inLineComment = false
-	boolean inBlockComment = false
-	boolean inString = false
-	boolean inChar = false
-	boolean escaping = false
-	int depth = 0
-	int currentOpen = -1
-	def lastPair = null
+def findLastTopLevelParenthesisPair = { String text, int start, int end ->
+	boolean insideLineComment = false
+	boolean insideBlockComment = false
+	boolean insideStringLiteral = false
+	boolean insideCharacterLiteral = false
+	boolean isEscapedCharacter = false
+	int parenthesisDepth = 0
+	int currentOpeningParenthesis = -1
+	def lastParenthesisPair = null
 
 	for (int index = start; index < end; index++) {
-		char c = text.charAt(index)
-		char next = index + 1 < end ? text.charAt(index + 1) : (char) 0
+		char currentCharacter = text.charAt(index)
+		char nextCharacter = index + 1 < end ? text.charAt(index + 1) : (char) 0
 
-		if (inLineComment) {
-			if (c == '\n' as char || c == '\r' as char) {
-				inLineComment = false
+		if (insideLineComment) {
+			if (currentCharacter == '\n' as char || currentCharacter == '\r' as char) {
+				insideLineComment = false
 			}
 			continue
 		}
-		if (inBlockComment) {
-			if (c == '*' as char && next == '/' as char) {
-				inBlockComment = false
+		if (insideBlockComment) {
+			if (currentCharacter == '*' as char && nextCharacter == '/' as char) {
+				insideBlockComment = false
 				index++
 			}
 			continue
 		}
-		if (escaping) {
-			escaping = false
+		if (isEscapedCharacter) {
+			isEscapedCharacter = false
 			continue
 		}
-		if (inString) {
-			if (c == '\\' as char) {
-				escaping = true
-			} else if (c == '"' as char) {
-				inString = false
+		if (insideStringLiteral) {
+			if (currentCharacter == '\\' as char) {
+				isEscapedCharacter = true
+			} else if (currentCharacter == '"' as char) {
+				insideStringLiteral = false
 			}
 			continue
 		}
-		if (inChar) {
-			if (c == '\\' as char) {
-				escaping = true
-			} else if (c == "'" as char) {
-				inChar = false
+		if (insideCharacterLiteral) {
+			if (currentCharacter == '\\' as char) {
+				isEscapedCharacter = true
+			} else if (currentCharacter == "'" as char) {
+				insideCharacterLiteral = false
 			}
 			continue
 		}
 
-		if (c == '/' as char && next == '/' as char) {
-			inLineComment = true
+		if (currentCharacter == '/' as char && nextCharacter == '/' as char) {
+			insideLineComment = true
 			index++
-		} else if (c == '/' as char && next == '*' as char) {
-			inBlockComment = true
+		} else if (currentCharacter == '/' as char && nextCharacter == '*' as char) {
+			insideBlockComment = true
 			index++
-		} else if (c == '"' as char) {
-			inString = true
-		} else if (c == "'" as char) {
-			inChar = true
-		} else if (c == '(' as char) {
-			if (depth == 0) {
-				currentOpen = index
+		} else if (currentCharacter == '"' as char) {
+			insideStringLiteral = true
+		} else if (currentCharacter == "'" as char) {
+			insideCharacterLiteral = true
+		} else if (currentCharacter == '(' as char) {
+			if (parenthesisDepth == 0) {
+				currentOpeningParenthesis = index
 			}
-			depth++
-		} else if (c == ')' as char) {
-			depth--
-			if (depth == 0 && currentOpen >= 0) {
-				lastPair = [open: currentOpen, close: index]
+			parenthesisDepth++
+		} else if (currentCharacter == ')' as char) {
+			parenthesisDepth--
+			if (parenthesisDepth == 0 && currentOpeningParenthesis >= 0) {
+				lastParenthesisPair = [open: currentOpeningParenthesis, close: index]
 			}
 		}
 	}
-	lastPair
+	lastParenthesisPair
 }
 
-def splitTopLevelCommaText = { String text ->
-	def parts = []
-	boolean inString = false
-	boolean inChar = false
-	boolean escaping = false
-	int parenDepth = 0
-	int angleDepth = 0
-	int bracketDepth = 0
-	int start = 0
+def splitAtTopLevelCommas = { String text ->
+	def commaSeparatedParts = []
+	boolean insideStringLiteral = false
+	boolean insideCharacterLiteral = false
+	boolean isEscapedCharacter = false
+	int parenthesisDepth = 0
+	int typeArgumentDepth = 0
+	int squareBracketDepth = 0
+	int partStart = 0
 
 	for (int index = 0; index < text.length(); index++) {
-		char c = text.charAt(index)
-		if (escaping) {
-			escaping = false
+		char currentCharacter = text.charAt(index)
+		if (isEscapedCharacter) {
+			isEscapedCharacter = false
 			continue
 		}
-		if (inString) {
-			if (c == '\\' as char) {
-				escaping = true
-			} else if (c == '"' as char) {
-				inString = false
+		if (insideStringLiteral) {
+			if (currentCharacter == '\\' as char) {
+				isEscapedCharacter = true
+			} else if (currentCharacter == '"' as char) {
+				insideStringLiteral = false
 			}
 			continue
 		}
-		if (inChar) {
-			if (c == '\\' as char) {
-				escaping = true
-			} else if (c == "'" as char) {
-				inChar = false
+		if (insideCharacterLiteral) {
+			if (currentCharacter == '\\' as char) {
+				isEscapedCharacter = true
+			} else if (currentCharacter == "'" as char) {
+				insideCharacterLiteral = false
 			}
 			continue
 		}
 
-		if (c == '"' as char) {
-			inString = true
-		} else if (c == "'" as char) {
-			inChar = true
-		} else if (c == '(' as char) {
-			parenDepth++
-		} else if (c == ')' as char) {
-			parenDepth = Math.max(0, parenDepth - 1)
-		} else if (c == '[' as char) {
-			bracketDepth++
-		} else if (c == ']' as char) {
-			bracketDepth = Math.max(0, bracketDepth - 1)
-		} else if (c == '<' as char) {
-			angleDepth++
-		} else if (c == '>' as char) {
-			angleDepth = Math.max(0, angleDepth - 1)
-		} else if (c == ',' as char && parenDepth == 0 && angleDepth == 0 && bracketDepth == 0) {
-			parts << text.substring(start, index)
-			start = index + 1
+		if (currentCharacter == '"' as char) {
+			insideStringLiteral = true
+		} else if (currentCharacter == "'" as char) {
+			insideCharacterLiteral = true
+		} else if (currentCharacter == '(' as char) {
+			parenthesisDepth++
+		} else if (currentCharacter == ')' as char) {
+			parenthesisDepth = Math.max(0, parenthesisDepth - 1)
+		} else if (currentCharacter == '[' as char) {
+			squareBracketDepth++
+		} else if (currentCharacter == ']' as char) {
+			squareBracketDepth = Math.max(0, squareBracketDepth - 1)
+		} else if (currentCharacter == '<' as char) {
+			typeArgumentDepth++
+		} else if (currentCharacter == '>' as char) {
+			typeArgumentDepth = Math.max(0, typeArgumentDepth - 1)
+		} else if (currentCharacter == ',' as char && parenthesisDepth == 0 && typeArgumentDepth == 0 && squareBracketDepth == 0) {
+			commaSeparatedParts << text.substring(partStart, index)
+			partStart = index + 1
 		}
 	}
-	parts << text.substring(start)
-	parts
+	commaSeparatedParts << text.substring(partStart)
+	commaSeparatedParts
 }
 
-def singleLineDeclarationPart = { String text ->
+def collapseDeclarationWhitespace = { String text ->
 	text.readLines().collect { it.trim() }.findAll { !it.isEmpty() }.join(" ").replaceAll(/\s+/, " ")
 }
 
-def javaMemberIndent = "  "
+def javaMemberIndentation = "  "
 
 def indentFirstLine = { String text, String indent ->
 	if (indent.isEmpty() || text.isEmpty()) {
@@ -772,79 +756,79 @@ def indentFirstLine = { String text, String indent ->
 	"${indent}${text}"
 }
 
-def normalizeParameterizedDeclarationHeader = { String text ->
-	def markerInfo = findDeclarationMarker(text, 0, text.length())
+def normalizeDeclarationParameterList = { String text ->
+	def markerInfo = findDeclarationBodyOrSemicolon(text, 0, text.length())
 	if (markerInfo == null) {
 		return text
 	}
 
 	def markerIndex = markerInfo.index as int
 	def marker = markerInfo.marker as char
-	def pair = findLastTopLevelParenPair(text, 0, markerIndex)
-	if (pair == null) {
+	def parameterParenthesisPair = findLastTopLevelParenthesisPair(text, 0, markerIndex)
+	if (parameterParenthesisPair == null) {
 		def header = text.substring(0, markerIndex).replaceAll(/[ \t]+$/, "")
 		return header + (marker == '{' as char ? " {" : ";") + text.substring(markerIndex + 1)
 	}
 
-	int open = pair.open as int
-	int close = pair.close as int
-	def prefix = text.substring(0, open).replaceAll(/[ \t\r\n]+$/, "")
-	def params = text.substring(open + 1, close)
-	def suffix = singleLineDeclarationPart(text.substring(close + 1, markerIndex))
-	def suffixText = suffix.isEmpty() ? "" : " ${suffix}"
-	def remainder = text.substring(markerIndex + 1)
-	def baseIndent = lineIndentAt(text, open)
+	int openingParenthesisIndex = parameterParenthesisPair.open as int
+	int closingParenthesisIndex = parameterParenthesisPair.close as int
+	def declarationBeforeParameters = text.substring(0, openingParenthesisIndex).replaceAll(/[ \t\r\n]+$/, "")
+	def parameterListText = text.substring(openingParenthesisIndex + 1, closingParenthesisIndex)
+	def declarationAfterParameters = collapseDeclarationWhitespace(text.substring(closingParenthesisIndex + 1, markerIndex))
+	def spacedDeclarationSuffix = declarationAfterParameters.isEmpty() ? "" : " ${declarationAfterParameters}"
+	def declarationBodyText = text.substring(markerIndex + 1)
+	def declarationIndentation = getLineIndentation(text, openingParenthesisIndex)
 
-	if (params.trim().isEmpty()) {
-		def header = "${prefix}()${suffixText}"
+	if (parameterListText.trim().isEmpty()) {
+		def header = "${declarationBeforeParameters}()${spacedDeclarationSuffix}"
 		if (marker == ';' as char) {
-			return "${header};${remainder}"
+			return "${header};${declarationBodyText}"
 		}
-		if (remainder.trim() == "}") {
+		if (declarationBodyText.trim() == "}") {
 			return "${header} {}"
 		}
-		return "${header} {${remainder}"
+		return "${header} {${declarationBodyText}"
 	}
 
-	def paramIndent = "${baseIndent}    "
-	def paramLines = splitTopLevelCommaText(params).collect { singleLineDeclarationPart(it) }.findAll { !it.isEmpty() }
-	def rebuilt = new StringBuilder()
-	rebuilt << prefix << "(\n"
-	paramLines.eachWithIndex { param, index ->
-		rebuilt << paramIndent << param
-		if (index + 1 < paramLines.size()) {
-			rebuilt << ","
+	def parameterIndentation = "${declarationIndentation}    "
+	def formattedParameters = splitAtTopLevelCommas(parameterListText).collect { collapseDeclarationWhitespace(it) }.findAll { !it.isEmpty() }
+	def formattedDeclaration = new StringBuilder()
+	formattedDeclaration << declarationBeforeParameters << "(\n"
+	formattedParameters.eachWithIndex { parameterText, index ->
+		formattedDeclaration << parameterIndentation << parameterText
+		if (index + 1 < formattedParameters.size()) {
+			formattedDeclaration << ","
 		}
-		rebuilt << "\n"
+		formattedDeclaration << "\n"
 	}
-	rebuilt << baseIndent << ")" << suffixText
+	formattedDeclaration << declarationIndentation << ")" << spacedDeclarationSuffix
 	if (marker == ';' as char) {
-		rebuilt << ";" << remainder
-	} else if (remainder.trim() == "}") {
-		rebuilt << " {}"
+		formattedDeclaration << ";" << declarationBodyText
+	} else if (declarationBodyText.trim() == "}") {
+		formattedDeclaration << " {}"
 	} else {
-		rebuilt << " {" << remainder
+		formattedDeclaration << " {" << declarationBodyText
 	}
-	rebuilt.toString()
+	formattedDeclaration.toString()
 }
 
-def parseAnnotationAt = { String text, int start ->
+def parseAnnotationRangeAt = { String text, int start ->
 	int index = start
 	if (index >= text.length() || text.charAt(index) != '@' as char) {
 		return null
 	}
 	index++
 
-	int nameStart = index
+	int annotationNameStart = index
 	while (index < text.length()) {
-		def c = text.charAt(index)
-		if (Character.isLetterOrDigit(c) || c == '_' as char || c == '.' as char || c == '$' as char) {
+		def currentCharacter = text.charAt(index)
+		if (Character.isLetterOrDigit(currentCharacter) || currentCharacter == '_' as char || currentCharacter == '.' as char || currentCharacter == '$' as char) {
 			index++
 		} else {
 			break
 		}
 	}
-	if (index == nameStart) {
+	if (index == annotationNameStart) {
 		return null
 	}
 
@@ -852,42 +836,42 @@ def parseAnnotationAt = { String text, int start ->
 		index++
 	}
 	if (index < text.length() && text.charAt(index) == '(' as char) {
-		boolean inString = false
-		boolean inChar = false
-		boolean escaping = false
-		int depth = 0
+		boolean insideStringLiteral = false
+		boolean insideCharacterLiteral = false
+		boolean isEscapedCharacter = false
+		int parenthesisDepth = 0
 		while (index < text.length()) {
-			char c = text.charAt(index)
-			if (escaping) {
-				escaping = false
-			} else if (inString) {
-				if (c == '\\' as char) {
-					escaping = true
-				} else if (c == '"' as char) {
-					inString = false
+			char currentCharacter = text.charAt(index)
+			if (isEscapedCharacter) {
+				isEscapedCharacter = false
+			} else if (insideStringLiteral) {
+				if (currentCharacter == '\\' as char) {
+					isEscapedCharacter = true
+				} else if (currentCharacter == '"' as char) {
+					insideStringLiteral = false
 				}
-			} else if (inChar) {
-				if (c == '\\' as char) {
-					escaping = true
-				} else if (c == "'" as char) {
-					inChar = false
+			} else if (insideCharacterLiteral) {
+				if (currentCharacter == '\\' as char) {
+					isEscapedCharacter = true
+				} else if (currentCharacter == "'" as char) {
+					insideCharacterLiteral = false
 				}
-			} else if (c == '"' as char) {
-				inString = true
-			} else if (c == "'" as char) {
-				inChar = true
-			} else if (c == '(' as char) {
-				depth++
-			} else if (c == ')' as char) {
-				depth--
-				if (depth == 0) {
+			} else if (currentCharacter == '"' as char) {
+				insideStringLiteral = true
+			} else if (currentCharacter == "'" as char) {
+				insideCharacterLiteral = true
+			} else if (currentCharacter == '(' as char) {
+				parenthesisDepth++
+			} else if (currentCharacter == ')' as char) {
+				parenthesisDepth--
+				if (parenthesisDepth == 0) {
 					index++
 					break
 				}
 			}
 			index++
 		}
-		if (depth != 0 || inString || inChar) {
+		if (parenthesisDepth != 0 || insideStringLiteral || insideCharacterLiteral) {
 			return null
 		}
 	}
@@ -896,14 +880,14 @@ def parseAnnotationAt = { String text, int start ->
 }
 
 def normalizeAnnotationText = { String text ->
-	singleLineDeclarationPart(text)
+	collapseDeclarationWhitespace(text)
 			.replace("( ", "(")
 			.replace(" )", ")")
 			.replaceAll(/\s*,\s*/, ", ")
 }
 
 def normalizeClassDeclarationHeader = { String text, String declarationIndent ->
-	def markerInfo = findDeclarationMarker(text, 0, text.length())
+	def markerInfo = findDeclarationBodyOrSemicolon(text, 0, text.length())
 	if (markerInfo == null || markerInfo.marker != '{' as char) {
 		return text
 	}
@@ -917,7 +901,7 @@ def normalizeClassDeclarationHeader = { String text, String declarationIndent ->
 		while (cursor < prefix.length() && Character.isWhitespace(prefix.charAt(cursor))) {
 			cursor++
 		}
-		def annotation = parseAnnotationAt(prefix, cursor)
+		def annotation = parseAnnotationRangeAt(prefix, cursor)
 		if (annotation == null) {
 			break
 		}
@@ -925,8 +909,8 @@ def normalizeClassDeclarationHeader = { String text, String declarationIndent ->
 		cursor = annotation.end as int
 	}
 
-	def declarationPart = singleLineDeclarationPart(prefix.substring(cursor))
-	def normalizedDeclaration = normalizeParameterizedDeclarationHeader("${declarationIndent}${declarationPart} {")
+	def declarationPart = collapseDeclarationWhitespace(prefix.substring(cursor))
+	def normalizedDeclaration = normalizeDeclarationParameterList("${declarationIndent}${declarationPart} {")
 			.replaceAll(/\s+\{\s*$/, " {")
 
 	def lines = []
@@ -938,14 +922,14 @@ def normalizeClassDeclarationHeader = { String text, String declarationIndent ->
 }
 
 def normalizeMethodOrConstructorBlock = { String text ->
-	normalizeParameterizedDeclarationHeader(trimBlankEdges(text))
+	normalizeDeclarationParameterList(trimLeadingAndTrailingBlankLines(text))
 }
 
 def normalizeFieldOrInitializerBlock = { String text ->
-	trimBlankEdges(text)
+	trimLeadingAndTrailingBlankLines(text)
 }
 
-def javaLangTypes = [
+def implicitJavaLangTypeNames = [
 		"Appendable", "AutoCloseable", "Boolean", "Byte", "Character", "CharSequence", "Class", "ClassLoader",
 		"Cloneable", "Comparable", "Double", "Enum", "Exception", "Float", "FunctionalInterface", "Integer",
 		"Iterable", "Long", "Math", "Number", "Object", "Override", "Package", "Process", "ProcessBuilder",
@@ -953,44 +937,44 @@ def javaLangTypes = [
 		"StringBuffer", "StringBuilder", "SuppressWarnings", "System", "Thread", "Throwable", "Void"
 ] as Set
 
-def extractImportMap = { String source ->
-	def imports = [:]
+def collectImportedTypeNames = { String source ->
+	def qualifiedTypeNamesBySimpleName = [:]
 	source.readLines().each { line ->
 		def matcher = line =~ /^\s*import\s+(?!static)([\w.]+)\.([A-Za-z_$][\w$]*);\s*$/
 		if (matcher.matches()) {
-			imports[matcher.group(2)] = "${matcher.group(1)}.${matcher.group(2)}"
+			qualifiedTypeNamesBySimpleName[matcher.group(2)] = "${matcher.group(1)}.${matcher.group(2)}"
 		}
 	}
-	imports
+	qualifiedTypeNamesBySimpleName
 }
 
-def normalizeTypeSortName = { Object typeTree, Map importMap ->
+def buildQualifiedTypeSortName = { Object typeTree, Map importedTypesBySimpleName ->
 	if (typeTree == null) {
 		return ""
 	}
-	def text = typeTree.toString()
-	text = text.replaceAll(/@\s*[\w.]+(\s*\([^)]*\))?\s*/, "")
-	text = text.replace("...", "[]")
-	text = text.replaceAll(/\s+/, "")
-	text.replaceAll(/\b([A-Z][A-Za-z0-9_$]*)\b/) { full, simpleName ->
-		if (importMap.containsKey(simpleName)) {
-			return importMap[simpleName]
+	def normalizedTypeName = typeTree.toString()
+	normalizedTypeName = normalizedTypeName.replaceAll(/@\s*[\w.]+(\s*\([^)]*\))?\s*/, "")
+	normalizedTypeName = normalizedTypeName.replace("...", "[]")
+	normalizedTypeName = normalizedTypeName.replaceAll(/\s+/, "")
+	normalizedTypeName.replaceAll(/\b([A-Z][A-Za-z0-9_$]*)\b/) { matchedTypeName, simpleName ->
+		if (importedTypesBySimpleName.containsKey(simpleName)) {
+			return importedTypesBySimpleName[simpleName]
 		}
-		if (javaLangTypes.contains(simpleName)) {
+		if (implicitJavaLangTypeNames.contains(simpleName)) {
 			return "java.lang.${simpleName}"
 		}
 		simpleName
 	}
 }
 
-def parameterTypeKey = { MethodTree methodTree, Map importMap ->
+def buildParameterTypeSortKey = { MethodTree methodTree, Map importedTypesBySimpleName ->
 	methodTree.parameters.collect { parameter ->
-		normalizeTypeSortName(parameter.type, importMap)
+		buildQualifiedTypeSortName(parameter.type, importedTypesBySimpleName)
 	}.join(",")
 }
 
-def fieldTypeSortKey = { VariableTree variableTree, Map importMap ->
-	def typeName = normalizeTypeSortName(variableTree.type, importMap)
+def buildFieldTypeSortKey = { VariableTree variableTree, Map importedTypesBySimpleName ->
+	def typeName = buildQualifiedTypeSortName(variableTree.type, importedTypesBySimpleName)
 	[typeName.length(), typeName]
 }
 
@@ -1014,14 +998,13 @@ def shouldSkipJavaDeclarationFormatting = { ClassTree classTree, Object compilat
 		return false
 	}
 
-	// Registry holders and packet records are hand-grouped; keep their member order untouched.
 	def kindName = classTree.kind.name()
-	boolean finalClass = kindName == "CLASS" && hasModifier(classTree, Modifier.FINAL)
-	boolean recordClass = kindName == "RECORD"
-	finalClass || recordClass
+	boolean isFinalClass = kindName == "CLASS" && hasModifier(classTree, Modifier.FINAL)
+	boolean isRecordDeclaration = kindName == "RECORD"
+	isFinalClass || isRecordDeclaration
 }
 
-def declarationVisibilityRank = { tree ->
+def getVisibilitySortRank = { tree ->
 	if (hasModifier(tree, Modifier.PUBLIC)) {
 		return 0
 	}
@@ -1034,38 +1017,38 @@ def declarationVisibilityRank = { tree ->
 	3
 }
 
-def fieldCategoryRank = { VariableTree tree ->
-	boolean staticMember = hasModifier(tree, Modifier.STATIC)
-	switch (declarationVisibilityRank(tree)) {
+def getFieldCategorySortRank = { VariableTree tree ->
+	boolean isStaticMember = hasModifier(tree, Modifier.STATIC)
+	switch (getVisibilitySortRank(tree)) {
 		case 0:
-			return staticMember ? 0 : 1
+			return isStaticMember ? 0 : 1
 		case 1:
-			return staticMember ? 2 : 3
+			return isStaticMember ? 2 : 3
 		case 2:
-			return staticMember ? 4 : 5
+			return isStaticMember ? 4 : 5
 		default:
-			return staticMember ? 4 : 5
+			return isStaticMember ? 4 : 5
 	}
 }
 
-def methodCategoryRank = { MethodTree tree ->
-	boolean staticMember = hasModifier(tree, Modifier.STATIC)
-	switch (declarationVisibilityRank(tree)) {
+def getMethodCategorySortRank = { MethodTree tree ->
+	boolean isStaticMember = hasModifier(tree, Modifier.STATIC)
+	switch (getVisibilitySortRank(tree)) {
 		case 0:
-			return staticMember ? 7 : 8
+			return isStaticMember ? 7 : 8
 		case 1:
-			return staticMember ? 9 : 10
+			return isStaticMember ? 9 : 10
 		case 2:
-			return staticMember ? 11 : 12
+			return isStaticMember ? 11 : 12
 		default:
-			return staticMember ? 11 : 12
+			return isStaticMember ? 11 : 12
 	}
 }
 
-def collectPrivateMethodCallOrder = { ClassTree classTree, Object positions, Object compilationUnit ->
-	def calls = [:]
-	int[] nextOrder = [0] as int[]
-	def scanner = new TreeScanner<Void, Void>() {
+def collectMethodFirstInvocationOrder = { ClassTree classTree, Object sourcePositions, Object compilationUnit ->
+	def firstInvocationOrderByName = [:]
+	int[] nextInvocationOrder = [0] as int[]
+	def methodInvocationScanner = new TreeScanner<Void, Void>() {
 		@Override
 		Void visitClass(ClassTree nestedClassTree, Void unused) {
 			if (nestedClassTree == classTree) {
@@ -1076,25 +1059,25 @@ def collectPrivateMethodCallOrder = { ClassTree classTree, Object positions, Obj
 
 		@Override
 		Void visitMethodInvocation(MethodInvocationTree invocationTree, Void unused) {
-			def selected = invocationTree.methodSelect
-			def name = selected instanceof MemberSelectTree
-					? selected.identifier.toString()
-					: selected instanceof IdentifierTree ? selected.name.toString() : selected.toString()
-			if (!calls.containsKey(name)) {
-				calls[name] = nextOrder[0]++
+			def invokedMethodExpression = invocationTree.methodSelect
+			def invokedMethodName = invokedMethodExpression instanceof MemberSelectTree
+					? invokedMethodExpression.identifier.toString()
+					: invokedMethodExpression instanceof IdentifierTree ? invokedMethodExpression.name.toString() : invokedMethodExpression.toString()
+			if (!firstInvocationOrderByName.containsKey(invokedMethodName)) {
+				firstInvocationOrderByName[invokedMethodName] = nextInvocationOrder[0]++
 			}
 			super.visitMethodInvocation(invocationTree, unused)
 			return null
 		}
 	}
 
-	classTree.members.findAll { !(it instanceof ClassTree) }.each { scanner.scan(it, null) }
-	calls
+	classTree.members.findAll { !(it instanceof ClassTree) }.each { methodInvocationScanner.scan(it, null) }
+	firstInvocationOrderByName
 }
 
 def compareSortKeys = { List left, List right ->
-	int max = Math.max(left.size(), right.size())
-	for (int index = 0; index < max; index++) {
+	int maxKeyLength = Math.max(left.size(), right.size())
+	for (int index = 0; index < maxKeyLength; index++) {
 		def leftValue = index < left.size() ? left[index] : null
 		def rightValue = index < right.size() ? right[index] : null
 		if (leftValue == rightValue) {
@@ -1106,100 +1089,100 @@ def compareSortKeys = { List left, List right ->
 		if (rightValue == null) {
 			return 1
 		}
-		int compared = leftValue <=> rightValue
-		if (compared != 0) {
-			return compared
+		int valueComparison = leftValue <=> rightValue
+		if (valueComparison != 0) {
+			return valueComparison
 		}
 	}
 	0
 }
 
-def collectFieldInitializerReferences = { unit ->
-	def references = [] as Set
-	def scanner = new TreeScanner<Void, Void>() {
+def collectFieldInitializerReferences = { fieldMemberUnit ->
+	def referencedNames = [] as Set
+	def initializerReferenceScanner = new TreeScanner<Void, Void>() {
 		@Override
 		Void visitIdentifier(IdentifierTree identifierTree, Void unused) {
-			references << identifierTree.name.toString()
+			referencedNames << identifierTree.name.toString()
 			super.visitIdentifier(identifierTree, unused)
 			return null
 		}
 	}
 
-	unit.trees.findAll { it instanceof VariableTree }.each { VariableTree variableTree ->
+	fieldMemberUnit.trees.findAll { it instanceof VariableTree }.each { VariableTree variableTree ->
 		if (variableTree.initializer != null) {
-			scanner.scan(variableTree.initializer, null)
+			initializerReferenceScanner.scan(variableTree.initializer, null)
 		}
 	}
-	references
+	referencedNames
 }
 
-def sortMemberUnits = { List units, Closure memberSortKey ->
-	Map<String, Integer> fieldOwnerByName = [:]
-	units.eachWithIndex { unit, int index ->
-		if (unit.tree instanceof VariableTree) {
-			unit.trees.each { fieldOwnerByName[it.name.toString()] = index as Integer }
+def sortMembersRespectingFieldDependencies = { List memberUnits, Closure buildMemberSortKey ->
+	Map<String, Integer> memberIndexByFieldName = [:]
+	memberUnits.eachWithIndex { memberUnit, int index ->
+		if (memberUnit.tree instanceof VariableTree) {
+			memberUnit.trees.each { memberIndexByFieldName[it.name.toString()] = index as Integer }
 		}
 	}
 
-	List<Integer> unitIndexes = (0..<units.size()).collect { it as Integer }
-	Map<Integer, Set<Integer>> outgoing = unitIndexes.collectEntries { Integer unitIndex ->
-		[(unitIndex): new LinkedHashSet<Integer>()]
+	List<Integer> memberIndexes = (0..<memberUnits.size()).collect { it as Integer }
+	Map<Integer, Set<Integer>> dependentMemberIndexes = memberIndexes.collectEntries { Integer memberIndex ->
+		[(memberIndex): new LinkedHashSet<Integer>()]
 	} as Map<Integer, Set<Integer>>
-	Map<Integer, Integer> indegree = unitIndexes.collectEntries { Integer unitIndex -> [(unitIndex): 0] } as Map<Integer, Integer>
-	units.eachWithIndex { unit, int index ->
-		if (unit.tree instanceof VariableTree) {
-			collectFieldInitializerReferences.call(unit).each { name ->
-				Integer dependency = fieldOwnerByName[name as String]
-				if (dependency != null && dependency != index && outgoing[dependency].add(index as Integer)) {
-					indegree[index] = indegree[index] + 1
+	Map<Integer, Integer> unresolvedDependencyCounts = memberIndexes.collectEntries { Integer memberIndex -> [(memberIndex): 0] } as Map<Integer, Integer>
+	memberUnits.eachWithIndex { memberUnit, int index ->
+		if (memberUnit.tree instanceof VariableTree) {
+			collectFieldInitializerReferences.call(memberUnit).each { referencedFieldName ->
+				Integer dependencyMemberIndex = memberIndexByFieldName[referencedFieldName as String]
+				if (dependencyMemberIndex != null && dependencyMemberIndex != index && dependentMemberIndexes[dependencyMemberIndex].add(index as Integer)) {
+					unresolvedDependencyCounts[index] = unresolvedDependencyCounts[index] + 1
 				}
 			}
 		}
 	}
 
-	List sorted = []
-	List<Integer> available = unitIndexes.findAll { Integer unitIndex -> indegree[unitIndex] == 0 }
-	Set<Integer> remaining = unitIndexes as Set<Integer>
-	while (!available.isEmpty()) {
-		available.sort { Integer left, Integer right ->
-			compareSortKeys.call(memberSortKey.call(units[left]) as List, memberSortKey.call(units[right]) as List) as int
+	List sortedMemberUnits = []
+	List<Integer> readyMemberIndexes = memberIndexes.findAll { Integer memberIndex -> unresolvedDependencyCounts[memberIndex] == 0 }
+	Set<Integer> remainingMemberIndexes = memberIndexes as Set<Integer>
+	while (!readyMemberIndexes.isEmpty()) {
+		readyMemberIndexes.sort { Integer left, Integer right ->
+			compareSortKeys.call(buildMemberSortKey.call(memberUnits[left]) as List, buildMemberSortKey.call(memberUnits[right]) as List) as int
 		}
-		Integer selected = available.remove(0)
-		if (!remaining.remove(selected)) {
+		Integer selectedMemberIndex = readyMemberIndexes.remove(0)
+		if (!remainingMemberIndexes.remove(selectedMemberIndex)) {
 			continue
 		}
-		sorted << units[selected]
-		outgoing[selected].each { Integer next ->
-			indegree[next] = indegree[next] - 1
-			if (indegree[next] == 0 && remaining.contains(next)) {
-				available.add(next)
+		sortedMemberUnits << memberUnits[selectedMemberIndex]
+		dependentMemberIndexes[selectedMemberIndex].each { Integer dependentMemberIndex ->
+			unresolvedDependencyCounts[dependentMemberIndex] = unresolvedDependencyCounts[dependentMemberIndex] - 1
+			if (unresolvedDependencyCounts[dependentMemberIndex] == 0 && remainingMemberIndexes.contains(dependentMemberIndex)) {
+				readyMemberIndexes.add(dependentMemberIndex)
 			}
 		}
 	}
 
-	if (!remaining.isEmpty()) {
-		sorted.addAll(remaining.collect { Integer unitIndex -> units[unitIndex] }.sort { left, right ->
-			compareSortKeys.call(memberSortKey.call(left) as List, memberSortKey.call(right) as List) as int
+	if (!remainingMemberIndexes.isEmpty()) {
+		sortedMemberUnits.addAll(remainingMemberIndexes.collect { Integer memberIndex -> memberUnits[memberIndex] }.sort { left, right ->
+			compareSortKeys.call(buildMemberSortKey.call(left) as List, buildMemberSortKey.call(right) as List) as int
 		})
 	}
-	sorted
+	sortedMemberUnits
 }
 
-def sameFieldGroup = { left, right, Map importMap ->
+def areFieldsInSameFormattingGroup = { left, right, Map importedTypesBySimpleName ->
 	if (!(left.tree instanceof VariableTree) || !(right.tree instanceof VariableTree)) {
 		return false
 	}
-	if (fieldCategoryRank(left.tree) != fieldCategoryRank(right.tree)) {
+	if (getFieldCategorySortRank(left.tree) != getFieldCategorySortRank(right.tree)) {
 		return false
 	}
-	fieldTypeSortKey(left.tree, importMap) == fieldTypeSortKey(right.tree, importMap)
+	buildFieldTypeSortKey(left.tree, importedTypesBySimpleName) == buildFieldTypeSortKey(right.tree, importedTypesBySimpleName)
 }
 
-def joinFormattedMembers = { List sortedUnits, List formattedMembers, Map importMap ->
+def joinFormattedMembers = { List sortedMemberUnits, List formattedMembers, Map importedTypesBySimpleName ->
 	def joined = new StringBuilder()
 	formattedMembers.eachWithIndex { formattedMember, index ->
 		if (index > 0) {
-			joined << (sameFieldGroup(sortedUnits[index - 1], sortedUnits[index], importMap) ? "\n" : "\n\n")
+			joined << (areFieldsInSameFormattingGroup(sortedMemberUnits[index - 1], sortedMemberUnits[index], importedTypesBySimpleName) ? "\n" : "\n\n")
 		}
 		joined << formattedMember
 	}
@@ -1207,143 +1190,142 @@ def joinFormattedMembers = { List sortedUnits, List formattedMembers, Map import
 }
 
 def formatJavaClassDeclaration
-formatJavaClassDeclaration = { ClassTree classTree, String source, Object compilationUnit, Object positions, Map importMap, String declarationIndent ->
-	int classStart = positions.getStartPosition(compilationUnit, classTree) as int
-	int classEnd = positions.getEndPosition(compilationUnit, classTree) as int
+formatJavaClassDeclaration = { ClassTree classTree, String source, Object compilationUnit, Object sourcePositions, Map importedTypesBySimpleName, String declarationIndent ->
+	int classStart = sourcePositions.getStartPosition(compilationUnit, classTree) as int
+	int classEnd = sourcePositions.getEndPosition(compilationUnit, classTree) as int
 	if (classStart < 0 || classEnd <= classStart) {
 		return source.substring(classStart, classEnd)
 	}
-	def classIndent = declarationIndent == null ? lineIndentAt(source, classStart) : declarationIndent
+	def classIndent = declarationIndent == null ? getLineIndentation(source, classStart) : declarationIndent
 
 	if (classTree.kind.name() == "ENUM") {
-		return indentFirstLine(trimBlankEdges(source.substring(classStart, classEnd)), classIndent)
+		return indentFirstLine(trimLeadingAndTrailingBlankLines(source.substring(classStart, classEnd)), classIndent)
 	}
 
-	def marker = findDeclarationMarker(source, classStart, classEnd)
+	def marker = findDeclarationBodyOrSemicolon(source, classStart, classEnd)
 	if (marker == null || marker.marker != '{' as char) {
-		return indentFirstLine(trimBlankEdges(source.substring(classStart, classEnd)), classIndent)
+		return indentFirstLine(trimLeadingAndTrailingBlankLines(source.substring(classStart, classEnd)), classIndent)
 	}
 
 	int openBrace = marker.index as int
 	def header = normalizeClassDeclarationHeader(source.substring(classStart, openBrace + 1), classIndent)
 
-	def rawMembers = []
+	def membersInSourceOrder = []
 	classTree.members.eachWithIndex { memberTree, originalIndex ->
-		int start = positions.getStartPosition(compilationUnit, memberTree) as int
-		int end = positions.getEndPosition(compilationUnit, memberTree) as int
+		int start = sourcePositions.getStartPosition(compilationUnit, memberTree) as int
+		int end = sourcePositions.getEndPosition(compilationUnit, memberTree) as int
 		if (start > openBrace && end > start) {
-			rawMembers << [tree: memberTree, trees: [memberTree], start: start, end: end, originalIndex: originalIndex]
+			membersInSourceOrder << [tree: memberTree, trees: [memberTree], start: start, end: end, originalIndex: originalIndex]
 		}
 	}
-	rawMembers.sort { left, right -> left.start <=> right.start }
+	membersInSourceOrder.sort { left, right -> left.start <=> right.start }
 
-	def units = []
-	rawMembers.each { member ->
-		def previous = units.isEmpty() ? null : units.last()
-		if (previous != null
+	def memberUnits = []
+	membersInSourceOrder.each { member ->
+		def previousMemberUnit = memberUnits.isEmpty() ? null : memberUnits.last()
+		if (previousMemberUnit != null
 				&& member.tree instanceof VariableTree
-				&& previous.tree instanceof VariableTree
-				&& member.start < previous.end) {
-			previous.trees << member.tree
-			previous.end = Math.max(previous.end as int, member.end as int)
+				&& previousMemberUnit.tree instanceof VariableTree
+				&& member.start < previousMemberUnit.end) {
+			previousMemberUnit.trees << member.tree
+			previousMemberUnit.end = Math.max(previousMemberUnit.end as int, member.end as int)
 		} else {
-			units << member
+			memberUnits << member
 		}
 	}
 
-	if (units.isEmpty()) {
+	if (memberUnits.isEmpty()) {
 		return "${header.substring(0, header.length() - 1)}{}"
 	}
 
-	Map callOrder = collectPrivateMethodCallOrder.call(classTree, positions, compilationUnit) as Map
-	def memberSortKey = { unit ->
-		def tree = unit.tree
+	Map firstInvocationOrderByMethodName = collectMethodFirstInvocationOrder.call(classTree, sourcePositions, compilationUnit) as Map
+	def buildMemberSortKey = { memberUnit ->
+		def tree = memberUnit.tree
 		if (tree instanceof VariableTree) {
-			def names = unit.trees.collect { it.name.toString() }
-			def typeKey = fieldTypeSortKey(tree, importMap)
-			return [fieldCategoryRank(tree), 0, typeKey[0], typeKey[1], names.first(), names.join(","), unit.originalIndex]
+			def fieldNames = memberUnit.trees.collect { it.name.toString() }
+			List fieldTypeKey = buildFieldTypeSortKey(tree, importedTypesBySimpleName) as List
+			return [getFieldCategorySortRank(tree), 0, fieldTypeKey.get(0), fieldTypeKey.get(1), fieldNames.first(), fieldNames.join(","), memberUnit.originalIndex]
 		}
 		if (tree instanceof MethodTree) {
-			def name = tree.name.toString()
-			if (name == "<init>") {
-				return [6, 1, tree.parameters.size(), parameterTypeKey(tree, importMap), unit.originalIndex]
+			def methodName = tree.name.toString()
+			if (methodName == "<init>") {
+				return [6, 1, tree.parameters.size(), buildParameterTypeSortKey(tree, importedTypesBySimpleName), memberUnit.originalIndex]
 			}
-			List<Object> base = new ArrayList<Object>([methodCategoryRank(tree), 0])
-			if (hasModifier(tree, Modifier.PRIVATE) || declarationVisibilityRank(tree) == 3) {
-				base.add(callOrder.containsKey(name) ? callOrder[name] : Integer.MAX_VALUE)
+			List<Object> methodSortKey = new ArrayList<Object>([getMethodCategorySortRank(tree), 0])
+			if (hasModifier(tree, Modifier.PRIVATE) || getVisibilitySortRank(tree) == 3) {
+				methodSortKey.add(firstInvocationOrderByMethodName.containsKey(methodName) ? firstInvocationOrderByMethodName[methodName] : Integer.MAX_VALUE)
 			}
-			base.addAll([name, tree.parameters.size(), parameterTypeKey(tree, importMap), unit.originalIndex])
-			return base
+			methodSortKey.addAll([methodName, tree.parameters.size(), buildParameterTypeSortKey(tree, importedTypesBySimpleName), memberUnit.originalIndex])
+			return methodSortKey
 		}
 		if (tree instanceof ClassTree) {
-			return [13, 0, tree.simpleName.toString(), unit.originalIndex]
+			return [13, 0, tree.simpleName.toString(), memberUnit.originalIndex]
 		}
-		[6, 0, unit.originalIndex]
+		[6, 0, memberUnit.originalIndex]
 	}
 
-	def sortedUnits = sortMemberUnits.call(units, memberSortKey)
+	def sortedMemberUnits = sortMembersRespectingFieldDependencies.call(memberUnits, buildMemberSortKey)
 	int lowerBound = openBrace + 1
-	def formattedMembers = sortedUnits.collect { unit ->
-		int leadingStart = includeLeadingDeclarationTrivia(source, lowerBound, unit.start as int)
-		def tree = unit.tree
+	def formattedMembers = sortedMemberUnits.collect { memberUnit ->
+		int leadingStart = findDeclarationStartWithLeadingComments(source, lowerBound, memberUnit.start as int)
+		def tree = memberUnit.tree
 		if (tree instanceof ClassTree) {
 			return formatJavaClassDeclaration.call(
-					tree as ClassTree, source, compilationUnit, positions, importMap, "${classIndent}${javaMemberIndent}"
+					tree as ClassTree, source, compilationUnit, sourcePositions, importedTypesBySimpleName, "${classIndent}${javaMemberIndentation}"
 			)
 		}
-		def block = source.substring(leadingStart, unit.end as int)
+		def memberSourceText = source.substring(leadingStart, memberUnit.end as int)
 		if (tree instanceof MethodTree) {
-			return normalizeMethodOrConstructorBlock(block)
+			return normalizeMethodOrConstructorBlock(memberSourceText)
 		}
-		normalizeFieldOrInitializerBlock(block)
+		normalizeFieldOrInitializerBlock(memberSourceText)
 	}
 
-	"${header}\n\n${joinFormattedMembers(sortedUnits, formattedMembers, importMap)}\n\n${classIndent}}"
+	"${header}\n\n${joinFormattedMembers(sortedMemberUnits, formattedMembers, importedTypesBySimpleName)}\n\n${classIndent}}"
 }
 
-def formatJavaDeclarations = { File sourceFile, boolean checkOnly ->
-	def original = sourceFile.getText("UTF-8")
-	def newline = original.contains("\r\n") ? "\r\n" : "\n"
-	def normalizedOriginal = original.replace("\r\n", "\n")
-	def parsed = parseJavaSource(sourceFile, normalizedOriginal)
-	if (parsed == null) {
+def normalizeJavaFileDeclarations = { File sourceFile, boolean checkOnly ->
+	def originalSourceText = sourceFile.getText("UTF-8")
+	def lineSeparator = originalSourceText.contains("\r\n") ? "\r\n" : "\n"
+	def sourceWithLfLineEndings = originalSourceText.replace("\r\n", "\n")
+	def parsedSource = parseJavaCompilationUnit(sourceFile, sourceWithLfLineEndings)
+	if (parsedSource == null) {
 		return false
 	}
 
-	def importMap = extractImportMap(normalizedOriginal)
+	def importedTypesBySimpleName = collectImportedTypeNames(sourceWithLfLineEndings)
 	def replacements = []
-	// Leave selected utility.registry declarations out of member sorting.
-	List<ClassTree> typeDeclsToFormat = parsed.unit.typeDecls.findAll { typeDecl ->
-		typeDecl instanceof ClassTree && !shouldSkipJavaDeclarationFormatting(typeDecl, parsed.unit)
+	List<ClassTree> typeDeclarationsToFormat = parsedSource.unit.typeDecls.findAll { typeDeclaration ->
+		typeDeclaration instanceof ClassTree && !shouldSkipJavaDeclarationFormatting(typeDeclaration, parsedSource.unit)
 	}.collect { it as ClassTree }
-	typeDeclsToFormat.each { ClassTree classTree ->
-		int start = parsed.positions.getStartPosition(parsed.unit, classTree) as int
-		int end = parsed.positions.getEndPosition(parsed.unit, classTree) as int
+	typeDeclarationsToFormat.each { ClassTree classTree ->
+		int start = parsedSource.positions.getStartPosition(parsedSource.unit, classTree) as int
+		int end = parsedSource.positions.getEndPosition(parsedSource.unit, classTree) as int
 		if (start >= 0 && end > start) {
-			int lineStart = lineStartAt(normalizedOriginal, start) as int
-			int replacementStart = normalizedOriginal.substring(lineStart, start).trim().isEmpty() ? lineStart : start
+			int lineStart = findLineStart(sourceWithLfLineEndings, start) as int
+			int replacementStart = sourceWithLfLineEndings.substring(lineStart, start).trim().isEmpty() ? lineStart : start
 			replacements << [
 					start: replacementStart,
 					end: end,
-					text: formatJavaClassDeclaration.call(classTree, normalizedOriginal, parsed.unit, parsed.positions, importMap, "")
+					text: formatJavaClassDeclaration.call(classTree, sourceWithLfLineEndings, parsedSource.unit, parsedSource.positions, importedTypesBySimpleName, "")
 			]
 		}
 	}
 
-	def rewrittenNormalized = new StringBuilder(normalizedOriginal)
+	def formattedSourceWithLfLineEndings = new StringBuilder(sourceWithLfLineEndings)
 	replacements.sort { left, right -> right.start <=> left.start }.each { replacement ->
-		rewrittenNormalized.replace(replacement.start as int, replacement.end as int, replacement.text as String)
+		formattedSourceWithLfLineEndings.replace(replacement.start as int, replacement.end as int, replacement.text as String)
 	}
 
-	def rewritten = rewrittenNormalized.toString().replace("\n", newline)
-	if (original.endsWith("\n") || original.endsWith("\r\n")) {
-		rewritten = rewritten.replaceAll(/(\r?\n)*$/, "") + newline
+	def formattedSourceText = formattedSourceWithLfLineEndings.toString().replace("\n", lineSeparator)
+	if (originalSourceText.endsWith("\n") || originalSourceText.endsWith("\r\n")) {
+		formattedSourceText = formattedSourceText.replaceAll(/(\r?\n)*$/, "") + lineSeparator
 	}
-	if (rewritten == original) {
+	if (formattedSourceText == originalSourceText) {
 		return false
 	}
 	if (!checkOnly) {
-		sourceFile.write(rewritten, "UTF-8")
+		sourceFile.write(formattedSourceText, "UTF-8")
 	}
 	true
 }
@@ -1352,13 +1334,13 @@ tasks.register("formatJavaHead") {
 	group = "formatting"
 	description = "Normalizes Java license headers, package spacing, and import comment groups under src."
 	inputs.files(javaSourceFiles)
-	inputs.file(importGroupConfigFile)
+	inputs.file(importGroupsConfigFile)
 	outputs.upToDateWhen { false }
 
 	doLast {
-		List groups = loadImportGroups() as List
+		List importGroups = loadImportGroupDefinitions() as List
 		javaSourceFiles.each { File sourceFile ->
-			rewriteJavaHead(sourceFile, groups, false)
+			normalizeJavaFileHeaderAndImports(sourceFile, importGroups, false)
 		}
 	}
 }
@@ -1371,8 +1353,8 @@ tasks.register("formatJavaBody") {
 
 	doLast {
 		javaSourceFiles.each { File sourceFile ->
-			rewriteJavaAnnotations(sourceFile, false)
-			formatJavaDeclarations(sourceFile, false)
+			mergeConsecutiveAnnotationLines(sourceFile, false)
+			normalizeJavaFileDeclarations(sourceFile, false)
 		}
 	}
 }
@@ -1381,15 +1363,15 @@ tasks.register("checkJavaImportGroups") {
 	group = "verification"
 	description = "Checks Java license headers, package spacing, and import comment groups under src."
 	inputs.files(javaSourceFiles)
-	inputs.file(importGroupConfigFile)
+	inputs.file(importGroupsConfigFile)
 
 	doLast {
-		List groups = loadImportGroups() as List
-		def changed = javaSourceFiles.findAll { File sourceFile ->
-			rewriteJavaHead(sourceFile, groups, true)
+		List importGroups = loadImportGroupDefinitions() as List
+		def filesWithUnnormalizedHeaders = javaSourceFiles.findAll { File sourceFile ->
+			normalizeJavaFileHeaderAndImports(sourceFile, importGroups, true)
 		}
-		if (!changed.isEmpty()) {
-			throw new GradleException("Java file heads are not normalized. Run ./gradlew formatJavaHead. Files: ${changed.join(", ")}")
+		if (!filesWithUnnormalizedHeaders.isEmpty()) {
+			throw new GradleException("Java file heads are not normalized. Run ./gradlew formatJavaHead. Files: ${filesWithUnnormalizedHeaders.join(", ")}")
 		}
 	}
 }
@@ -1418,12 +1400,5 @@ publishing {
 		create("mavenJava", MavenPublication) {
 			from components.java
 		}
-	}
-	// See https://docs.gradle.org/current/userguide/publishing_maven.html for information on how to set up publishing.
-	repositories {
-		// Add repositories to publish to here.
-		// Notice: This block does NOT have the same function as the block in the top level.
-		// The repositories here will be used for publishing your artifact, not for
-		// retrieving dependencies.
 	}
 }
