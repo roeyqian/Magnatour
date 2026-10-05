@@ -465,7 +465,7 @@ def newStringJavaFileObject = { File sourceFile, String source ->
 def parseJavaSource = { File sourceFile, String source ->
 	def compiler = ToolProvider.systemJavaCompiler
 	if (compiler == null) {
-		throw new GradleException("formatJavaDeclarations requires Gradle to run on a JDK, not a JRE.")
+		throw new GradleException("formatJavaBody requires Gradle to run on a JDK, not a JRE.")
 	}
 
 	def diagnostics = new DiagnosticCollector<JavaFileObject>()
@@ -1363,27 +1363,15 @@ tasks.register("formatJavaHead") {
 	}
 }
 
-tasks.register("formatJavaAnnotations") {
+tasks.register("formatJavaBody") {
 	group = "formatting"
-	description = "Merges consecutive Java annotation lines under src."
+	description = "Merges consecutive Java annotation lines and sorts and normalizes Java declarations under src."
 	inputs.files(javaSourceFiles)
 	outputs.upToDateWhen { false }
 
 	doLast {
 		javaSourceFiles.each { File sourceFile ->
 			rewriteJavaAnnotations(sourceFile, false)
-		}
-	}
-}
-
-tasks.register("formatJavaDeclarations") {
-	group = "formatting"
-	description = "Sorts and normalizes Java declarations under src."
-	inputs.files(javaSourceFiles)
-	outputs.upToDateWhen { false }
-
-	doLast {
-		javaSourceFiles.each { File sourceFile ->
 			formatJavaDeclarations(sourceFile, false)
 		}
 	}
@@ -1408,8 +1396,7 @@ tasks.register("checkJavaImportGroups") {
 
 tasks.withType(JavaCompile).configureEach {
 	it.dependsOn(tasks.named("formatJavaHead"))
-	it.dependsOn(tasks.named("formatJavaAnnotations"))
-	it.dependsOn(tasks.named("formatJavaDeclarations"))
+	it.dependsOn(tasks.named("formatJavaBody"))
 }
 
 java {
