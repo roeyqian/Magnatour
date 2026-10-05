@@ -1,4 +1,7 @@
 {
+  "msg.magnatour.gold_bell_tower.reinforcements": "鐘が爆発した！守鐘人が %s 体、鐘霊が %s 体出現した",
+  "msg.magnatour.gold_bell_tower.disabled": "鐘の音が守衛とモンスターたちを鎮圧し、塔内のモンスター %s 体を倒した（もう一度鐘を鳴らすとスポーンが再開する）",
+  "msg.magnatour.gold_bell_tower.resumed": "鐘の音が塔の守衛たちを再び目覚めさせた",
   "key.category.magnatour.general": "Magnatour",
   "key.magnatour.universe_mode": "ツールモード切替",
   "tag.item.magnatour.supreme_core": "至高の核",

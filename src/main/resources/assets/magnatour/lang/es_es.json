@@ -1,4 +1,7 @@
 {
+  "msg.magnatour.gold_bell_tower.reinforcements": "¡La campana explotó! Aparecieron %s campaneros y %s almas de campana",
+  "msg.magnatour.gold_bell_tower.disabled": "El tañido de la campana sometió a los guardias y monstruos, eliminando %s monstruos dentro de la torre (toca una campana de nuevo para restaurar las apariciones)",
+  "msg.magnatour.gold_bell_tower.resumed": "El tañido de la campana ha vuelto a despertar a los guardias de la torre",
   "key.category.magnatour.general": "Magnatour",
   "key.magnatour.universe_mode": "Cambiar modo de herramienta",
   "tag.item.magnatour.supreme_core": "Núcleo Supremo",

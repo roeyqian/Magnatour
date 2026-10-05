@@ -1,4 +1,7 @@
 {
+  "msg.magnatour.gold_bell_tower.reinforcements": "The bell exploded! %s Bell Ringers and %s Bell Souls appeared",
+  "msg.magnatour.gold_bell_tower.disabled": "The bell's toll subdued the guards and monsters, killing %s monsters inside the tower (ring a bell again to restore spawning)",
+  "msg.magnatour.gold_bell_tower.resumed": "The bell's toll has reawakened the tower's guards",
   "key.category.magnatour.general": "Magnatour",
   "key.magnatour.universe_mode": "Tool Mode Toggle",
   "tag.item.magnatour.supreme_core": "Supreme Core",

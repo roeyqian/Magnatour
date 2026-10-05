@@ -1,4 +1,7 @@
 {
+  "msg.magnatour.gold_bell_tower.reinforcements": "La cloche a explosé ! %s sonneurs et %s âmes de cloche sont apparus",
+  "msg.magnatour.gold_bell_tower.disabled": "Le son de la cloche a soumis les gardes et les monstres, tuant %s monstres dans la tour (faites sonner une cloche à nouveau pour rétablir les apparitions)",
+  "msg.magnatour.gold_bell_tower.resumed": "Le son de la cloche a réveillé les gardes de la tour une nouvelle fois",
   "key.category.magnatour.general": "Magnatour",
   "key.magnatour.universe_mode": "Changer le mode de l'outil",
   "tag.item.magnatour.supreme_core": "Noyau Suprême",

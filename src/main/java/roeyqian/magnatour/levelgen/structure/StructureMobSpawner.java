@@ -26,6 +26,7 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 // Minecraft
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -35,7 +36,9 @@ import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.animal.Animal;
+import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.WorldGenLevel;
@@ -54,6 +57,7 @@ import org.jspecify.annotations.Nullable;
 import roeyqian.magnatour.Magnatour;
 import roeyqian.magnatour.entity.supreme.BellRinger;
 import roeyqian.magnatour.entity.supreme.BellSoul;
+import roeyqian.magnatour.level.GoldBellTowerSpawnSavedData;
 import roeyqian.magnatour.registry.content.SupremeEntities;
 import roeyqian.magnatour.registry.worldgen.CustomDimensions;
 import roeyqian.magnatour.registry.worldgen.CustomStructures;
@@ -65,10 +69,11 @@ public final class StructureMobSpawner {
   private static final int DIAMOND_CITY_SITE_CEILING_SCAN_DISTANCE = 4;
   private static final int DIAMOND_CITY_SPAWN_SITE_CHUNK_SCAN_BUDGET = 8;
   private static final int DIAMOND_CITY_TARGET_OBSIDIAN_GOLEMS = 64;
-  private static final int GOLD_BELL_TOWER_MAX_POPULATION = 64;
+  private static final int GOLD_BELL_TOWER_BELL_SPAWNS_PER_TYPE = 4;
+  private static final int GOLD_BELL_TOWER_MAX_POPULATION = 80;
   private static final int GOLD_BELL_TOWER_SCAN_RADIUS_CHUNKS = 6;
-  private static final int GOLD_BELL_TOWER_TARGET_BELL_RINGERS = 32;
-  private static final int GOLD_BELL_TOWER_TARGET_BELL_SOULS = 24;
+  private static final int GOLD_BELL_TOWER_TARGET_BELL_RINGERS = 48;
+  private static final int GOLD_BELL_TOWER_TARGET_BELL_SOULS = 32;
   private static final int MAX_SPAWNS_PER_CYCLE = 8;
   private static final int TOWN_OF_FORTUNE_MAX_SPAWNS_PER_CYCLE = 2;
   private static final int TOWN_OF_FORTUNE_SCAN_RADIUS_CHUNKS = 10;
@@ -76,10 +81,13 @@ public final class StructureMobSpawner {
   private static final int TOWN_OF_FORTUNE_TARGET_ANIMALS = 16;
   private static final int TOWN_OF_FORTUNE_TARGET_VILLAGERS = 16;
 
+  private static final long GOLD_BELL_TOWER_SPAWN_INTERVAL_TICKS = 80L;
   private static final long SPAWN_INTERVAL_TICKS = 20L;
   private static final long STATE_PRUNE_INTERVAL_TICKS = 200L;
   private static final long STATE_TTL_TICKS = 1200L;
   private static final long TOWN_OF_FORTUNE_SPAWN_INTERVAL_TICKS = 1200L;
+
+  private static final float GOLD_BELL_TOWER_BELL_EXPLOSION_POWER = 2.0F;
 
   private static final double DIAMOND_CITY_COUNT_HORIZONTAL_PADDING = 6.0D;
   private static final double DIAMOND_CITY_COUNT_VERTICAL_PADDING = 6.0D;
@@ -116,8 +124,8 @@ public final class StructureMobSpawner {
           48.0D,
           GOLD_BELL_TOWER_TARGET_BELL_RINGERS + GOLD_BELL_TOWER_TARGET_BELL_SOULS,
           GOLD_BELL_TOWER_MAX_POPULATION,
-          SPAWN_INTERVAL_TICKS,
-          SPAWN_INTERVAL_TICKS,
+          GOLD_BELL_TOWER_SPAWN_INTERVAL_TICKS,
+          GOLD_BELL_TOWER_SPAWN_INTERVAL_TICKS,
           GOLD_BELL_TOWER_COUNT_HORIZONTAL_PADDING,
           GOLD_BELL_TOWER_COUNT_VERTICAL_PADDING,
           StructureMobSpawner::countGoldBellTowerMobs,
@@ -147,11 +155,74 @@ public final class StructureMobSpawner {
       floorState -> floorState.is(Blocks.OBSIDIAN);
   private static final Predicate<BlockState> DIAMOND_CITY_SPAWN_FLOOR =
       floorState -> !floorState.is(Blocks.POLISHED_DEEPSLATE);
-  private static final Predicate<BlockState> GOLD_BELL_TOWER_SPAWN_FLOOR =
-      floorState -> floorState.is(Blocks.POLISHED_BLACKSTONE)
-          || floorState.is(Blocks.GILDED_BLACKSTONE);
 
   private StructureMobSpawner() {}
+
+  public static void onGoldBellTowerBellRung(
+      ServerLevel level,
+      ServerPlayer player,
+      BlockPos bellPos
+  ) {
+    if (!level.dimension().equals(CustomDimensions.HARVEST_CONTINENT)
+        || !player.isAlive() || player.isSpectator()) {
+      return;
+    }
+
+    // Both the interacting player and the bell must be inside the same tower.
+    StructureStart start = level.structureManager().getStructureWithPieceAt(
+        bellPos,
+        holder -> holder.value().type() == CustomStructures.GOLD_BELL_TOWER
+    );
+    if (!start.isValid() || !AABB.of(start.getBoundingBox()).contains(player.position())) return;
+
+    long startChunk = start.getChunkPos().pack();
+    GoldBellTowerSpawnSavedData data = GoldBellTowerSpawnSavedData.get(level);
+    if (data.isDisabled(startChunk)) {
+      data.setDisabled(startChunk, false);
+      player.sendOverlayMessage(Component.translatable("msg.magnatour.gold_bell_tower.resumed"));
+      return;
+    }
+    if (level.getRandom().nextInt(10) == 0) {
+      data.setDisabled(startChunk, true);
+      AABB towerArea = AABB.of(start.getBoundingBox());
+      List<Entity> monsters = level.getEntities(
+          (Entity) null,
+          towerArea,
+          entity -> entity.isAlive() && towerArea.contains(entity.position())
+              && (entity instanceof Enemy || entity.getType().getCategory() == MobCategory.MONSTER)
+      );
+      for (Entity monster : monsters) {
+        monster.kill(level);
+      }
+      player.sendOverlayMessage(Component.translatable(
+          "msg.magnatour.gold_bell_tower.disabled", monsters.size()
+      ));
+      return;
+    }
+
+    // Destroy the bell and explode before spawning, so the new mobs are not
+    // caught in this blast. The other two outcomes leave the bell available.
+    level.removeBlock(bellPos, false);
+    level.explode(
+        null,
+        bellPos.getX() + 0.5D, bellPos.getY() + 0.5D, bellPos.getZ() + 0.5D,
+        GOLD_BELL_TOWER_BELL_EXPLOSION_POWER, false, Level.ExplosionInteraction.BLOCK
+    );
+
+    // Bell rewards are additional spawns, independent of population targets.
+    BoundingBox box = start.getBoundingBox();
+    int ringersSpawned = spawnGoldBellTowerFloorMobs(
+        level, level.getRandom(), box, SupremeEntities.BELL_RINGER,
+        GOLD_BELL_TOWER_BELL_SPAWNS_PER_TYPE
+    );
+    int soulsSpawned = spawnGoldBellTowerFloorMobs(
+        level, level.getRandom(), box, SupremeEntities.BELL_SOUL,
+        GOLD_BELL_TOWER_BELL_SPAWNS_PER_TYPE
+    );
+    player.sendOverlayMessage(Component.translatable(
+        "msg.magnatour.gold_bell_tower.reinforcements", ringersSpawned, soulsSpawned
+    ));
+  }
 
   public static void registerTickEvent() {
     if (tickEventRegistered) return;
@@ -161,11 +232,13 @@ public final class StructureMobSpawner {
       long currentTick = server.getTickCount();
       if (currentTick % SPAWN_INTERVAL_TICKS != 0L) return;
 
-      processLevel(
-          server.getLevel(GOLD_BELL_TOWER_PROFILE.dimensionKey()),
-          GOLD_BELL_TOWER_PROFILE,
-          currentTick
-      );
+      if (currentTick % GOLD_BELL_TOWER_SPAWN_INTERVAL_TICKS == 0L) {
+        processLevel(
+            server.getLevel(GOLD_BELL_TOWER_PROFILE.dimensionKey()),
+            GOLD_BELL_TOWER_PROFILE,
+            currentTick
+        );
+      }
       processLevel(
           server.getLevel(DIAMOND_CITY_PROFILE.dimensionKey()),
           DIAMOND_CITY_PROFILE,
@@ -181,6 +254,25 @@ public final class StructureMobSpawner {
         pruneStates(currentTick);
       }
     });
+  }
+
+  private static <T extends Mob> int spawnGoldBellTowerFloorMobs(
+      WorldGenLevel level,
+      RandomSource random,
+      BoundingBox box,
+      EntityType<T> entityType,
+      int count
+  ) {
+    return spawnPersistentGroundMobs(
+        level,
+        random,
+        box,
+        entityType,
+        count,
+        _ -> true,
+        true,
+        pos -> isGoldBellTowerInterior(level, box, pos)
+    );
   }
 
   private static void processLevel(
@@ -245,6 +337,90 @@ public final class StructureMobSpawner {
     );
   }
 
+  private static <T extends Mob> int spawnPersistentGroundMobs(
+      WorldGenLevel level,
+      RandomSource random,
+      BoundingBox box,
+      EntityType<T> entityType,
+      int count,
+      Predicate<BlockState> floorPredicate,
+      boolean distributeByFloor,
+      Predicate<BlockPos> spawnSitePredicate
+  ) {
+    T probeMob = entityType.create(level.getLevel(), EntitySpawnReason.STRUCTURE);
+    if (probeMob == null) return 0;
+
+    List<BlockPos> candidates = findGroundSpawnCandidates(
+        level,
+        box,
+        probeMob,
+        floorPredicate,
+        spawnSitePredicate
+    );
+    if (candidates.isEmpty()) return 0;
+
+    java.util.Random shuffleRandom = new java.util.Random(random.nextLong());
+    Collections.shuffle(candidates, shuffleRandom);
+    if (distributeByFloor) {
+      candidates = distributeCandidatesByFloor(candidates, candidates.size(), shuffleRandom);
+    }
+
+    int spawned = 0;
+    for (int index = 0; spawned < count && index < candidates.size(); index++) {
+      T mob = entityType.create(level.getLevel(), EntitySpawnReason.STRUCTURE);
+      if (mob == null) return spawned;
+
+      BlockPos spawnPos = candidates.get(index);
+      prepareMob(level, random, mob, spawnPos);
+      if (!mob.checkSpawnObstruction(level)
+          || !level.getLevel().noCollision(mob, mob.getBoundingBox())) {
+        continue;
+      }
+      level.addFreshEntityWithPassengers(mob);
+      spawned++;
+    }
+
+    return spawned;
+  }
+
+  private static boolean isGoldBellTowerInterior(
+      WorldGenLevel level,
+      BoundingBox box,
+      BlockPos pos
+  ) {
+    // Keep the supporting floor and the two-block spawn space inside the tower.
+    if (!box.isInside(pos.below()) || !box.isInside(pos.above())) return false;
+
+    BlockPos.MutableBlockPos cursor = new BlockPos.MutableBlockPos();
+    boolean hasRoof = false;
+    for (int y = pos.getY() + 2; y <= box.maxY(); y++) {
+      cursor.set(pos.getX(), y, pos.getZ());
+      if (level.getBlockState(cursor).isFaceSturdy(level, cursor, Direction.DOWN)) {
+        hasRoof = true;
+        break;
+      }
+    }
+    if (!hasRoof) return false;
+
+    // A roof alone also admits exterior overhangs. Require enclosing walls at
+    // head height in all four directions, within this structure's bounds.
+    for (Direction direction : Direction.Plane.HORIZONTAL) {
+      cursor.set(pos.above());
+      boolean hasWall = false;
+      while (box.isInside(cursor.move(direction))) {
+        if (level.getBlockState(cursor).isFaceSturdy(
+            level, cursor, direction.getOpposite()
+        )) {
+          hasWall = true;
+          break;
+        }
+      }
+      if (!hasWall) return false;
+    }
+
+    return true;
+  }
+
   private static boolean playerNearStructure(
       List<ServerPlayer> players,
       BoundingBox structureBox,
@@ -272,6 +448,11 @@ public final class StructureMobSpawner {
       StructureInstanceKey key,
       long currentTick
   ) {
+    if (profile == GOLD_BELL_TOWER_PROFILE
+        && GoldBellTowerSpawnSavedData.get(level).isDisabled(start.getChunkPos().pack())) {
+      return;
+    }
+
     SpawnState state = SPAWN_STATES.computeIfAbsent(
         key,
         _ -> new SpawnState(
@@ -301,25 +482,6 @@ public final class StructureMobSpawner {
     if (spawned > 0 || profile == TOWN_OF_FORTUNE_PROFILE) {
       state.lastSpawnTick = currentTick;
     }
-  }
-
-  private static AABB mobCountBox(
-      BoundingBox structureBox,
-      StructureSpawnProfile profile
-  ) {
-    return AABB.of(structureBox).inflate(
-        profile.mobCountHorizontalPadding(),
-        profile.mobCountVerticalPadding(),
-        profile.mobCountHorizontalPadding()
-    );
-  }
-
-  private static boolean hasAirColumn(
-      WorldGenLevel level,
-      BlockPos pos
-  ) {
-    return level.getBlockState(pos).isAir()
-        && level.getBlockState(pos.above()).isAir();
   }
 
   private static <T extends Mob> List<BlockPos> findGroundSpawnCandidates(
@@ -439,13 +601,23 @@ public final class StructureMobSpawner {
     mob.setPersistenceRequired();
   }
 
-  private static int randomBetween(
-      RandomSource random,
-      int min,
-      int max
+  private static AABB mobCountBox(
+      BoundingBox structureBox,
+      StructureSpawnProfile profile
   ) {
-    if (min >= max) return min;
-    return min + random.nextInt(max - min + 1);
+    return AABB.of(structureBox).inflate(
+        profile.mobCountHorizontalPadding(),
+        profile.mobCountVerticalPadding(),
+        profile.mobCountHorizontalPadding()
+    );
+  }
+
+  private static boolean hasAirColumn(
+      WorldGenLevel level,
+      BlockPos pos
+  ) {
+    return level.getBlockState(pos).isAir()
+        && level.getBlockState(pos.above()).isAir();
   }
 
   private static List<BlockPos> distributeCandidatesByChunk(
@@ -483,94 +655,13 @@ public final class StructureMobSpawner {
     return distributed;
   }
 
-  private static <T extends Mob> int spawnPersistentGroundMobs(
-      WorldGenLevel level,
+  private static int randomBetween(
       RandomSource random,
-      BoundingBox box,
-      EntityType<T> entityType,
-      int count,
-      Predicate<BlockState> floorPredicate,
-      boolean distributeByFloor,
-      Predicate<BlockPos> spawnSitePredicate
+      int min,
+      int max
   ) {
-    T probeMob = entityType.create(level.getLevel(), EntitySpawnReason.STRUCTURE);
-    if (probeMob == null) return 0;
-
-    List<BlockPos> candidates = findGroundSpawnCandidates(
-        level,
-        box,
-        probeMob,
-        floorPredicate,
-        spawnSitePredicate
-    );
-    if (candidates.isEmpty()) return 0;
-
-    java.util.Random shuffleRandom = new java.util.Random(random.nextLong());
-    Collections.shuffle(candidates, shuffleRandom);
-    if (distributeByFloor) {
-      candidates = distributeCandidatesByFloor(candidates, count, shuffleRandom);
-    }
-
-    int spawned = 0;
-    for (int index = 0; index < count && index < candidates.size(); index++) {
-      T mob = entityType.create(level.getLevel(), EntitySpawnReason.STRUCTURE);
-      if (mob == null) return spawned;
-
-      BlockPos spawnPos = candidates.get(index);
-      prepareMob(level, random, mob, spawnPos);
-      level.addFreshEntityWithPassengers(mob);
-      spawned++;
-    }
-
-    return spawned;
-  }
-
-  private static <T extends Mob> @Nullable BlockPos findAirSpawnPosAboveFloor(
-      WorldGenLevel level,
-      RandomSource random,
-      BoundingBox box,
-      T mob,
-      Predicate<BlockState> floorPredicate,
-      int minYOffset,
-      int maxYOffset
-  ) {
-    int minX = box.minX() + 1;
-    int maxX = box.maxX() - 1;
-    int minZ = box.minZ() + 1;
-    int maxZ = box.maxZ() - 1;
-    if (minX > maxX) {
-      minX = box.minX();
-      maxX = box.maxX();
-    }
-    if (minZ > maxZ) {
-      minZ = box.minZ();
-      maxZ = box.maxZ();
-    }
-
-    int minFloorY = box.minY() - 1;
-    int maxFloorY = box.maxY() - 1;
-    BlockPos.MutableBlockPos floorPos = new BlockPos.MutableBlockPos();
-    BlockPos.MutableBlockPos spawnPos = new BlockPos.MutableBlockPos();
-
-    for (int attempt = 0; attempt < 48; attempt++) {
-      int x = randomBetween(random, minX, maxX);
-      int z = randomBetween(random, minZ, maxZ);
-      for (int y = maxFloorY; y >= minFloorY; y--) {
-        floorPos.set(x, y, z);
-        BlockState floorState = level.getBlockState(floorPos);
-        if (floorState.isAir() || !floorPredicate.test(floorState)) continue;
-
-        int spawnY = y + randomBetween(random, minYOffset, maxYOffset);
-        spawnPos.set(x, spawnY, z);
-        mob.snapTo(x + 0.5D, spawnY, z + 0.5D, 0.0F, 0.0F);
-        if (hasAirColumn(level, spawnPos)
-            && mob.checkSpawnObstruction(level)) {
-          return spawnPos.immutable();
-        }
-      }
-    }
-
-    return null;
+    if (min >= max) return min;
+    return min + random.nextInt(max - min + 1);
   }
 
   private static int countEntities(
@@ -680,60 +771,6 @@ public final class StructureMobSpawner {
         separationBox,
         entity -> entity.isAlive() && entity.getType() == SupremeEntities.OBSIDIAN_GOLEM
     ).isEmpty();
-  }
-
-  private static <T extends Mob> int spawnPersistentGroundMobsDistributedByFloor(
-      WorldGenLevel level,
-      RandomSource random,
-      BoundingBox box,
-      EntityType<T> entityType,
-      int count,
-      Predicate<BlockState> floorPredicate
-  ) {
-    return spawnPersistentGroundMobs(
-        level,
-        random,
-        box,
-        entityType,
-        count,
-        floorPredicate,
-        true,
-        _ -> true
-    );
-  }
-
-  private static <T extends Mob> int spawnPersistentAirMobsAboveFloors(
-      WorldGenLevel level,
-      RandomSource random,
-      BoundingBox box,
-      EntityType<T> entityType,
-      int count,
-      Predicate<BlockState> floorPredicate,
-      int minYOffset,
-      int maxYOffset
-  ) {
-    int spawned = 0;
-    for (int index = 0; index < count; index++) {
-      T mob = entityType.create(level.getLevel(), EntitySpawnReason.STRUCTURE);
-      if (mob == null) return spawned;
-
-      BlockPos spawnPos = findAirSpawnPosAboveFloor(
-          level,
-          random,
-          box,
-          mob,
-          floorPredicate,
-          minYOffset,
-          maxYOffset
-      );
-      if (spawnPos == null) continue;
-
-      prepareMob(level, random, mob, spawnPos);
-      level.addFreshEntityWithPassengers(mob);
-      spawned++;
-    }
-
-    return spawned;
   }
 
   private static <T extends Mob> boolean spawnTownOfFortuneMob(
@@ -1013,13 +1050,12 @@ public final class StructureMobSpawner {
 
     int spawned = 0;
     if (missingRingers > 0) {
-      int ringersSpawned = spawnPersistentGroundMobsDistributedByFloor(
+      int ringersSpawned = spawnGoldBellTowerFloorMobs(
           level,
           random,
           structureBox,
           SupremeEntities.BELL_RINGER,
-          Math.min(missingRingers, cycleBudget),
-          GOLD_BELL_TOWER_SPAWN_FLOOR
+          Math.min(missingRingers, cycleBudget)
       );
       spawned += ringersSpawned;
       cycleBudget -= ringersSpawned;
@@ -1036,15 +1072,12 @@ public final class StructureMobSpawner {
     }
 
     if (cycleBudget > 0 && missingSouls > 0) {
-      spawned += spawnPersistentAirMobsAboveFloors(
+      spawned += spawnGoldBellTowerFloorMobs(
           level,
           random,
           structureBox,
           SupremeEntities.BELL_SOUL,
-          Math.min(missingSouls, cycleBudget),
-          GOLD_BELL_TOWER_SPAWN_FLOOR,
-          1,
-          3
+          Math.min(missingSouls, cycleBudget)
       );
     }
 

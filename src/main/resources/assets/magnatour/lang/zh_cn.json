@@ -1,4 +1,7 @@
 {
+  "msg.magnatour.gold_bell_tower.reinforcements": "钟炸裂了！新增 %s 只守钟人和 %s 只钟灵",
+  "msg.magnatour.gold_bell_tower.disabled": "钟声镇压了守卫与怪物们，已击杀塔内 %s 只怪物（再次鸣钟即可恢复刷怪）",
+  "msg.magnatour.gold_bell_tower.resumed": "钟声重新唤醒了塔楼的守卫们",
   "key.category.magnatour.general": "伟大旅行",
   "key.magnatour.universe_mode": "工具模式切换",
   "tag.item.magnatour.supreme_core": "超凡核心",
