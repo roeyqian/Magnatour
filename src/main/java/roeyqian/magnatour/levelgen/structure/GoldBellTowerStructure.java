@@ -134,6 +134,22 @@ public final class GoldBellTowerStructure extends Structure {
     return CustomStructures.GOLD_BELL_TOWER;
   }
 
+  private static long mix(
+      long seed,
+      int x,
+      int z
+  ) {
+    long h = seed;
+    h ^= (long) x * 0x9E3779B97F4A7C15L;
+    h ^= (long) z * 0xC2B2AE3D27D4EB4FL;
+    h ^= h >>> 27;
+    h *= 0x3C79AC492BA7B653L;
+    h ^= h >>> 33;
+    h *= 0x1C69B3F74AC4AE35L;
+    h ^= h >>> 27;
+    return h;
+  }
+
   private static boolean hasSuitableTerrain(
       GenerationContext context,
       Climate.Sampler sampler,
@@ -172,22 +188,6 @@ public final class GoldBellTowerStructure extends Structure {
       }
     }
     return true;
-  }
-
-  private static long mix(
-      long seed,
-      int x,
-      int z
-  ) {
-    long h = seed;
-    h ^= (long) x * 0x9E3779B97F4A7C15L;
-    h ^= (long) z * 0xC2B2AE3D27D4EB4FL;
-    h ^= h >>> 27;
-    h *= 0x3C79AC492BA7B653L;
-    h ^= h >>> 33;
-    h *= 0x1C69B3F74AC4AE35L;
-    h ^= h >>> 27;
-    return h;
   }
 
 }

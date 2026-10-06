@@ -12,12 +12,16 @@ import java.util.EnumSet;
 
 // Minecraft
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -43,9 +47,15 @@ import net.minecraft.world.phys.Vec3;
 import org.jspecify.annotations.NonNull;
 
 // Magnatour
+import roeyqian.magnatour.Magnatour;
 import roeyqian.magnatour.entity.EntityLootTableHelper;
 
 public class BellSoul extends Monster {
+
+  private static final ResourceKey<DamageType> ATTACK_DAMAGE_TYPE = ResourceKey.create(
+      Registries.DAMAGE_TYPE,
+      Identifier.fromNamespaceAndPath(Magnatour.MOD_ID, "bell_soul_attack")
+  );
 
   public BellSoul(
       EntityType<? extends Monster> entityType,
@@ -62,7 +72,7 @@ public class BellSoul extends Monster {
   public static AttributeSupplier.Builder createAttributes() {
     return Mob.createMobAttributes()
         .add(Attributes.MAX_HEALTH, 50.0F)
-        .add(Attributes.ATTACK_DAMAGE, 20.0F)
+        .add(Attributes.ATTACK_DAMAGE, 10.0F)
         .add(Attributes.MOVEMENT_SPEED, 1.2F)
         .add(Attributes.FLYING_SPEED, 1.2F)
         .add(Attributes.FOLLOW_RANGE, 64.0F);
@@ -142,7 +152,7 @@ public class BellSoul extends Monster {
     this.goalSelector.addGoal(9, new LookAtPlayerGoal(this, Player.class, 3.0F, 1.0F));
     this.goalSelector.addGoal(10, new RandomLookAroundGoal(this));
 
-    this.targetSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, Player.class, true));
+    this.targetSelector.addGoal(1, new BellSoulPlayerTargetGoal());
     this.targetSelector.addGoal(
         2,
         new NearestAttackableTargetGoal<>(
@@ -151,6 +161,16 @@ public class BellSoul extends Monster {
             (entity, _) -> !(entity instanceof Player) && !(entity instanceof BellRinger) && !(entity instanceof BellSoul)
         )
     );
+  }
+
+  class BellSoulPlayerTargetGoal extends NearestAttackableTargetGoal<Player> {
+
+    public BellSoulPlayerTargetGoal() {
+      super(BellSoul.this, Player.class, false);
+      // Ignore visibility both when finding a player and when retaining the target.
+      this.targetConditions.ignoreLineOfSight();
+    }
+
   }
 
   class BellSoulMoveControl extends MoveControl<BellSoul> {
@@ -233,7 +253,7 @@ public class BellSoul extends Monster {
 
   class SimpleMeleeAttackGoal extends Goal {
 
-    private static final int ATTACK_INTERVAL_TICKS = 20;
+    private static final int ATTACK_INTERVAL_TICKS = 10;
 
     private static final double ATTACK_RANGE_SQR = 2.25;
 
@@ -253,6 +273,11 @@ public class BellSoul extends Monster {
     public boolean canUse() {
       LivingEntity target = BellSoul.this.getTarget();
       return target != null && target.isAlive() && BellSoul.this.canAttack(target);
+    }
+
+    @Override
+    public boolean requiresUpdateEveryTick() {
+      return true;
     }
 
     @Override
@@ -276,7 +301,7 @@ public class BellSoul extends Monster {
         if (BellSoul.this.level() instanceof ServerLevel serverWorld) {
           target.hurtServer(
               serverWorld,
-              BellSoul.this.damageSources().mobAttack(BellSoul.this),
+              BellSoul.this.damageSources().source(ATTACK_DAMAGE_TYPE, BellSoul.this),
               (float) BellSoul.this.getAttributeValue(Attributes.ATTACK_DAMAGE)
           );
         }
