@@ -47,6 +47,9 @@ import org.jspecify.annotations.NonNull;
 
 // Magnatour
 import roeyqian.magnatour.levelgen.biome.HarvestContinentBiomeSource;
+import roeyqian.magnatour.levelgen.terrain.HarvestContinentCaveSampler;
+import roeyqian.magnatour.levelgen.terrain.HarvestContinentTerrain;
+import roeyqian.magnatour.levelgen.terrain.HarvestMelonTerrain;
 import roeyqian.magnatour.levelgen.tree.ReservedGoldenTree;
 import roeyqian.magnatour.registry.content.SupremeBlocks;
 

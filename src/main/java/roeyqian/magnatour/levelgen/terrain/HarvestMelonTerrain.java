@@ -5,7 +5,7 @@
  * This file is part of Magnatour.
  * Full license text available in the LICENSE file in the project root.
  */
-package roeyqian.magnatour.levelgen;
+package roeyqian.magnatour.levelgen.terrain;
 
 // Java Standard
 import java.util.LinkedHashMap;

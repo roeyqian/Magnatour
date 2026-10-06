@@ -29,8 +29,8 @@ import net.minecraft.world.level.biome.Climate;
 import org.jspecify.annotations.NonNull;
 
 // Magnatour
-import roeyqian.magnatour.levelgen.HarvestContinentTerrain;
-import roeyqian.magnatour.levelgen.HarvestLakeIslands;
+import roeyqian.magnatour.levelgen.terrain.HarvestContinentTerrain;
+import roeyqian.magnatour.levelgen.terrain.HarvestLakeIslands;
 
 public final class HarvestContinentBiomeSource extends BiomeSource {
 

@@ -35,8 +35,8 @@ import org.jspecify.annotations.NonNull;
 
 // Magnatour
 import roeyqian.magnatour.Magnatour;
-import roeyqian.magnatour.levelgen.HarvestContinentTerrain;
 import roeyqian.magnatour.levelgen.biome.HarvestContinentBiomeSource;
+import roeyqian.magnatour.levelgen.terrain.HarvestContinentTerrain;
 import roeyqian.magnatour.registry.worldgen.CustomStructures;
 
 public final class GoldBellTowerStructure extends Structure {
