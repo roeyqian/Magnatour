@@ -77,8 +77,8 @@ public class SculkBehemoth extends Mob implements Enemy, CustomBossEntity {
       SculkBehemoth.class, EntityDataSerializers.INT
   );
 
-  private int chargeStunTimer = 0;
   private int chargeDetourSide = 0;
+  private int chargeStunTimer = 0;
   private int heartAnimation = 0;
   private int heartAnimationO = 0;
   private int phaseTicks = 0;
@@ -751,6 +751,58 @@ public class SculkBehemoth extends Mob implements Enemy, CustomBossEntity {
     }
   }
 
+  private Vec3 chooseChargeDirection(
+      Vec3 directDirection
+  ) {
+    // Look ahead by half our body width so turning starts before the wide
+    // collision box reaches a pillar. Include step assistance in every probe.
+    double lookAhead = getBbWidth() * 0.5 + CHARGE_SPEED;
+    Vec3 directMovement = directDirection.scale(lookAhead);
+    if (chargePathClearance(directMovement) >= 1.0 - MOVEMENT_EPSILON) {
+      chargeDetourSide = 0;
+      return directDirection;
+    }
+
+    Vec3 bestDirection = directDirection;
+    double bestClearance = chargePathClearance(directDirection.scale(CHARGE_SPEED));
+    int preferredSide = chargeDetourSide == 0 ? 1 : chargeDetourSide;
+    for (int sideIndex = 0; sideIndex < 2; sideIndex++) {
+      int side = sideIndex == 0 ? preferredSide : -preferredSide;
+      Vec3 sideDirection = directDirection;
+      double sideClearance = 0.0;
+      for (int angle = 15; angle <= 90; angle += 15) {
+        double radians = Math.toRadians(angle * side);
+        double cos = Math.cos(radians);
+        double sin = Math.sin(radians);
+        Vec3 candidate = new Vec3(
+            directDirection.x * cos - directDirection.z * sin, 0,
+            directDirection.x * sin + directDirection.z * cos
+        );
+        if (chargePathClearance(candidate.scale(lookAhead)) >= 1.0 - MOVEMENT_EPSILON) {
+          chargeDetourSide = side;
+          return candidate;
+        }
+        double clearance = chargePathClearance(candidate.scale(CHARGE_SPEED));
+        if (clearance > sideClearance + MOVEMENT_EPSILON) {
+          sideDirection = candidate;
+          sideClearance = clearance;
+        }
+      }
+
+      // Keep the selected side while it permits a full charge step. Switching
+      // sides each tick would strand a wide mob directly in front of a pillar.
+      if (chargeDetourSide == side && sideClearance >= 1.0 - MOVEMENT_EPSILON) {
+        return sideDirection;
+      }
+      if (sideClearance > bestClearance + MOVEMENT_EPSILON) {
+        bestDirection = sideDirection;
+        bestClearance = sideClearance;
+        chargeDetourSide = side;
+      }
+    }
+    return bestDirection;
+  }
+
   private void moveChargeWithStepAssist(
       Vec3 movement
   ) {
@@ -798,6 +850,23 @@ public class SculkBehemoth extends Mob implements Enemy, CustomBossEntity {
     }
   }
 
+  private double chargePathClearance(
+      Vec3 movement
+  ) {
+    double distanceSqr = horizontalDistanceSqr(movement);
+    if (distanceSqr <= MOVEMENT_EPSILON) return 1.0;
+
+    AABB box = getBoundingBox();
+    Vec3 resolved = collideChargeMovement(movement, box);
+    if (horizontalDistanceSqr(movement.subtract(resolved)) > MOVEMENT_EPSILON) {
+      ChargeStep step = findChargeStep(movement, box, resolved);
+      if (step != null) resolved = step.forward();
+    }
+    // Projection measures progress along the requested direction, so sliding
+    // sideways against a wall cannot masquerade as an unobstructed route.
+    return (resolved.x * movement.x + resolved.z * movement.z) / distanceSqr;
+  }
+
   private void moveChargeSegment(
       Vec3 movement
   ) {
@@ -808,6 +877,16 @@ public class SculkBehemoth extends Mob implements Enemy, CustomBossEntity {
       return;
     }
     moveInternal(movement);
+  }
+
+  private Vec3 collideChargeMovement(
+      Vec3 movement,
+      AABB box
+  ) {
+    return Entity.collideBoundingBox(
+        this, movement, box, level(),
+        level().getEntityCollisions(this, box.expandTowards(movement))
+    );
   }
 
   private boolean tryChargeStepAssist(
@@ -864,86 +943,10 @@ public class SculkBehemoth extends Mob implements Enemy, CustomBossEntity {
     return bestRise.y > MOVEMENT_EPSILON ? new ChargeStep(bestRise, bestForward) : null;
   }
 
-  private Vec3 chooseChargeDirection(
-      Vec3 directDirection
-  ) {
-    // Look ahead by half our body width so turning starts before the wide
-    // collision box reaches a pillar. Include step assistance in every probe.
-    double lookAhead = getBbWidth() * 0.5 + CHARGE_SPEED;
-    Vec3 directMovement = directDirection.scale(lookAhead);
-    if (chargePathClearance(directMovement) >= 1.0 - MOVEMENT_EPSILON) {
-      chargeDetourSide = 0;
-      return directDirection;
-    }
-
-    Vec3 bestDirection = directDirection;
-    double bestClearance = chargePathClearance(directDirection.scale(CHARGE_SPEED));
-    int preferredSide = chargeDetourSide == 0 ? 1 : chargeDetourSide;
-    for (int sideIndex = 0; sideIndex < 2; sideIndex++) {
-      int side = sideIndex == 0 ? preferredSide : -preferredSide;
-      Vec3 sideDirection = directDirection;
-      double sideClearance = 0.0;
-      for (int angle = 15; angle <= 90; angle += 15) {
-        double radians = Math.toRadians(angle * side);
-        double cos = Math.cos(radians);
-        double sin = Math.sin(radians);
-        Vec3 candidate = new Vec3(
-            directDirection.x * cos - directDirection.z * sin, 0,
-            directDirection.x * sin + directDirection.z * cos
-        );
-        if (chargePathClearance(candidate.scale(lookAhead)) >= 1.0 - MOVEMENT_EPSILON) {
-          chargeDetourSide = side;
-          return candidate;
-        }
-        double clearance = chargePathClearance(candidate.scale(CHARGE_SPEED));
-        if (clearance > sideClearance + MOVEMENT_EPSILON) {
-          sideDirection = candidate;
-          sideClearance = clearance;
-        }
-      }
-
-      // Keep the selected side while it permits a full charge step. Switching
-      // sides each tick would strand a wide mob directly in front of a pillar.
-      if (chargeDetourSide == side && sideClearance >= 1.0 - MOVEMENT_EPSILON) {
-        return sideDirection;
-      }
-      if (sideClearance > bestClearance + MOVEMENT_EPSILON) {
-        bestDirection = sideDirection;
-        bestClearance = sideClearance;
-        chargeDetourSide = side;
-      }
-    }
-    return bestDirection;
-  }
-
-  private double chargePathClearance(
-      Vec3 movement
-  ) {
-    double distanceSqr = horizontalDistanceSqr(movement);
-    if (distanceSqr <= MOVEMENT_EPSILON) return 1.0;
-
-    AABB box = getBoundingBox();
-    Vec3 resolved = collideChargeMovement(movement, box);
-    if (horizontalDistanceSqr(movement.subtract(resolved)) > MOVEMENT_EPSILON) {
-      ChargeStep step = findChargeStep(movement, box, resolved);
-      if (step != null) resolved = step.forward();
-    }
-    // Projection measures progress along the requested direction, so sliding
-    // sideways against a wall cannot masquerade as an unobstructed route.
-    return (resolved.x * movement.x + resolved.z * movement.z) / distanceSqr;
-  }
-
-  private Vec3 collideChargeMovement(
-      Vec3 movement,
-      AABB box
-  ) {
-    return Entity.collideBoundingBox(
-        this, movement, box, level(),
-        level().getEntityCollisions(this, box.expandTowards(movement))
-    );
-  }
-
-  private record ChargeStep(Vec3 rise, Vec3 forward) {}
+  private record ChargeStep(
+      Vec3 rise,
+      Vec3 forward
+  ) {}
 
   public enum Phase {
 
