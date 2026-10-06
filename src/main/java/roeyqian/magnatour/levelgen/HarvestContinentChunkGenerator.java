@@ -23,6 +23,9 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.WorldGenRegion;
+import net.minecraft.util.random.WeightedList;
+import net.minecraft.world.entity.MobCategory;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelHeightAccessor;
 import net.minecraft.world.level.NoiseColumn;
 import net.minecraft.world.level.StructureManager;
@@ -30,6 +33,7 @@ import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.BiomeManager;
 import net.minecraft.world.level.biome.BiomeSource;
+import net.minecraft.world.level.biome.MobSpawnSettings;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -239,7 +243,28 @@ public final class HarvestContinentChunkGenerator extends ChunkGenerator {
 
   @Override public int getGenDepth() { return GEN_DEPTH; }
 
+  public WeightedList<MobSpawnSettings.SpawnerData> getHarvestAnimalsAt(
+      Level level,
+      StructureManager structures,
+      BlockPos pos
+  ) {
+    return super.getMobsAt(level, structures, MobCategory.CREATURE, pos);
+  }
+
   @Override public int getMinY() { return MIN_Y; }
+
+  @Override
+  public WeightedList<MobSpawnSettings.SpawnerData> getMobsAt(
+      Level level,
+      StructureManager structures,
+      MobCategory category,
+      BlockPos pos
+  ) {
+    // Creature spawning is handled once per cycle by BiomeMobSpawner, with its
+    // own population and batch limits. Keep vanilla spawning for other groups.
+    return category == MobCategory.CREATURE ? WeightedList.of()
+        : super.getMobsAt(level, structures, category, pos);
+  }
 
   @Override public int getSeaLevel() { return HarvestContinentTerrain.SEA_LEVEL; }
 
