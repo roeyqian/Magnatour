@@ -889,22 +889,6 @@ public class SculkBehemoth extends Mob implements Enemy, CustomBossEntity {
     );
   }
 
-  private boolean tryChargeStepAssist(
-      Vec3 movement,
-      AABB startBox,
-      Vec3 unobstructedMovement
-  ) {
-    ChargeStep step = findChargeStep(movement, startBox, unobstructedMovement);
-    if (step == null) return false;
-
-    // Check the up/forward route before moving, then settle onto the surface.
-    // Actual moves preserve collision flags, ground contact and block effects.
-    moveInternal(step.rise());
-    moveInternal(step.forward());
-    moveInternal(new Vec3(0, -step.rise().y - CHARGE_STEP_ASSIST_CLEARANCE, 0));
-    return true;
-  }
-
   private @Nullable ChargeStep findChargeStep(
       Vec3 movement,
       AABB startBox,
@@ -941,6 +925,22 @@ public class SculkBehemoth extends Mob implements Enemy, CustomBossEntity {
     }
 
     return bestRise.y > MOVEMENT_EPSILON ? new ChargeStep(bestRise, bestForward) : null;
+  }
+
+  private boolean tryChargeStepAssist(
+      Vec3 movement,
+      AABB startBox,
+      Vec3 unobstructedMovement
+  ) {
+    ChargeStep step = findChargeStep(movement, startBox, unobstructedMovement);
+    if (step == null) return false;
+
+    // Check the up/forward route before moving, then settle onto the surface.
+    // Actual moves preserve collision flags, ground contact and block effects.
+    moveInternal(step.rise());
+    moveInternal(step.forward());
+    moveInternal(new Vec3(0, -step.rise().y - CHARGE_STEP_ASSIST_CLEARANCE, 0));
+    return true;
   }
 
   private record ChargeStep(

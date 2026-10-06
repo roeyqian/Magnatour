@@ -71,6 +71,7 @@ public final class StructureMobSpawner {
   private static final int DIAMOND_CITY_TARGET_OBSIDIAN_GOLEMS = 64;
   private static final int GOLD_BELL_TOWER_BELL_SPAWNS_PER_TYPE = 4;
   private static final int GOLD_BELL_TOWER_MAX_POPULATION = 80;
+  private static final int GOLD_BELL_TOWER_MAX_SPAWNS_PER_CYCLE = 10;
   private static final int GOLD_BELL_TOWER_SCAN_RADIUS_CHUNKS = 6;
   private static final int GOLD_BELL_TOWER_TARGET_BELL_RINGERS = 48;
   private static final int GOLD_BELL_TOWER_TARGET_BELL_SOULS = 32;
@@ -81,7 +82,7 @@ public final class StructureMobSpawner {
   private static final int TOWN_OF_FORTUNE_TARGET_ANIMALS = 16;
   private static final int TOWN_OF_FORTUNE_TARGET_VILLAGERS = 16;
 
-  private static final long GOLD_BELL_TOWER_SPAWN_INTERVAL_TICKS = 80L;
+  private static final long GOLD_BELL_TOWER_SPAWN_INTERVAL_TICKS = 40L;
   private static final long SPAWN_INTERVAL_TICKS = 20L;
   private static final long STATE_PRUNE_INTERVAL_TICKS = 200L;
   private static final long STATE_TTL_TICKS = 1200L;
@@ -1045,11 +1046,21 @@ public final class StructureMobSpawner {
 
     int cycleBudget = missingRingers + missingSouls;
     cycleBudget = Math.min(cycleBudget, remainingCapacity);
-    cycleBudget = Math.min(cycleBudget, MAX_SPAWNS_PER_CYCLE);
+    cycleBudget = Math.min(cycleBudget, GOLD_BELL_TOWER_MAX_SPAWNS_PER_CYCLE);
     if (cycleBudget <= 0) return 0;
 
     int spawned = 0;
-    if (missingRingers > 0) {
+    // Give a missing Bell Soul the first slot before Bell Ringers use the budget.
+    if (missingSouls > 0) {
+      int soulsSpawned = spawnGoldBellTowerFloorMobs(
+          level, random, structureBox, SupremeEntities.BELL_SOUL, 1
+      );
+      spawned += soulsSpawned;
+      cycleBudget -= soulsSpawned;
+      missingSouls -= soulsSpawned;
+    }
+
+    if (cycleBudget > 0 && missingRingers > 0) {
       int ringersSpawned = spawnGoldBellTowerFloorMobs(
           level,
           random,

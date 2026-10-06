@@ -15,8 +15,8 @@
         "sound": "minecraft:music.game"
       }
     },
-    "minecraft:visual/fog_color": "#d7f8ff",
-    "minecraft:visual/sky_color": "#a9dcff",
+    "minecraft:visual/fog_color": "#268fff",
+    "minecraft:visual/sky_color": "#267dff",
     "minecraft:gameplay/natural_mob_spawns": {
       "argument": {
         "spawn_costs": {},
