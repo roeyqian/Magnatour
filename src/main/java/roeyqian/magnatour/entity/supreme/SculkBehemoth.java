@@ -67,7 +67,6 @@ public class SculkBehemoth extends Mob implements Enemy, CustomBossEntity {
   private static final double CHARGE_MOVEMENT_SEGMENT = 0.75;
   private static final double CHARGE_SPEED = 2.5;
   private static final double CHARGE_STEP_ASSIST_CLEARANCE = 0.05;
-  private static final double CHARGE_STEP_ASSIST_HEIGHT = 1.25;
   private static final double CHARGE_STEP_ASSIST_INCREMENT = 0.25;
   private static final double MOVEMENT_EPSILON = 1.0E-4;
   private static final double SMASH_ASCENT_SPEED = 4.0;
@@ -79,6 +78,7 @@ public class SculkBehemoth extends Mob implements Enemy, CustomBossEntity {
   );
 
   private int chargeStunTimer = 0;
+  private int chargeDetourSide = 0;
   private int heartAnimation = 0;
   private int heartAnimationO = 0;
   private int phaseTicks = 0;
@@ -457,12 +457,15 @@ public class SculkBehemoth extends Mob implements Enemy, CustomBossEntity {
       chargeDirection = target.position().subtract(position()).normalize();
     }
 
-    setYRot((float) Math.toDegrees(Math.atan2(-chargeDirection.x, chargeDirection.z)));
+    Vec3 movementDirection = chooseChargeDirection(new Vec3(chargeDirection.x, 0, chargeDirection.z).normalize());
+    setYRot((float) Math.toDegrees(Math.atan2(-movementDirection.x, movementDirection.z)));
     setYBodyRot(getYRot());
 
-    Vec3 chargeVelocity = new Vec3(chargeDirection.x * CHARGE_SPEED, 0, chargeDirection.z * CHARGE_SPEED);
-    setVelocityInternal(chargeVelocity);
+    Vec3 chargeVelocity = movementDirection.scale(CHARGE_SPEED);
     moveChargeWithStepAssist(chargeVelocity);
+    // The charge has already moved this tick. Let normal travel handle gravity
+    // next tick without applying the horizontal charge a second time.
+    setVelocityInternal(0, getDeltaMovement().y, 0);
 
     for (int i = 0; i < 5; i++) {
       world.sendParticles(
@@ -480,7 +483,7 @@ public class SculkBehemoth extends Mob implements Enemy, CustomBossEntity {
 
       for (LivingEntity entity : entities) {
         entity.hurtServer(world, damageSources().mobAttack(this), 80.0F);
-        Vec3 knockback = chargeDirection.scale(4.0).add(0, 2.0, 0);
+        Vec3 knockback = movementDirection.scale(4.0).add(0, 2.0, 0);
         entity.setDeltaMovement(knockback);
         entity.syncVelocity = true;
 
@@ -690,6 +693,7 @@ public class SculkBehemoth extends Mob implements Enemy, CustomBossEntity {
     switch (phase) {
       case CHARGE -> {
         chargeDirection = null;
+        chargeDetourSide = 0;
         chargeHit = false;
         chargeStunTimer = 0;
         LivingEntity target = getTarget();
@@ -797,51 +801,149 @@ public class SculkBehemoth extends Mob implements Enemy, CustomBossEntity {
   private void moveChargeSegment(
       Vec3 movement
   ) {
-    Vec3 startPos = position();
-    moveInternal(movement);
-    Vec3 moved = position().subtract(startPos);
-
-    if (horizontalDistanceSqr(movement) - horizontalDistanceSqr(moved) <= MOVEMENT_EPSILON) {
+    AABB startBox = getBoundingBox();
+    Vec3 unobstructedMovement = collideChargeMovement(movement, startBox);
+    if (horizontalDistanceSqr(movement) - horizontalDistanceSqr(unobstructedMovement) > MOVEMENT_EPSILON
+        && tryChargeStepAssist(movement, startBox, unobstructedMovement)) {
       return;
     }
-
-    Vec3 blockedPos = position();
-    setPos(startPos.x, startPos.y, startPos.z);
-
-    if (!tryChargeStepAssist(movement, startPos)) {
-      setPos(blockedPos.x, blockedPos.y, blockedPos.z);
-    }
+    moveInternal(movement);
   }
 
   private boolean tryChargeStepAssist(
       Vec3 movement,
-      Vec3 startPos
+      AABB startBox,
+      Vec3 unobstructedMovement
   ) {
-    double maxStepHeight = Math.min(getAttributeValue(Attributes.STEP_HEIGHT), CHARGE_STEP_ASSIST_HEIGHT);
-    if (maxStepHeight <= 0.0) return false;
+    ChargeStep step = findChargeStep(movement, startBox, unobstructedMovement);
+    if (step == null) return false;
 
-    AABB startBox = getBoundingBox();
+    // Check the up/forward route before moving, then settle onto the surface.
+    // Actual moves preserve collision flags, ground contact and block effects.
+    moveInternal(step.rise());
+    moveInternal(step.forward());
+    moveInternal(new Vec3(0, -step.rise().y - CHARGE_STEP_ASSIST_CLEARANCE, 0));
+    return true;
+  }
 
-    for (double step = CHARGE_STEP_ASSIST_INCREMENT;
-         step <= maxStepHeight + MOVEMENT_EPSILON;
-         step += CHARGE_STEP_ASSIST_INCREMENT) {
-      double yOffset = step + CHARGE_STEP_ASSIST_CLEARANCE;
-      AABB raisedBox = startBox.move(0, yOffset, 0);
-      if (!level().noCollision(this, raisedBox)) continue;
-      if (!level().noCollision(this, raisedBox.move(movement))) continue;
+  private @Nullable ChargeStep findChargeStep(
+      Vec3 movement,
+      AABB startBox,
+      Vec3 unobstructedMovement
+  ) {
+    double maxStepHeight = getAttributeValue(Attributes.STEP_HEIGHT);
+    if (maxStepHeight <= 0.0) return null;
 
-      setPos(startPos.x, startPos.y + yOffset, startPos.z);
-      moveInternal(movement);
-
-      if (horizontalDistanceSqr(position().subtract(startPos)) > MOVEMENT_EPSILON) {
-        return true;
-      }
-
-      setPos(startPos.x, startPos.y, startPos.z);
+    // A horizontal move can clear onGround, so also check for nearby support.
+    // Never use the assist to climb repeatedly while falling alongside a wall.
+    Vec3 supportProbe = collideChargeMovement(new Vec3(0, -CHARGE_STEP_ASSIST_CLEARANCE, 0), startBox);
+    if (!onGround() && supportProbe.y <= -CHARGE_STEP_ASSIST_CLEARANCE + MOVEMENT_EPSILON) {
+      return null;
     }
 
-    return false;
+    Vec3 bestRise = Vec3.ZERO;
+    Vec3 bestForward = unobstructedMovement;
+    int steps = (int) Math.ceil(maxStepHeight / CHARGE_STEP_ASSIST_INCREMENT);
+
+    for (int i = 1; i <= steps; i++) {
+      double step = Math.min(i * CHARGE_STEP_ASSIST_INCREMENT, maxStepHeight);
+      Vec3 rise = collideChargeMovement(new Vec3(0, step, 0), startBox);
+      if (rise.y <= MOVEMENT_EPSILON) continue;
+
+      Vec3 forward = collideChargeMovement(movement, startBox.move(rise));
+      if (horizontalDistanceSqr(forward) > horizontalDistanceSqr(bestForward) + MOVEMENT_EPSILON) {
+        bestRise = rise;
+        bestForward = forward;
+      }
+
+      if (horizontalDistanceSqr(movement) - horizontalDistanceSqr(bestForward) <= MOVEMENT_EPSILON) {
+        break;
+      }
+    }
+
+    return bestRise.y > MOVEMENT_EPSILON ? new ChargeStep(bestRise, bestForward) : null;
   }
+
+  private Vec3 chooseChargeDirection(
+      Vec3 directDirection
+  ) {
+    // Look ahead by half our body width so turning starts before the wide
+    // collision box reaches a pillar. Include step assistance in every probe.
+    double lookAhead = getBbWidth() * 0.5 + CHARGE_SPEED;
+    Vec3 directMovement = directDirection.scale(lookAhead);
+    if (chargePathClearance(directMovement) >= 1.0 - MOVEMENT_EPSILON) {
+      chargeDetourSide = 0;
+      return directDirection;
+    }
+
+    Vec3 bestDirection = directDirection;
+    double bestClearance = chargePathClearance(directDirection.scale(CHARGE_SPEED));
+    int preferredSide = chargeDetourSide == 0 ? 1 : chargeDetourSide;
+    for (int sideIndex = 0; sideIndex < 2; sideIndex++) {
+      int side = sideIndex == 0 ? preferredSide : -preferredSide;
+      Vec3 sideDirection = directDirection;
+      double sideClearance = 0.0;
+      for (int angle = 15; angle <= 90; angle += 15) {
+        double radians = Math.toRadians(angle * side);
+        double cos = Math.cos(radians);
+        double sin = Math.sin(radians);
+        Vec3 candidate = new Vec3(
+            directDirection.x * cos - directDirection.z * sin, 0,
+            directDirection.x * sin + directDirection.z * cos
+        );
+        if (chargePathClearance(candidate.scale(lookAhead)) >= 1.0 - MOVEMENT_EPSILON) {
+          chargeDetourSide = side;
+          return candidate;
+        }
+        double clearance = chargePathClearance(candidate.scale(CHARGE_SPEED));
+        if (clearance > sideClearance + MOVEMENT_EPSILON) {
+          sideDirection = candidate;
+          sideClearance = clearance;
+        }
+      }
+
+      // Keep the selected side while it permits a full charge step. Switching
+      // sides each tick would strand a wide mob directly in front of a pillar.
+      if (chargeDetourSide == side && sideClearance >= 1.0 - MOVEMENT_EPSILON) {
+        return sideDirection;
+      }
+      if (sideClearance > bestClearance + MOVEMENT_EPSILON) {
+        bestDirection = sideDirection;
+        bestClearance = sideClearance;
+        chargeDetourSide = side;
+      }
+    }
+    return bestDirection;
+  }
+
+  private double chargePathClearance(
+      Vec3 movement
+  ) {
+    double distanceSqr = horizontalDistanceSqr(movement);
+    if (distanceSqr <= MOVEMENT_EPSILON) return 1.0;
+
+    AABB box = getBoundingBox();
+    Vec3 resolved = collideChargeMovement(movement, box);
+    if (horizontalDistanceSqr(movement.subtract(resolved)) > MOVEMENT_EPSILON) {
+      ChargeStep step = findChargeStep(movement, box, resolved);
+      if (step != null) resolved = step.forward();
+    }
+    // Projection measures progress along the requested direction, so sliding
+    // sideways against a wall cannot masquerade as an unobstructed route.
+    return (resolved.x * movement.x + resolved.z * movement.z) / distanceSqr;
+  }
+
+  private Vec3 collideChargeMovement(
+      Vec3 movement,
+      AABB box
+  ) {
+    return Entity.collideBoundingBox(
+        this, movement, box, level(),
+        level().getEntityCollisions(this, box.expandTowards(movement))
+    );
+  }
+
+  private record ChargeStep(Vec3 rise, Vec3 forward) {}
 
   public enum Phase {
 
