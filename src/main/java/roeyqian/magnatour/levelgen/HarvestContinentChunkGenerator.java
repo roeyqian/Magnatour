@@ -281,6 +281,9 @@ public final class HarvestContinentChunkGenerator extends ChunkGenerator {
       return profile.bigLake() && y <= HarvestContinentTerrain.SEA_LEVEL
           ? Blocks.WATER.defaultBlockState() : Blocks.AIR.defaultBlockState();
     }
+    if (profile.melonTerrain() != null && !profile.melonTerrain().solid(y)) {
+      return Blocks.AIR.defaultBlockState();
+    }
     if (caves.isCave(x, y, z, profile.surfaceY())) {
       if (y <= -54) return Blocks.LAVA.defaultBlockState();
       return y <= profile.waterLevel()
@@ -356,7 +359,9 @@ public final class HarvestContinentChunkGenerator extends ChunkGenerator {
         surface.height(),
         HarvestContinentTerrain.aquiferWaterLevel(this.terrainSeed, x, z),
         biome.equals(HarvestContinentTerrain.WHEAT_PLAIN)
-            && HarvestContinentTerrain.isTreeReservation(x, z)
+            && HarvestContinentTerrain.isTreeReservation(x, z),
+        HarvestMelonTerrain.column(this.terrainSeed, x, z, surface.height(),
+            HarvestContinentTerrain.melonBlendWeight(surface.strange()))
     );
   }
 
@@ -364,7 +369,8 @@ public final class HarvestContinentChunkGenerator extends ChunkGenerator {
       ResourceKey<Biome> biome,
       int surfaceY,
       int waterLevel,
-      boolean treeReservation
+      boolean treeReservation,
+      HarvestMelonTerrain.Column melonTerrain
   ) {
 
     boolean wheatPlain() { return this.biome.equals(HarvestContinentTerrain.WHEAT_PLAIN); }

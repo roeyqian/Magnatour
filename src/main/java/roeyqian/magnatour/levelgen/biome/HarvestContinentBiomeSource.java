@@ -125,10 +125,10 @@ public final class HarvestContinentBiomeSource extends BiomeSource {
     if (island != null) {
       if (island.distance(x, z) <= island.radius()) biome = HarvestContinentTerrain.LAKE_CENTER_ISLAND;
       return new SurfaceSample(biome,
-          HarvestContinentTerrain.islandSurfaceHeight(island, strange, terrainSeed, x, z));
+          HarvestContinentTerrain.islandSurfaceHeight(island, strange, terrainSeed, x, z), strange);
     }
     return new SurfaceSample(biome,
-        HarvestContinentTerrain.surfaceHeight(strange, terrainSeed, x, z));
+        HarvestContinentTerrain.surfaceHeight(strange, terrainSeed, x, z), strange);
   }
 
   /** Initialized by the generator before structure and biome generation. */
@@ -151,7 +151,8 @@ public final class HarvestContinentBiomeSource extends BiomeSource {
 
   public record SurfaceSample(
       ResourceKey<Biome> biome,
-      int height
+      int height,
+      double strange
   ) {}
 
 }

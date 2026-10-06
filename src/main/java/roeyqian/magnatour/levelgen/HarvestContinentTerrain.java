@@ -29,8 +29,10 @@ public final class HarvestContinentTerrain {
   public static final int SEA_LEVEL = 64;
 
   public static final double LAKE_STRANGE_LIMIT = 31.0;
-  public static final double MELON_STRANGE_LIMIT = 86.0;
-  public static final double WHEAT_STRANGE_LIMIT = 71.0;
+  // Sampled area shares: ~50% wheat, ~19.2% melon and ~11.6% pumpkin.
+  // Noise intervals are not uniform; lake coverage keeps its existing threshold.
+  public static final double MELON_STRANGE_LIMIT = 76.0;
+  public static final double WHEAT_STRANGE_LIMIT = 60.7;
 
   public static final ResourceKey<Biome> BIG_LAKE = key("big_lake");
   public static final ResourceKey<Biome> LAKE_CENTER_ISLAND = key("lake_center_island");
@@ -40,9 +42,6 @@ public final class HarvestContinentTerrain {
 
   private static final int LAKE_CENTER_ISLAND_BASE_HEIGHT = 65;
   private static final int LAKE_CENTER_ISLAND_MAX_HEIGHT = 70;
-  private static final int MELON_JUNGLE_BASE_HEIGHT = 96;
-  private static final int MELON_JUNGLE_INTERIOR_MAX_HEIGHT = 190;
-  private static final int MELON_JUNGLE_INTERIOR_MIN_HEIGHT = 68;
   private static final int PUMPKIN_GORGE_BASE_HEIGHT = 256;
   private static final int PUMPKIN_GORGE_INTERIOR_MIN_HEIGHT = 250;
   private static final int PUMPKIN_GORGE_MAX_HEIGHT = 301;
@@ -56,13 +55,13 @@ public final class HarvestContinentTerrain {
   private static final float TREE_RESERVATION_CHANCE = 0.15F;
 
   private static final double LAKE_SHORE_START = 25.0;
-  private static final double MELON_PUMPKIN_BLEND_END = 88.0;
-  private static final double MELON_PUMPKIN_BLEND_START = 84.0;
+  private static final double MELON_PUMPKIN_BLEND_END = MELON_STRANGE_LIMIT + 2.0;
+  private static final double MELON_PUMPKIN_BLEND_START = MELON_STRANGE_LIMIT - 2.0;
   private static final double STRANGE_NOISE_AMPLITUDE = 150.0;
   // Three octaves span 4096, 2048 and 1024 blocks for broad biome transitions.
   private static final double STRANGE_NOISE_SCALE = 1.0 / 4096.0;
-  private static final double WHEAT_MELON_BLEND_END = 73.0;
-  private static final double WHEAT_MELON_BLEND_START = 69.0;
+  private static final double WHEAT_MELON_BLEND_END = WHEAT_STRANGE_LIMIT + 2.0;
+  private static final double WHEAT_MELON_BLEND_START = WHEAT_STRANGE_LIMIT - 2.0;
   private static final double WHEAT_SHORE_END = 40.0;
 
   private HarvestContinentTerrain() {}
@@ -178,6 +177,20 @@ public final class HarvestContinentTerrain {
     return Mth.clamp(height, LAKE_CENTER_ISLAND_BASE_HEIGHT, LAKE_CENTER_ISLAND_MAX_HEIGHT);
   }
 
+  /** Same quintic weights as height blending, including both neighboring biomes. */
+  public static double melonBlendWeight(
+      double strange
+  ) {
+    if (strange <= WHEAT_MELON_BLEND_START || strange >= MELON_PUMPKIN_BLEND_END) return 0.0;
+    if (strange < WHEAT_MELON_BLEND_END) {
+      return fade((strange - WHEAT_MELON_BLEND_START)
+          / (WHEAT_MELON_BLEND_END - WHEAT_MELON_BLEND_START));
+    }
+    if (strange <= MELON_PUMPKIN_BLEND_START) return 1.0;
+    return 1.0 - fade((strange - MELON_PUMPKIN_BLEND_START)
+        / (MELON_PUMPKIN_BLEND_END - MELON_PUMPKIN_BLEND_START));
+  }
+
   /** A continuous horizontal field; biome intervals are not area percentages. */
   public static double sampleStrange(
       long seed,
@@ -269,30 +282,7 @@ public final class HarvestContinentTerrain {
       int x,
       int z
   ) {
-    // This mirrors the shape of the Overworld terrain model rather than a
-    // plain fBm height: continentalness establishes large landforms,
-    // erosion suppresses sharp terrain, and the same peaks-and-valleys
-    // transform used by TerrainProvider selects ridges and valleys.
-    double continentalness = fbmPerlin(seed ^ 0xD1B54A32D192ED03L, x, z, 0.00075, 4);
-    double erosion = fbmPerlin(seed ^ 0x94D049BB133111EBL, x, z, 0.00145, 3);
-    double weirdness = fbmPerlin(seed ^ 0x2545F4914F6CDD1DL, x, z, 0.00320, 3);
-    double peaksAndValleys = vanillaPeaksAndValleys(weirdness);
-
-    // Low erosion exposes strong ridges. High erosion returns to rounded,
-    // jungle-sized hills, matching the role erosion has in vanilla splines.
-    double erosionFactor = 1.0 - smoothStep((erosion + 1.0) * 0.5);
-    double ridgeSignal = Mth.clamp((peaksAndValleys + 0.42) / 0.42, 0.0, 1.0);
-    double continentalLift = continentalness * 23.0;
-    double ridgeLift = ridgeSignal * (28.0 + erosionFactor * 48.0);
-    double valleyCut = (1.0 - ridgeSignal) * (7.0 + (1.0 - erosionFactor) * 8.0);
-    double jaggedness = ridgeSignal * erosionFactor
-        * fbmPerlin(seed ^ 0x9E3779B97F4A7C15L, x, z, 0.014, 3) * 13.0;
-    double surfaceDetail = fbmPerlin(seed ^ 0xBB67AE8584CAA73BL, x, z, 0.041, 2) * 3.5;
-
-    double height = MELON_JUNGLE_BASE_HEIGHT
-        + continentalLift + ridgeLift - valleyCut + jaggedness + surfaceDetail;
-    return Mth.clamp(height,
-        MELON_JUNGLE_INTERIOR_MIN_HEIGHT, MELON_JUNGLE_INTERIOR_MAX_HEIGHT);
+    return HarvestMelonTerrain.height(seed, x, z);
   }
 
   private static double pumpkinGorgeHeight(
@@ -348,20 +338,6 @@ public final class HarvestContinentTerrain {
       case 6 -> (dx - dz) * 0.7071067811865476;
       default -> (-dx - dz) * 0.7071067811865476;
     };
-  }
-
-  /** Exact scalar transform used by vanilla TerrainProvider.peaksAndValleys. */
-  private static double vanillaPeaksAndValleys(
-      double weirdness
-  ) {
-    return -(Math.abs(Math.abs(weirdness) - 2.0 / 3.0) - 1.0 / 3.0) * 3.0;
-  }
-
-  private static double smoothStep(
-      double value
-  ) {
-    double clamped = Mth.clamp(value, 0.0, 1.0);
-    return clamped * clamped * (3.0 - 2.0 * clamped);
   }
 
   private static long mix(
@@ -425,6 +401,13 @@ public final class HarvestContinentTerrain {
       frequency *= 2.0;
     }
     return sum / normalization;
+  }
+
+  private static double smoothStep(
+      double value
+  ) {
+    double clamped = Mth.clamp(value, 0.0, 1.0);
+    return clamped * clamped * (3.0 - 2.0 * clamped);
   }
 
   static boolean canCarveCave(
