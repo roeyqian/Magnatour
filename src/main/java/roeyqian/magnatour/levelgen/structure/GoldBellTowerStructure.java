@@ -20,6 +20,7 @@ import net.minecraft.core.Vec3i;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.biome.BiomeResolver;
 import net.minecraft.world.level.biome.Climate;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.densityfunction.SamplerContext;
@@ -34,6 +35,8 @@ import org.jspecify.annotations.NonNull;
 
 // Magnatour
 import roeyqian.magnatour.Magnatour;
+import roeyqian.magnatour.levelgen.HarvestContinentTerrain;
+import roeyqian.magnatour.levelgen.biome.HarvestContinentBiomeSource;
 import roeyqian.magnatour.registry.worldgen.CustomStructures;
 
 public final class GoldBellTowerStructure extends Structure {
@@ -42,6 +45,8 @@ public final class GoldBellTowerStructure extends Structure {
       simpleCodec(GoldBellTowerStructure::new);
 
   private static final int CELL_SIZE = 128;
+  private static final int LAND_MARGIN = 16;
+  private static final int MAX_GROUND_HEIGHT_DIFFERENCE = 2;
 
   private static final long CELL_SELECTION_MASK = 1L;
 
@@ -107,6 +112,10 @@ public final class GoldBellTowerStructure extends Structure {
       return Optional.empty();
     }
 
+    if (!hasSuitableTerrain(context, sampler, lowerPos, lowerSize, upperSize)) {
+      return Optional.empty();
+    }
+
     GoldBellTowerPiece piece = new GoldBellTowerPiece(
         CustomStructures.GOLD_BELL_TOWER_PIECE,
         lowerPos,
@@ -123,6 +132,46 @@ public final class GoldBellTowerStructure extends Structure {
   @Override @NonNull
   public StructureType<?> type() {
     return CustomStructures.GOLD_BELL_TOWER;
+  }
+
+  private static boolean hasSuitableTerrain(
+      GenerationContext context,
+      Climate.Sampler sampler,
+      BlockPos lowerPos,
+      Vec3i lowerSize,
+      Vec3i upperSize
+  ) {
+    int minX = lowerPos.getX() - LAND_MARGIN;
+    int minZ = lowerPos.getZ() - LAND_MARGIN;
+    int maxX = lowerPos.getX() + Math.max(lowerSize.getX(), upperSize.getX()) - 1 + LAND_MARGIN;
+    int maxZ = lowerPos.getZ() + Math.max(lowerSize.getZ(), upperSize.getZ()) - 1 + LAND_MARGIN;
+    BiomeResolver resolver = context.biomeSource().createResolver(sampler);
+
+    // Check every column, including the shore buffer, so narrow inlets cannot be missed.
+    // Harvest's shared surface sampler avoids generating full cave columns for this check.
+    for (int x = minX; x <= maxX; x++) {
+      for (int z = minZ; z <= maxZ; z++) {
+        int groundHeight;
+        if (context.biomeSource() instanceof HarvestContinentBiomeSource source) {
+          HarvestContinentBiomeSource.SurfaceSample surface = source.sampleSurface(x, z, context.seed());
+          if (!surface.biome().equals(HarvestContinentTerrain.LAKE_CENTER_ISLAND)) {
+            return false;
+          }
+          groundHeight = surface.height() + 1;
+        } else {
+          if (!context.validBiome().test(resolver.getNoiseBiome(x >> 2, 0, z >> 2))) {
+            return false;
+          }
+          groundHeight = context.chunkGenerator().getBaseHeight(x, z,
+              Heightmap.Types.OCEAN_FLOOR_WG, context.heightAccessor(), context.randomState());
+        }
+        if (groundHeight <= context.chunkGenerator().getSeaLevel() + 1
+            || Math.abs(groundHeight - lowerPos.getY()) > MAX_GROUND_HEIGHT_DIFFERENCE) {
+          return false;
+        }
+      }
+    }
+    return true;
   }
 
   private static long mix(
