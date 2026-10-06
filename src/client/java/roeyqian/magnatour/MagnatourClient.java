@@ -26,6 +26,7 @@ import roeyqian.magnatour.registry.input.RegKeyBindings;
 import roeyqian.magnatour.registry.input.RegUniverseBootsFlashing;
 import roeyqian.magnatour.registry.output.RegBlockLayers;
 import roeyqian.magnatour.registry.output.RegEntityLayers;
+import roeyqian.magnatour.registry.output.RegItemTooltips;
 import roeyqian.magnatour.registry.output.RegParticles;
 import roeyqian.magnatour.registry.output.RegScreens;
 
@@ -38,6 +39,7 @@ public class MagnatourClient implements ClientModInitializer {
     RegParticles.init();
     RegEntityLayers.init();
     RegBlockLayers.init();
+    RegItemTooltips.init();
     RegKeyBindings.init();
     RegUniverseBootsFlashing.init();
   }

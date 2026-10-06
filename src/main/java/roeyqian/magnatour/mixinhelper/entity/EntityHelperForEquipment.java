@@ -38,7 +38,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 // Magnatour
 import roeyqian.magnatour.Magnatour;
 import roeyqian.magnatour.item.RemoteAccessManager;
-import roeyqian.magnatour.registry.content.SupremeItems;
+import roeyqian.magnatour.item.supreme.EmperorArmor;
 import roeyqian.magnatour.registry.content.UniverseItems;
 import roeyqian.magnatour.registry.logic.CustomComponents;
 
@@ -139,20 +139,19 @@ public final class EntityHelperForEquipment {
       Player player,
       float amount
   ) {
-    int count = 0;
+    double damageMultiplier = 1.0;
     for (EquipmentSlot slot : EquipmentSlot.values()) {
       ItemStack armorStack = player.getItemBySlot(slot);
       if (!slot.isArmor() || armorStack.isEmpty()) {
         continue;
       }
-      if (armorStack.is(SupremeItems.EMPEROR_HELMET)
-          || armorStack.is(SupremeItems.EMPEROR_CHESTPLATE)
-          || armorStack.is(SupremeItems.EMPEROR_LEGGINGS)
-          || armorStack.is(SupremeItems.EMPEROR_BOOTS)) {
-        count++;
+      if (!(armorStack.getItem() instanceof EmperorArmor armor)) {
+        continue;
       }
+      // Each piece reduces the remaining damage independently.
+      damageMultiplier *= 1.0 - armor.getDamageReduction(armorStack);
     }
-    return Math.max(0, count == 0 ? amount : amount / (count * 3));
+    return Math.max(0, (float) (amount * damageMultiplier));
   }
 
   public static void handleTravelTail(

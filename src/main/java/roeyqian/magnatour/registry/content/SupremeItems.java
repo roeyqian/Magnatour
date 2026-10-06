@@ -21,6 +21,7 @@ import roeyqian.magnatour.Magnatour;
 import roeyqian.magnatour.item.CustomArmorMaterial;
 import roeyqian.magnatour.item.CustomItemSetting;
 import roeyqian.magnatour.item.CustomToolMaterial;
+import roeyqian.magnatour.item.supreme.EmperorArmor;
 import roeyqian.magnatour.item.supreme.MirrorMobile;
 import roeyqian.magnatour.item.supreme.StrangeLingeringPotion;
 import roeyqian.magnatour.item.supreme.StrangePotion;
@@ -65,24 +66,24 @@ public final class SupremeItems {
 
   // Armor
   public static final Item EMPEROR_BOOTS = ItemRegHelper.registerDurableItem(
-      "emperor_boots", Item::new,
+      "emperor_boots", settings -> new EmperorArmor(settings, 1, 25),
       CustomItemSetting.applySupremeDefaults(new Item.Properties())
-          .humanoidArmor(CustomArmorMaterial.SUPREME_ARMOR, ArmorType.BOOTS).enchantable(100)
+          .humanoidArmor(CustomArmorMaterial.SUPREME_BOOTS_ARMOR, ArmorType.BOOTS)
   );
   public static final Item EMPEROR_CHESTPLATE = ItemRegHelper.registerDurableItem(
-      "emperor_chestplate", Item::new,
+      "emperor_chestplate", settings -> new EmperorArmor(settings, 4, 40),
       CustomItemSetting.applySupremeDefaults(new Item.Properties())
-          .humanoidArmor(CustomArmorMaterial.SUPREME_ARMOR, ArmorType.CHESTPLATE).enchantable(100)
+          .humanoidArmor(CustomArmorMaterial.SUPREME_CHESTPLATE_ARMOR, ArmorType.CHESTPLATE)
   );
   public static final Item EMPEROR_HELMET = ItemRegHelper.registerDurableItem(
-      "emperor_helmet", Item::new,
+      "emperor_helmet", settings -> new EmperorArmor(settings, 2, 30),
       CustomItemSetting.applySupremeDefaults(new Item.Properties())
-          .humanoidArmor(CustomArmorMaterial.SUPREME_ARMOR, ArmorType.HELMET).enchantable(100)
+          .humanoidArmor(CustomArmorMaterial.SUPREME_HELMET_ARMOR, ArmorType.HELMET)
   );
   public static final Item EMPEROR_LEGGINGS = ItemRegHelper.registerDurableItem(
-      "emperor_leggings", Item::new,
+      "emperor_leggings", settings -> new EmperorArmor(settings, 3, 35),
       CustomItemSetting.applySupremeDefaults(new Item.Properties())
-          .humanoidArmor(CustomArmorMaterial.SUPREME_ARMOR, ArmorType.LEGGINGS).enchantable(100)
+          .humanoidArmor(CustomArmorMaterial.SUPREME_LEGGINGS_ARMOR, ArmorType.LEGGINGS)
   );
 
   // Material

@@ -163,16 +163,6 @@ public class BellSoul extends Monster {
     );
   }
 
-  class BellSoulPlayerTargetGoal extends NearestAttackableTargetGoal<Player> {
-
-    public BellSoulPlayerTargetGoal() {
-      super(BellSoul.this, Player.class, false);
-      // Ignore visibility both when finding a player and when retaining the target.
-      this.targetConditions.ignoreLineOfSight();
-    }
-
-  }
-
   class BellSoulMoveControl extends MoveControl<BellSoul> {
 
     private static final double ACCELERATION = 0.12;
@@ -208,6 +198,16 @@ public class BellSoul extends Monster {
         BellSoul.this.setYRot(-((float) Mth.atan2(dx, dz)) * (180.0F / (float) Math.PI));
       }
       BellSoul.this.yBodyRot = BellSoul.this.getYRot();
+    }
+
+  }
+
+  class BellSoulPlayerTargetGoal extends NearestAttackableTargetGoal<Player> {
+
+    public BellSoulPlayerTargetGoal() {
+      super(BellSoul.this, Player.class, false);
+      // Ignore visibility both when finding a player and when retaining the target.
+      this.targetConditions.ignoreLineOfSight();
     }
 
   }
