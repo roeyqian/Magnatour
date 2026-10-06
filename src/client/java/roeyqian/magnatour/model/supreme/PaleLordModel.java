@@ -95,6 +95,19 @@ public final class PaleLordModel extends EntityModel<PaleLordRenderState> {
     this.leftForearm.xRot = -0.12F - Math.max(0.0F, rightSwing) * 0.2F;
     this.upperBody.xRot = 0.025F + sway * 0.012F;
     this.upperBody.zRot = Mth.sin(stride) * speed * 0.025F;
+
+    if (state.attackProgress > 0.0F) {
+      float attack = Mth.sin(state.attackProgress * Mth.PI);
+      float strike = Mth.sin(Mth.sqrt(state.attackProgress) * Mth.PI);
+      this.upperBody.xRot += attack * 0.25F;
+      this.upperBody.yRot = -strike * 0.3F;
+      this.rightArm.xRot = -strike * 2.0F - attack * 0.4F;
+      this.rightArm.yRot = -attack * 0.35F;
+      this.rightArm.zRot = 0.09F + attack * 0.2F;
+      this.rightForearm.xRot = -0.12F - attack * 0.65F;
+      this.leftArm.xRot -= attack * 0.5F;
+      this.leftForearm.xRot -= attack * 0.25F;
+    }
   }
 
   private static void addHead(

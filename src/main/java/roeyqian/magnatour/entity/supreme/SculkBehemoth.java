@@ -58,9 +58,10 @@ public class SculkBehemoth extends Mob implements Enemy, CustomBossEntity {
   private static final int MOVE_BACK_DISTANCE = 15;
   private static final int MOVE_FORWARD_DISTANCE = 35;
   private static final int REGEN_INTERVAL = 40;
+  private static final int SMASH_AIRBORNE_TIMEOUT = 200;
 
   private static final float FIRE_DAMAGE_MULTIPLIER = 5.0F;
-  private static final float REGEN_PERCENT = 0.02F;
+  private static final float REGEN_AMOUNT = 500.0F;
   private static final float REGEN_THRESHOLD = 0.5F;
 
   private static final double CHARGE_MOVEMENT_SEGMENT = 0.75;
@@ -69,6 +70,9 @@ public class SculkBehemoth extends Mob implements Enemy, CustomBossEntity {
   private static final double CHARGE_STEP_ASSIST_HEIGHT = 1.25;
   private static final double CHARGE_STEP_ASSIST_INCREMENT = 0.25;
   private static final double MOVEMENT_EPSILON = 1.0E-4;
+  private static final double SMASH_ASCENT_SPEED = 4.0;
+  private static final double SMASH_EXTRA_DOWNWARD_ACCELERATION = 0.2;
+  private static final double SMASH_FORCE_HEIGHT_DIFFERENCE = 50.0;
 
   private static final EntityDataAccessor<Integer> PHASE_TYPE = SynchedEntityData.defineId(
       SculkBehemoth.class, EntityDataSerializers.INT
@@ -112,13 +116,14 @@ public class SculkBehemoth extends Mob implements Enemy, CustomBossEntity {
 
   public static AttributeSupplier.Builder createAttributes() {
     return Mob.createMobAttributes()
-        .add(Attributes.MAX_HEALTH, 20000F)
-        .add(Attributes.MOVEMENT_SPEED, 0.4F)
-        .add(Attributes.ATTACK_DAMAGE, 100.0F)
-        .add(Attributes.ARMOR, 100.0F)
+        .add(Attributes.MAX_HEALTH, 50000.0F)
+        .add(Attributes.MOVEMENT_SPEED, 0.5F)
+        .add(Attributes.ATTACK_DAMAGE, 500.0F)
+        .add(Attributes.ARMOR, 50.0F)
+        .add(Attributes.ARMOR_TOUGHNESS, 50.0F)
         .add(Attributes.KNOCKBACK_RESISTANCE, 10.0F)
         .add(Attributes.STEP_HEIGHT, 2.0F)
-        .add(Attributes.FOLLOW_RANGE, 128.0F);
+        .add(Attributes.FOLLOW_RANGE, 256.0F);
   }
 
   @Override
@@ -364,6 +369,11 @@ public class SculkBehemoth extends Mob implements Enemy, CustomBossEntity {
     phaseTicks++;
     LivingEntity target = getTarget();
 
+    if (target != null && target.isAlive() && currentPhase != Phase.SMASH
+        && target.getY() - getY() >= SMASH_FORCE_HEIGHT_DIFFERENCE) {
+      setPhase(Phase.SMASH);
+    }
+
     switch (currentPhase) {
       case IDLE -> tickIdle(target);
       case CHARGE -> tickCharge(world, target);
@@ -378,7 +388,7 @@ public class SculkBehemoth extends Mob implements Enemy, CustomBossEntity {
     if (getHealth() < getMaxHealth() * REGEN_THRESHOLD && getHealth() < getMaxHealth()) {
       regenCooldown--;
       if (regenCooldown <= 0) {
-        heal(getMaxHealth() * REGEN_PERCENT);
+        heal(REGEN_AMOUNT);
         regenCooldown = REGEN_INTERVAL;
         world.sendParticles(ParticleTypes.HEART, getX(), getY() + getBbHeight(), getZ(),
             5, 0.5, 0.5, 0.5, 0.1);
@@ -394,6 +404,17 @@ public class SculkBehemoth extends Mob implements Enemy, CustomBossEntity {
         getZ() + (random.nextDouble() - 0.5) * getBbWidth(),
         0, 0.05, 0
     );
+  }
+
+  private void setPhase(
+      Phase phase
+  ) {
+    if (this.currentPhase != phase) {
+      this.currentPhase = phase;
+      this.phaseTicks = 0;
+      this.entityData.set(PHASE_TYPE, phase.getId());
+      onPhaseStart(phase);
+    }
   }
 
   private void tickIdle(
@@ -458,7 +479,7 @@ public class SculkBehemoth extends Mob implements Enemy, CustomBossEntity {
           getBoundingBox().inflate(1.5), e -> e != this && e.isAlive());
 
       for (LivingEntity entity : entities) {
-        entity.hurtServer(world, damageSources().mobAttack(this), 200.0F);
+        entity.hurtServer(world, damageSources().mobAttack(this), 80.0F);
         Vec3 knockback = chargeDirection.scale(4.0).add(0, 2.0, 0);
         entity.setDeltaMovement(knockback);
         entity.syncVelocity = true;
@@ -538,7 +559,8 @@ public class SculkBehemoth extends Mob implements Enemy, CustomBossEntity {
         );
       }
 
-      target.hurtServer(world, damageSources().sonicBoom(this), 20.0F);
+      float damage = 1.0F + random.nextFloat() * 19.0F;
+      target.hurtServer(world, damageSources().sonicBoom(this), damage);
       target.push(dir.x * 0.3, 0.2, dir.z * 0.3);
       target.syncVelocity = true;
 
@@ -564,44 +586,45 @@ public class SculkBehemoth extends Mob implements Enemy, CustomBossEntity {
   ) {
     smashStateTicks++;
 
+    if (target != null && target.isAlive()) {
+      smashTargetEntityPos = target.position();
+    }
+
     switch (smashState) {
       case JUMPING -> {
-        setVelocityInternal(getDeltaMovement().add(0, 0.1, 0));
-        moveInternal(getDeltaMovement());
+        if (smashTargetEntityPos != null && getY() <= smashTargetEntityPos.y) {
+          steerSmash(SMASH_ASCENT_SPEED);
+        } else {
+          smashState = SmashState.FALLING;
+          smashStateTicks = 0;
+          steerSmash(getDeltaMovement().y < 0.0
+              ? getDeltaMovement().y - SMASH_EXTRA_DOWNWARD_ACCELERATION
+              : getDeltaMovement().y);
+        }
         world.sendParticles(
             ParticleTypes.CLOUD, getX(), getY(), getZ(),
             8, 0.5, 0.2, 0.5, 0.1
         );
 
-        if (getDeltaMovement().y < 0 || smashStateTicks > 25) {
-          smashState = SmashState.FALLING;
-          smashStateTicks = 0;
+        if (smashStateTicks > SMASH_AIRBORNE_TIMEOUT) {
+          selectNextPhase();
         }
       }
       case FALLING -> {
-        if (target != null && smashStateTicks < 10) {
-          smashTargetEntityPos = target.position();
-        }
-        if (smashTargetEntityPos == null) smashTargetEntityPos = position();
-
-        Vec3 toTarget = smashTargetEntityPos.subtract(position());
-        double hDist = Math.sqrt(toTarget.x * toTarget.x + toTarget.z * toTarget.z);
-        double hSpeed = Math.min(hDist * 0.15, 1.2);
-
-        Vec3 vel = hDist > 0.1
-            ? new Vec3(toTarget.x / hDist * hSpeed, -2.0, toTarget.z / hDist * hSpeed)
-            : new Vec3(0, -2.0, 0);
-
-        setVelocityInternal(vel);
-        moveInternal(getDeltaMovement());
+        steerSmash(getDeltaMovement().y < 0.0
+            ? getDeltaMovement().y - SMASH_EXTRA_DOWNWARD_ACCELERATION
+            : getDeltaMovement().y);
         world.sendParticles(
             ParticleTypes.FLAME, getX(), getY(), getZ(),
             15, 0.3, 0.3, 0.3, 0.15
         );
 
-        if (onGround() || smashStateTicks > 80) {
+        if (onGround()) {
           smashState = SmashState.LANDING;
           smashStateTicks = 0;
+          setVelocityInternal(Vec3.ZERO);
+        } else if (smashStateTicks > SMASH_AIRBORNE_TIMEOUT) {
+          selectNextPhase();
         }
       }
       case LANDING -> {
@@ -615,7 +638,7 @@ public class SculkBehemoth extends Mob implements Enemy, CustomBossEntity {
           for (LivingEntity entity : entities) {
             double dist = entity.position().distanceTo(position());
             if (dist <= radius) {
-              entity.hurtServer(world, damageSources().mobAttack(this), 500.0F);
+              entity.hurtServer(world, damageSources().mobAttack(this), 200.0F);
               Vec3 knockDir = entity.position().subtract(position()).normalize();
               double strength = 3.5 * (1.0 - dist / radius);
               entity.setDeltaMovement(
@@ -650,7 +673,7 @@ public class SculkBehemoth extends Mob implements Enemy, CustomBossEntity {
           smashState = SmashState.JUMPING;
           smashStateTicks = 0;
           smashTargetEntityPos = target.position();
-          setVelocityInternal(0, 1.8, 0);
+          steerSmash(getY() <= target.getY() ? SMASH_ASCENT_SPEED : getDeltaMovement().y);
           playSound(SoundEvents.GOAT_LONG_JUMP, 2.0F, 0.5F);
         } else if (smashStateTicks >= 25 || smashAttackCount >= 2) {
           selectNextPhase();
@@ -659,6 +682,39 @@ public class SculkBehemoth extends Mob implements Enemy, CustomBossEntity {
     }
 
     if (phaseTicks > 180 && smashState == SmashState.COOLDOWN) selectNextPhase();
+  }
+
+  private void onPhaseStart(
+      Phase phase
+  ) {
+    switch (phase) {
+      case CHARGE -> {
+        chargeDirection = null;
+        chargeHit = false;
+        chargeStunTimer = 0;
+        LivingEntity target = getTarget();
+        if (target != null) {
+          chargeDirection = target.position().subtract(position()).normalize();
+          playSound(SoundEvents.WARDEN_SONIC_CHARGE, 2.0F, 0.5F);
+        }
+      }
+      case SONIC_BOOM -> {
+        sonicBoomCooldown = 20;
+        playSound(SoundEvents.WARDEN_ANGRY, 2.0F, 1.0F);
+      }
+      case SMASH -> {
+        smashState = SmashState.JUMPING;
+        smashStateTicks = 0;
+        smashAttackCount = 0;
+        LivingEntity target = getTarget();
+        if (target != null) {
+          smashTargetEntityPos = target.position();
+          steerSmash(getY() <= target.getY() ? SMASH_ASCENT_SPEED : getDeltaMovement().y);
+          playSound(SoundEvents.GOAT_LONG_JUMP, 2.0F, 0.5F);
+          playSound(SoundEvents.RAVAGER_ROAR, 2.0F, 0.6F);
+        }
+      }
+    }
   }
 
   private void setVelocityInternal(
@@ -683,8 +739,8 @@ public class SculkBehemoth extends Mob implements Enemy, CustomBossEntity {
 
     if (currentPhase == Phase.IDLE) {
       float rand = random.nextFloat();
-      if (rand < 0.60F) setPhase(Phase.CHARGE);
-      else if (rand < 0.90F) setPhase(Phase.SONIC_BOOM);
+      if (rand < 0.45F) setPhase(Phase.CHARGE);
+      else if (rand < 0.80F) setPhase(Phase.SONIC_BOOM);
       else setPhase(Phase.SMASH);
     } else {
       setPhase(Phase.IDLE);
@@ -717,14 +773,24 @@ public class SculkBehemoth extends Mob implements Enemy, CustomBossEntity {
     super.move(MoverType.SELF, movement);
   }
 
-  private void setPhase(
-      Phase phase
+  private void steerSmash(
+      double verticalSpeed
   ) {
-    if (this.currentPhase != phase) {
-      this.currentPhase = phase;
-      this.phaseTicks = 0;
-      this.entityData.set(PHASE_TYPE, phase.getId());
-      onPhaseStart(phase);
+    Vec3 toTarget = smashTargetEntityPos != null
+        ? smashTargetEntityPos.subtract(position())
+        : Vec3.ZERO;
+    double horizontalDistance = Math.sqrt(horizontalDistanceSqr(toTarget));
+    double horizontalSpeed = Math.min(horizontalDistance * 0.15, 1.2);
+    if (horizontalDistance > 0.1) {
+      setVelocityInternal(
+          toTarget.x / horizontalDistance * horizontalSpeed,
+          verticalSpeed,
+          toTarget.z / horizontalDistance * horizontalSpeed
+      );
+      setYRot((float) Math.toDegrees(Math.atan2(-toTarget.x, toTarget.z)));
+      setYBodyRot(getYRot());
+    } else {
+      setVelocityInternal(0.0, verticalSpeed, 0.0);
     }
   }
 
@@ -744,39 +810,6 @@ public class SculkBehemoth extends Mob implements Enemy, CustomBossEntity {
 
     if (!tryChargeStepAssist(movement, startPos)) {
       setPos(blockedPos.x, blockedPos.y, blockedPos.z);
-    }
-  }
-
-  private void onPhaseStart(
-      Phase phase
-  ) {
-    switch (phase) {
-      case CHARGE -> {
-        chargeDirection = null;
-        chargeHit = false;
-        chargeStunTimer = 0;
-        LivingEntity target = getTarget();
-        if (target != null) {
-          chargeDirection = target.position().subtract(position()).normalize();
-          playSound(SoundEvents.WARDEN_SONIC_CHARGE, 2.0F, 0.5F);
-        }
-      }
-      case SONIC_BOOM -> {
-        sonicBoomCooldown = 20;
-        playSound(SoundEvents.WARDEN_ANGRY, 2.0F, 1.0F);
-      }
-      case SMASH -> {
-        smashState = SmashState.JUMPING;
-        smashStateTicks = 0;
-        smashAttackCount = 0;
-        LivingEntity target = getTarget();
-        if (target != null) {
-          smashTargetEntityPos = target.position();
-          setVelocityInternal(0, 1.8, 0);
-          playSound(SoundEvents.GOAT_LONG_JUMP, 2.0F, 0.5F);
-          playSound(SoundEvents.RAVAGER_ROAR, 2.0F, 0.6F);
-        }
-      }
     }
   }
 

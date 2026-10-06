@@ -12,6 +12,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
@@ -62,13 +63,25 @@ public class PaleLordClone extends Monster {
     return Mob.createMobAttributes()
         .add(Attributes.MAX_HEALTH, 1.0)
         .add(Attributes.ATTACK_DAMAGE, 1.0)
-        .add(Attributes.MOVEMENT_SPEED, 0.25)
+        .add(Attributes.MOVEMENT_SPEED, 0.3)
         .add(Attributes.FOLLOW_RANGE, 40.0)
         .add(Attributes.KNOCKBACK_RESISTANCE, 1.0);
   }
 
   @Override
+  public boolean canBeAffected(
+      @NonNull MobEffectInstance effect
+  ) {
+    return !PaleLordCommon.isImmuneToEffect(effect) && super.canBeAffected(effect);
+  }
+
+  @Override
   public void checkDespawn() {}
+
+  @Override
+  public boolean fireImmune() {
+    return true;
+  }
 
   @Override
   public boolean hurtServer(
@@ -76,11 +89,17 @@ public class PaleLordClone extends Monster {
       @NonNull DamageSource source,
       float amount
   ) {
+    if (PaleLordCommon.isImmuneToDamage(source)) {
+      return false;
+    }
     if (amount < PaleLordCommon.DAMAGE_THRESHOLD) {
+      PaleLordCommon.applyProjectileLaunch(this, source);
       return false;
     }
 
-    return super.hurtServer(world, source, amount);
+    boolean damaged = super.hurtServer(world, source, amount);
+    PaleLordCommon.applyProjectileLaunch(this, source);
+    return damaged;
   }
 
   @Override

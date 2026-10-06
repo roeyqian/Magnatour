@@ -15,4 +15,8 @@ import net.fabricmc.api.EnvType;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 
 @Environment(EnvType.CLIENT)
-public final class PaleLordRenderState extends LivingEntityRenderState {}
+public final class PaleLordRenderState extends LivingEntityRenderState {
+
+  public float attackProgress;
+
+}

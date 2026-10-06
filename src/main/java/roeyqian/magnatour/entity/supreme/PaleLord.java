@@ -22,6 +22,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.BossEvent;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
@@ -93,9 +94,16 @@ public class PaleLord extends Monster implements CustomBossEntity {
     return Mob.createMobAttributes()
         .add(Attributes.MAX_HEALTH, 20.0F)
         .add(Attributes.ATTACK_DAMAGE, 1.0F)
-        .add(Attributes.MOVEMENT_SPEED, 0.25F)
+        .add(Attributes.MOVEMENT_SPEED, 0.3F)
         .add(Attributes.FOLLOW_RANGE, 128.0F)
         .add(Attributes.ARMOR, 10.0F);
+  }
+
+  @Override
+  public boolean canBeAffected(
+      @NonNull MobEffectInstance effect
+  ) {
+    return !PaleLordCommon.isImmuneToEffect(effect) && super.canBeAffected(effect);
   }
 
   @Override
@@ -112,14 +120,23 @@ public class PaleLord extends Monster implements CustomBossEntity {
   }
 
   @Override
+  public boolean fireImmune() {
+    return true;
+  }
+
+  @Override
   public boolean hurtServer(
       @NonNull ServerLevel world,
       @NonNull DamageSource source,
       float amount
   ) {
+    if (PaleLordCommon.isImmuneToDamage(source)) {
+      return false;
+    }
     boolean lowDamageHit = amount < PaleLordCommon.DAMAGE_THRESHOLD;
     float normalized = lowDamageHit ? 1.0F : amount;
     boolean damaged = super.hurtServer(world, source, normalized);
+    PaleLordCommon.applyProjectileLaunch(this, source);
 
     if (!damaged || !this.isAlive()) {
       return damaged;

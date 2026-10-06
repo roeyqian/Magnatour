@@ -45,6 +45,16 @@ public final class PaleLordRenderer extends MobRenderer<Monster, PaleLordRenderS
     return new PaleLordRenderState();
   }
 
+  @Override
+  public void extractRenderState(
+      @NonNull Monster entity,
+      @NonNull PaleLordRenderState state,
+      float partialTick
+  ) {
+    super.extractRenderState(entity, state, partialTick);
+    state.attackProgress = entity.getSwingAnimation(partialTick);
+  }
+
   @Override @NonNull
   public Identifier getTextureLocation(
       @NonNull PaleLordRenderState state
