@@ -8,9 +8,11 @@
 package roeyqian.magnatour.registry.content;
 
 // Minecraft
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
+import net.minecraft.util.Unit;
 import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.BlockItem;
@@ -92,6 +94,7 @@ public final class SupremeItems {
       "emperor_chestplate", settings -> new EmperorArmor(settings, 4, 40),
       CustomItemSetting.applySupremeDefaults(new Item.Properties())
           .humanoidArmor(CustomArmorMaterial.SUPREME_CHESTPLATE_ARMOR, ArmorType.CHESTPLATE)
+          .component(DataComponents.GLIDER, Unit.INSTANCE)
           .durability(100)
   );
   public static final Item EMPEROR_HELMET = ItemRegHelper.registerDurableItem(

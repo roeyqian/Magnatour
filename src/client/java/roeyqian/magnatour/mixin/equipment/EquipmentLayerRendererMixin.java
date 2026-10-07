@@ -19,6 +19,7 @@ import net.minecraft.client.model.Model;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.layers.EquipmentLayerRenderer;
 import net.minecraft.client.renderer.texture.UvMapping;
+import net.minecraft.client.resources.model.EquipmentAssetManager;
 import net.minecraft.client.resources.model.EquipmentClientInfo;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
@@ -26,7 +27,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.equipment.EquipmentAsset;
 
 // SpongePowered Mixin
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -44,12 +47,15 @@ public class EquipmentLayerRendererMixin {
 
   @Unique private boolean magnatour$animateUniverseHumanoid;
 
-  /* Universe Armors: Render Custom Armor Glint
+  @Shadow @Final private EquipmentAssetManager equipmentAssets;
+
+  /* Custom equipment glint: shared by armor and wings.
    */
   @Inject(method = "renderLayers(Lnet/minecraft/client/resources/model/EquipmentClientInfo$LayerType;" +
       "Lnet/minecraft/resources/ResourceKey;Lnet/minecraft/client/model/Model;" +
       "Ljava/lang/Object;Lnet/minecraft/world/item/ItemStack;" +
-      "Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;II)V",
+      "Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;" +
+      "ILnet/minecraft/resources/Identifier;II)V",
       at = @At("TAIL"))
   private <S> void inRenderLayers(
       EquipmentClientInfo.LayerType layerType,
@@ -60,9 +66,15 @@ public class EquipmentLayerRendererMixin {
       PoseStack poseStack,
       SubmitNodeCollector submitNodeCollector,
       int lightCoords,
+      Identifier playerTexture,
+      int layerColor,
       int outlineColor,
       CallbackInfo ci
   ) {
+    if (equipmentAssets.get(equipmentAssetId).getLayers(layerType).isEmpty()) {
+      return;
+    }
+
     RenderHelperForGlint.submitArmorGlint(
         model,
         state,
