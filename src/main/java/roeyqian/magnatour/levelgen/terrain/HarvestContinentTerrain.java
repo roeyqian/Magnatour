@@ -41,10 +41,10 @@ public final class HarvestContinentTerrain {
   public static final double PUMPKIN_HARVESTOUR_LIMIT = 90.0;
   public static final double WHEAT_HARVESTOUR_LIMIT = 40.0;
 
-  public static final ResourceKey<Biome> BIG_LAKE = key("big_lake");
+  public static final ResourceKey<Biome> GREAT_LAKE = key("great_lake");
   public static final ResourceKey<Biome> CACTUS_DESERT = key("cactus_desert");
-  public static final ResourceKey<Biome> FROST_SNOWFIELD = key("frost_snowfield");
-  public static final ResourceKey<Biome> GOLDEN_SUMMIT = key("golden_summit");
+  public static final ResourceKey<Biome> BERRY_SNOWFIELD = key("berry_snowfield");
+  public static final ResourceKey<Biome> SACRED_MOUNTAIN = key("sacred_mountain");
   public static final ResourceKey<Biome> LAKE_CENTER_ISLAND = key("lake_center_island");
   public static final ResourceKey<Biome> MELON_JUNGLE = key("melon_jungle");
   public static final ResourceKey<Biome> PUMPKIN_GORGE = key("pumpkin_gorge");
@@ -91,14 +91,14 @@ public final class HarvestContinentTerrain {
   public static ResourceKey<Biome> biomeForHarvestour(
       double harvestour
   ) {
-    if (harvestour < LAKE_HARVESTOUR_LIMIT) return BIG_LAKE;
+    if (harvestour < LAKE_HARVESTOUR_LIMIT) return GREAT_LAKE;
     if (harvestour < MARSH_HARVESTOUR_LIMIT) return SUGARCANE_MARSH;
     if (harvestour < WHEAT_HARVESTOUR_LIMIT) return WHEAT_PLAIN;
     if (harvestour < DESERT_HARVESTOUR_LIMIT) return CACTUS_DESERT;
-    if (harvestour < BERRY_HARVESTOUR_LIMIT) return FROST_SNOWFIELD;
+    if (harvestour < BERRY_HARVESTOUR_LIMIT) return BERRY_SNOWFIELD;
     if (harvestour < PUMPKIN_HARVESTOUR_LIMIT) return PUMPKIN_GORGE;
     if (harvestour < MELON_HARVESTOUR_LIMIT) return MELON_JUNGLE;
-    return GOLDEN_SUMMIT;
+    return SACRED_MOUNTAIN;
   }
 
   public static double fbmPerlin(
@@ -286,10 +286,10 @@ public final class HarvestContinentTerrain {
       case 1 -> HarvestRegionalTerrain.marshHeight(seed, x, z);
       case 2 -> wheatPlainHeight(seed, x, z);
       case 3 -> HarvestRegionalTerrain.desertHeight(seed, x, z);
-      case 4 -> HarvestRegionalTerrain.snowfieldHeight(seed, x, z);
+      case 4 -> HarvestRegionalTerrain.berrySnowfieldHeight(seed, x, z);
       case 5 -> pumpkinGorgeHeight(seed, x, z);
       case 6 -> melonJungleHeight(seed, x, z);
-      case 7 -> HarvestRegionalTerrain.mountainHeight(seed, x, z);
+      case 7 -> HarvestRegionalTerrain.sacredMountainHeight(seed, x, z);
       default -> lakeBedHeight(seed, x, z);
     };
   }

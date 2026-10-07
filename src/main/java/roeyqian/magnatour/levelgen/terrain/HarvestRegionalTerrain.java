@@ -34,7 +34,7 @@ public final class HarvestRegionalTerrain {
     return Mth.clamp(64.0 + pools * 12.0, 59.0, 69.0) + HarvestContinentTerrain.SURFACE_Y_OFFSET;
   }
 
-  static double mountainHeight(
+  static double sacredMountainHeight(
       long seed,
       int x,
       int z
@@ -46,7 +46,7 @@ public final class HarvestRegionalTerrain {
         380.0, 520.0 - HarvestContinentTerrain.SURFACE_Y_OFFSET) + HarvestContinentTerrain.SURFACE_Y_OFFSET;
   }
 
-  static double snowfieldHeight(
+  static double berrySnowfieldHeight(
       long seed,
       int x,
       int z

@@ -6,14 +6,14 @@
     "biome_source": {
       "type": "magnatour:harvest_continent",
       "wheat_plain": "magnatour:wheat_plain",
-      "big_lake": "magnatour:big_lake",
+      "great_lake": "magnatour:great_lake",
       "lake_center_island": "magnatour:lake_center_island",
       "melon_jungle": "magnatour:melon_jungle",
       "pumpkin_gorge": "magnatour:pumpkin_gorge",
-      "golden_summit": "magnatour:golden_summit",
+      "sacred_mountain": "magnatour:sacred_mountain",
       "sugarcane_marsh": "magnatour:sugarcane_marsh",
       "cactus_desert": "magnatour:cactus_desert",
-      "frost_snowfield": "magnatour:frost_snowfield"
+      "berry_snowfield": "magnatour:berry_snowfield"
     }
   }
 }

@@ -147,15 +147,15 @@ public class StarAtlas extends Item {
       };
     } else if (id.getNamespace().equals("magnatour")) {
       color = switch (id.getPath()) {
-        case "big_lake" -> 0x3F76B8;
+        case "great_lake" -> 0x3F76B8;
         case "lake_center_island" -> 0x8BBE68;
         case "melon_jungle" -> 0x589345;
         case "wheat_plain" -> 0xC4AC58;
         case "pumpkin_gorge" -> 0xC78349;
-        case "golden_summit" -> 0xA8B2E8;
+        case "sacred_mountain" -> 0xA8B2E8;
         case "sugarcane_marsh" -> 0x617B64;
         case "cactus_desert" -> 0xE8C988;
-        case "frost_snowfield" -> 0xBCD6DD;
+        case "berry_snowfield" -> 0xBCD6DD;
         case "ore_land" -> 0x92908B;
         case "ore_forest" -> 0x788B91;
         case "universe_meta_void" -> 0x34334D;

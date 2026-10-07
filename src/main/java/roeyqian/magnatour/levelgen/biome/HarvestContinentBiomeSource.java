@@ -40,36 +40,36 @@ public final class HarvestContinentBiomeSource extends BiomeSource {
   public static final MapCodec<HarvestContinentBiomeSource> CODEC =
       RecordCodecBuilder.mapCodec((instance) -> instance.group(
                   Biome.CODEC.fieldOf("wheat_plain").forGetter((source) -> source.wheatPlain),
-                  Biome.CODEC.fieldOf("big_lake").forGetter((source) -> source.bigLake),
+                  Biome.CODEC.fieldOf("great_lake").forGetter((source) -> source.greatLake),
                   Biome.CODEC.fieldOf("melon_jungle").forGetter((source) -> source.melonJungle),
                   Biome.CODEC.fieldOf("pumpkin_gorge").forGetter((source) -> source.pumpkinGorge),
                   Codec.LONG.optionalFieldOf("seed", 0L).forGetter((source) -> source.seed),
                   Biome.CODEC.optionalFieldOf("lake_center_island")
                       .forGetter((source) -> Optional.of(source.lakeCenterIsland)),
-                  Biome.CODEC.optionalFieldOf("golden_summit").forGetter(source -> Optional.of(source.goldenSummit)),
+                  Biome.CODEC.optionalFieldOf("sacred_mountain").forGetter(source -> Optional.of(source.sacredMountain)),
                   Biome.CODEC.optionalFieldOf("sugarcane_marsh").forGetter(source -> Optional.of(source.sugarcaneMarsh)),
                   Biome.CODEC.optionalFieldOf("cactus_desert").forGetter(source -> Optional.of(source.cactusDesert)),
-                  Biome.CODEC.optionalFieldOf("frost_snowfield").forGetter(source -> Optional.of(source.frostSnowfield)),
+                  Biome.CODEC.optionalFieldOf("berry_snowfield").forGetter(source -> Optional.of(source.berrySnowfield)),
                   RegistryOps.retrieveElement(HarvestContinentTerrain.LAKE_CENTER_ISLAND),
-                  RegistryOps.retrieveElement(HarvestContinentTerrain.GOLDEN_SUMMIT),
+                  RegistryOps.retrieveElement(HarvestContinentTerrain.SACRED_MOUNTAIN),
                   RegistryOps.retrieveElement(HarvestContinentTerrain.SUGARCANE_MARSH),
                   RegistryOps.retrieveElement(HarvestContinentTerrain.CACTUS_DESERT),
-                  RegistryOps.retrieveElement(HarvestContinentTerrain.FROST_SNOWFIELD)
+                  RegistryOps.retrieveElement(HarvestContinentTerrain.BERRY_SNOWFIELD)
               )
-              .apply(instance, (wheat, lake, melon, pumpkin, seed, island, summit, marsh, desert, snowfield, defaultIsland, defaultSummit, defaultMarsh, defaultDesert, defaultSnowfield) ->
+              .apply(instance, (wheat, lake, melon, pumpkin, seed, island, sacredMountain, marsh, desert, berrySnowfield, defaultIsland, defaultSacredMountain, defaultMarsh, defaultDesert, defaultBerrySnowfield) ->
                   new HarvestContinentBiomeSource(wheat, lake, melon, pumpkin,
-                      island.orElse(defaultIsland), summit.orElse(defaultSummit), marsh.orElse(defaultMarsh),
-                      desert.orElse(defaultDesert), snowfield.orElse(defaultSnowfield), seed))
+                      island.orElse(defaultIsland), sacredMountain.orElse(defaultSacredMountain), marsh.orElse(defaultMarsh),
+                      desert.orElse(defaultDesert), berrySnowfield.orElse(defaultBerrySnowfield), seed))
       );
 
   private volatile long worldSeed;
 
   private volatile HarvestLakeIslands islands;
 
-  private final Holder<Biome> bigLake;
+  private final Holder<Biome> greatLake;
   private final Holder<Biome> cactusDesert;
-  private final Holder<Biome> frostSnowfield;
-  private final Holder<Biome> goldenSummit;
+  private final Holder<Biome> berrySnowfield;
+  private final Holder<Biome> sacredMountain;
   private final Holder<Biome> lakeCenterIsland;
   private final Holder<Biome> melonJungle;
   private final Holder<Biome> pumpkinGorge;
@@ -78,22 +78,22 @@ public final class HarvestContinentBiomeSource extends BiomeSource {
 
   public HarvestContinentBiomeSource(
       Holder<Biome> wheatPlain,
-      Holder<Biome> bigLake,
+      Holder<Biome> greatLake,
       Holder<Biome> melonJungle,
       Holder<Biome> pumpkinGorge,
       Holder<Biome> lakeCenterIsland,
-      Holder<Biome> goldenSummit,
+      Holder<Biome> sacredMountain,
       Holder<Biome> sugarcaneMarsh,
       Holder<Biome> cactusDesert,
-      Holder<Biome> frostSnowfield,
+      Holder<Biome> berrySnowfield,
       long seed
   ) {
-    this.goldenSummit = goldenSummit;
+    this.sacredMountain = sacredMountain;
     this.sugarcaneMarsh = sugarcaneMarsh;
     this.cactusDesert = cactusDesert;
-    this.frostSnowfield = frostSnowfield;
+    this.berrySnowfield = berrySnowfield;
     this.wheatPlain = wheatPlain;
-    this.bigLake = bigLake;
+    this.greatLake = greatLake;
     this.melonJungle = melonJungle;
     this.pumpkinGorge = pumpkinGorge;
     this.lakeCenterIsland = lakeCenterIsland;
@@ -119,16 +119,16 @@ public final class HarvestContinentBiomeSource extends BiomeSource {
     if (harvestour < HarvestContinentTerrain.LAKE_HARVESTOUR_LIMIT) {
       HarvestLakeIslands.Island island = this.islands.at(x * 4, z * 4, harvestour);
       return island != null && island.distance(x * 4, z * 4) <= island.radius()
-          ? this.lakeCenterIsland : this.bigLake;
+          ? this.lakeCenterIsland : this.greatLake;
     }
     ResourceKey<Biome> biome = HarvestContinentTerrain.biomeForHarvestour(harvestour);
     if (biome.equals(HarvestContinentTerrain.WHEAT_PLAIN)) return this.wheatPlain;
     if (biome.equals(HarvestContinentTerrain.MELON_JUNGLE)) return this.melonJungle;
     if (biome.equals(HarvestContinentTerrain.PUMPKIN_GORGE)) return this.pumpkinGorge;
-    if (biome.equals(HarvestContinentTerrain.FROST_SNOWFIELD)) return this.frostSnowfield;
+    if (biome.equals(HarvestContinentTerrain.BERRY_SNOWFIELD)) return this.berrySnowfield;
     if (biome.equals(HarvestContinentTerrain.SUGARCANE_MARSH)) return this.sugarcaneMarsh;
     if (biome.equals(HarvestContinentTerrain.CACTUS_DESERT)) return this.cactusDesert;
-    return this.goldenSummit;
+    return this.sacredMountain;
   }
 
   /** Shared by biome selection and terrain blending, in block coordinates. */
@@ -173,8 +173,8 @@ public final class HarvestContinentBiomeSource extends BiomeSource {
 
   @Override @NonNull
   protected Stream<Holder<Biome>> collectPossibleBiomes() {
-    return Stream.of(this.bigLake, this.lakeCenterIsland, this.wheatPlain, this.melonJungle, this.pumpkinGorge,
-        this.goldenSummit, this.sugarcaneMarsh, this.cactusDesert, this.frostSnowfield);
+    return Stream.of(this.greatLake, this.lakeCenterIsland, this.wheatPlain, this.melonJungle, this.pumpkinGorge,
+        this.sacredMountain, this.sugarcaneMarsh, this.cactusDesert, this.berrySnowfield);
   }
 
   public record SurfaceSample(
