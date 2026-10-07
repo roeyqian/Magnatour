@@ -283,12 +283,12 @@ public interface CustomPortalVertex {
       Block frameBlock,
       Block portalBlock
   ) {
-    int frameWidth = MIN_PORTAL_FRAME_WIDTH;
-    int frameHeight = MIN_PORTAL_FRAME_HEIGHT;
-    int innerWidth = MIN_PORTAL_INNER_WIDTH;
-    int innerHeight = MIN_PORTAL_INNER_HEIGHT;
+    int frameWidth = 4;
+    int frameHeight = 4;
+    int innerWidth = frameWidth - 2;
+    int innerHeight = frameHeight - 2;
 
-    // Auto-created portals use the smallest legal frame size.
+    // Auto-created portals use a 4x4 frame with a 2x2 interior.
     for (int y = 0; y < frameHeight; y++) {
       for (int i = -1; i <= innerWidth; i++) {
         BlockPos current = (axis == Direction.Axis.X)
