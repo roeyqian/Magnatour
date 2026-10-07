@@ -86,8 +86,8 @@ public final class HarvestLakeIslands {
     int x = gx * CENTER_GRID + CENTER_GRID / 2;
     int z = gz * CENTER_GRID + CENTER_GRID / 2;
     double center = HarvestContinentTerrain.unclampedHarvestour(this.seed, x, z);
-    if (center >= 25.0) return null;
-    // Use the unclamped signal so a plateau at harvestour=0 does not produce many centers.
+    if (center >= 12.0) return null;
+    // Percentile harvestour preserves the ordering of local lake minima.
     for (int dx = -1; dx <= 1; dx++) {
       for (int dz = -1; dz <= 1; dz++) {
         if (dx == 0 && dz == 0) continue;
@@ -102,7 +102,7 @@ public final class HarvestLakeIslands {
       double angle = direction * Math.PI / 8.0;
       int ringX = x + (int) Math.round(Math.cos(angle) * (radius + 64));
       int ringZ = z + (int) Math.round(Math.sin(angle) * (radius + 64));
-      if (HarvestContinentTerrain.sampleHarvestour(this.seed, ringX, ringZ) >= 25.0) return null;
+      if (HarvestContinentTerrain.sampleHarvestour(this.seed, ringX, ringZ) >= 12.0) return null;
     }
     return new Island(x, z, radius);
   }

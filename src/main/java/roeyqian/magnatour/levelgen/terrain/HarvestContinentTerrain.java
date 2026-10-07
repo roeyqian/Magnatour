@@ -22,41 +22,57 @@ import roeyqian.magnatour.Magnatour;
 
 public final class HarvestContinentTerrain {
 
-  public static final int CAVE_MAX_Y = 128;
   // Exclusive bounds; the bottom remains solid and high plateaus avoid cave work.
   public static final int CAVE_MIN_Y = -58;
   public static final int CAVE_SURFACE_COVER = 7;
-  public static final int SEA_LEVEL = 64;
+  public static final int GEN_DEPTH = 640;
+  // Translate every surface profile by the same amount, preserving relief and blending.
+  public static final int SURFACE_Y_OFFSET = -64;
+  public static final int CAVE_MAX_Y = 128 + SURFACE_Y_OFFSET;
+  public static final int SEA_LEVEL = 64 + SURFACE_Y_OFFSET;
 
-  public static final double LAKE_HARVESTOUR_LIMIT = 31.0;
-  // Keep biome intervals stable; their area shares depend on the harvestour field.
-  public static final double MELON_HARVESTOUR_LIMIT = 76.0;
-  public static final double WHEAT_HARVESTOUR_LIMIT = 60.7;
+  public static final double BERRY_HARVESTOUR_LIMIT = 75.0;
+  public static final double DESERT_HARVESTOUR_LIMIT = 60.0;
+  public static final double LAKE_HARVESTOUR_LIMIT = 15.0;
+  public static final double MARSH_HARVESTOUR_LIMIT = 68.0;
+  // Percentile intervals target the requested long-run biome area shares.
+  public static final double MELON_HARVESTOUR_LIMIT = 93.0;
+  public static final double PUMPKIN_HARVESTOUR_LIMIT = 83.0;
+  public static final double WHEAT_HARVESTOUR_LIMIT = 45.0;
 
   public static final ResourceKey<Biome> BIG_LAKE = key("big_lake");
+  public static final ResourceKey<Biome> CACTUS_DESERT = key("cactus_desert");
+  public static final ResourceKey<Biome> FROST_SNOWFIELD = key("frost_snowfield");
+  public static final ResourceKey<Biome> GOLDEN_SUMMIT = key("golden_summit");
   public static final ResourceKey<Biome> LAKE_CENTER_ISLAND = key("lake_center_island");
   public static final ResourceKey<Biome> MELON_JUNGLE = key("melon_jungle");
   public static final ResourceKey<Biome> PUMPKIN_GORGE = key("pumpkin_gorge");
+  public static final ResourceKey<Biome> SUGARCANE_MARSH = key("sugarcane_marsh");
   public static final ResourceKey<Biome> WHEAT_PLAIN = key("wheat_plain");
 
-  private static final int LAKE_CENTER_ISLAND_BASE_HEIGHT = 65;
-  private static final int LAKE_CENTER_ISLAND_MAX_HEIGHT = 70;
-  private static final int PUMPKIN_GORGE_BASE_HEIGHT = 256;
-  private static final int PUMPKIN_GORGE_INTERIOR_MIN_HEIGHT = 250;
-  private static final int PUMPKIN_GORGE_MAX_HEIGHT = 301;
+  private static final int LAKE_CENTER_ISLAND_BASE_HEIGHT = 65 + SURFACE_Y_OFFSET;
+  private static final int LAKE_CENTER_ISLAND_MAX_HEIGHT = 70 + SURFACE_Y_OFFSET;
+  private static final int PUMPKIN_GORGE_BASE_HEIGHT = 256 + SURFACE_Y_OFFSET;
+  private static final int PUMPKIN_GORGE_INTERIOR_MIN_HEIGHT = 250 + SURFACE_Y_OFFSET;
+  private static final int PUMPKIN_GORGE_MAX_HEIGHT = 301 + SURFACE_Y_OFFSET;
   private static final int TREE_GRID_SIZE = 32;
-  private static final int WHEAT_BASE_HEIGHT = 128;
-  private static final int WHEAT_INTERIOR_MAX_HEIGHT = 135;
-  private static final int WHEAT_INTERIOR_MIN_HEIGHT = 123;
+  private static final int WHEAT_BASE_HEIGHT = 128 + SURFACE_Y_OFFSET;
+  private static final int WHEAT_INTERIOR_MAX_HEIGHT = 135 + SURFACE_Y_OFFSET;
+  private static final int WHEAT_INTERIOR_MIN_HEIGHT = 123 + SURFACE_Y_OFFSET;
 
   private static final float TREE_RESERVATION_CHANCE = 0.15F;
 
-  private static final double LAKE_SHORE_START = 25.0;
-  private static final double MELON_PUMPKIN_BLEND_END = MELON_HARVESTOUR_LIMIT + 2.0;
-  private static final double MELON_PUMPKIN_BLEND_START = MELON_HARVESTOUR_LIMIT - 2.0;
-  private static final double WHEAT_MELON_BLEND_END = WHEAT_HARVESTOUR_LIMIT + 2.0;
-  private static final double WHEAT_MELON_BLEND_START = WHEAT_HARVESTOUR_LIMIT - 2.0;
-  private static final double WHEAT_SHORE_END = 40.0;
+  private static final double LAKE_SHORE_START = 12.0;
+  private static final double MELON_ENTRY_BLEND_END = PUMPKIN_HARVESTOUR_LIMIT + 1.0;
+  private static final double MELON_ENTRY_BLEND_START = PUMPKIN_HARVESTOUR_LIMIT - 1.0;
+  private static final double MELON_EXIT_BLEND_END = MELON_HARVESTOUR_LIMIT + 1.0;
+  private static final double MELON_EXIT_BLEND_START = MELON_HARVESTOUR_LIMIT - 1.0;
+  private static final double WHEAT_SHORE_END = 18.0;
+
+  private static final double[] HARVESTOUR_LIMITS = {
+      LAKE_HARVESTOUR_LIMIT, WHEAT_HARVESTOUR_LIMIT, DESERT_HARVESTOUR_LIMIT,
+      MARSH_HARVESTOUR_LIMIT, BERRY_HARVESTOUR_LIMIT, PUMPKIN_HARVESTOUR_LIMIT, MELON_HARVESTOUR_LIMIT
+  };
 
   private HarvestContinentTerrain() {}
 
@@ -67,7 +83,7 @@ public final class HarvestContinentTerrain {
       int worldZ
   ) {
     double region = fbmPerlin(seed ^ 0xA4093822299F31D0L, worldX, worldZ, 0.006, 2);
-    return 36 + Math.round((float) (region * 13.0));
+    return 36 + SURFACE_Y_OFFSET + Math.round((float) (region * 13.0));
   }
 
   /** Material ownership uses thresholds, independently of the height curve. */
@@ -76,8 +92,12 @@ public final class HarvestContinentTerrain {
   ) {
     if (harvestour < LAKE_HARVESTOUR_LIMIT) return BIG_LAKE;
     if (harvestour < WHEAT_HARVESTOUR_LIMIT) return WHEAT_PLAIN;
+    if (harvestour < DESERT_HARVESTOUR_LIMIT) return CACTUS_DESERT;
+    if (harvestour < MARSH_HARVESTOUR_LIMIT) return SUGARCANE_MARSH;
+    if (harvestour < BERRY_HARVESTOUR_LIMIT) return FROST_SNOWFIELD;
+    if (harvestour < PUMPKIN_HARVESTOUR_LIMIT) return PUMPKIN_GORGE;
     if (harvestour < MELON_HARVESTOUR_LIMIT) return MELON_JUNGLE;
-    return PUMPKIN_GORGE;
+    return GOLDEN_SUMMIT;
   }
 
   public static double fbmPerlin(
@@ -116,17 +136,15 @@ public final class HarvestContinentTerrain {
       return blendHeight(value, LAKE_HARVESTOUR_LIMIT, WHEAT_SHORE_END,
           SEA_LEVEL, wheatPlainHeight(seed, worldX, worldZ));
     }
-    if (value <= WHEAT_MELON_BLEND_START) return wheatPlainHeight(seed, worldX, worldZ);
-    if (value < WHEAT_MELON_BLEND_END) {
-      return blendHeight(value, WHEAT_MELON_BLEND_START, WHEAT_MELON_BLEND_END,
-          wheatPlainHeight(seed, worldX, worldZ), melonJungleHeight(seed, worldX, worldZ));
+    for (int index = 1; index < HARVESTOUR_LIMITS.length; index++) {
+      double boundary = HARVESTOUR_LIMITS[index];
+      if (value <= boundary - 1.0) return profileHeight(index, seed, worldX, worldZ);
+      if (value < boundary + 1.0) {
+        return blendHeight(value, boundary - 1.0, boundary + 1.0,
+            profileHeight(index, seed, worldX, worldZ), profileHeight(index + 1, seed, worldX, worldZ));
+      }
     }
-    if (value <= MELON_PUMPKIN_BLEND_START) return melonJungleHeight(seed, worldX, worldZ);
-    if (value < MELON_PUMPKIN_BLEND_END) {
-      return blendHeight(value, MELON_PUMPKIN_BLEND_START, MELON_PUMPKIN_BLEND_END,
-          melonJungleHeight(seed, worldX, worldZ), pumpkinGorgeHeight(seed, worldX, worldZ));
-    }
-    return pumpkinGorgeHeight(seed, worldX, worldZ);
+    return profileHeight(7, seed, worldX, worldZ);
   }
 
   /** Keep the original grass/root column in 15% of the 32-block grid cells. */
@@ -175,17 +193,17 @@ public final class HarvestContinentTerrain {
   public static double melonBlendWeight(
       double harvestour
   ) {
-    if (harvestour <= WHEAT_MELON_BLEND_START || harvestour >= MELON_PUMPKIN_BLEND_END) return 0.0;
-    if (harvestour < WHEAT_MELON_BLEND_END) {
-      return fade((harvestour - WHEAT_MELON_BLEND_START)
-          / (WHEAT_MELON_BLEND_END - WHEAT_MELON_BLEND_START));
+    if (harvestour <= MELON_ENTRY_BLEND_START || harvestour >= MELON_EXIT_BLEND_END) return 0.0;
+    if (harvestour < MELON_ENTRY_BLEND_END) {
+      return fade((harvestour - MELON_ENTRY_BLEND_START)
+          / (MELON_ENTRY_BLEND_END - MELON_ENTRY_BLEND_START));
     }
-    if (harvestour <= MELON_PUMPKIN_BLEND_START) return 1.0;
-    return 1.0 - fade((harvestour - MELON_PUMPKIN_BLEND_START)
-        / (MELON_PUMPKIN_BLEND_END - MELON_PUMPKIN_BLEND_START));
+    if (harvestour <= MELON_EXIT_BLEND_START) return 1.0;
+    return 1.0 - fade((harvestour - MELON_EXIT_BLEND_START)
+        / (MELON_EXIT_BLEND_END - MELON_EXIT_BLEND_START));
   }
 
-  /** A continuous horizontal field; biome intervals are not area percentages. */
+  /** A continuous percentile field; interval widths target long-run area percentages. */
   public static double sampleHarvestour(
       long seed,
       int worldX,
@@ -254,7 +272,7 @@ public final class HarvestContinentTerrain {
       int worldZ
   ) {
     double shape = fbmPerlin(seed ^ 0x67E6096A85AE67BBL, worldX, worldZ, 0.012, 3);
-    return Mth.clamp(38.0 + shape * 9.0, 26.0, 52.0);
+    return Mth.clamp(38.0 + shape * 9.0, 26.0, 52.0) + SURFACE_Y_OFFSET;
   }
 
   private static double wheatPlainHeight(
@@ -269,27 +287,22 @@ public final class HarvestContinentTerrain {
         WHEAT_INTERIOR_MIN_HEIGHT, WHEAT_INTERIOR_MAX_HEIGHT);
   }
 
-  private static double melonJungleHeight(
+  private static double profileHeight(
+      int index,
       long seed,
       int x,
       int z
   ) {
-    return HarvestMelonTerrain.height(seed, x, z);
-  }
-
-  private static double pumpkinGorgeHeight(
-      long seed,
-      int x,
-      int z
-  ) {
-    double macro = Math.sin(x * 0.035) + Math.cos(z * 0.032);
-    double ridges = Math.abs(Math.sin((x + z) * 0.08)) * 24.0;
-    double spikes = Math.abs(Math.sin(x * 0.19) * Math.cos(z * 0.17)) * 14.0;
-    double detail = (1.0 - Math.abs(fbmPerlin(seed ^ 0x3C6EF372FE94F82BL, x, z, 0.040, 4)));
-    detail = detail * detail * 22.0 - 10.0;
-    detail += fbmPerlin(seed ^ 0x510E527FADE682D1L, x, z, 0.085, 3) * 8.0;
-    double height = PUMPKIN_GORGE_BASE_HEIGHT + macro * 6.0 + ridges + spikes + detail;
-    return Mth.clamp(height, PUMPKIN_GORGE_INTERIOR_MIN_HEIGHT, PUMPKIN_GORGE_MAX_HEIGHT);
+    return switch (index) {
+      case 1 -> wheatPlainHeight(seed, x, z);
+      case 2 -> HarvestRegionalTerrain.desertHeight(seed, x, z);
+      case 3 -> HarvestRegionalTerrain.marshHeight(seed, x, z);
+      case 4 -> HarvestRegionalTerrain.snowfieldHeight(seed, x, z);
+      case 5 -> pumpkinGorgeHeight(seed, x, z);
+      case 6 -> melonJungleHeight(seed, x, z);
+      case 7 -> HarvestRegionalTerrain.mountainHeight(seed, x, z);
+      default -> lakeBedHeight(seed, x, z);
+    };
   }
 
   private static double lerp(
@@ -330,6 +343,29 @@ public final class HarvestContinentTerrain {
       case 6 -> (dx - dz) * 0.7071067811865476;
       default -> (-dx - dz) * 0.7071067811865476;
     };
+  }
+
+  private static double pumpkinGorgeHeight(
+      long seed,
+      int x,
+      int z
+  ) {
+    double macro = Math.sin(x * 0.035) + Math.cos(z * 0.032);
+    double ridges = Math.abs(Math.sin((x + z) * 0.08)) * 24.0;
+    double spikes = Math.abs(Math.sin(x * 0.19) * Math.cos(z * 0.17)) * 14.0;
+    double detail = (1.0 - Math.abs(fbmPerlin(seed ^ 0x3C6EF372FE94F82BL, x, z, 0.040, 4)));
+    detail = detail * detail * 22.0 - 10.0;
+    detail += fbmPerlin(seed ^ 0x510E527FADE682D1L, x, z, 0.085, 3) * 8.0;
+    double height = PUMPKIN_GORGE_BASE_HEIGHT + macro * 6.0 + ridges + spikes + detail;
+    return Mth.clamp(height, PUMPKIN_GORGE_INTERIOR_MIN_HEIGHT, PUMPKIN_GORGE_MAX_HEIGHT);
+  }
+
+  private static double melonJungleHeight(
+      long seed,
+      int x,
+      int z
+  ) {
+    return HarvestMelonTerrain.height(seed, x, z) + SURFACE_Y_OFFSET;
   }
 
   private static long mix(

@@ -8,7 +8,9 @@
 package roeyqian.magnatour.mixin.client;
 
 // Minecraft
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.SkyRenderer;
 
 // SpongePowered Mixin
@@ -18,20 +20,28 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 // Magnatour
+import roeyqian.magnatour.levelgen.terrain.HarvestContinentTerrain;
 import roeyqian.magnatour.registry.worldgen.CustomDimensions;
 
 @Mixin(value = SkyRenderer.class, priority = 3600000)
 public class SkyRendererMixin {
 
-  /* Universe Meta: Never render the vanilla dark disc below the horizon.
-   */
+  /** Keep the Harvest horizon aligned with its lowered terrain. */
   @Inject(method = "shouldRenderDarkDisc", at = @At("HEAD"), cancellable = true)
   private void inShouldRenderDarkDisc(
       float tickProgress,
       ClientLevel level,
       CallbackInfoReturnable<Boolean> cir
   ) {
-    if (level.dimension() == CustomDimensions.UNIVERSE_META) cir.setReturnValue(false);
+    if (level.dimension() == CustomDimensions.UNIVERSE_META) {
+      cir.setReturnValue(false);
+    } else if (level.dimension() == CustomDimensions.HARVEST_CONTINENT) {
+      LocalPlayer player = Minecraft.getInstance().player;
+      double horizon = level.getLevelData().getHorizonHeight(level)
+          + HarvestContinentTerrain.SURFACE_Y_OFFSET;
+      cir.setReturnValue(player != null && player.getEyePosition(tickProgress).y < horizon
+          && !player.isUnderWater());
+    }
   }
 
 }

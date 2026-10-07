@@ -46,11 +46,20 @@ public final class HarvestContinentBiomeSource extends BiomeSource {
                   Codec.LONG.optionalFieldOf("seed", 0L).forGetter((source) -> source.seed),
                   Biome.CODEC.optionalFieldOf("lake_center_island")
                       .forGetter((source) -> Optional.of(source.lakeCenterIsland)),
-                  RegistryOps.retrieveElement(HarvestContinentTerrain.LAKE_CENTER_ISLAND)
+                  Biome.CODEC.optionalFieldOf("golden_summit").forGetter(source -> Optional.of(source.goldenSummit)),
+                  Biome.CODEC.optionalFieldOf("sugarcane_marsh").forGetter(source -> Optional.of(source.sugarcaneMarsh)),
+                  Biome.CODEC.optionalFieldOf("cactus_desert").forGetter(source -> Optional.of(source.cactusDesert)),
+                  Biome.CODEC.optionalFieldOf("frost_snowfield").forGetter(source -> Optional.of(source.frostSnowfield)),
+                  RegistryOps.retrieveElement(HarvestContinentTerrain.LAKE_CENTER_ISLAND),
+                  RegistryOps.retrieveElement(HarvestContinentTerrain.GOLDEN_SUMMIT),
+                  RegistryOps.retrieveElement(HarvestContinentTerrain.SUGARCANE_MARSH),
+                  RegistryOps.retrieveElement(HarvestContinentTerrain.CACTUS_DESERT),
+                  RegistryOps.retrieveElement(HarvestContinentTerrain.FROST_SNOWFIELD)
               )
-              .apply(instance, (wheat, lake, melon, pumpkin, seed, island, defaultIsland) ->
+              .apply(instance, (wheat, lake, melon, pumpkin, seed, island, summit, marsh, desert, snowfield, defaultIsland, defaultSummit, defaultMarsh, defaultDesert, defaultSnowfield) ->
                   new HarvestContinentBiomeSource(wheat, lake, melon, pumpkin,
-                      island.orElse(defaultIsland), seed))
+                      island.orElse(defaultIsland), summit.orElse(defaultSummit), marsh.orElse(defaultMarsh),
+                      desert.orElse(defaultDesert), snowfield.orElse(defaultSnowfield), seed))
       );
 
   private volatile long worldSeed;
@@ -58,9 +67,13 @@ public final class HarvestContinentBiomeSource extends BiomeSource {
   private volatile HarvestLakeIslands islands;
 
   private final Holder<Biome> bigLake;
+  private final Holder<Biome> cactusDesert;
+  private final Holder<Biome> frostSnowfield;
+  private final Holder<Biome> goldenSummit;
   private final Holder<Biome> lakeCenterIsland;
   private final Holder<Biome> melonJungle;
   private final Holder<Biome> pumpkinGorge;
+  private final Holder<Biome> sugarcaneMarsh;
   private final Holder<Biome> wheatPlain;
 
   public HarvestContinentBiomeSource(
@@ -69,8 +82,16 @@ public final class HarvestContinentBiomeSource extends BiomeSource {
       Holder<Biome> melonJungle,
       Holder<Biome> pumpkinGorge,
       Holder<Biome> lakeCenterIsland,
+      Holder<Biome> goldenSummit,
+      Holder<Biome> sugarcaneMarsh,
+      Holder<Biome> cactusDesert,
+      Holder<Biome> frostSnowfield,
       long seed
   ) {
+    this.goldenSummit = goldenSummit;
+    this.sugarcaneMarsh = sugarcaneMarsh;
+    this.cactusDesert = cactusDesert;
+    this.frostSnowfield = frostSnowfield;
     this.wheatPlain = wheatPlain;
     this.bigLake = bigLake;
     this.melonJungle = melonJungle;
@@ -100,9 +121,14 @@ public final class HarvestContinentBiomeSource extends BiomeSource {
       return island != null && island.distance(x * 4, z * 4) <= island.radius()
           ? this.lakeCenterIsland : this.bigLake;
     }
-    if (harvestour < HarvestContinentTerrain.WHEAT_HARVESTOUR_LIMIT) return this.wheatPlain;
-    if (harvestour < HarvestContinentTerrain.MELON_HARVESTOUR_LIMIT) return this.melonJungle;
-    return this.pumpkinGorge;
+    ResourceKey<Biome> biome = HarvestContinentTerrain.biomeForHarvestour(harvestour);
+    if (biome.equals(HarvestContinentTerrain.WHEAT_PLAIN)) return this.wheatPlain;
+    if (biome.equals(HarvestContinentTerrain.MELON_JUNGLE)) return this.melonJungle;
+    if (biome.equals(HarvestContinentTerrain.PUMPKIN_GORGE)) return this.pumpkinGorge;
+    if (biome.equals(HarvestContinentTerrain.FROST_SNOWFIELD)) return this.frostSnowfield;
+    if (biome.equals(HarvestContinentTerrain.SUGARCANE_MARSH)) return this.sugarcaneMarsh;
+    if (biome.equals(HarvestContinentTerrain.CACTUS_DESERT)) return this.cactusDesert;
+    return this.goldenSummit;
   }
 
   /** Shared by biome selection and terrain blending, in block coordinates. */
@@ -113,7 +139,7 @@ public final class HarvestContinentBiomeSource extends BiomeSource {
     return HarvestContinentTerrain.sampleHarvestour(this.worldSeed ^ this.seed, worldX, worldZ);
   }
 
-  /** Includes the special lake overlay without changing harvestour's four intervals. */
+  /** Biome ownership and blended terrain use the same harvestour intervals. */
   public SurfaceSample sampleSurface(
       int x,
       int z,
@@ -125,10 +151,11 @@ public final class HarvestContinentBiomeSource extends BiomeSource {
     if (island != null) {
       if (island.distance(x, z) <= island.radius()) biome = HarvestContinentTerrain.LAKE_CENTER_ISLAND;
       return new SurfaceSample(biome,
-          HarvestContinentTerrain.islandSurfaceHeight(island, harvestour, terrainSeed, x, z), harvestour);
+          HarvestContinentTerrain.islandSurfaceHeight(island, harvestour, terrainSeed, x, z), harvestour, 0.0);
     }
     return new SurfaceSample(biome,
-        HarvestContinentTerrain.surfaceHeight(harvestour, terrainSeed, x, z), harvestour);
+        HarvestContinentTerrain.surfaceHeight(harvestour, terrainSeed, x, z), harvestour,
+        HarvestContinentTerrain.melonBlendWeight(harvestour));
   }
 
   /** Initialized by the generator before structure and biome generation. */
@@ -146,13 +173,15 @@ public final class HarvestContinentBiomeSource extends BiomeSource {
 
   @Override @NonNull
   protected Stream<Holder<Biome>> collectPossibleBiomes() {
-    return Stream.of(this.bigLake, this.lakeCenterIsland, this.wheatPlain, this.melonJungle, this.pumpkinGorge);
+    return Stream.of(this.bigLake, this.lakeCenterIsland, this.wheatPlain, this.melonJungle, this.pumpkinGorge,
+        this.goldenSummit, this.sugarcaneMarsh, this.cactusDesert, this.frostSnowfield);
   }
 
   public record SurfaceSample(
       ResourceKey<Biome> biome,
       int height,
-      double harvestour
+      double harvestour,
+      double melonWeight
   ) {}
 
 }

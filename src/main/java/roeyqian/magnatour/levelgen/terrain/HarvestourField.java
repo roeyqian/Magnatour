@@ -8,17 +8,16 @@
 package roeyqian.magnatour.levelgen.terrain;
 
 // Java Standard
-import java.util.ArrayDeque;
 import java.util.Arrays;
-import java.util.HashSet;
+import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 
-/** Continuous, seeded harvestour values with small threshold excursions suppressed. */
+/** Continuous harvestour normalized to percentiles of the same seeded terrain field. */
 final class HarvestourField {
 
   private static final int CACHE_LIMIT = 8192;
-  // Large components are retained even if a deep core is farther away.
-  private static final int EXCURSION_SEARCH_LIMIT = 64;
+  private static final int DISTRIBUTION_CACHE_LIMIT = 4;
+  private static final int DISTRIBUTION_SAMPLES = 16384;
   private static final int GRID_SIZE = 512;
 
   private static final long NOISE_SALT = 0xA54FF53A5F1D36F1L;
@@ -27,41 +26,25 @@ final class HarvestourField {
   private static final double DETAIL_WEIGHT = 0.25;
   // Preserve the original 4096-, 2048- and 1024-block wavelengths.
   private static final double NOISE_SCALE = 1.0 / 4096.0;
-  // Less than half the narrowest biome interval, leaving every biome a stable core.
-  private static final double THRESHOLD_MARGIN = 6.0;
 
   private static final ConcurrentHashMap<Node, Double> MEDIAN_NODES = new ConcurrentHashMap<>();
-  private static final ConcurrentHashMap<Node, Double> NODES = new ConcurrentHashMap<>();
+
+  private static final ConcurrentHashMap<Long, double[]> DISTRIBUTIONS = new ConcurrentHashMap<>();
 
   private HarvestourField() {}
 
-  private static boolean hasDeepOrLargeRegion(
-      Node start,
-      double threshold,
-      boolean above
+  private static double fade(
+      double value
   ) {
-    ArrayDeque<Node> pending = new ArrayDeque<>();
-    HashSet<Node> visited = new HashSet<>();
-    pending.add(start);
-    visited.add(start);
-    while (!pending.isEmpty()) {
-      Node current = pending.removeFirst();
-      double value = medianNode(current);
-      if (Math.abs(value - threshold) >= THRESHOLD_MARGIN) return true;
-      for (int dx = -1; dx <= 1; dx++) {
-        for (int dz = -1; dz <= 1; dz++) {
-          if (Math.abs(dx) + Math.abs(dz) != 1) continue;
-          Node neighbor = new Node(current.seed(), current.x() + dx, current.z() + dz);
-          if (visited.contains(neighbor)) continue;
-          if ((medianNode(neighbor) >= threshold) != above) continue;
-          visited.add(neighbor);
-          if (visited.size() >= EXCURSION_SEARCH_LIMIT) return true;
-          pending.addLast(neighbor);
-        }
-      }
-    }
-    // The entire small component turned back before reaching threshold +/- margin.
-    return false;
+    return value * value * value * (value * (value * 6.0 - 15.0) + 10.0);
+  }
+
+  private static double lerp(
+      double delta,
+      double start,
+      double end
+  ) {
+    return start + delta * (end - start);
   }
 
   private static double medianNode(
@@ -88,41 +71,19 @@ final class HarvestourField {
         / (1.0 + DETAIL_WEIGHT + fineWeight) * AMPLITUDE;
   }
 
-  private static double bufferThreshold(
-      Node node,
-      double value,
-      double threshold
-  ) {
-    if (Math.abs(value - threshold) >= THRESHOLD_MARGIN) return value;
-    boolean above = value >= threshold;
-    double direction = above ? 1.0 : -1.0;
-    // A shallow crossing survives only if its connected region has a deep core,
-    // or is already large. This is spatial and independent of sampling order.
-    if (!hasDeepOrLargeRegion(node, threshold, above)) direction = -direction;
-    return threshold + direction * THRESHOLD_MARGIN;
-  }
-
-  private static double fade(
-      double value
-  ) {
-    return value * value * value * (value * (value * 6.0 - 15.0) + 10.0);
-  }
-
-  private static double lerp(
-      double delta,
-      double start,
-      double end
-  ) {
-    return start + delta * (end - start);
-  }
-
-  private static double node(
+  private static double rawSample(
       long seed,
-      int gx,
-      int gz
+      int worldX,
+      int worldZ
   ) {
-    if (NODES.size() > CACHE_LIMIT) NODES.clear();
-    return NODES.computeIfAbsent(new Node(seed, gx, gz), HarvestourField::filterNode);
+    int gx = Math.floorDiv(worldX, GRID_SIZE);
+    int gz = Math.floorDiv(worldZ, GRID_SIZE);
+    double tx = fade(Math.floorMod(worldX, GRID_SIZE) / (double) GRID_SIZE);
+    double tz = fade(Math.floorMod(worldZ, GRID_SIZE) / (double) GRID_SIZE);
+    double north = lerp(tx, medianNode(new Node(seed, gx, gz)), medianNode(new Node(seed, gx + 1, gz)));
+    double south = lerp(tx, medianNode(new Node(seed, gx, gz + 1)), medianNode(new Node(seed, gx + 1, gz + 1)));
+    // Median nodes suppress isolated extrema before convex interpolation.
+    return lerp(tz, north, south);
   }
 
   private static double computeMedian(
@@ -142,13 +103,19 @@ final class HarvestourField {
     return neighborhood[4];
   }
 
-  private static double filterNode(
-      Node node
+  /** Deterministic reference samples calibrate area shares without a second selection field. */
+  private static double[] createDistribution(
+      long seed
   ) {
-    double value = medianNode(node);
-    value = bufferThreshold(node, value, HarvestContinentTerrain.LAKE_HARVESTOUR_LIMIT);
-    value = bufferThreshold(node, value, HarvestContinentTerrain.WHEAT_HARVESTOUR_LIMIT);
-    return bufferThreshold(node, value, HarvestContinentTerrain.MELON_HARVESTOUR_LIMIT);
+    Random random = new Random(seed ^ 0xD1310BA698DFB5ACL);
+    double[] distribution = new double[DISTRIBUTION_SAMPLES];
+    for (int index = 0; index < distribution.length; index++) {
+      int x = random.nextInt(16777216) - 8388608;
+      int z = random.nextInt(16777216) - 8388608;
+      distribution[index] = rawSample(seed, x, z);
+    }
+    Arrays.sort(distribution);
+    return distribution;
   }
 
   static double sample(
@@ -156,14 +123,17 @@ final class HarvestourField {
       int worldX,
       int worldZ
   ) {
-    int gx = Math.floorDiv(worldX, GRID_SIZE);
-    int gz = Math.floorDiv(worldZ, GRID_SIZE);
-    double tx = fade(Math.floorMod(worldX, GRID_SIZE) / (double) GRID_SIZE);
-    double tz = fade(Math.floorMod(worldZ, GRID_SIZE) / (double) GRID_SIZE);
-    double north = lerp(tx, node(seed, gx, gz), node(seed, gx + 1, gz));
-    double south = lerp(tx, node(seed, gx, gz + 1), node(seed, gx + 1, gz + 1));
-    // Convex interpolation cannot introduce extrema outside the filtered node range.
-    return lerp(tz, north, south);
+    if (DISTRIBUTIONS.size() > DISTRIBUTION_CACHE_LIMIT) DISTRIBUTIONS.clear();
+    double[] distribution = DISTRIBUTIONS.computeIfAbsent(seed, HarvestourField::createDistribution);
+    double value = rawSample(seed, worldX, worldZ);
+    int index = Arrays.binarySearch(distribution, value);
+    if (index >= 0) return index * 100.0 / (distribution.length - 1);
+    int upper = -index - 1;
+    if (upper == 0) return 0.0;
+    if (upper == distribution.length) return 100.0;
+    double span = distribution[upper] - distribution[upper - 1];
+    double fraction = span == 0.0 ? 0.0 : (value - distribution[upper - 1]) / span;
+    return (upper - 1 + fraction) * 100.0 / (distribution.length - 1);
   }
 
   private record Node(

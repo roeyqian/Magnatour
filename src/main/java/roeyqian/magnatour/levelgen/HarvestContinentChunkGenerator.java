@@ -69,7 +69,7 @@ public final class HarvestContinentChunkGenerator extends ChunkGenerator {
               .apply(instance, HarvestContinentChunkGenerator::new)
       );
 
-  private static final int GEN_DEPTH = 384;
+  private static final int GEN_DEPTH = HarvestContinentTerrain.GEN_DEPTH;
   private static final int MIN_Y = -64;
   private static final int MAX_Y = MIN_Y + GEN_DEPTH - 1;
 
@@ -117,11 +117,11 @@ public final class HarvestContinentChunkGenerator extends ChunkGenerator {
     BlockPos.MutableBlockPos ground = new BlockPos.MutableBlockPos();
     for (int x = minX; x < minX + 16; x++) {
       for (int z = minZ; z < minZ + 16; z++) {
-        double harvestour = this.harvestourSource.sampleHarvestour(x, z);
-        if (!HarvestContinentTerrain.biomeForHarvestour(harvestour).equals(HarvestContinentTerrain.WHEAT_PLAIN)) {
+        HarvestContinentBiomeSource.SurfaceSample surface = this.harvestourSource.sampleSurface(x, z, this.terrainSeed);
+        if (!surface.biome().equals(HarvestContinentTerrain.WHEAT_PLAIN)) {
           continue;
         }
-        int y = HarvestContinentTerrain.surfaceHeight(harvestour, this.terrainSeed, x, z);
+        int y = surface.height();
         ground.set(x, y, z);
         if (level.getBlockState(ground).is(SupremeBlocks.EVER_WATER_GRASS_BLOCK)) {
           ReservedGoldenTree.place(level, this.terrainSeed, ground);
@@ -306,7 +306,7 @@ public final class HarvestContinentChunkGenerator extends ChunkGenerator {
   ) {
     if (y < MIN_Y || y > MAX_Y) return Blocks.AIR.defaultBlockState();
     if (y > profile.surfaceY()) {
-      return profile.bigLake() && y <= HarvestContinentTerrain.SEA_LEVEL
+      return (profile.bigLake() || profile.marsh()) && y <= HarvestContinentTerrain.SEA_LEVEL
           ? Blocks.WATER.defaultBlockState() : Blocks.AIR.defaultBlockState();
     }
     if (profile.melonTerrain() != null && !profile.melonTerrain().solid(y)) {
@@ -329,21 +329,15 @@ public final class HarvestContinentChunkGenerator extends ChunkGenerator {
   ) {
     if (profile.bigLake()) return;
     int y = profile.surfaceY();
-    BlockState top;
-    BlockState filler;
-    if (profile.pumpkinGorge()) {
-      top = Blocks.RED_SAND.defaultBlockState();
-      filler = Blocks.DYED_TERRACOTTA.orange().defaultBlockState();
-    } else {
-      filler = SupremeBlocks.EVER_WATER_SOIL.defaultBlockState();
-      top = profile.crop()
-          ? SupremeBlocks.EVER_WATER_FARMLAND.defaultBlockState()
-          : SupremeBlocks.EVER_WATER_GRASS_BLOCK.defaultBlockState();
-    }
+    BlockState top = surfaceTop(profile);
+    BlockState filler = surfaceFiller(profile);
     set(chunk, pos, oceanFloor, worldSurface, y, top);
     set(chunk, pos, oceanFloor, worldSurface, y - 1, filler);
     set(chunk, pos, oceanFloor, worldSurface, y - 2, filler);
     set(chunk, pos, oceanFloor, worldSurface, y - 3, filler);
+    if (profile.snowfield() && !profile.berryClearing() || profile.summit() && y >= 480 + HarvestContinentTerrain.SURFACE_Y_OFFSET) {
+      set(chunk, pos, oceanFloor, worldSurface, y + 1, Blocks.SNOW.defaultBlockState());
+    }
     if (profile.crop()) {
       set(chunk, pos, oceanFloor, worldSurface, y + 1,
           Blocks.WHEAT.defaultBlockState().setValue(BlockStateProperties.AGE_7, 7));
@@ -358,21 +352,42 @@ public final class HarvestContinentChunkGenerator extends ChunkGenerator {
     if (profile.bigLake()) return;
     int base = profile.surfaceY() - minY;
     if (base < 0 || base >= states.length) return;
-    if (profile.pumpkinGorge()) {
-      states[base] = Blocks.RED_SAND.defaultBlockState();
-      for (int depth = 1; depth <= 3 && base - depth >= 0; depth++) {
-        states[base - depth] = Blocks.DYED_TERRACOTTA.orange().defaultBlockState();
-      }
-      return;
-    }
     boolean crop = profile.crop();
-    states[base] = crop ? SupremeBlocks.EVER_WATER_FARMLAND.defaultBlockState()
-        : SupremeBlocks.EVER_WATER_GRASS_BLOCK.defaultBlockState();
+    states[base] = surfaceTop(profile);
     for (int depth = 1; depth <= 3 && base - depth >= 0; depth++) {
-      states[base - depth] = SupremeBlocks.EVER_WATER_SOIL.defaultBlockState();
+      states[base - depth] = surfaceFiller(profile);
+    }
+    if ((profile.snowfield() && !profile.berryClearing() || profile.summit() && profile.surfaceY() >= 480 + HarvestContinentTerrain.SURFACE_Y_OFFSET) && base + 1 < states.length) {
+      states[base + 1] = Blocks.SNOW.defaultBlockState();
     }
     if (crop && base + 1 < states.length) states[base + 1] = Blocks.WHEAT.defaultBlockState()
         .setValue(BlockStateProperties.AGE_7, 7);
+  }
+
+  private static BlockState surfaceTop(
+      ResourceKeyBiome profile
+  ) {
+    if (profile.pumpkinGorge()) return Blocks.RED_SAND.defaultBlockState();
+    if (profile.desert()) return Blocks.SAND.defaultBlockState();
+    if (profile.summit()) return Blocks.STONE.defaultBlockState();
+    if (profile.marsh()) return profile.surfaceY() < HarvestContinentTerrain.SEA_LEVEL
+        ? Blocks.MUD.defaultBlockState() : Blocks.GRASS_BLOCK.defaultBlockState();
+    if (profile.snowfield()) return profile.berryClearing()
+        ? Blocks.GRASS_BLOCK.defaultBlockState() : Blocks.SNOW_BLOCK.defaultBlockState();
+    return profile.crop() ? SupremeBlocks.EVER_WATER_FARMLAND.defaultBlockState()
+        : SupremeBlocks.EVER_WATER_GRASS_BLOCK.defaultBlockState();
+  }
+
+  private static BlockState surfaceFiller(
+      ResourceKeyBiome profile
+  ) {
+    if (profile.pumpkinGorge()) return Blocks.DYED_TERRACOTTA.orange().defaultBlockState();
+    if (profile.desert()) return Blocks.SANDSTONE.defaultBlockState();
+    if (profile.summit()) return Blocks.STONE.defaultBlockState();
+    if (profile.snowfield()) return profile.berryClearing()
+        ? Blocks.DIRT.defaultBlockState() : Blocks.PACKED_ICE.defaultBlockState();
+    if (profile.marsh()) return Blocks.DIRT.defaultBlockState();
+    return SupremeBlocks.EVER_WATER_SOIL.defaultBlockState();
   }
 
   /** The same pointwise function is used for chunks, columns and structures. */
@@ -388,8 +403,11 @@ public final class HarvestContinentChunkGenerator extends ChunkGenerator {
         HarvestContinentTerrain.aquiferWaterLevel(this.terrainSeed, x, z),
         biome.equals(HarvestContinentTerrain.WHEAT_PLAIN)
             && HarvestContinentTerrain.isTreeReservation(x, z),
+        biome.equals(HarvestContinentTerrain.FROST_SNOWFIELD)
+            && HarvestContinentTerrain.fbmPerlin(this.terrainSeed ^ 0xD1310BA698DFB5ACL,
+                x, z, 0.045, 2) > 0.10,
         HarvestMelonTerrain.column(this.terrainSeed, x, z, surface.height(),
-            HarvestContinentTerrain.melonBlendWeight(surface.harvestour()))
+            surface.melonWeight())
     );
   }
 
@@ -398,6 +416,7 @@ public final class HarvestContinentChunkGenerator extends ChunkGenerator {
       int surfaceY,
       int waterLevel,
       boolean treeReservation,
+      boolean berryClearing,
       HarvestMelonTerrain.Column melonTerrain
   ) {
 
@@ -407,7 +426,15 @@ public final class HarvestContinentChunkGenerator extends ChunkGenerator {
 
     boolean crop() { return wheatPlain() && !this.treeReservation; }
 
+    boolean desert() { return this.biome.equals(HarvestContinentTerrain.CACTUS_DESERT); }
+
+    boolean marsh() { return this.biome.equals(HarvestContinentTerrain.SUGARCANE_MARSH); }
+
     boolean pumpkinGorge() { return this.biome.equals(HarvestContinentTerrain.PUMPKIN_GORGE); }
+
+    boolean snowfield() { return this.biome.equals(HarvestContinentTerrain.FROST_SNOWFIELD); }
+
+    boolean summit() { return this.biome.equals(HarvestContinentTerrain.GOLDEN_SUMMIT); }
 
   }
 

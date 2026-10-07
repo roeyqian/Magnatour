@@ -9,7 +9,11 @@
       "big_lake": "magnatour:big_lake",
       "lake_center_island": "magnatour:lake_center_island",
       "melon_jungle": "magnatour:melon_jungle",
-      "pumpkin_gorge": "magnatour:pumpkin_gorge"
+      "pumpkin_gorge": "magnatour:pumpkin_gorge",
+      "golden_summit": "magnatour:golden_summit",
+      "sugarcane_marsh": "magnatour:sugarcane_marsh",
+      "cactus_desert": "magnatour:cactus_desert",
+      "frost_snowfield": "magnatour:frost_snowfield"
     }
   }
 }
