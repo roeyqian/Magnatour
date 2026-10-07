@@ -35,9 +35,9 @@ public final class HarvestLakeIslands {
   public Island at(
       int x,
       int z,
-      double strange
+      double harvestour
   ) {
-    if (strange >= HarvestContinentTerrain.LAKE_STRANGE_LIMIT) return null;
+    if (harvestour >= HarvestContinentTerrain.LAKE_HARVESTOUR_LIMIT) return null;
     int gx = Math.floorDiv(x, CENTER_GRID);
     int gz = Math.floorDiv(z, CENTER_GRID);
     for (int dx = -1; dx <= 1; dx++) {
@@ -85,13 +85,13 @@ public final class HarvestLakeIslands {
     if (unit(choice) >= ISLAND_CHANCE) return null;
     int x = gx * CENTER_GRID + CENTER_GRID / 2;
     int z = gz * CENTER_GRID + CENTER_GRID / 2;
-    double center = HarvestContinentTerrain.unclampedStrange(this.seed, x, z);
+    double center = HarvestContinentTerrain.unclampedHarvestour(this.seed, x, z);
     if (center >= 25.0) return null;
-    // Use the unclamped signal so a plateau at strange=0 does not produce many centers.
+    // Use the unclamped signal so a plateau at harvestour=0 does not produce many centers.
     for (int dx = -1; dx <= 1; dx++) {
       for (int dz = -1; dz <= 1; dz++) {
         if (dx == 0 && dz == 0) continue;
-        double neighbor = HarvestContinentTerrain.unclampedStrange(this.seed,
+        double neighbor = HarvestContinentTerrain.unclampedHarvestour(this.seed,
             x + dx * CENTER_GRID, z + dz * CENTER_GRID);
         if (neighbor < center || (neighbor == center && (dx < 0 || (dx == 0 && dz < 0)))) return null;
       }
@@ -102,7 +102,7 @@ public final class HarvestLakeIslands {
       double angle = direction * Math.PI / 8.0;
       int ringX = x + (int) Math.round(Math.cos(angle) * (radius + 64));
       int ringZ = z + (int) Math.round(Math.sin(angle) * (radius + 64));
-      if (HarvestContinentTerrain.sampleStrange(this.seed, ringX, ringZ) >= 25.0) return null;
+      if (HarvestContinentTerrain.sampleHarvestour(this.seed, ringX, ringZ) >= 25.0) return null;
     }
     return new Island(x, z, radius);
   }

@@ -94,41 +94,41 @@ public final class HarvestContinentBiomeSource extends BiomeSource {
       int z,
       Climate.@NonNull Sampler noise
   ) {
-    double strange = sampleStrange(x * 4, z * 4);
-    if (strange < HarvestContinentTerrain.LAKE_STRANGE_LIMIT) {
-      HarvestLakeIslands.Island island = this.islands.at(x * 4, z * 4, strange);
+    double harvestour = sampleHarvestour(x * 4, z * 4);
+    if (harvestour < HarvestContinentTerrain.LAKE_HARVESTOUR_LIMIT) {
+      HarvestLakeIslands.Island island = this.islands.at(x * 4, z * 4, harvestour);
       return island != null && island.distance(x * 4, z * 4) <= island.radius()
           ? this.lakeCenterIsland : this.bigLake;
     }
-    if (strange < HarvestContinentTerrain.WHEAT_STRANGE_LIMIT) return this.wheatPlain;
-    if (strange < HarvestContinentTerrain.MELON_STRANGE_LIMIT) return this.melonJungle;
+    if (harvestour < HarvestContinentTerrain.WHEAT_HARVESTOUR_LIMIT) return this.wheatPlain;
+    if (harvestour < HarvestContinentTerrain.MELON_HARVESTOUR_LIMIT) return this.melonJungle;
     return this.pumpkinGorge;
   }
 
   /** Shared by biome selection and terrain blending, in block coordinates. */
-  public double sampleStrange(
+  public double sampleHarvestour(
       int worldX,
       int worldZ
   ) {
-    return HarvestContinentTerrain.sampleStrange(this.worldSeed ^ this.seed, worldX, worldZ);
+    return HarvestContinentTerrain.sampleHarvestour(this.worldSeed ^ this.seed, worldX, worldZ);
   }
 
-  /** Includes the special lake overlay without changing strange's four intervals. */
+  /** Includes the special lake overlay without changing harvestour's four intervals. */
   public SurfaceSample sampleSurface(
       int x,
       int z,
       long terrainSeed
   ) {
-    double strange = sampleStrange(x, z);
-    ResourceKey<Biome> biome = HarvestContinentTerrain.biomeForStrange(strange);
-    HarvestLakeIslands.Island island = this.islands.at(x, z, strange);
+    double harvestour = sampleHarvestour(x, z);
+    ResourceKey<Biome> biome = HarvestContinentTerrain.biomeForHarvestour(harvestour);
+    HarvestLakeIslands.Island island = this.islands.at(x, z, harvestour);
     if (island != null) {
       if (island.distance(x, z) <= island.radius()) biome = HarvestContinentTerrain.LAKE_CENTER_ISLAND;
       return new SurfaceSample(biome,
-          HarvestContinentTerrain.islandSurfaceHeight(island, strange, terrainSeed, x, z), strange);
+          HarvestContinentTerrain.islandSurfaceHeight(island, harvestour, terrainSeed, x, z), harvestour);
     }
     return new SurfaceSample(biome,
-        HarvestContinentTerrain.surfaceHeight(strange, terrainSeed, x, z), strange);
+        HarvestContinentTerrain.surfaceHeight(harvestour, terrainSeed, x, z), harvestour);
   }
 
   /** Initialized by the generator before structure and biome generation. */
@@ -152,7 +152,7 @@ public final class HarvestContinentBiomeSource extends BiomeSource {
   public record SurfaceSample(
       ResourceKey<Biome> biome,
       int height,
-      double strange
+      double harvestour
   ) {}
 
 }

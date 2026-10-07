@@ -28,11 +28,10 @@ public final class HarvestContinentTerrain {
   public static final int CAVE_SURFACE_COVER = 7;
   public static final int SEA_LEVEL = 64;
 
-  public static final double LAKE_STRANGE_LIMIT = 31.0;
-  // Sampled area shares: ~50% wheat, ~19.2% melon and ~11.6% pumpkin.
-  // Noise intervals are not uniform; lake coverage keeps its existing threshold.
-  public static final double MELON_STRANGE_LIMIT = 76.0;
-  public static final double WHEAT_STRANGE_LIMIT = 60.7;
+  public static final double LAKE_HARVESTOUR_LIMIT = 31.0;
+  // Keep biome intervals stable; their area shares depend on the harvestour field.
+  public static final double MELON_HARVESTOUR_LIMIT = 76.0;
+  public static final double WHEAT_HARVESTOUR_LIMIT = 60.7;
 
   public static final ResourceKey<Biome> BIG_LAKE = key("big_lake");
   public static final ResourceKey<Biome> LAKE_CENTER_ISLAND = key("lake_center_island");
@@ -50,18 +49,13 @@ public final class HarvestContinentTerrain {
   private static final int WHEAT_INTERIOR_MAX_HEIGHT = 135;
   private static final int WHEAT_INTERIOR_MIN_HEIGHT = 123;
 
-  private static final long STRANGE_NOISE_SALT = 0xA54FF53A5F1D36F1L;
-
   private static final float TREE_RESERVATION_CHANCE = 0.15F;
 
   private static final double LAKE_SHORE_START = 25.0;
-  private static final double MELON_PUMPKIN_BLEND_END = MELON_STRANGE_LIMIT + 2.0;
-  private static final double MELON_PUMPKIN_BLEND_START = MELON_STRANGE_LIMIT - 2.0;
-  private static final double STRANGE_NOISE_AMPLITUDE = 150.0;
-  // Three octaves span 4096, 2048 and 1024 blocks for broad biome transitions.
-  private static final double STRANGE_NOISE_SCALE = 1.0 / 4096.0;
-  private static final double WHEAT_MELON_BLEND_END = WHEAT_STRANGE_LIMIT + 2.0;
-  private static final double WHEAT_MELON_BLEND_START = WHEAT_STRANGE_LIMIT - 2.0;
+  private static final double MELON_PUMPKIN_BLEND_END = MELON_HARVESTOUR_LIMIT + 2.0;
+  private static final double MELON_PUMPKIN_BLEND_START = MELON_HARVESTOUR_LIMIT - 2.0;
+  private static final double WHEAT_MELON_BLEND_END = WHEAT_HARVESTOUR_LIMIT + 2.0;
+  private static final double WHEAT_MELON_BLEND_START = WHEAT_HARVESTOUR_LIMIT - 2.0;
   private static final double WHEAT_SHORE_END = 40.0;
 
   private HarvestContinentTerrain() {}
@@ -77,12 +71,12 @@ public final class HarvestContinentTerrain {
   }
 
   /** Material ownership uses thresholds, independently of the height curve. */
-  public static ResourceKey<Biome> biomeForStrange(
-      double strange
+  public static ResourceKey<Biome> biomeForHarvestour(
+      double harvestour
   ) {
-    if (strange < LAKE_STRANGE_LIMIT) return BIG_LAKE;
-    if (strange < WHEAT_STRANGE_LIMIT) return WHEAT_PLAIN;
-    if (strange < MELON_STRANGE_LIMIT) return MELON_JUNGLE;
+    if (harvestour < LAKE_HARVESTOUR_LIMIT) return BIG_LAKE;
+    if (harvestour < WHEAT_HARVESTOUR_LIMIT) return WHEAT_PLAIN;
+    if (harvestour < MELON_HARVESTOUR_LIMIT) return MELON_JUNGLE;
     return PUMPKIN_GORGE;
   }
 
@@ -107,19 +101,19 @@ public final class HarvestContinentTerrain {
   }
 
   /** Continuous terrain function shared by chunk filling and height queries. */
-  public static double heightForStrange(
-      double strange,
+  public static double heightForHarvestour(
+      double harvestour,
       long seed,
       int worldX,
       int worldZ
   ) {
-    double value = Mth.clamp(strange, 0.0, 100.0);
-    if (value < LAKE_STRANGE_LIMIT) {
-      return blendHeight(value, LAKE_SHORE_START, LAKE_STRANGE_LIMIT,
+    double value = Mth.clamp(harvestour, 0.0, 100.0);
+    if (value < LAKE_HARVESTOUR_LIMIT) {
+      return blendHeight(value, LAKE_SHORE_START, LAKE_HARVESTOUR_LIMIT,
           lakeBedHeight(seed, worldX, worldZ), SEA_LEVEL);
     }
     if (value < WHEAT_SHORE_END) {
-      return blendHeight(value, LAKE_STRANGE_LIMIT, WHEAT_SHORE_END,
+      return blendHeight(value, LAKE_HARVESTOUR_LIMIT, WHEAT_SHORE_END,
           SEA_LEVEL, wheatPlainHeight(seed, worldX, worldZ));
     }
     if (value <= WHEAT_MELON_BLEND_START) return wheatPlainHeight(seed, worldX, worldZ);
@@ -151,7 +145,7 @@ public final class HarvestContinentTerrain {
 
   public static int islandSurfaceHeight(
       HarvestLakeIslands.Island island,
-      double strange,
+      double harvestour,
       long seed,
       int x,
       int z
@@ -163,7 +157,7 @@ public final class HarvestContinentTerrain {
           lakeCenterIslandHeight(seed, x, z)));
     }
     double t = Mth.clamp((distance - island.radius()) / HarvestLakeIslands.SHORE_WIDTH, 0.0, 1.0);
-    return (int) Math.round(lerp(fade(t), SEA_LEVEL, heightForStrange(strange, seed, x, z)));
+    return (int) Math.round(lerp(fade(t), SEA_LEVEL, heightForHarvestour(harvestour, seed, x, z)));
   }
 
   /** Kept public because the Gold Bell Tower anchors itself to this terrain. */
@@ -179,45 +173,43 @@ public final class HarvestContinentTerrain {
 
   /** Same quintic weights as height blending, including both neighboring biomes. */
   public static double melonBlendWeight(
-      double strange
+      double harvestour
   ) {
-    if (strange <= WHEAT_MELON_BLEND_START || strange >= MELON_PUMPKIN_BLEND_END) return 0.0;
-    if (strange < WHEAT_MELON_BLEND_END) {
-      return fade((strange - WHEAT_MELON_BLEND_START)
+    if (harvestour <= WHEAT_MELON_BLEND_START || harvestour >= MELON_PUMPKIN_BLEND_END) return 0.0;
+    if (harvestour < WHEAT_MELON_BLEND_END) {
+      return fade((harvestour - WHEAT_MELON_BLEND_START)
           / (WHEAT_MELON_BLEND_END - WHEAT_MELON_BLEND_START));
     }
-    if (strange <= MELON_PUMPKIN_BLEND_START) return 1.0;
-    return 1.0 - fade((strange - MELON_PUMPKIN_BLEND_START)
+    if (harvestour <= MELON_PUMPKIN_BLEND_START) return 1.0;
+    return 1.0 - fade((harvestour - MELON_PUMPKIN_BLEND_START)
         / (MELON_PUMPKIN_BLEND_END - MELON_PUMPKIN_BLEND_START));
   }
 
   /** A continuous horizontal field; biome intervals are not area percentages. */
-  public static double sampleStrange(
+  public static double sampleHarvestour(
       long seed,
       int worldX,
       int worldZ
   ) {
-    return Mth.clamp(unclampedStrange(seed, worldX, worldZ), 0.0, 100.0);
+    return Mth.clamp(unclampedHarvestour(seed, worldX, worldZ), 0.0, 100.0);
   }
 
   /** Rounded only after blending, so each profile keeps its original shape. */
   public static int surfaceHeight(
-      double strange,
+      double harvestour,
       long seed,
       int worldX,
       int worldZ
   ) {
-    return (int) Math.round(heightForStrange(strange, seed, worldX, worldZ));
+    return (int) Math.round(heightForHarvestour(harvestour, seed, worldX, worldZ));
   }
 
-  public static double unclampedStrange(
+  public static double unclampedHarvestour(
       long seed,
       int worldX,
       int worldZ
   ) {
-    double noise = fbmPerlin(seed ^ STRANGE_NOISE_SALT,
-        worldX + 173.25, worldZ - 419.75, STRANGE_NOISE_SCALE, 3);
-    return 50.0 + noise * STRANGE_NOISE_AMPLITUDE;
+    return HarvestourField.sample(seed, worldX, worldZ);
   }
 
   private static ResourceKey<Biome> key(
@@ -245,17 +237,17 @@ public final class HarvestContinentTerrain {
   }
 
   private static double blendHeight(
-      double strange,
+      double harvestour,
       double start,
       double end,
       double first,
       double second
   ) {
-    double t = Mth.clamp((strange - start) / (end - start), 0.0, 1.0);
+    double t = Mth.clamp((harvestour - start) / (end - start), 0.0, 1.0);
     return lerp(fade(t), first, second);
   }
 
-  /** The deep-lake profile before its strange-driven shore transition. */
+  /** The deep-lake profile before its harvestour-driven shore transition. */
   private static double lakeBedHeight(
       long seed,
       int worldX,

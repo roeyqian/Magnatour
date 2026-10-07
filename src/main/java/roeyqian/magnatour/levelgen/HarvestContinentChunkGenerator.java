@@ -77,7 +77,7 @@ public final class HarvestContinentChunkGenerator extends ChunkGenerator {
 
   private final Identifier settings;
 
-  private final HarvestContinentBiomeSource strangeSource;
+  private final HarvestContinentBiomeSource harvestourSource;
 
   public HarvestContinentChunkGenerator(
       BiomeSource biomeSource,
@@ -87,7 +87,7 @@ public final class HarvestContinentChunkGenerator extends ChunkGenerator {
     if (!(biomeSource instanceof HarvestContinentBiomeSource source)) {
       throw new IllegalArgumentException("Harvest terrain requires a harvest biome source");
     }
-    this.strangeSource = source;
+    this.harvestourSource = source;
     this.settings = settings;
   }
 
@@ -98,8 +98,8 @@ public final class HarvestContinentChunkGenerator extends ChunkGenerator {
       @NonNull BlockPos pos,
       @NonNull SamplerContext samplerContext
   ) {
-    double strange = this.strangeSource.sampleStrange(pos.getX(), pos.getZ());
-    info.add("Harvest strange: " + strange);
+    double harvestour = this.harvestourSource.sampleHarvestour(pos.getX(), pos.getZ());
+    info.add("Harvest harvestour: " + harvestour);
     info.add("Harvest terrain: blended profiles + custom caves/aquifers");
   }
 
@@ -117,11 +117,11 @@ public final class HarvestContinentChunkGenerator extends ChunkGenerator {
     BlockPos.MutableBlockPos ground = new BlockPos.MutableBlockPos();
     for (int x = minX; x < minX + 16; x++) {
       for (int z = minZ; z < minZ + 16; z++) {
-        double strange = this.strangeSource.sampleStrange(x, z);
-        if (!HarvestContinentTerrain.biomeForStrange(strange).equals(HarvestContinentTerrain.WHEAT_PLAIN)) {
+        double harvestour = this.harvestourSource.sampleHarvestour(x, z);
+        if (!HarvestContinentTerrain.biomeForHarvestour(harvestour).equals(HarvestContinentTerrain.WHEAT_PLAIN)) {
           continue;
         }
-        int y = HarvestContinentTerrain.surfaceHeight(strange, this.terrainSeed, x, z);
+        int y = HarvestContinentTerrain.surfaceHeight(harvestour, this.terrainSeed, x, z);
         ground.set(x, y, z);
         if (level.getBlockState(ground).is(SupremeBlocks.EVER_WATER_GRASS_BLOCK)) {
           ReservedGoldenTree.place(level, this.terrainSeed, ground);
@@ -203,7 +203,7 @@ public final class HarvestContinentChunkGenerator extends ChunkGenerator {
       long seed
   ) {
     this.terrainSeed = seed;
-    this.strangeSource.setWorldSeed(seed);
+    this.harvestourSource.setWorldSeed(seed);
     return super.createState(structureSets, randomState, seed);
   }
 
@@ -380,7 +380,7 @@ public final class HarvestContinentChunkGenerator extends ChunkGenerator {
       int x,
       int z
   ) {
-    HarvestContinentBiomeSource.SurfaceSample surface = this.strangeSource.sampleSurface(x, z, this.terrainSeed);
+    HarvestContinentBiomeSource.SurfaceSample surface = this.harvestourSource.sampleSurface(x, z, this.terrainSeed);
     ResourceKey<Biome> biome = surface.biome();
     return new ResourceKeyBiome(
         biome,
@@ -389,7 +389,7 @@ public final class HarvestContinentChunkGenerator extends ChunkGenerator {
         biome.equals(HarvestContinentTerrain.WHEAT_PLAIN)
             && HarvestContinentTerrain.isTreeReservation(x, z),
         HarvestMelonTerrain.column(this.terrainSeed, x, z, surface.height(),
-            HarvestContinentTerrain.melonBlendWeight(surface.strange()))
+            HarvestContinentTerrain.melonBlendWeight(surface.harvestour()))
     );
   }
 
