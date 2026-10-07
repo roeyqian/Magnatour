@@ -1,4 +1,12 @@
 {
+  "item.magnatour.star_atlas": "Atlas estelar",
+  "lore.magnatour.star_atlas.0": "Objeto supremo",
+  "lore.magnatour.star_atlas.1": "Predice biomas de la dimensión según la semilla (Y=64)",
+  "lore.magnatour.star_atlas.2": "Arrastra para mover; rueda para ampliar",
+  "gui.magnatour.star_atlas.unknown": "Bioma desconocido",
+  "gui.magnatour.star_atlas.title": "Atlas estelar · Predicción de biomas",
+  "gui.magnatour.star_atlas.center": "Centrar",
+  "gui.magnatour.star_atlas.controls": "Arrastrar: mover · Rueda: zoom · Esc/E: cerrar",
   "msg.magnatour.gold_bell_tower.reinforcements": "¡La campana explotó! Aparecieron %s campaneros y %s almas de campana",
   "msg.magnatour.gold_bell_tower.disabled": "El tañido de la campana sometió a los guardias y monstruos, eliminando %s monstruos dentro de la torre (toca una campana de nuevo para restaurar las apariciones)",
   "msg.magnatour.gold_bell_tower.resumed": "El tañido de la campana ha vuelto a despertar a los guardias de la torre",

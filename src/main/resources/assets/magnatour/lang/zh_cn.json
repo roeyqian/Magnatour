@@ -1,4 +1,12 @@
 {
+  "item.magnatour.star_atlas": "星图",
+  "lore.magnatour.star_atlas.0": "超凡物品",
+  "lore.magnatour.star_atlas.1": "按种子预测当前维度的群系（Y=64）",
+  "lore.magnatour.star_atlas.2": "拖动平移，滚轮缩放",
+  "gui.magnatour.star_atlas.unknown": "未知群系",
+  "gui.magnatour.star_atlas.title": "星图 · 群系预测",
+  "gui.magnatour.star_atlas.center": "回到当前位置",
+  "gui.magnatour.star_atlas.controls": "拖动平移 · 滚轮缩放 · Esc/E 关闭",
   "msg.magnatour.gold_bell_tower.reinforcements": "钟炸裂了！新增 %s 只守钟人和 %s 只钟灵",
   "msg.magnatour.gold_bell_tower.disabled": "钟声镇压了守卫与怪物们，已击杀塔内 %s 只怪物（再次鸣钟即可恢复刷怪）",
   "msg.magnatour.gold_bell_tower.resumed": "钟声重新唤醒了塔楼的守卫们",

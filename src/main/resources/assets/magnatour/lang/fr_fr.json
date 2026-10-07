@@ -1,4 +1,12 @@
 {
+  "item.magnatour.star_atlas": "Atlas stellaire",
+  "lore.magnatour.star_atlas.0": "Objet suprême",
+  "lore.magnatour.star_atlas.1": "Prédit les biomes de la dimension depuis la graine (Y=64)",
+  "lore.magnatour.star_atlas.2": "Glisser pour déplacer ; molette pour zoomer",
+  "gui.magnatour.star_atlas.unknown": "Biome inconnu",
+  "gui.magnatour.star_atlas.title": "Atlas stellaire · Biomes prédits",
+  "gui.magnatour.star_atlas.center": "Recentrer",
+  "gui.magnatour.star_atlas.controls": "Glisser : déplacer · Molette : zoom · Échap/E : fermer",
   "msg.magnatour.gold_bell_tower.reinforcements": "La cloche a explosé ! %s sonneurs et %s âmes de cloche sont apparus",
   "msg.magnatour.gold_bell_tower.disabled": "Le son de la cloche a soumis les gardes et les monstres, tuant %s monstres dans la tour (faites sonner une cloche à nouveau pour rétablir les apparitions)",
   "msg.magnatour.gold_bell_tower.resumed": "Le son de la cloche a réveillé les gardes de la tour une nouvelle fois",

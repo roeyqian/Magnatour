@@ -147,6 +147,7 @@ public class Magnatour implements ModInitializer {
               entries.accept(SupremeItems.STRANGE_SPLASH_POTION);
               entries.accept(SupremeItems.STRANGE_LINGERING_POTION);
               entries.accept(SupremeItems.MIRROR_MOBILE);
+              entries.accept(SupremeItems.STAR_ATLAS);
             })
             .build()
     );

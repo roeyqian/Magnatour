@@ -30,6 +30,7 @@ import roeyqian.magnatour.item.CustomToolMaterial;
 import roeyqian.magnatour.item.supreme.EmperorArmor;
 import roeyqian.magnatour.item.supreme.EmperorBow;
 import roeyqian.magnatour.item.supreme.MirrorMobile;
+import roeyqian.magnatour.item.supreme.StarAtlas;
 import roeyqian.magnatour.item.supreme.StrangeLingeringPotion;
 import roeyqian.magnatour.item.supreme.StrangePotion;
 import roeyqian.magnatour.item.supreme.StrangeSplashPotion;
@@ -46,6 +47,9 @@ public final class SupremeItems {
   );
 
   // Handheld - Tools and Weapons
+  public static final Item STAR_ATLAS = ItemRegHelper.registerDurableItem(
+      "star_atlas", StarAtlas::new, new Item.Properties()
+  );
   public static final Item EMPEROR_BOW = ItemRegHelper.registerDurableItem(
       "emperor_bow", EmperorBow::new,
       CustomItemSetting.applySupremeDefaults(new Item.Properties())
@@ -211,6 +215,7 @@ public final class SupremeItems {
   private SupremeItems() {}
 
   public static void init() {
+    StarAtlas.init();
     Magnatour.LOGGER.info("[Server] Initializing 'SupremeItems'");
   }
 

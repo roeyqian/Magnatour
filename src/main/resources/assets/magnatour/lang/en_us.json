@@ -1,4 +1,12 @@
 {
+  "item.magnatour.star_atlas": "Star Atlas",
+  "lore.magnatour.star_atlas.0": "Supreme Item",
+  "lore.magnatour.star_atlas.1": "Predicts dimension biomes from the seed (Y=64)",
+  "lore.magnatour.star_atlas.2": "Drag to pan; scroll to zoom",
+  "gui.magnatour.star_atlas.unknown": "Unknown biome",
+  "gui.magnatour.star_atlas.title": "Star Atlas · Biome Prediction",
+  "gui.magnatour.star_atlas.center": "Center on player",
+  "gui.magnatour.star_atlas.controls": "Drag to pan · Scroll to zoom · Esc/E to close",
   "msg.magnatour.gold_bell_tower.reinforcements": "The bell exploded! %s Bell Ringers and %s Bell Souls appeared",
   "msg.magnatour.gold_bell_tower.disabled": "The bell's toll subdued the guards and monsters, killing %s monsters inside the tower (ring a bell again to restore spawning)",
   "msg.magnatour.gold_bell_tower.resumed": "The bell's toll has reawakened the tower's guards",

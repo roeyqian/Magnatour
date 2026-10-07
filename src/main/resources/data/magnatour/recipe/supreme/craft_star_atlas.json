@@ -1,0 +1,14 @@
+{
+  "type": "magnatour:supreme_crafting",
+  "category": "misc",
+  "group": "supreme:items",
+  "pattern": ["ACA", "BDB", "ACA"],
+  "key": {
+    "A": "magnatour:fortune_crystal",
+    "B": "magnatour:fortune_metal",
+    "C": "minecraft:ender_eye",
+    "D": "minecraft:map"
+  },
+  "result": {"count": 1, "id": "magnatour:star_atlas"},
+  "show_notification": true
+}

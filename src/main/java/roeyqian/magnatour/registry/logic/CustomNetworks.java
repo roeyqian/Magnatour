@@ -9,6 +9,7 @@ package roeyqian.magnatour.registry.logic;
 
 // Magnatour
 import roeyqian.magnatour.Magnatour;
+import roeyqian.magnatour.item.supreme.StarAtlas;
 import roeyqian.magnatour.level.NetworkManagerForBlock;
 import roeyqian.magnatour.level.NetworkManagerForItem;
 
@@ -17,6 +18,7 @@ public final class CustomNetworks {
   private CustomNetworks() {}
 
   public static void init() {
+    StarAtlas.initNetworking();
     NetworkManagerForBlock.registerDurableItemModeNetworking();
     NetworkManagerForBlock.registerUniverseBucketPickupNetworking();
     NetworkManagerForBlock.registerUniverseBootsNetworking();

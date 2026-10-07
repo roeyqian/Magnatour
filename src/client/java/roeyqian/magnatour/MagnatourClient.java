@@ -29,6 +29,7 @@ import roeyqian.magnatour.registry.output.RegEntityLayers;
 import roeyqian.magnatour.registry.output.RegItemTooltips;
 import roeyqian.magnatour.registry.output.RegParticles;
 import roeyqian.magnatour.registry.output.RegScreens;
+import roeyqian.magnatour.screen.supreme.StarAtlasScreen;
 
 @Environment(EnvType.CLIENT)
 public class MagnatourClient implements ClientModInitializer {
@@ -36,6 +37,7 @@ public class MagnatourClient implements ClientModInitializer {
   @Override
   public void onInitializeClient() {
     RegScreens.init();
+    StarAtlasScreen.initClient();
     RegParticles.init();
     RegEntityLayers.init();
     RegBlockLayers.init();
