@@ -29,13 +29,20 @@ import roeyqian.magnatour.Magnatour;
 
 public interface CustomArmorMaterial extends ArmorMaterials {
 
-  int supreme = 2400;
   int universe = 3600000;
 
-  ArmorMaterial SUPREME_BOOTS_ARMOR = makeSupremeArmor(ArmorType.BOOTS, 2, 1.0F, 0.15F);
-  ArmorMaterial SUPREME_CHESTPLATE_ARMOR = makeSupremeArmor(ArmorType.CHESTPLATE, 8, 7.0F, 0.2F);
-  ArmorMaterial SUPREME_HELMET_ARMOR = makeSupremeArmor(ArmorType.HELMET, 4, 3.0F, 0.1F);
-  ArmorMaterial SUPREME_LEGGINGS_ARMOR = makeSupremeArmor(ArmorType.LEGGINGS, 6, 5.0F, 0.15F);
+  ArmorMaterial SUPREME_BOOTS_ARMOR = makeSupremeArmor(
+      ArmorType.BOOTS, 2, 1.0F, 0.15F
+  );
+  ArmorMaterial SUPREME_CHESTPLATE_ARMOR = makeSupremeArmor(
+      ArmorType.CHESTPLATE, 8, 7.0F, 0.2F
+  );
+  ArmorMaterial SUPREME_HELMET_ARMOR = makeSupremeArmor(
+      ArmorType.HELMET, 4, 3.0F, 0.1F
+  );
+  ArmorMaterial SUPREME_LEGGINGS_ARMOR = makeSupremeArmor(
+      ArmorType.LEGGINGS, 6, 5.0F, 0.15F
+  );
   ArmorMaterial UNIVERSE_ARMOR = new ArmorMaterial(
       universe,
       makeDefense(universe, universe, universe, universe, universe),
@@ -60,9 +67,9 @@ public interface CustomArmorMaterial extends ArmorMaterials {
       float knockbackResistance
   ) {
     return new ArmorMaterial(
-        supreme,
+        100,
         Maps.newEnumMap(Map.of(type, defense)),
-        24,
+        10,
         SoundEvents.ARMOR_EQUIP_NETHERITE,
         toughness,
         knockbackResistance,

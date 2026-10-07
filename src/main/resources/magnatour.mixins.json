@@ -22,6 +22,7 @@
     "entity.PlayerMixin",
     "entity.RangedAttributeMixin",
     "item.ItemStackMixin",
+    "item.EnchantmentMixin",
     "menu.AnvilMenuMixin",
     "menu.EnchantmentMenuMixin",
     "menu.ItemCombinerMenuAccessor",

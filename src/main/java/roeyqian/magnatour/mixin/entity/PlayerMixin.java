@@ -9,8 +9,10 @@ package roeyqian.magnatour.mixin.entity;
 
 // Minecraft
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.FoodData;
 import net.minecraft.world.phys.Vec3;
@@ -21,11 +23,13 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 // Magnatour
 import roeyqian.magnatour.mixinhelper.entity.EntityHelperForEquipment;
+import roeyqian.magnatour.mixinhelper.item.ItemHelperForEnchantment;
 
 @Mixin(value = Player.class, priority = 3600000)
 public class PlayerMixin {
@@ -106,6 +110,25 @@ public class PlayerMixin {
       DamageSource source
   ) {
     return EntityHelperForEquipment.handleSupremeArmorDefense((Player) (Object) this, amount);
+  }
+
+  /* Emperor Tools: Tenfold Efficiency bonus before vanilla mining multipliers.
+   */
+  @Redirect(
+      method = "getDestroySpeed",
+      at = @At(
+          value = "INVOKE",
+          target = "Lnet/minecraft/world/entity/player/Player;getAttributeValue(Lnet/minecraft/core/Holder;)D",
+          ordinal = 0
+      )
+  )
+  private double redirectMiningEfficiency(
+      Player player,
+      Holder<Attribute> attribute
+  ) {
+    return ItemHelperForEnchantment.amplifyEmperorMiningEfficiency(
+        player.getMainHandItem(), player.getAttributeValue(attribute)
+    );
   }
 
 }

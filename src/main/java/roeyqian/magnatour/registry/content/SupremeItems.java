@@ -46,14 +46,16 @@ public final class SupremeItems {
   public static final Item EMPEROR_AXE_PICKAXE = ItemRegHelper.registerDurableItem(
       "emperor_axe_pickaxe",
       Item::new, CustomItemSetting.applySupremeDefaults(new Item.Properties())
-          .axe(CustomToolMaterial.SUPREME_TOOL, 5.0F, -2.8F)
-          // Keep axe transformations and shield disabling while mining both block tags.
-          .tool(CustomToolMaterial.SUPREME_TOOL, EMPEROR_AXE_PICKAXE_MINEABLE, 5.0F, -2.8F, 5.0F)
+          .axe(CustomToolMaterial.SUPREME_TOOL, 110.0F, -2.5F)
+          .tool(CustomToolMaterial.SUPREME_TOOL, EMPEROR_AXE_PICKAXE_MINEABLE,
+              110.0F, -2.5F, 5.0F)
+          .durability(100)
   );
   public static final Item EMPEROR_HOE = ItemRegHelper.registerDurableItem(
       "emperor_hoe",
       Item::new, CustomItemSetting.applySupremeDefaults(new Item.Properties())
-          .hoe(CustomToolMaterial.SUPREME_TOOL, -4.0F, 0.0F)
+          .hoe(CustomToolMaterial.SUPREME_TOOL, 10.0F, -1.0F)
+          .durability(100)
   );
   public static final Item MIRROR_MOBILE = ItemRegHelper.registerDurableItem(
       "mirror_mobile",
@@ -62,12 +64,14 @@ public final class SupremeItems {
   public static final Item EMPEROR_SHOVEL = ItemRegHelper.registerDurableItem(
       "emperor_shovel",
       Item::new, CustomItemSetting.applySupremeDefaults(new Item.Properties())
-          .shovel(CustomToolMaterial.SUPREME_TOOL, 1.5F, -3.0F)
+          .shovel(CustomToolMaterial.SUPREME_TOOL, 10.0F, -1.0F)
+          .durability(100)
   );
   public static final Item EMPEROR_SWORD = ItemRegHelper.registerDurableItem(
       "emperor_sword", Item::new,
       CustomItemSetting.applySupremeDefaults(new Item.Properties())
-          .sword(CustomToolMaterial.SUPREME_TOOL, 3.0F, -2.4F)
+          .sword(CustomToolMaterial.SUPREME_TOOL, 100.0F, 1.0F)
+          .durability(100)
   );
 
   // Armor
@@ -75,21 +79,25 @@ public final class SupremeItems {
       "emperor_boots", settings -> new EmperorArmor(settings, 1, 25),
       CustomItemSetting.applySupremeDefaults(new Item.Properties())
           .humanoidArmor(CustomArmorMaterial.SUPREME_BOOTS_ARMOR, ArmorType.BOOTS)
+          .durability(100)
   );
   public static final Item EMPEROR_CHESTPLATE = ItemRegHelper.registerDurableItem(
       "emperor_chestplate", settings -> new EmperorArmor(settings, 4, 40),
       CustomItemSetting.applySupremeDefaults(new Item.Properties())
           .humanoidArmor(CustomArmorMaterial.SUPREME_CHESTPLATE_ARMOR, ArmorType.CHESTPLATE)
+          .durability(100)
   );
   public static final Item EMPEROR_HELMET = ItemRegHelper.registerDurableItem(
       "emperor_helmet", settings -> new EmperorArmor(settings, 2, 30),
       CustomItemSetting.applySupremeDefaults(new Item.Properties())
           .humanoidArmor(CustomArmorMaterial.SUPREME_HELMET_ARMOR, ArmorType.HELMET)
+          .durability(100)
   );
   public static final Item EMPEROR_LEGGINGS = ItemRegHelper.registerDurableItem(
       "emperor_leggings", settings -> new EmperorArmor(settings, 3, 35),
       CustomItemSetting.applySupremeDefaults(new Item.Properties())
           .humanoidArmor(CustomArmorMaterial.SUPREME_LEGGINGS_ARMOR, ArmorType.LEGGINGS)
+          .durability(100)
   );
 
   // Material
