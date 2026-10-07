@@ -8,6 +8,9 @@
 package roeyqian.magnatour.registry.content;
 
 // Minecraft
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.BlockItem;
@@ -15,6 +18,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.SpawnEggItem;
 import net.minecraft.world.item.equipment.ArmorType;
+import net.minecraft.world.level.block.Block;
 
 // Magnatour
 import roeyqian.magnatour.Magnatour;
@@ -33,11 +37,18 @@ import roeyqian.magnatour.registry.ItemRegHelper;
  */
 public final class SupremeItems {
 
+  private static final TagKey<Block> EMPEROR_AXE_PICKAXE_MINEABLE = TagKey.create(
+      Registries.BLOCK,
+      Identifier.fromNamespaceAndPath(Magnatour.MOD_ID, "mineable/emperor_axe_pickaxe")
+  );
+
   // Handheld - Tools and Weapons
-  public static final Item EMPEROR_AXE = ItemRegHelper.registerDurableItem(
-      "emperor_axe",
+  public static final Item EMPEROR_AXE_PICKAXE = ItemRegHelper.registerDurableItem(
+      "emperor_axe_pickaxe",
       Item::new, CustomItemSetting.applySupremeDefaults(new Item.Properties())
-          .axe(CustomToolMaterial.SUPREME_TOOL, 5.0F, -3.0F)
+          .axe(CustomToolMaterial.SUPREME_TOOL, 5.0F, -2.8F)
+          // Keep axe transformations and shield disabling while mining both block tags.
+          .tool(CustomToolMaterial.SUPREME_TOOL, EMPEROR_AXE_PICKAXE_MINEABLE, 5.0F, -2.8F, 5.0F)
   );
   public static final Item EMPEROR_HOE = ItemRegHelper.registerDurableItem(
       "emperor_hoe",
@@ -47,11 +58,6 @@ public final class SupremeItems {
   public static final Item MIRROR_MOBILE = ItemRegHelper.registerDurableItem(
       "mirror_mobile",
       MirrorMobile::new, CustomItemSetting.applySupremeDefaults(new Item.Properties())
-  );
-  public static final Item EMPEROR_PICKAXE = ItemRegHelper.registerDurableItem(
-      "emperor_pickaxe",
-      Item::new, CustomItemSetting.applySupremeDefaults(new Item.Properties())
-          .pickaxe(CustomToolMaterial.SUPREME_TOOL, 1.0F, -2.8F)
   );
   public static final Item EMPEROR_SHOVEL = ItemRegHelper.registerDurableItem(
       "emperor_shovel",

@@ -3,9 +3,9 @@
   "category": "equipment",
   "group": "supreme:items",
   "pattern": [
-    "BA",
-    "AC",
-    " D"
+    "BAB",
+    "AC ",
+    " D "
   ],
   "key": {
     "A": "magnatour:fortune_crystal",
@@ -15,7 +15,7 @@
   },
   "result": {
     "count": 1,
-    "id": "magnatour:emperor_axe"
+    "id": "magnatour:emperor_axe_pickaxe"
   },
   "show_notification": true
 }

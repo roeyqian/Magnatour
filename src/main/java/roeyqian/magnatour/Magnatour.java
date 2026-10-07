@@ -134,8 +134,7 @@ public class Magnatour implements ModInitializer {
               entries.accept(SupremeItems.OBSIDIAN_GOLEM_SPAWN_EGG);
               entries.accept(SupremeItems.NETHERITE_GOLEM_SPAWN_EGG);
               entries.accept(SupremeItems.EMPEROR_SWORD);
-              entries.accept(SupremeItems.EMPEROR_AXE);
-              entries.accept(SupremeItems.EMPEROR_PICKAXE);
+              entries.accept(SupremeItems.EMPEROR_AXE_PICKAXE);
               entries.accept(SupremeItems.EMPEROR_SHOVEL);
               entries.accept(SupremeItems.EMPEROR_HOE);
               entries.accept(SupremeItems.EMPEROR_HELMET);
