@@ -48,7 +48,7 @@ public final class GoldBellTowerStructure extends Structure {
   private static final int LAND_MARGIN = 16;
   private static final int MAX_GROUND_HEIGHT_DIFFERENCE = 2;
 
-  private static final long CELL_SELECTION_MASK = 1L;
+  private static final long CELL_SELECTION_BUCKETS = 3L;
 
   private static final Identifier LOWER_TEMPLATE =
       Identifier.fromNamespaceAndPath(Magnatour.MOD_ID, "gold_bell_tower_1");
@@ -73,7 +73,8 @@ public final class GoldBellTowerStructure extends Structure {
     long seed = context.seed();
     int gridX = Math.floorDiv(originX, CELL_SIZE);
     int gridZ = Math.floorDiv(originZ, CELL_SIZE);
-    if ((mix(seed, gridX, gridZ) & CELL_SELECTION_MASK) != 0L) {
+    // Accept two of three hash buckets for a deterministic 2/3 selection rate.
+    if (Long.remainderUnsigned(mix(seed, gridX, gridZ), CELL_SELECTION_BUCKETS) == 0L) {
       return Optional.empty();
     }
 

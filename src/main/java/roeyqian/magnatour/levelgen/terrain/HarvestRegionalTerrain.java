@@ -15,6 +15,16 @@ public final class HarvestRegionalTerrain {
 
   private HarvestRegionalTerrain() {}
 
+  static double berrySnowfieldHeight(
+      long seed,
+      int x,
+      int z
+  ) {
+    double rolling = HarvestContinentTerrain.fbmPerlin(seed ^ 0x629A292A367CD507L, x, z, 0.004, 3);
+    double detail = HarvestContinentTerrain.fbmPerlin(seed ^ 0x9159015A3070DD17L, x, z, 0.018, 2);
+    return Mth.clamp(112.0 + rolling * 15.0 + detail * 3.0, 100.0, 124.0) + HarvestContinentTerrain.SURFACE_Y_OFFSET;
+  }
+
   static double desertHeight(
       long seed,
       int x,
@@ -44,16 +54,6 @@ public final class HarvestRegionalTerrain {
     double detail = HarvestContinentTerrain.fbmPerlin(seed ^ 0x1F83D9ABFB41BD6BL, x, z, 0.035, 2);
     return Mth.clamp(380.0 + broad * 100.0 + ridge * ridge * 145.0 + detail * 18.0,
         380.0, 520.0 - HarvestContinentTerrain.SURFACE_Y_OFFSET) + HarvestContinentTerrain.SURFACE_Y_OFFSET;
-  }
-
-  static double berrySnowfieldHeight(
-      long seed,
-      int x,
-      int z
-  ) {
-    double rolling = HarvestContinentTerrain.fbmPerlin(seed ^ 0x629A292A367CD507L, x, z, 0.004, 3);
-    double detail = HarvestContinentTerrain.fbmPerlin(seed ^ 0x9159015A3070DD17L, x, z, 0.018, 2);
-    return Mth.clamp(112.0 + rolling * 15.0 + detail * 3.0, 100.0, 124.0) + HarvestContinentTerrain.SURFACE_Y_OFFSET;
   }
 
 }

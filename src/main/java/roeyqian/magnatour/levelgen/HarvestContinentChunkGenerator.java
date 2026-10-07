@@ -422,17 +422,17 @@ public final class HarvestContinentChunkGenerator extends ChunkGenerator {
 
     boolean wheatPlain() { return this.biome.equals(HarvestContinentTerrain.WHEAT_PLAIN); }
 
-    boolean greatLake() { return this.biome.equals(HarvestContinentTerrain.GREAT_LAKE); }
+    boolean berrySnowfield() { return this.biome.equals(HarvestContinentTerrain.BERRY_SNOWFIELD); }
 
     boolean crop() { return wheatPlain() && !this.treeReservation; }
 
     boolean desert() { return this.biome.equals(HarvestContinentTerrain.CACTUS_DESERT); }
 
+    boolean greatLake() { return this.biome.equals(HarvestContinentTerrain.GREAT_LAKE); }
+
     boolean marsh() { return this.biome.equals(HarvestContinentTerrain.SUGARCANE_MARSH); }
 
     boolean pumpkinGorge() { return this.biome.equals(HarvestContinentTerrain.PUMPKIN_GORGE); }
-
-    boolean berrySnowfield() { return this.biome.equals(HarvestContinentTerrain.BERRY_SNOWFIELD); }
 
     boolean sacredMountain() { return this.biome.equals(HarvestContinentTerrain.SACRED_MOUNTAIN); }
 

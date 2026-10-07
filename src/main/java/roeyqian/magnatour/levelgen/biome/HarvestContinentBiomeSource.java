@@ -36,6 +36,17 @@ public final class HarvestContinentBiomeSource extends BiomeSource {
 
   // Retained as an optional salt when decoding existing dimension settings.
   private final long seed;
+  private volatile long worldSeed;
+
+  private volatile HarvestLakeIslands islands;
+
+  private final Holder<Biome> berrySnowfield;
+  private final Holder<Biome> cactusDesert;
+  private final Holder<Biome> greatLake;
+  private final Holder<Biome> lakeCenterIsland;
+  private final Holder<Biome> melonJungle;
+  private final Holder<Biome> pumpkinGorge;
+  private final Holder<Biome> sacredMountain;
 
   public static final MapCodec<HarvestContinentBiomeSource> CODEC =
       RecordCodecBuilder.mapCodec((instance) -> instance.group(
@@ -62,17 +73,6 @@ public final class HarvestContinentBiomeSource extends BiomeSource {
                       desert.orElse(defaultDesert), berrySnowfield.orElse(defaultBerrySnowfield), seed))
       );
 
-  private volatile long worldSeed;
-
-  private volatile HarvestLakeIslands islands;
-
-  private final Holder<Biome> greatLake;
-  private final Holder<Biome> cactusDesert;
-  private final Holder<Biome> berrySnowfield;
-  private final Holder<Biome> sacredMountain;
-  private final Holder<Biome> lakeCenterIsland;
-  private final Holder<Biome> melonJungle;
-  private final Holder<Biome> pumpkinGorge;
   private final Holder<Biome> sugarcaneMarsh;
   private final Holder<Biome> wheatPlain;
 

@@ -41,13 +41,13 @@ public final class HarvestContinentTerrain {
   public static final double PUMPKIN_HARVESTOUR_LIMIT = 90.0;
   public static final double WHEAT_HARVESTOUR_LIMIT = 40.0;
 
-  public static final ResourceKey<Biome> GREAT_LAKE = key("great_lake");
-  public static final ResourceKey<Biome> CACTUS_DESERT = key("cactus_desert");
   public static final ResourceKey<Biome> BERRY_SNOWFIELD = key("berry_snowfield");
-  public static final ResourceKey<Biome> SACRED_MOUNTAIN = key("sacred_mountain");
+  public static final ResourceKey<Biome> CACTUS_DESERT = key("cactus_desert");
+  public static final ResourceKey<Biome> GREAT_LAKE = key("great_lake");
   public static final ResourceKey<Biome> LAKE_CENTER_ISLAND = key("lake_center_island");
   public static final ResourceKey<Biome> MELON_JUNGLE = key("melon_jungle");
   public static final ResourceKey<Biome> PUMPKIN_GORGE = key("pumpkin_gorge");
+  public static final ResourceKey<Biome> SACRED_MOUNTAIN = key("sacred_mountain");
   public static final ResourceKey<Biome> SUGARCANE_MARSH = key("sugarcane_marsh");
   public static final ResourceKey<Biome> WHEAT_PLAIN = key("wheat_plain");
 
