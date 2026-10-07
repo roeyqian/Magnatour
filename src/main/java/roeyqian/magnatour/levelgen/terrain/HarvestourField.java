@@ -24,8 +24,11 @@ final class HarvestourField {
 
   private static final double AMPLITUDE = 150.0;
   private static final double DETAIL_WEIGHT = 0.25;
-  // Preserve the original 4096-, 2048- and 1024-block wavelengths.
-  private static final double NOISE_SCALE = 1.0 / 4096.0;
+  private static final double FINE_WEIGHT = 0.125;
+  // With the 0.5 coordinate scale, world-space scales are 10000, 5000 and 2500 blocks.
+  private static final double NOISE_SCALE = 1.0 / 5000.0;
+  // Double region widths while retaining the 0-100 percentile range.
+  private static final double WORLD_COORDINATE_SCALE = 0.5;
 
   private static final ConcurrentHashMap<Node, Double> MEDIAN_NODES = new ConcurrentHashMap<>();
 
@@ -66,20 +69,19 @@ final class HarvestourField {
         x + 173.25, z - 419.75, NOISE_SCALE * 2.0, 1);
     double fine = HarvestContinentTerrain.fbmPerlin(noiseSeed + 2026L,
         x + 173.25, z - 419.75, NOISE_SCALE * 4.0, 1);
-    double fineWeight = DETAIL_WEIGHT * DETAIL_WEIGHT;
-    return 50.0 + (broad + detail * DETAIL_WEIGHT + fine * fineWeight)
-        / (1.0 + DETAIL_WEIGHT + fineWeight) * AMPLITUDE;
+    return 50.0 + (broad + detail * DETAIL_WEIGHT + fine * FINE_WEIGHT)
+        / (1.0 + DETAIL_WEIGHT + FINE_WEIGHT) * AMPLITUDE;
   }
 
   private static double rawSample(
       long seed,
-      int worldX,
-      int worldZ
+      double worldX,
+      double worldZ
   ) {
-    int gx = Math.floorDiv(worldX, GRID_SIZE);
-    int gz = Math.floorDiv(worldZ, GRID_SIZE);
-    double tx = fade(Math.floorMod(worldX, GRID_SIZE) / (double) GRID_SIZE);
-    double tz = fade(Math.floorMod(worldZ, GRID_SIZE) / (double) GRID_SIZE);
+    int gx = (int) Math.floor(worldX / GRID_SIZE);
+    int gz = (int) Math.floor(worldZ / GRID_SIZE);
+    double tx = fade((worldX - gx * (double) GRID_SIZE) / GRID_SIZE);
+    double tz = fade((worldZ - gz * (double) GRID_SIZE) / GRID_SIZE);
     double north = lerp(tx, medianNode(new Node(seed, gx, gz)), medianNode(new Node(seed, gx + 1, gz)));
     double south = lerp(tx, medianNode(new Node(seed, gx, gz + 1)), medianNode(new Node(seed, gx + 1, gz + 1)));
     // Median nodes suppress isolated extrema before convex interpolation.
@@ -125,15 +127,15 @@ final class HarvestourField {
   ) {
     if (DISTRIBUTIONS.size() > DISTRIBUTION_CACHE_LIMIT) DISTRIBUTIONS.clear();
     double[] distribution = DISTRIBUTIONS.computeIfAbsent(seed, HarvestourField::createDistribution);
-    double value = rawSample(seed, worldX, worldZ);
+    double value = rawSample(seed, worldX * WORLD_COORDINATE_SCALE, worldZ * WORLD_COORDINATE_SCALE);
     int index = Arrays.binarySearch(distribution, value);
-    if (index >= 0) return index * 100.0 / (distribution.length - 1);
+    if (index >= 0) return index * HarvestContinentTerrain.HARVESTOUR_MAX / (distribution.length - 1);
     int upper = -index - 1;
     if (upper == 0) return 0.0;
-    if (upper == distribution.length) return 100.0;
+    if (upper == distribution.length) return HarvestContinentTerrain.HARVESTOUR_MAX;
     double span = distribution[upper] - distribution[upper - 1];
     double fraction = span == 0.0 ? 0.0 : (value - distribution[upper - 1]) / span;
-    return (upper - 1 + fraction) * 100.0 / (distribution.length - 1);
+    return (upper - 1 + fraction) * HarvestContinentTerrain.HARVESTOUR_MAX / (distribution.length - 1);
   }
 
   private record Node(

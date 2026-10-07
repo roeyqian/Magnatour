@@ -31,14 +31,15 @@ public final class HarvestContinentTerrain {
   public static final int CAVE_MAX_Y = 128 + SURFACE_Y_OFFSET;
   public static final int SEA_LEVEL = 64 + SURFACE_Y_OFFSET;
 
-  public static final double BERRY_HARVESTOUR_LIMIT = 75.0;
-  public static final double DESERT_HARVESTOUR_LIMIT = 60.0;
-  public static final double LAKE_HARVESTOUR_LIMIT = 15.0;
-  public static final double MARSH_HARVESTOUR_LIMIT = 68.0;
+  public static final double BERRY_HARVESTOUR_LIMIT = 70.0;
+  public static final double DESERT_HARVESTOUR_LIMIT = 54.0;
+  public static final double HARVESTOUR_MAX = 100.0;
+  public static final double LAKE_HARVESTOUR_LIMIT = 12.0;
+  public static final double MARSH_HARVESTOUR_LIMIT = 18.0;
   // Percentile intervals target the requested long-run biome area shares.
-  public static final double MELON_HARVESTOUR_LIMIT = 93.0;
-  public static final double PUMPKIN_HARVESTOUR_LIMIT = 83.0;
-  public static final double WHEAT_HARVESTOUR_LIMIT = 45.0;
+  public static final double MELON_HARVESTOUR_LIMIT = 99.0;
+  public static final double PUMPKIN_HARVESTOUR_LIMIT = 90.0;
+  public static final double WHEAT_HARVESTOUR_LIMIT = 40.0;
 
   public static final ResourceKey<Biome> BIG_LAKE = key("big_lake");
   public static final ResourceKey<Biome> CACTUS_DESERT = key("cactus_desert");
@@ -62,16 +63,16 @@ public final class HarvestContinentTerrain {
 
   private static final float TREE_RESERVATION_CHANCE = 0.15F;
 
-  private static final double LAKE_SHORE_START = 12.0;
+  private static final double LAKE_SHORE_START = LAKE_HARVESTOUR_LIMIT - 3.0;
+  private static final double MARSH_SHORE_END = LAKE_HARVESTOUR_LIMIT + 3.0;
   private static final double MELON_ENTRY_BLEND_END = PUMPKIN_HARVESTOUR_LIMIT + 1.0;
   private static final double MELON_ENTRY_BLEND_START = PUMPKIN_HARVESTOUR_LIMIT - 1.0;
   private static final double MELON_EXIT_BLEND_END = MELON_HARVESTOUR_LIMIT + 1.0;
   private static final double MELON_EXIT_BLEND_START = MELON_HARVESTOUR_LIMIT - 1.0;
-  private static final double WHEAT_SHORE_END = 18.0;
 
   private static final double[] HARVESTOUR_LIMITS = {
-      LAKE_HARVESTOUR_LIMIT, WHEAT_HARVESTOUR_LIMIT, DESERT_HARVESTOUR_LIMIT,
-      MARSH_HARVESTOUR_LIMIT, BERRY_HARVESTOUR_LIMIT, PUMPKIN_HARVESTOUR_LIMIT, MELON_HARVESTOUR_LIMIT
+      LAKE_HARVESTOUR_LIMIT, MARSH_HARVESTOUR_LIMIT, WHEAT_HARVESTOUR_LIMIT,
+      DESERT_HARVESTOUR_LIMIT, BERRY_HARVESTOUR_LIMIT, PUMPKIN_HARVESTOUR_LIMIT, MELON_HARVESTOUR_LIMIT
   };
 
   private HarvestContinentTerrain() {}
@@ -91,9 +92,9 @@ public final class HarvestContinentTerrain {
       double harvestour
   ) {
     if (harvestour < LAKE_HARVESTOUR_LIMIT) return BIG_LAKE;
+    if (harvestour < MARSH_HARVESTOUR_LIMIT) return SUGARCANE_MARSH;
     if (harvestour < WHEAT_HARVESTOUR_LIMIT) return WHEAT_PLAIN;
     if (harvestour < DESERT_HARVESTOUR_LIMIT) return CACTUS_DESERT;
-    if (harvestour < MARSH_HARVESTOUR_LIMIT) return SUGARCANE_MARSH;
     if (harvestour < BERRY_HARVESTOUR_LIMIT) return FROST_SNOWFIELD;
     if (harvestour < PUMPKIN_HARVESTOUR_LIMIT) return PUMPKIN_GORGE;
     if (harvestour < MELON_HARVESTOUR_LIMIT) return MELON_JUNGLE;
@@ -127,14 +128,14 @@ public final class HarvestContinentTerrain {
       int worldX,
       int worldZ
   ) {
-    double value = Mth.clamp(harvestour, 0.0, 100.0);
+    double value = Mth.clamp(harvestour, 0.0, HARVESTOUR_MAX);
     if (value < LAKE_HARVESTOUR_LIMIT) {
       return blendHeight(value, LAKE_SHORE_START, LAKE_HARVESTOUR_LIMIT,
           lakeBedHeight(seed, worldX, worldZ), SEA_LEVEL);
     }
-    if (value < WHEAT_SHORE_END) {
-      return blendHeight(value, LAKE_HARVESTOUR_LIMIT, WHEAT_SHORE_END,
-          SEA_LEVEL, wheatPlainHeight(seed, worldX, worldZ));
+    if (value < MARSH_SHORE_END) {
+      return blendHeight(value, LAKE_HARVESTOUR_LIMIT, MARSH_SHORE_END,
+          SEA_LEVEL, HarvestRegionalTerrain.marshHeight(seed, worldX, worldZ));
     }
     for (int index = 1; index < HARVESTOUR_LIMITS.length; index++) {
       double boundary = HARVESTOUR_LIMITS[index];
@@ -209,7 +210,7 @@ public final class HarvestContinentTerrain {
       int worldX,
       int worldZ
   ) {
-    return Mth.clamp(unclampedHarvestour(seed, worldX, worldZ), 0.0, 100.0);
+    return Mth.clamp(unclampedHarvestour(seed, worldX, worldZ), 0.0, HARVESTOUR_MAX);
   }
 
   /** Rounded only after blending, so each profile keeps its original shape. */
@@ -275,18 +276,6 @@ public final class HarvestContinentTerrain {
     return Mth.clamp(38.0 + shape * 9.0, 26.0, 52.0) + SURFACE_Y_OFFSET;
   }
 
-  private static double wheatPlainHeight(
-      long seed,
-      int x,
-      int z
-  ) {
-    double large = fbmPerlin(seed ^ 0x1A2B3C4D5E6F7890L, x, z, 0.0026, 3) * 5.2;
-    double medium = fbmPerlin(seed ^ 0x9876543210FEDCBAL, x, z, 0.0100, 2) * 3.4;
-    double micro = fbmPerlin(seed ^ 0xABCDEF0123456789L, x, z, 0.0340, 2) * 1.35;
-    return Mth.clamp(WHEAT_BASE_HEIGHT + large + medium + micro,
-        WHEAT_INTERIOR_MIN_HEIGHT, WHEAT_INTERIOR_MAX_HEIGHT);
-  }
-
   private static double profileHeight(
       int index,
       long seed,
@@ -294,9 +283,9 @@ public final class HarvestContinentTerrain {
       int z
   ) {
     return switch (index) {
-      case 1 -> wheatPlainHeight(seed, x, z);
-      case 2 -> HarvestRegionalTerrain.desertHeight(seed, x, z);
-      case 3 -> HarvestRegionalTerrain.marshHeight(seed, x, z);
+      case 1 -> HarvestRegionalTerrain.marshHeight(seed, x, z);
+      case 2 -> wheatPlainHeight(seed, x, z);
+      case 3 -> HarvestRegionalTerrain.desertHeight(seed, x, z);
       case 4 -> HarvestRegionalTerrain.snowfieldHeight(seed, x, z);
       case 5 -> pumpkinGorgeHeight(seed, x, z);
       case 6 -> melonJungleHeight(seed, x, z);
@@ -343,6 +332,18 @@ public final class HarvestContinentTerrain {
       case 6 -> (dx - dz) * 0.7071067811865476;
       default -> (-dx - dz) * 0.7071067811865476;
     };
+  }
+
+  private static double wheatPlainHeight(
+      long seed,
+      int x,
+      int z
+  ) {
+    double large = fbmPerlin(seed ^ 0x1A2B3C4D5E6F7890L, x, z, 0.0026, 3) * 5.2;
+    double medium = fbmPerlin(seed ^ 0x9876543210FEDCBAL, x, z, 0.0100, 2) * 3.4;
+    double micro = fbmPerlin(seed ^ 0xABCDEF0123456789L, x, z, 0.0340, 2) * 1.35;
+    return Mth.clamp(WHEAT_BASE_HEIGHT + large + medium + micro,
+        WHEAT_INTERIOR_MIN_HEIGHT, WHEAT_INTERIOR_MAX_HEIGHT);
   }
 
   private static double pumpkinGorgeHeight(
