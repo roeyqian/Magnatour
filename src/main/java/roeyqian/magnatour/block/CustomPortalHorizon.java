@@ -56,6 +56,15 @@ public interface CustomPortalHorizon {
       BlockPos corner,
       Block frameBlock
   ) {
+    return isCompleteFrame(world, corner, frameBlock, true);
+  }
+
+  private static boolean isCompleteFrame(
+      Level world,
+      BlockPos corner,
+      Block frameBlock,
+      boolean requireLit
+  ) {
     // Check 5x5 grid - only outer edges EXCLUDING corners (12 blocks total)
     for (int dx = 0; dx < 5; dx++) {
       for (int dz = 0; dz < 5; dz++) {
@@ -78,8 +87,8 @@ public interface CustomPortalHorizon {
           return false;
         }
 
-        // Must be lit (activated)
-        if (!state.hasProperty(BlockStateProperties.LIT) || !state.getValue(BlockStateProperties.LIT)) {
+        // Lighting is required to activate a frame, but not to keep a generated portal valid.
+        if (requireLit && (!state.hasProperty(BlockStateProperties.LIT) || !state.getValue(BlockStateProperties.LIT))) {
           return false;
         }
       }
@@ -114,12 +123,21 @@ public interface CustomPortalHorizon {
       BlockPos clickedPos,
       Block frameBlock
   ) {
+    return findCompleteFrame(world, clickedPos, frameBlock, true);
+  }
+
+  private static BlockPos findCompleteFrame(
+      Level world,
+      BlockPos clickedPos,
+      Block frameBlock,
+      boolean requireLit
+  ) {
     // The clicked position could be any of the 12 frame blocks
     // Try all possible corner positions where this block could be part of a 5x5 frame
     for (int dx = -4; dx <= 0; dx++) {
       for (int dz = -4; dz <= 0; dz++) {
         BlockPos corner = clickedPos.offset(dx, 0, dz);
-        if (isCompleteFrame(world, corner, frameBlock)) {
+        if (isCompleteFrame(world, corner, frameBlock, requireLit)) {
           return corner;
         }
       }
@@ -165,11 +183,7 @@ public interface CustomPortalHorizon {
         boolean isPortal = dx >= 1 && dx <= 3 && dz >= 1 && dz <= 3;
 
         if (isFrame) {
-          BlockState frameState = frameBlock.defaultBlockState();
-          if (frameState.hasProperty(BlockStateProperties.LIT)) {
-            frameState = frameState.setValue(BlockStateProperties.LIT, true);
-          }
-          world.setBlockAndUpdate(pos, frameState);
+          world.setBlockAndUpdate(pos, frameBlock.defaultBlockState());
         } else if (isPortal) {
           world.setBlock(pos, portalBlock.defaultBlockState().setValue(AXIS, Direction.Axis.X), 18);
           world.setBlock(pos.above(), Blocks.AIR.defaultBlockState(), 18);
@@ -223,7 +237,7 @@ public interface CustomPortalHorizon {
       BlockPos portalPos,
       Block frameBlock
   ) {
-    BlockPos corner = findCompleteFrame(world, portalPos, frameBlock);
+    BlockPos corner = findCompleteFrame(world, portalPos, frameBlock, false);
     return corner == null ? portalPos : corner.offset(2, 0, 2);
   }
 
@@ -256,7 +270,7 @@ public interface CustomPortalHorizon {
       Block frameBlock,
       Block portalBlock
   ) {
-    BlockPos corner = findCompleteFrame((Level)world, pos, frameBlock);
+    BlockPos corner = findCompleteFrame((Level)world, pos, frameBlock, false);
     if (corner == null) return false;
 
     // Match the ore-continent portal's complete-shape check: a sound frame is
