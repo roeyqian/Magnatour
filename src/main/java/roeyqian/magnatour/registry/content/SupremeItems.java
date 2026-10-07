@@ -26,6 +26,7 @@ import roeyqian.magnatour.item.CustomArmorMaterial;
 import roeyqian.magnatour.item.CustomItemSetting;
 import roeyqian.magnatour.item.CustomToolMaterial;
 import roeyqian.magnatour.item.supreme.EmperorArmor;
+import roeyqian.magnatour.item.supreme.EmperorBow;
 import roeyqian.magnatour.item.supreme.MirrorMobile;
 import roeyqian.magnatour.item.supreme.StrangeLingeringPotion;
 import roeyqian.magnatour.item.supreme.StrangePotion;
@@ -43,6 +44,12 @@ public final class SupremeItems {
   );
 
   // Handheld - Tools and Weapons
+  public static final Item EMPEROR_BOW = ItemRegHelper.registerDurableItem(
+      "emperor_bow", EmperorBow::new,
+      CustomItemSetting.applySupremeDefaults(new Item.Properties())
+          .durability(100)
+          .enchantable(1)
+  );
   public static final Item EMPEROR_AXE_PICKAXE = ItemRegHelper.registerDurableItem(
       "emperor_axe_pickaxe",
       Item::new, CustomItemSetting.applySupremeDefaults(new Item.Properties())

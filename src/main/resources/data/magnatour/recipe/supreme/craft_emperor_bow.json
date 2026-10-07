@@ -1,0 +1,20 @@
+{
+  "type": "magnatour:supreme_crafting",
+  "category": "equipment",
+  "group": "supreme:items",
+  "pattern": [
+    " AB",
+    "ACB",
+    " AB"
+  ],
+  "key": {
+    "A": "magnatour:fortune_metal",
+    "B": "minecraft:string",
+    "C": "magnatour:fortune_crystal"
+  },
+  "result": {
+    "count": 1,
+    "id": "magnatour:emperor_bow"
+  },
+  "show_notification": true
+}
