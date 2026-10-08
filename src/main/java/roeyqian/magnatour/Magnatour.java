@@ -19,6 +19,8 @@ package roeyqian.magnatour;
 // Fabric
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.creativetab.v1.FabricCreativeModeTab;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerChunkEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 
 // Minecraft
 import net.minecraft.core.Registry;
@@ -36,6 +38,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 // Magnatour
+import roeyqian.magnatour.block.VirtualBlockLightManager;
 import roeyqian.magnatour.registry.content.SupremeBlockEntities;
 import roeyqian.magnatour.registry.content.SupremeBlocks;
 import roeyqian.magnatour.registry.content.SupremeEntities;
@@ -77,6 +80,10 @@ public class Magnatour implements ModInitializer {
 
   @Override
   public void onInitialize() {
+    VirtualBlockLightManager.init();
+    ServerTickEvents.END_LEVEL_TICK.register(VirtualBlockLightManager::tick);
+    ServerChunkEvents.CHUNK_LOAD.register((world, chunk, _) -> VirtualBlockLightManager.onChunkLoad(world, chunk));
+    ServerChunkEvents.CHUNK_UNLOAD.register((world, chunk) -> VirtualBlockLightManager.onChunkUnload(world, chunk.getPos()));
     SupremeItems.init();
     UniverseItems.init();
     CustomNetworks.init();

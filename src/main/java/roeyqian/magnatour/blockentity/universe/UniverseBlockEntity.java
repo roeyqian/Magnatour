@@ -35,6 +35,7 @@ public class UniverseBlockEntity extends BlockEntity {
       BlockState state,
       UniverseBlockEntity blockEntity
   ) {
+    if ((world.getGameTime() & 1L) != 0) return;
     boolean lit = state.getValue(UniverseBlock.LIT);
     blockEntity.setLightRegistered(lit);
   }

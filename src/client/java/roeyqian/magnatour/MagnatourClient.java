@@ -20,8 +20,12 @@ package roeyqian.magnatour;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.Environment;
 import net.fabricmc.api.EnvType;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientChunkEvents;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 
 // Magnatour
+import roeyqian.magnatour.block.VirtualBlockLightManager;
 import roeyqian.magnatour.registry.input.RegKeyBindings;
 import roeyqian.magnatour.registry.input.RegUniverseBootsFlashing;
 import roeyqian.magnatour.registry.output.RegBlockLayers;
@@ -36,6 +40,16 @@ public class MagnatourClient implements ClientModInitializer {
 
   @Override
   public void onInitializeClient() {
+    ClientPlayNetworking.registerGlobalReceiver(VirtualBlockLightManager.UniverseLightPayload.ID, (payload, context) -> {
+      if (context.client().level != null) VirtualBlockLightManager.receiveUniverseState(context.client().level, payload);
+    });
+    ClientTickEvents.END_CLIENT_TICK.register(client -> {
+      if (client.level != null) {
+        VirtualBlockLightManager.tick(client.level);
+      }
+    });
+    ClientChunkEvents.CHUNK_LOAD.register((world, chunk) -> VirtualBlockLightManager.onChunkLoad(world, chunk.getPos()));
+    ClientChunkEvents.CHUNK_UNLOAD.register((world, chunk) -> VirtualBlockLightManager.onChunkUnload(world, chunk.getPos()));
     RegScreens.init();
     StarAtlasScreen.initClient();
     RegParticles.init();

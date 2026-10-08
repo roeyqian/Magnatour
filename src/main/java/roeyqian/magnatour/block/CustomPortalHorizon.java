@@ -84,7 +84,7 @@ public interface CustomPortalHorizon {
       Block frameBlock,
       Block portalBlock
   ) {
-    BlockPos corner = findCompleteFrame((Level)world, pos, frameBlock, false);
+    BlockPos corner = findCompleteFrame((Level)world, pos, frameBlock, true);
     if (corner == null) return false;
 
     // Match the ore-continent portal's complete-shape check: a sound frame is
@@ -188,7 +188,7 @@ public interface CustomPortalHorizon {
           return false;
         }
 
-        // Lighting is required to activate a frame, but not to keep a generated portal valid.
+        // All frame blocks must stay lit for the portal to remain valid.
         if (requireLit && (!state.hasProperty(BlockStateProperties.LIT) || !state.getValue(BlockStateProperties.LIT))) {
           return false;
         }
@@ -235,7 +235,11 @@ public interface CustomPortalHorizon {
         boolean isPortal = dx >= 1 && dx <= 3 && dz >= 1 && dz <= 3;
 
         if (isFrame) {
-          world.setBlockAndUpdate(pos, frameBlock.defaultBlockState());
+          BlockState frameState = frameBlock.defaultBlockState();
+          if (frameState.hasProperty(BlockStateProperties.LIT)) {
+            frameState = frameState.setValue(BlockStateProperties.LIT, true);
+          }
+          world.setBlockAndUpdate(pos, frameState);
         } else if (isPortal) {
           world.setBlock(pos, portalBlock.defaultBlockState().setValue(AXIS, Direction.Axis.X), 18);
           world.setBlock(pos.above(), Blocks.AIR.defaultBlockState(), 18);
