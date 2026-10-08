@@ -119,16 +119,6 @@ public class PrimedChunkTnt extends PrimedTnt {
     return super.getMovementEmission();
   }
 
-  private void explodeChunk() {
-    if (this.level() instanceof ServerLevel serverWorld) {
-      if (!serverWorld.getGameRules()
-          .get(GameRules.TNT_EXPLODES)) {
-        return;
-      }
-      destroyChunk(serverWorld);
-    }
-  }
-
   private void destroyChunk(
       ServerLevel serverWorld
   ) {
@@ -176,6 +166,16 @@ public class PrimedChunkTnt extends PrimedTnt {
         null, pos, SoundEvents.GENERIC_EXPLODE.value(),
         SoundSource.BLOCKS, 4.0F, 1.0F
     );
+  }
+
+  private void explodeChunk() {
+    if (this.level() instanceof ServerLevel serverWorld) {
+      if (!serverWorld.getGameRules()
+          .get(GameRules.TNT_EXPLODES)) {
+        return;
+      }
+      destroyChunk(serverWorld);
+    }
   }
 
 }

@@ -48,6 +48,13 @@ public final class UniverseMetaDimensionGenerator {
     });
   }
 
+  private static boolean isNearBoundary(
+      int coordinate
+  ) {
+    return coordinate < CUBE_MIN + BORDER_THICKNESS
+        || coordinate > CUBE_MAX - BORDER_THICKNESS;
+  }
+
   private static void generateCubeSlice(
       ServerLevel world,
       int startIndex,
@@ -78,13 +85,6 @@ public final class UniverseMetaDimensionGenerator {
           3
       );
     }
-  }
-
-  private static boolean isNearBoundary(
-      int coordinate
-  ) {
-    return coordinate < CUBE_MIN + BORDER_THICKNESS
-        || coordinate > CUBE_MAX - BORDER_THICKNESS;
   }
 
 }

@@ -120,43 +120,6 @@ final class DiamondCityLayout {
     return Optional.of(new Vec3i(width, height, depth));
   }
 
-  private static void placeGrid(
-      StructureTemplateManager templateManager,
-      WorldGenLevel level,
-      RandomSource random,
-      StructurePlaceSettings settings,
-      BlockPos origin,
-      Identifier[] ids,
-      int columns
-  ) {
-    int rows = ids.length / columns;
-    int zOffset = 0;
-
-    for (int row = 0; row < rows; row++) {
-      int xOffset = 0;
-      int rowDepth = 0;
-
-      for (int column = 0; column < columns; column++) {
-        Identifier id = ids[row * columns + column];
-        Optional<StructureTemplate> templateOpt = templateManager.get(id);
-        if (templateOpt.isEmpty()) {
-          Magnatour.LOGGER.warn("[DiamondCity] Missing template {}; skipping placement", id);
-          return;
-        }
-
-        StructureTemplate template = templateOpt.get();
-        Vec3i size = template.getSize();
-        BlockPos piecePos = origin.offset(xOffset, 0, zOffset);
-        template.placeInWorld(level, piecePos, piecePos, settings, random, 2);
-
-        xOffset += size.getX();
-        rowDepth = Math.max(rowDepth, size.getZ());
-      }
-
-      zOffset += rowDepth;
-    }
-  }
-
   private static BuildingPlan createPlan(
       BuildingType type
   ) {
@@ -218,6 +181,43 @@ final class DiamondCityLayout {
           ids,
           columns
       );
+    }
+  }
+
+  private static void placeGrid(
+      StructureTemplateManager templateManager,
+      WorldGenLevel level,
+      RandomSource random,
+      StructurePlaceSettings settings,
+      BlockPos origin,
+      Identifier[] ids,
+      int columns
+  ) {
+    int rows = ids.length / columns;
+    int zOffset = 0;
+
+    for (int row = 0; row < rows; row++) {
+      int xOffset = 0;
+      int rowDepth = 0;
+
+      for (int column = 0; column < columns; column++) {
+        Identifier id = ids[row * columns + column];
+        Optional<StructureTemplate> templateOpt = templateManager.get(id);
+        if (templateOpt.isEmpty()) {
+          Magnatour.LOGGER.warn("[DiamondCity] Missing template {}; skipping placement", id);
+          return;
+        }
+
+        StructureTemplate template = templateOpt.get();
+        Vec3i size = template.getSize();
+        BlockPos piecePos = origin.offset(xOffset, 0, zOffset);
+        template.placeInWorld(level, piecePos, piecePos, settings, random, 2);
+
+        xOffset += size.getX();
+        rowDepth = Math.max(rowDepth, size.getZ());
+      }
+
+      zOffset += rowDepth;
     }
   }
 

@@ -264,10 +264,67 @@ public class PaleLord extends Monster implements CustomBossEntity {
     }
   }
 
+  private void transformCurrentBodyToClone(
+      ServerLevel world
+  ) {
+    spawnClone(world, this.position());
+    this.discard();
+  }
+
   private void clearPendingSplit() {
     this.pendingSplit = false;
     this.pendingTransfer = false;
     this.pendingSplitGameTime = -1L;
+  }
+
+  private void transferConsciousness(
+      ServerLevel world
+  ) {
+    PaleLord newBody = new PaleLord(SupremeEntities.PALE_LORD, world);
+
+    Vec3 newPos = randomSpawnPosition(world);
+    newBody.setPos(newPos.x, newPos.y, newPos.z);
+    newBody.setYRot(this.getYRot());
+    newBody.setXRot(this.getXRot());
+    newBody.setYBodyRot(this.getYRot());
+    newBody.setHealth(this.getHealth());
+    newBody.setTarget(this.getTarget());
+    if (this.hasCustomName()) {
+      newBody.setCustomName(this.getCustomName());
+    }
+
+    if (world.addFreshEntity(newBody)) {
+      transformCurrentBodyToClone(world);
+    } else {
+      spawnClone(world, randomSpawnPosition(world));
+    }
+  }
+
+  private void spawnClone(
+      ServerLevel world,
+      Vec3 position
+  ) {
+    PaleLordClone clone = new PaleLordClone(SupremeEntities.PALE_LORD_CLONE, world);
+
+    clone.setPos(position.x, position.y, position.z);
+    clone.setYRot(this.getYRot());
+    clone.setXRot(this.getXRot());
+    clone.setYBodyRot(this.getYRot());
+    clone.setTarget(this.getTarget());
+    world.addFreshEntity(clone);
+  }
+
+  private Vec3 randomSpawnPosition(
+      ServerLevel world
+  ) {
+    double x = this.getX() + (this.random.nextDouble() - 0.5) * 16.0;
+    double z = this.getZ() + (this.random.nextDouble() - 0.5) * 16.0;
+
+    BlockPos surface = world.getHeightmapPos(
+        Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+        BlockPos.containing(x, this.getY(), z)
+    );
+    return new Vec3(x, surface.getY() + 1.0, z);
   }
 
   private void spawnBodyFlameParticles() {
@@ -342,63 +399,6 @@ public class PaleLord extends Monster implements CustomBossEntity {
     if (attribute != null) {
       attribute.setBaseValue(PaleLordCommon.computeAttackDamage(cloneCount));
     }
-  }
-
-  private void transferConsciousness(
-      ServerLevel world
-  ) {
-    PaleLord newBody = new PaleLord(SupremeEntities.PALE_LORD, world);
-
-    Vec3 newPos = randomSpawnPosition(world);
-    newBody.setPos(newPos.x, newPos.y, newPos.z);
-    newBody.setYRot(this.getYRot());
-    newBody.setXRot(this.getXRot());
-    newBody.setYBodyRot(this.getYRot());
-    newBody.setHealth(this.getHealth());
-    newBody.setTarget(this.getTarget());
-    if (this.hasCustomName()) {
-      newBody.setCustomName(this.getCustomName());
-    }
-
-    if (world.addFreshEntity(newBody)) {
-      transformCurrentBodyToClone(world);
-    } else {
-      spawnClone(world, randomSpawnPosition(world));
-    }
-  }
-
-  private void spawnClone(
-      ServerLevel world,
-      Vec3 position
-  ) {
-    PaleLordClone clone = new PaleLordClone(SupremeEntities.PALE_LORD_CLONE, world);
-
-    clone.setPos(position.x, position.y, position.z);
-    clone.setYRot(this.getYRot());
-    clone.setXRot(this.getXRot());
-    clone.setYBodyRot(this.getYRot());
-    clone.setTarget(this.getTarget());
-    world.addFreshEntity(clone);
-  }
-
-  private Vec3 randomSpawnPosition(
-      ServerLevel world
-  ) {
-    double x = this.getX() + (this.random.nextDouble() - 0.5) * 16.0;
-    double z = this.getZ() + (this.random.nextDouble() - 0.5) * 16.0;
-
-    BlockPos surface = world.getHeightmapPos(
-        Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
-        BlockPos.containing(x, this.getY(), z)
-    );
-    return new Vec3(x, surface.getY() + 1.0, z);
-  }
-
-  private void transformCurrentBodyToClone(
-      ServerLevel world
-  ) {
-    spawnClone(world, this.position());
-    this.discard();
   }
 
 }

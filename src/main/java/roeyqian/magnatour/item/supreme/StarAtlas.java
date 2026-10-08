@@ -306,13 +306,6 @@ public class StarAtlas extends Item {
 
     private static ExecutorService workers;
 
-    private static boolean jobContains(
-        Payload view,
-        ChunkPos pos
-    ) {
-      return pos.x() >= view.minX() && pos.x() <= view.maxX() && pos.z() >= view.minZ() && pos.z() <= view.maxZ();
-    }
-
     private static void request(
         ServerPlayer player,
         Payload payload
@@ -362,6 +355,13 @@ public class StarAtlas extends Item {
         return x * x + z * z;
       }));
       job.pending.addAll(visible);
+    }
+
+    private static boolean jobContains(
+        Payload view,
+        ChunkPos pos
+    ) {
+      return pos.x() >= view.minX() && pos.x() <= view.maxX() && pos.z() >= view.minZ() && pos.z() <= view.maxZ();
     }
 
     private static void sendBatch(

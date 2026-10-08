@@ -84,6 +84,39 @@ public final class BellRingerModel extends HumanoidModel<HumanoidRenderState> {
     this.bellClapper.xRot = -idle * 0.08F - swing * 0.22F;
   }
 
+  private static CubeListBuilder material(
+      int tile
+  ) {
+    return CubeListBuilder.create().texOffs((tile % 4) * 64 + 4, (tile / 4) * 64 + 4);
+  }
+
+  private static void addBellShell(
+      PartDefinition bell
+  ) {
+    bell.addOrReplaceChild(
+        "cap", material(BRONZE).addBox(-2.0F, 0.0F, -2.0F, 4.0F, 2.0F, 4.0F), PartPose.ZERO
+    );
+    bell.addOrReplaceChild(
+        "shell", material(BRONZE).addBox(-3.0F, 2.0F, -3.0F, 6.0F, 2.0F, 1.0F)
+            .addBox(-3.0F, 2.0F, 2.0F, 6.0F, 2.0F, 1.0F)
+            .addBox(-3.0F, 2.0F, -2.0F, 1.0F, 2.0F, 4.0F)
+            .addBox(2.0F, 2.0F, -2.0F, 1.0F, 2.0F, 4.0F), PartPose.ZERO
+    );
+    // Four walls instead of a solid cube leave the mouth and clapper visible.
+    bell.addOrReplaceChild(
+        "mouth", material(ENGRAVED_BRONZE).addBox(-4.0F, 4.0F, -4.0F, 8.0F, 3.0F, 1.0F)
+            .addBox(-4.0F, 4.0F, 3.0F, 8.0F, 3.0F, 1.0F)
+            .addBox(-4.0F, 4.0F, -3.0F, 1.0F, 3.0F, 6.0F)
+            .addBox(3.0F, 4.0F, -3.0F, 1.0F, 3.0F, 6.0F), PartPose.ZERO
+    );
+    bell.addOrReplaceChild(
+        "lip", material(GOLD).addBox(-4.5F, 7.0F, -4.5F, 9.0F, 1.0F, 1.0F)
+            .addBox(-4.5F, 7.0F, 3.5F, 9.0F, 1.0F, 1.0F)
+            .addBox(-4.5F, 7.0F, -3.5F, 1.0F, 1.0F, 7.0F)
+            .addBox(3.5F, 7.0F, -3.5F, 1.0F, 1.0F, 7.0F), PartPose.ZERO
+    );
+  }
+
   private static void addHead(
       PartDefinition root
   ) {
@@ -182,39 +215,6 @@ public final class BellRingerModel extends HumanoidModel<HumanoidRenderState> {
     root.addOrReplaceChild(
         name, material(LEG_CLOTHING).addBox(-2.0F, 0.0F, -2.0F, 4.0F, 12.0F, 4.0F),
         PartPose.offset(x, 12.0F, 0.0F)
-    );
-  }
-
-  private static CubeListBuilder material(
-      int tile
-  ) {
-    return CubeListBuilder.create().texOffs((tile % 4) * 64 + 4, (tile / 4) * 64 + 4);
-  }
-
-  private static void addBellShell(
-      PartDefinition bell
-  ) {
-    bell.addOrReplaceChild(
-        "cap", material(BRONZE).addBox(-2.0F, 0.0F, -2.0F, 4.0F, 2.0F, 4.0F), PartPose.ZERO
-    );
-    bell.addOrReplaceChild(
-        "shell", material(BRONZE).addBox(-3.0F, 2.0F, -3.0F, 6.0F, 2.0F, 1.0F)
-            .addBox(-3.0F, 2.0F, 2.0F, 6.0F, 2.0F, 1.0F)
-            .addBox(-3.0F, 2.0F, -2.0F, 1.0F, 2.0F, 4.0F)
-            .addBox(2.0F, 2.0F, -2.0F, 1.0F, 2.0F, 4.0F), PartPose.ZERO
-    );
-    // Four walls instead of a solid cube leave the mouth and clapper visible.
-    bell.addOrReplaceChild(
-        "mouth", material(ENGRAVED_BRONZE).addBox(-4.0F, 4.0F, -4.0F, 8.0F, 3.0F, 1.0F)
-            .addBox(-4.0F, 4.0F, 3.0F, 8.0F, 3.0F, 1.0F)
-            .addBox(-4.0F, 4.0F, -3.0F, 1.0F, 3.0F, 6.0F)
-            .addBox(3.0F, 4.0F, -3.0F, 1.0F, 3.0F, 6.0F), PartPose.ZERO
-    );
-    bell.addOrReplaceChild(
-        "lip", material(GOLD).addBox(-4.5F, 7.0F, -4.5F, 9.0F, 1.0F, 1.0F)
-            .addBox(-4.5F, 7.0F, 3.5F, 9.0F, 1.0F, 1.0F)
-            .addBox(-4.5F, 7.0F, -3.5F, 1.0F, 1.0F, 7.0F)
-            .addBox(3.5F, 7.0F, -3.5F, 1.0F, 1.0F, 7.0F), PartPose.ZERO
     );
   }
 

@@ -149,6 +149,15 @@ public class MirrorMobile extends Item {
     );
   }
 
+  private void sendErrorMessage(
+      ServerPlayer player,
+      String key
+  ) {
+    player.sendOverlayMessage(
+        Component.translatable("msg.magnatour.mirror_mobile.error" + key)
+    );
+  }
+
   private boolean openVirtualScreen(
       ServerPlayer player,
       String blockId
@@ -178,15 +187,6 @@ public class MirrorMobile extends Item {
     );
     player.openMenu(wrappedFactory);
     return true;
-  }
-
-  private void sendErrorMessage(
-      ServerPlayer player,
-      String key
-  ) {
-    player.sendOverlayMessage(
-        Component.translatable("msg.magnatour.mirror_mobile.error" + key)
-    );
   }
 
 }

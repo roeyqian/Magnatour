@@ -223,6 +223,65 @@ public final class SummonStructureHelper {
     updatePatternBlocks(level, match);
   }
 
+  // Mirror the width axis so non-symmetrical summons can be built in either handedness.
+  private static String[][] mirrorAislesHorizontally(
+      String[][] aisles
+  ) {
+    String[][] mirroredAisles = new String[aisles.length][];
+
+    for (int depth = 0; depth < aisles.length; depth++) {
+      mirroredAisles[depth] = new String[aisles[depth].length];
+      for (int row = 0; row < aisles[depth].length; row++) {
+        mirroredAisles[depth][row] = new StringBuilder(aisles[depth][row]).reverse().toString();
+      }
+    }
+
+    return mirroredAisles;
+  }
+
+  private static BlockPattern buildPattern(
+      String[][] aisles,
+      Consumer<BlockPatternBuilder> builderConsumer
+  ) {
+    BlockPatternBuilder builder = BlockPatternBuilder.start();
+    for (String[] aisle : aisles) {
+      builder.aisle(aisle);
+    }
+    builderConsumer.accept(builder);
+    return builder.build();
+  }
+
+  private static boolean containsPosition(
+      BlockPattern.BlockPatternMatch match,
+      BlockPos pos
+  ) {
+    for (int x = 0; x < match.getWidth(); x++) {
+      for (int y = 0; y < match.getHeight(); y++) {
+        for (int z = 0; z < match.getDepth(); z++) {
+          if (match.getBlock(x, y, z).getPos().equals(pos)) return true;
+        }
+      }
+    }
+
+    return false;
+  }
+
+  private static BlockPattern[] createHorizontalPatternVariants(
+      String[][] aisles,
+      Consumer<BlockPatternBuilder> builderConsumer
+  ) {
+    String[][] mirroredAisles = mirrorAislesHorizontally(aisles);
+
+    if (Arrays.deepEquals(aisles, mirroredAisles)) {
+      return new BlockPattern[] {buildPattern(aisles, builderConsumer)};
+    }
+
+    return new BlockPattern[] {
+        buildPattern(aisles, builderConsumer),
+        buildPattern(mirroredAisles, builderConsumer)
+    };
+  }
+
   private static boolean isNetheriteGolemTriggerBlock(
       BlockState state
   ) {
@@ -394,65 +453,6 @@ public final class SummonStructureHelper {
     }
 
     return sculkBehemothPatterns;
-  }
-
-  private static boolean containsPosition(
-      BlockPattern.BlockPatternMatch match,
-      BlockPos pos
-  ) {
-    for (int x = 0; x < match.getWidth(); x++) {
-      for (int y = 0; y < match.getHeight(); y++) {
-        for (int z = 0; z < match.getDepth(); z++) {
-          if (match.getBlock(x, y, z).getPos().equals(pos)) return true;
-        }
-      }
-    }
-
-    return false;
-  }
-
-  private static BlockPattern[] createHorizontalPatternVariants(
-      String[][] aisles,
-      Consumer<BlockPatternBuilder> builderConsumer
-  ) {
-    String[][] mirroredAisles = mirrorAislesHorizontally(aisles);
-
-    if (Arrays.deepEquals(aisles, mirroredAisles)) {
-      return new BlockPattern[] {buildPattern(aisles, builderConsumer)};
-    }
-
-    return new BlockPattern[] {
-        buildPattern(aisles, builderConsumer),
-        buildPattern(mirroredAisles, builderConsumer)
-    };
-  }
-
-  // Mirror the width axis so non-symmetrical summons can be built in either handedness.
-  private static String[][] mirrorAislesHorizontally(
-      String[][] aisles
-  ) {
-    String[][] mirroredAisles = new String[aisles.length][];
-
-    for (int depth = 0; depth < aisles.length; depth++) {
-      mirroredAisles[depth] = new String[aisles[depth].length];
-      for (int row = 0; row < aisles[depth].length; row++) {
-        mirroredAisles[depth][row] = new StringBuilder(aisles[depth][row]).reverse().toString();
-      }
-    }
-
-    return mirroredAisles;
-  }
-
-  private static BlockPattern buildPattern(
-      String[][] aisles,
-      Consumer<BlockPatternBuilder> builderConsumer
-  ) {
-    BlockPatternBuilder builder = BlockPatternBuilder.start();
-    for (String[] aisle : aisles) {
-      builder.aisle(aisle);
-    }
-    builderConsumer.accept(builder);
-    return builder.build();
   }
 
   private record ScheduledSummonCheck(

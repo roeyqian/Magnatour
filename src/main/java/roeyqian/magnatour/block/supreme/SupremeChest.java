@@ -400,6 +400,84 @@ public class SupremeChest extends BaseEntityBlock implements SimpleWaterloggedBl
     return InteractionResult.SUCCESS;
   }
 
+  private static long getGroupOrigin(
+      LevelReader level,
+      BlockPos pos
+  ) {
+    if (level.getBlockEntity(pos) instanceof SupremeChestEntity chestEntity && chestEntity.hasGroupOrigin()) {
+      return chestEntity.getGroupOrigin();
+    }
+    return SupremeChestEntity.NO_GROUP_ORIGIN;
+  }
+
+  private static List<BlockPos> collectConnectedLine(
+      LevelReader level,
+      BlockPos origin,
+      Direction facing,
+      long requiredGroupOrigin
+  ) {
+    Direction axis = facing.getClockWise();
+    List<BlockPos> positions = new ArrayList<>();
+    positions.add(origin);
+    collectLine(level, origin, axis, facing, requiredGroupOrigin, positions);
+    collectLine(level, origin, axis.getOpposite(), facing, requiredGroupOrigin, positions);
+    positions.sort(Comparator.comparingLong(a -> project(a, axis)));
+    return positions;
+  }
+
+  private static void collectLine(
+      LevelReader level,
+      BlockPos origin,
+      Direction direction,
+      Direction facing,
+      long requiredGroupOrigin,
+      List<BlockPos> positions
+  ) {
+    BlockPos cursor = origin.relative(direction);
+    while (isMatchingChest(level, cursor, facing, requiredGroupOrigin)) {
+      positions.add(cursor);
+      cursor = cursor.relative(direction);
+    }
+  }
+
+  private static long project(
+      BlockPos pos,
+      Direction axis
+  ) {
+    return (long) pos.getX() * axis.getStepX() + (long) pos.getZ() * axis.getStepZ();
+  }
+
+  private static boolean isMatchingChest(
+      LevelReader level,
+      BlockPos pos,
+      Direction facing,
+      long requiredGroupOrigin
+  ) {
+    BlockState state = level.getBlockState(pos);
+    if (!(state.getBlock() instanceof SupremeChest)
+        || !state.hasProperty(FACING)
+        || state.getValue(FACING) != facing) {
+      return false;
+    }
+
+    long groupOrigin = getGroupOrigin(level, pos);
+    return requiredGroupOrigin == SupremeChestEntity.NO_GROUP_ORIGIN
+        ? groupOrigin == SupremeChestEntity.NO_GROUP_ORIGIN
+        : groupOrigin == requiredGroupOrigin;
+  }
+
+  private static List<BlockPos> trimToMaxConnectedChests(
+      List<BlockPos> positions,
+      BlockPos origin
+  ) {
+    if (positions.size() <= MAX_CONNECTED_CHESTS) return List.copyOf(positions);
+
+    int originIndex = positions.indexOf(origin);
+    if (originIndex < 0) originIndex = 0;
+    int start = Math.max(0, Math.min(originIndex - 1, positions.size() - MAX_CONNECTED_CHESTS));
+    return List.copyOf(positions.subList(start, start + MAX_CONNECTED_CHESTS));
+  }
+
   private static List<SupremeChestEntity> getConnectedChests(
       Level level,
       BlockPos origin
@@ -428,6 +506,16 @@ public class SupremeChest extends BaseEntityBlock implements SimpleWaterloggedBl
     return trimToMaxConnectedChests(positions, origin);
   }
 
+  private static boolean isBlocked(
+      Level level,
+      List<SupremeChestEntity> chests
+  ) {
+    for (SupremeChestEntity chest : chests) {
+      if (isChestBlockedAt(level, chest.getBlockPos())) return true;
+    }
+    return false;
+  }
+
   private static ChestType getChestTypeForPlacement(
       LevelReader level,
       BlockPos pos,
@@ -439,6 +527,36 @@ public class SupremeChest extends BaseEntityBlock implements SimpleWaterloggedBl
     if (positions.getFirst().equals(pos)) return ChestType.LEFT;
     if (positions.getLast().equals(pos)) return ChestType.RIGHT;
     return ChestType.SINGLE;
+  }
+
+  private static boolean isChestBlockedAt(
+      LevelAccessor level,
+      BlockPos pos
+  ) {
+    return isBlockedChestByBlock(level, pos) || isCatSittingOnChest(level, pos);
+  }
+
+  private static boolean isBlockedChestByBlock(
+      BlockGetter level,
+      BlockPos pos
+  ) {
+    BlockPos above = pos.above();
+    return level.getBlockState(above).isRedstoneConductor(level, above);
+  }
+
+  private static boolean isCatSittingOnChest(
+      LevelAccessor level,
+      BlockPos pos
+  ) {
+    List<Cat> cats = level.getEntitiesOfClass(
+        Cat.class,
+        new AABB(pos.getX(), pos.getY() + 1, pos.getZ(),
+            pos.getX() + 1, pos.getY() + 2, pos.getZ() + 1)
+    );
+    for (Cat cat : cats) {
+      if (cat.isInSittingPose()) return true;
+    }
+    return false;
   }
 
   private static void clearLockedGroup(
@@ -477,16 +595,6 @@ public class SupremeChest extends BaseEntityBlock implements SimpleWaterloggedBl
     }
   }
 
-  private static boolean isBlocked(
-      Level level,
-      List<SupremeChestEntity> chests
-  ) {
-    for (SupremeChestEntity chest : chests) {
-      if (isChestBlockedAt(level, chest.getBlockPos())) return true;
-    }
-    return false;
-  }
-
   private static BlockState updateChestType(
       LevelReader level,
       BlockPos pos,
@@ -499,114 +607,6 @@ public class SupremeChest extends BaseEntityBlock implements SimpleWaterloggedBl
     if (positions.getFirst().equals(pos)) return state.setValue(TYPE, ChestType.LEFT);
     if (positions.getLast().equals(pos)) return state.setValue(TYPE, ChestType.RIGHT);
     return state.setValue(TYPE, ChestType.SINGLE);
-  }
-
-  private static long getGroupOrigin(
-      LevelReader level,
-      BlockPos pos
-  ) {
-    if (level.getBlockEntity(pos) instanceof SupremeChestEntity chestEntity && chestEntity.hasGroupOrigin()) {
-      return chestEntity.getGroupOrigin();
-    }
-    return SupremeChestEntity.NO_GROUP_ORIGIN;
-  }
-
-  private static List<BlockPos> collectConnectedLine(
-      LevelReader level,
-      BlockPos origin,
-      Direction facing,
-      long requiredGroupOrigin
-  ) {
-    Direction axis = facing.getClockWise();
-    List<BlockPos> positions = new ArrayList<>();
-    positions.add(origin);
-    collectLine(level, origin, axis, facing, requiredGroupOrigin, positions);
-    collectLine(level, origin, axis.getOpposite(), facing, requiredGroupOrigin, positions);
-    positions.sort(Comparator.comparingLong(a -> project(a, axis)));
-    return positions;
-  }
-
-  private static List<BlockPos> trimToMaxConnectedChests(
-      List<BlockPos> positions,
-      BlockPos origin
-  ) {
-    if (positions.size() <= MAX_CONNECTED_CHESTS) return List.copyOf(positions);
-
-    int originIndex = positions.indexOf(origin);
-    if (originIndex < 0) originIndex = 0;
-    int start = Math.max(0, Math.min(originIndex - 1, positions.size() - MAX_CONNECTED_CHESTS));
-    return List.copyOf(positions.subList(start, start + MAX_CONNECTED_CHESTS));
-  }
-
-  private static boolean isChestBlockedAt(
-      LevelAccessor level,
-      BlockPos pos
-  ) {
-    return isBlockedChestByBlock(level, pos) || isCatSittingOnChest(level, pos);
-  }
-
-  private static void collectLine(
-      LevelReader level,
-      BlockPos origin,
-      Direction direction,
-      Direction facing,
-      long requiredGroupOrigin,
-      List<BlockPos> positions
-  ) {
-    BlockPos cursor = origin.relative(direction);
-    while (isMatchingChest(level, cursor, facing, requiredGroupOrigin)) {
-      positions.add(cursor);
-      cursor = cursor.relative(direction);
-    }
-  }
-
-  private static long project(
-      BlockPos pos,
-      Direction axis
-  ) {
-    return (long) pos.getX() * axis.getStepX() + (long) pos.getZ() * axis.getStepZ();
-  }
-
-  private static boolean isBlockedChestByBlock(
-      BlockGetter level,
-      BlockPos pos
-  ) {
-    BlockPos above = pos.above();
-    return level.getBlockState(above).isRedstoneConductor(level, above);
-  }
-
-  private static boolean isCatSittingOnChest(
-      LevelAccessor level,
-      BlockPos pos
-  ) {
-    List<Cat> cats = level.getEntitiesOfClass(
-        Cat.class,
-        new AABB(pos.getX(), pos.getY() + 1, pos.getZ(),
-            pos.getX() + 1, pos.getY() + 2, pos.getZ() + 1)
-    );
-    for (Cat cat : cats) {
-      if (cat.isInSittingPose()) return true;
-    }
-    return false;
-  }
-
-  private static boolean isMatchingChest(
-      LevelReader level,
-      BlockPos pos,
-      Direction facing,
-      long requiredGroupOrigin
-  ) {
-    BlockState state = level.getBlockState(pos);
-    if (!(state.getBlock() instanceof SupremeChest)
-        || !state.hasProperty(FACING)
-        || state.getValue(FACING) != facing) {
-      return false;
-    }
-
-    long groupOrigin = getGroupOrigin(level, pos);
-    return requiredGroupOrigin == SupremeChestEntity.NO_GROUP_ORIGIN
-        ? groupOrigin == SupremeChestEntity.NO_GROUP_ORIGIN
-        : groupOrigin == requiredGroupOrigin;
   }
 
 }

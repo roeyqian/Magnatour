@@ -64,6 +64,32 @@ public final class OreTreeFeature implements Feature {
     return true;
   }
 
+  private static boolean canReplace(
+      WorldGenLevel level,
+      BlockPos pos
+  ) {
+    return !level.isOutsideBuildHeight(pos) && level.getBlockState(pos).isAir();
+  }
+
+  private static boolean isFoliagePosition(
+      int dx,
+      int dy,
+      int dz,
+      int radius
+  ) {
+    int distance = dx * dx + dy * dy + dz * dz;
+    return distance <= radius * radius + 1;
+  }
+
+  private static boolean isTrunkPosition(
+      int dx,
+      int relativeY,
+      int dz,
+      int height
+  ) {
+    return dx == 0 && dz == 0 && relativeY >= 0 && relativeY < height;
+  }
+
   private static boolean canRootAt(
       WorldGenLevel level,
       BlockPos origin
@@ -104,32 +130,6 @@ public final class OreTreeFeature implements Feature {
     }
 
     return true;
-  }
-
-  private static boolean canReplace(
-      WorldGenLevel level,
-      BlockPos pos
-  ) {
-    return !level.isOutsideBuildHeight(pos) && level.getBlockState(pos).isAir();
-  }
-
-  private static boolean isFoliagePosition(
-      int dx,
-      int dy,
-      int dz,
-      int radius
-  ) {
-    int distance = dx * dx + dy * dy + dz * dz;
-    return distance <= radius * radius + 1;
-  }
-
-  private static boolean isTrunkPosition(
-      int dx,
-      int relativeY,
-      int dz,
-      int height
-  ) {
-    return dx == 0 && dz == 0 && relativeY >= 0 && relativeY < height;
   }
 
   private void placeTrunk(

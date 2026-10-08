@@ -171,24 +171,16 @@ public class RedstoneTriggerScreen extends AbstractContainerScreen<RedstoneTrigg
     updateWidgetState();
   }
 
-  private void applyInterval() {
-    String value = this.intervalField.getValue().trim();
-
-    try {
-      int interval = Integer.parseInt(value);
-      if (interval < 1 || interval > RedstoneTriggerEntity.MAX_INTERVAL_TICKS) {
-        throw new NumberFormatException(value);
-      }
-
-      this.intervalTicks = interval;
-      this.intervalField.setValue(Integer.toString(interval));
-      this.errorText = "";
-      pushSettings();
-    } catch (NumberFormatException exception) {
-      this.errorText = Component.translatable(
-          "gui.magnatour.redstone_trigger.invalid_tick"
-      ).getString();
-    }
+  private void pushSettings() {
+    this.errorText = "";
+    ClientPlayNetworking.send(new RedstoneTriggerPayload(
+        this.menu.getBlockPos(),
+        this.menu.getDimension(),
+        this.mode,
+        this.enabled,
+        this.intervalTicks
+    ));
+    updateWidgetState();
   }
 
   private Component currentStatusText() {
@@ -232,24 +224,32 @@ public class RedstoneTriggerScreen extends AbstractContainerScreen<RedstoneTrigg
     pushSettings();
   }
 
+  private void applyInterval() {
+    String value = this.intervalField.getValue().trim();
+
+    try {
+      int interval = Integer.parseInt(value);
+      if (interval < 1 || interval > RedstoneTriggerEntity.MAX_INTERVAL_TICKS) {
+        throw new NumberFormatException(value);
+      }
+
+      this.intervalTicks = interval;
+      this.intervalField.setValue(Integer.toString(interval));
+      this.errorText = "";
+      pushSettings();
+    } catch (NumberFormatException exception) {
+      this.errorText = Component.translatable(
+          "gui.magnatour.redstone_trigger.invalid_tick"
+      ).getString();
+    }
+  }
+
   private void updateWidgetState() {
     this.modeButton.setMessage(modeButtonText());
     this.powerButton.setMessage(powerButtonText());
     this.intervalField.setEditable(this.mode == RedstoneTriggerEntity.TriggerMode.PULSE);
     this.intervalField.active = this.mode == RedstoneTriggerEntity.TriggerMode.PULSE;
     this.applyButton.active = this.mode == RedstoneTriggerEntity.TriggerMode.PULSE;
-  }
-
-  private void pushSettings() {
-    this.errorText = "";
-    ClientPlayNetworking.send(new RedstoneTriggerPayload(
-        this.menu.getBlockPos(),
-        this.menu.getDimension(),
-        this.mode,
-        this.enabled,
-        this.intervalTicks
-    ));
-    updateWidgetState();
   }
 
   private int parseIntervalOrCurrent() {

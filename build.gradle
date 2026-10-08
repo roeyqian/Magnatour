@@ -390,53 +390,6 @@ def normalizeJavaFileHeaderAndImports = { File sourceFile, List importGroups, bo
 	true
 }
 
-def mergeConsecutiveAnnotationLines = { File sourceFile, boolean checkOnly ->
-	def originalSourceText = sourceFile.getText("UTF-8")
-	def lineSeparator = originalSourceText.contains("\r\n") ? "\r\n" : "\n"
-	def lines = originalSourceText.readLines()
-	def rewrittenLines = []
-
-	for (def index = 0; index < lines.size();) {
-		def currentAnnotationLine = parseAnnotationOnlyLine(lines[index])
-		if (currentAnnotationLine == null) {
-			rewrittenLines << lines[index]
-			index++
-			continue
-		}
-
-		def annotationTexts = [currentAnnotationLine.text]
-		def nextIndex = index + 1
-		while (nextIndex < lines.size()) {
-			def nextAnnotationLine = parseAnnotationOnlyLine(lines[nextIndex])
-			if (nextAnnotationLine == null || nextAnnotationLine.indent != currentAnnotationLine.indent) {
-				break
-			}
-			annotationTexts << nextAnnotationLine.text
-			nextIndex++
-		}
-
-		if (annotationTexts.size() > 1) {
-			rewrittenLines << "${currentAnnotationLine.indent}${annotationTexts.join(" ")}"
-			index = nextIndex
-		} else {
-			rewrittenLines << lines[index]
-			index++
-		}
-	}
-
-	def formattedSourceText = rewrittenLines.join(lineSeparator)
-	if (originalSourceText.endsWith("\n") || originalSourceText.endsWith("\r\n")) {
-		formattedSourceText += lineSeparator
-	}
-	if (formattedSourceText == originalSourceText) {
-		return false
-	}
-	if (!checkOnly) {
-		sourceFile.write(formattedSourceText, "UTF-8")
-	}
-	true
-}
-
 def createInMemoryJavaSourceFile = { File sourceFile, String source ->
 	new SimpleJavaFileObject(sourceFile.toURI(), JavaFileObject.Kind.SOURCE) {
 		@Override
@@ -471,6 +424,73 @@ def parseJavaCompilationUnit = { File sourceFile, String source ->
 	}
 
 	[unit: compilationUnits.first(), positions: Trees.instance(javacParseTask).sourcePositions]
+}
+
+def mergeConsecutiveAnnotationLines = { File sourceFile, boolean checkOnly, String inputSource = null ->
+	def originalSourceText = inputSource == null ? sourceFile.getText("UTF-8") : inputSource
+	def lineSeparator = originalSourceText.contains("\r\n") ? "\r\n" : "\n"
+	def lines = originalSourceText.readLines()
+	def rewrittenLines = []
+	// Use javac's annotation nodes, never text that merely looks like an annotation.
+	def annotationLines = [] as Set
+	def parsed = parseJavaCompilationUnit(sourceFile, originalSourceText)
+	def annotationScanner = new TreeScanner<Void, Void>() {
+		@Override
+		Void visitAnnotation(com.sun.source.tree.AnnotationTree annotationTree, Void unused) {
+			int start = parsed.positions.getStartPosition(parsed.unit, annotationTree) as int
+			if (start >= 0) {
+				annotationLines << originalSourceText.substring(0, start).count("\n")
+			}
+			super.visitAnnotation(annotationTree, unused)
+			return null
+		}
+	}
+	if (parsed != null) {
+		annotationScanner.scan(parsed.unit, null)
+	}
+
+	for (def index = 0; index < lines.size();) {
+		def currentAnnotationLine = annotationLines.contains(index) ? parseAnnotationOnlyLine(lines[index]) : null
+		if (currentAnnotationLine == null) {
+			rewrittenLines << lines[index]
+			index++
+			continue
+		}
+
+		def annotationTexts = [currentAnnotationLine.text]
+		def nextIndex = index + 1
+		while (nextIndex < lines.size()) {
+			def nextAnnotationLine = annotationLines.contains(nextIndex) ? parseAnnotationOnlyLine(lines[nextIndex]) : null
+			if (nextAnnotationLine == null || nextAnnotationLine.indent != currentAnnotationLine.indent) {
+				break
+			}
+			annotationTexts << nextAnnotationLine.text
+			nextIndex++
+		}
+
+		if (annotationTexts.size() > 1) {
+			rewrittenLines << "${currentAnnotationLine.indent}${annotationTexts.join(" ")}"
+			index = nextIndex
+		} else {
+			rewrittenLines << lines[index]
+			index++
+		}
+	}
+
+	def formattedSourceText = rewrittenLines.join(lineSeparator)
+	if (originalSourceText.endsWith("\n") || originalSourceText.endsWith("\r\n")) {
+		formattedSourceText += lineSeparator
+	}
+	if (inputSource != null) {
+		return formattedSourceText
+	}
+	if (formattedSourceText == originalSourceText) {
+		return false
+	}
+	if (!checkOnly) {
+		sourceFile.write(formattedSourceText, "UTF-8")
+	}
+	true
 }
 
 def findLineStart = { String source, int index ->
@@ -744,7 +764,10 @@ def splitAtTopLevelCommas = { String text ->
 }
 
 def collapseDeclarationWhitespace = { String text ->
-	text.readLines().collect { it.trim() }.findAll { !it.isEmpty() }.join(" ").replaceAll(/\s+/, " ")
+	// Keep literal contents and comment text byte-for-byte while collapsing whitespace.
+	text.replaceAll(/\/\*[\s\S]*?\*\/|\/\/[^\r\n]*(?:\r?\n|$)|"""[\s\S]*?"""|"(?:\\[\s\S]|[^"\\])*"|'(?:\\[\s\S]|[^'\\])*'|\s+/) { token ->
+		Character.isWhitespace(token.charAt(0)) ? " " : token
+	}.trim()
 }
 
 def javaMemberIndentation = "  "
@@ -881,9 +904,6 @@ def parseAnnotationRangeAt = { String text, int start ->
 
 def normalizeAnnotationText = { String text ->
 	collapseDeclarationWhitespace(text)
-			.replace("( ", "(")
-			.replace(" )", ")")
-			.replaceAll(/\s*,\s*/, ", ")
 }
 
 def normalizeClassDeclarationHeader = { String text, String declarationIndent ->
@@ -1071,7 +1091,13 @@ def collectMethodFirstInvocationOrder = { ClassTree classTree, Object sourcePosi
 		}
 	}
 
-	classTree.members.findAll { !(it instanceof ClassTree) }.each { methodInvocationScanner.scan(it, null) }
+	// Scan callers in a canonical order, independent of the current declaration order.
+	classTree.members.findAll { !(it instanceof ClassTree) }.sort { left, right ->
+		def key = { tree -> tree instanceof MethodTree
+				? "method:${tree.name}:${tree.parameters.collect { it.type.toString() }.join(',')}"
+				: tree instanceof VariableTree ? "field:${tree.name}" : "${tree.kind}:${tree}" }
+		key(left) <=> key(right)
+	}.each { methodInvocationScanner.scan(it, null) }
 	firstInvocationOrderByName
 }
 
@@ -1097,45 +1123,26 @@ def compareSortKeys = { List left, List right ->
 	0
 }
 
-def collectFieldInitializerReferences = { fieldMemberUnit ->
-	def referencedNames = [] as Set
-	def initializerReferenceScanner = new TreeScanner<Void, Void>() {
-		@Override
-		Void visitIdentifier(IdentifierTree identifierTree, Void unused) {
-			referencedNames << identifierTree.name.toString()
-			super.visitIdentifier(identifierTree, unused)
-			return null
-		}
-	}
-
-	fieldMemberUnit.trees.findAll { it instanceof VariableTree }.each { VariableTree variableTree ->
-		if (variableTree.initializer != null) {
-			initializerReferenceScanner.scan(variableTree.initializer, null)
-		}
-	}
-	referencedNames
-}
-
-def sortMembersRespectingFieldDependencies = { List memberUnits, Closure buildMemberSortKey ->
-	Map<String, Integer> memberIndexByFieldName = [:]
-	memberUnits.eachWithIndex { memberUnit, int index ->
-		if (memberUnit.tree instanceof VariableTree) {
-			memberUnit.trees.each { memberIndexByFieldName[it.name.toString()] = index as Integer }
-		}
-	}
-
+def sortMembersPreservingInitialization = { List memberUnits, Closure buildMemberSortKey ->
 	List<Integer> memberIndexes = (0..<memberUnits.size()).collect { it as Integer }
 	Map<Integer, Set<Integer>> dependentMemberIndexes = memberIndexes.collectEntries { Integer memberIndex ->
 		[(memberIndex): new LinkedHashSet<Integer>()]
 	} as Map<Integer, Set<Integer>>
 	Map<Integer, Integer> unresolvedDependencyCounts = memberIndexes.collectEntries { Integer memberIndex -> [(memberIndex): 0] } as Map<Integer, Integer>
-	memberUnits.eachWithIndex { memberUnit, int index ->
-		if (memberUnit.tree instanceof VariableTree) {
-			collectFieldInitializerReferences.call(memberUnit).each { referencedFieldName ->
-				Integer dependencyMemberIndex = memberIndexByFieldName[referencedFieldName as String]
-				if (dependencyMemberIndex != null && dependencyMemberIndex != index && dependentMemberIndexes[dependencyMemberIndex].add(index as Integer)) {
-					unresolvedDependencyCounts[index] = unresolvedDependencyCounts[index] + 1
+	// Initialization can call arbitrary methods or have side effects. Preserve the
+	// entire field/block sequence whenever any initialization is present.
+	boolean hasInitialization = memberUnits.any { member ->
+		member.tree.kind.name() == "BLOCK" || (member.tree instanceof VariableTree && member.trees.any { it.initializer != null })
+	}
+	Integer previousInitializationIndex = null
+	if (hasInitialization) {
+		memberUnits.eachWithIndex { memberUnit, int index ->
+			if (memberUnit.tree instanceof VariableTree || memberUnit.tree.kind.name() == "BLOCK") {
+				if (previousInitializationIndex != null) {
+					dependentMemberIndexes[previousInitializationIndex].add(index as Integer)
+					unresolvedDependencyCounts[index] = 1
 				}
+				previousInitializationIndex = index as Integer
 			}
 		}
 	}
@@ -1235,8 +1242,44 @@ formatJavaClassDeclaration = { ClassTree classTree, String source, Object compil
 	}
 
 	if (memberUnits.isEmpty()) {
-		return "${header.substring(0, header.length() - 1)}{}"
+		def body = source.substring(openBrace + 1, classEnd - 1)
+		return body.trim().isEmpty() ? "${header.substring(0, header.length() - 1)}{}" : indentFirstLine(source.substring(classStart, classEnd), classIndent)
 	}
+
+	// Partition source ranges once in source order. A declaration never owns any
+	// preceding declaration, including when several declarations share a line.
+	int previousEnd = openBrace + 1
+	memberUnits.eachWithIndex { member, index ->
+		String gap = source.substring(previousEnd, member.start as int)
+		member.leading = gap
+		member.trailing = ""
+		if (index > 0) {
+			int cursor = previousEnd
+			while (cursor < member.start) {
+				def token = scanNextImportOrComment(source, cursor)
+				if (token == null || token.kind != "comment" || token.text.startsWith("/**") || token.end > member.start
+						|| source.substring(cursor, token.start as int).contains("\n")) {
+					break
+				}
+				memberUnits[index - 1].trailing += source.substring(cursor, token.end as int)
+				cursor = token.end as int
+			}
+			member.leading = source.substring(cursor, member.start as int)
+		}
+		previousEnd = member.end as int
+	}
+	String trailingBody = source.substring(previousEnd, classEnd - 1)
+	int trailingCursor = previousEnd
+	while (trailingCursor < classEnd - 1) {
+		def token = scanNextImportOrComment(source, trailingCursor)
+		if (token == null || token.kind != "comment" || token.text.startsWith("/**") || token.end > classEnd - 1
+				|| source.substring(trailingCursor, token.start as int).contains("\n")) {
+			break
+		}
+		memberUnits.last().trailing += source.substring(trailingCursor, token.end as int)
+		trailingCursor = token.end as int
+	}
+	trailingBody = source.substring(trailingCursor, classEnd - 1)
 
 	Map firstInvocationOrderByMethodName = collectMethodFirstInvocationOrder.call(classTree, sourcePositions, compilationUnit) as Map
 	def buildMemberSortKey = { memberUnit ->
@@ -1264,33 +1307,37 @@ formatJavaClassDeclaration = { ClassTree classTree, String source, Object compil
 		[6, 0, memberUnit.originalIndex]
 	}
 
-	def sortedMemberUnits = sortMembersRespectingFieldDependencies.call(memberUnits, buildMemberSortKey)
-	int lowerBound = openBrace + 1
+	def sortedMemberUnits = sortMembersPreservingInitialization.call(memberUnits, buildMemberSortKey)
 	def formattedMembers = sortedMemberUnits.collect { memberUnit ->
-		int leadingStart = findDeclarationStartWithLeadingComments(source, lowerBound, memberUnit.start as int)
 		def tree = memberUnit.tree
+		String leading = trimLeadingAndTrailingBlankLines(memberUnit.leading as String)
+		String prefix = leading.trim().isEmpty() ? "" : leading + "\n"
+		String memberIndent = "${classIndent}${javaMemberIndentation}"
+		String memberSourceText = memberIndent + source.substring(memberUnit.start as int, memberUnit.end as int)
+		String formattedMember
 		if (tree instanceof ClassTree) {
-			return formatJavaClassDeclaration.call(
+			formattedMember = formatJavaClassDeclaration.call(
 					tree as ClassTree, source, compilationUnit, sourcePositions, importedTypesBySimpleName, "${classIndent}${javaMemberIndentation}"
 			)
+		} else if (tree instanceof MethodTree) {
+			formattedMember = normalizeMethodOrConstructorBlock(memberSourceText)
+		} else {
+			formattedMember = normalizeFieldOrInitializerBlock(memberSourceText)
 		}
-		def memberSourceText = source.substring(leadingStart, memberUnit.end as int)
-		if (tree instanceof MethodTree) {
-			return normalizeMethodOrConstructorBlock(memberSourceText)
-		}
-		normalizeFieldOrInitializerBlock(memberSourceText)
+		prefix + formattedMember + memberUnit.trailing
 	}
 
-	"${header}\n\n${joinFormattedMembers(sortedMemberUnits, formattedMembers, importedTypesBySimpleName)}\n\n${classIndent}}"
+	def tail = trimLeadingAndTrailingBlankLines(trailingBody)
+	"${header}\n\n${joinFormattedMembers(sortedMemberUnits, formattedMembers, importedTypesBySimpleName)}${tail.trim().isEmpty() ? '' : '\n' + tail}\n\n${classIndent}}"
 }
 
-def normalizeJavaFileDeclarations = { File sourceFile, boolean checkOnly ->
-	def originalSourceText = sourceFile.getText("UTF-8")
+def normalizeJavaFileDeclarations = { File sourceFile, boolean checkOnly, String inputSource = null ->
+	def originalSourceText = inputSource == null ? sourceFile.getText("UTF-8") : inputSource
 	def lineSeparator = originalSourceText.contains("\r\n") ? "\r\n" : "\n"
 	def sourceWithLfLineEndings = originalSourceText.replace("\r\n", "\n")
 	def parsedSource = parseJavaCompilationUnit(sourceFile, sourceWithLfLineEndings)
 	if (parsedSource == null) {
-		return false
+		return inputSource == null ? false : originalSourceText
 	}
 
 	def importedTypesBySimpleName = collectImportedTypeNames(sourceWithLfLineEndings)
@@ -1321,6 +1368,9 @@ def normalizeJavaFileDeclarations = { File sourceFile, boolean checkOnly ->
 	if (originalSourceText.endsWith("\n") || originalSourceText.endsWith("\r\n")) {
 		formattedSourceText = formattedSourceText.replaceAll(/(\r?\n)*$/, "") + lineSeparator
 	}
+	if (inputSource != null) {
+		return formattedSourceText
+	}
 	if (formattedSourceText == originalSourceText) {
 		return false
 	}
@@ -1328,6 +1378,35 @@ def normalizeJavaFileDeclarations = { File sourceFile, boolean checkOnly ->
 		sourceFile.write(formattedSourceText, "UTF-8")
 	}
 	true
+}
+
+def buildJavaStructureFingerprint
+buildJavaStructureFingerprint = { tree ->
+	if (!(tree instanceof ClassTree)) {
+		return [tree.kind.name(), tree.toString()]
+	}
+	def members = tree.members.collect { buildJavaStructureFingerprint(it) }
+	boolean hasInitialization = tree.members.any { member ->
+		member.kind.name() == "BLOCK" || (member instanceof VariableTree && member.initializer != null)
+	}
+	def initializationOrder = hasInitialization ? tree.members.findAll { member ->
+		member instanceof VariableTree || member.kind.name() == "BLOCK"
+	}.collect { buildJavaStructureFingerprint(it) } : []
+	[tree.kind.name(), tree.simpleName.toString(), tree.modifiers.toString(), tree.typeParameters.toString(),
+	 tree.extendsClause?.toString(), tree.implementsClause.toString(), tree.permitsClause.toString(),
+	 members.sort { left, right -> left.toString() <=> right.toString() }, initializationOrder]
+}
+
+def collectJavaComments = { String source ->
+	// Consume literals as whole tokens before considering comment delimiters.
+	def tokens = source =~ /"""(?:\\[\s\S]|"(?!"")|[^"\\])*"""|"(?:\\[\s\S]|[^"\\])*"|'(?:\\[\s\S]|[^'\\])*'|(\/\*[\s\S]*?\*\/|\/\/[^\r\n]*)/
+	def comments = []
+	while (tokens.find()) {
+		if (tokens.group(1) != null) {
+			comments << tokens.group(1)
+		}
+	}
+	comments.sort()
 }
 
 tasks.register("formatJavaHead") {
@@ -1352,10 +1431,28 @@ tasks.register("formatJavaBody") {
 	outputs.upToDateWhen { false }
 
 	doLast {
-		javaSourceFiles.each { File sourceFile ->
-			mergeConsecutiveAnnotationLines(sourceFile, false)
-			normalizeJavaFileDeclarations(sourceFile, false)
+		// Prepare and validate every file before writing any source files.
+		def pendingWrites = [:]
+		javaSourceFiles.files.sort { project.relativePath(it) }.each { File sourceFile ->
+			String original = sourceFile.getText("UTF-8")
+			def format = { String source ->
+				normalizeJavaFileDeclarations(sourceFile, true, mergeConsecutiveAnnotationLines(sourceFile, true, source) as String) as String
+			}
+			String formatted = format(original)
+			def before = parseJavaCompilationUnit(sourceFile, original)
+			def after = parseJavaCompilationUnit(sourceFile, formatted)
+			if (before.unit.typeDecls.collect { buildJavaStructureFingerprint(it) } != after.unit.typeDecls.collect { buildJavaStructureFingerprint(it) }
+					|| collectJavaComments(original) != collectJavaComments(formatted)) {
+				throw new GradleException("formatJavaBody would change Java structure, initialization order, or comments in ${sourceFile}; no source files were written.")
+			}
+			if (format(formatted) != formatted) {
+				throw new GradleException("formatJavaBody did not converge for ${sourceFile}; no source files were written.")
+			}
+			if (formatted != original) {
+				pendingWrites[sourceFile] = formatted
+			}
 		}
+		pendingWrites.each { File sourceFile, String formatted -> sourceFile.write(formatted, "UTF-8") }
 	}
 }
 

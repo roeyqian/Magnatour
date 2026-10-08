@@ -79,6 +79,39 @@ public final class VirtualBlockLightManager {
     else removeSources(world, origin, lightLevel);
   }
 
+  private static void forEachSource(
+      BlockPos origin,
+      LongConsumer consumer
+  ) {
+    for (int x = -HALF_X; x <= HALF_X; x += NODE_SPACING) {
+      for (int y = -HALF_Y; y <= HALF_Y; y += NODE_SPACING) {
+        for (int z = -HALF_Z; z <= HALF_Z; z += NODE_SPACING) {
+          consumer.accept(BlockPos.asLong(origin.getX() + x, origin.getY() + y, origin.getZ() + z));
+        }
+      }
+    }
+  }
+
+  private static int getMaxLightLevel(
+      Int2IntOpenHashMap lightCounts
+  ) {
+    int lightLevel = 0;
+    for (int currentLightLevel : lightCounts.keySet()) {
+      if (lightCounts.get(currentLightLevel) > 0) lightLevel = Math.max(lightLevel, currentLightLevel);
+    }
+    return lightLevel;
+  }
+
+  private static void checkSource(
+      Level world,
+      long sourcePos
+  ) {
+    int y = BlockPos.getY(sourcePos);
+    if (world.isOutsideBuildHeight(y)) return;
+
+    world.getLightEngine().checkBlock(BlockPos.of(sourcePos));
+  }
+
   private static void addSources(
       Level world,
       BlockPos origin,
@@ -128,39 +161,6 @@ public final class VirtualBlockLightManager {
 
       if (sources.isEmpty()) LIGHT_SOURCES.remove(world);
     }
-  }
-
-  private static void forEachSource(
-      BlockPos origin,
-      LongConsumer consumer
-  ) {
-    for (int x = -HALF_X; x <= HALF_X; x += NODE_SPACING) {
-      for (int y = -HALF_Y; y <= HALF_Y; y += NODE_SPACING) {
-        for (int z = -HALF_Z; z <= HALF_Z; z += NODE_SPACING) {
-          consumer.accept(BlockPos.asLong(origin.getX() + x, origin.getY() + y, origin.getZ() + z));
-        }
-      }
-    }
-  }
-
-  private static int getMaxLightLevel(
-      Int2IntOpenHashMap lightCounts
-  ) {
-    int lightLevel = 0;
-    for (int currentLightLevel : lightCounts.keySet()) {
-      if (lightCounts.get(currentLightLevel) > 0) lightLevel = Math.max(lightLevel, currentLightLevel);
-    }
-    return lightLevel;
-  }
-
-  private static void checkSource(
-      Level world,
-      long sourcePos
-  ) {
-    int y = BlockPos.getY(sourcePos);
-    if (world.isOutsideBuildHeight(y)) return;
-
-    world.getLightEngine().checkBlock(BlockPos.of(sourcePos));
   }
 
 }

@@ -119,6 +119,20 @@ public final class DiamondCityPiece extends StructurePiece {
     tag.putLong("LayoutSeed", this.layoutSeed);
   }
 
+  private static BoundingBox makeBoundingBox(
+      BlockPos cityPos,
+      Vec3i citySize
+  ) {
+    return new BoundingBox(
+        cityPos.getX(),
+        cityPos.getY(),
+        cityPos.getZ(),
+        cityPos.getX() + citySize.getX() - 1,
+        cityPos.getY() + citySize.getY() - 1,
+        cityPos.getZ() + citySize.getZ() - 1
+    );
+  }
+
   private static BlockPos readBlockPos(
       CompoundTag tag
   ) {
@@ -139,20 +153,6 @@ public final class DiamondCityPiece extends StructurePiece {
         sizeTag.getInt("X").orElse(0),
         sizeTag.getInt("Y").orElse(0),
         sizeTag.getInt("Z").orElse(0)
-    );
-  }
-
-  private static BoundingBox makeBoundingBox(
-      BlockPos cityPos,
-      Vec3i citySize
-  ) {
-    return new BoundingBox(
-        cityPos.getX(),
-        cityPos.getY(),
-        cityPos.getZ(),
-        cityPos.getX() + citySize.getX() - 1,
-        cityPos.getY() + citySize.getY() - 1,
-        cityPos.getZ() + citySize.getZ() - 1
     );
   }
 

@@ -87,6 +87,14 @@ public final class HarvestContinentCaveSampler {
     return (x * this.sizeY + y) * this.sizeZ + z;
   }
 
+  private double at(
+      int x,
+      int y,
+      int z
+  ) {
+    return this.densities[index(x, y, z)];
+  }
+
   private double interpolatedDensity(
       int worldX,
       int y,
@@ -107,14 +115,6 @@ public final class HarvestContinentCaveSampler {
     double x01 = lerp(tx, at(gx, gy, gz + 1), at(gx + 1, gy, gz + 1));
     double x11 = lerp(tx, at(gx, gy + 1, gz + 1), at(gx + 1, gy + 1, gz + 1));
     return lerp(tz, lerp(ty, x00, x10), lerp(ty, x01, x11));
-  }
-
-  private double at(
-      int x,
-      int y,
-      int z
-  ) {
-    return this.densities[index(x, y, z)];
   }
 
 }

@@ -125,6 +125,22 @@ public final class GoldBellTowerPiece extends StructurePiece {
     writeVec3i(tag, "UpperSize", this.upperSize);
   }
 
+  private static BoundingBox makeBoundingBox(
+      BlockPos lowerPos,
+      Vec3i lowerSize,
+      Vec3i upperSize
+  ) {
+    int totalHeight = lowerSize.getY() + upperSize.getY();
+    return new BoundingBox(
+        lowerPos.getX(),
+        lowerPos.getY(),
+        lowerPos.getZ(),
+        lowerPos.getX() + lowerSize.getX() - 1,
+        lowerPos.getY() + totalHeight - 1,
+        lowerPos.getZ() + lowerSize.getZ() - 1
+    );
+  }
+
   private static BlockPos readBlockPos(
       CompoundTag tag
   ) {
@@ -145,22 +161,6 @@ public final class GoldBellTowerPiece extends StructurePiece {
         sizeTag.getInt("X").orElse(0),
         sizeTag.getInt("Y").orElse(0),
         sizeTag.getInt("Z").orElse(0)
-    );
-  }
-
-  private static BoundingBox makeBoundingBox(
-      BlockPos lowerPos,
-      Vec3i lowerSize,
-      Vec3i upperSize
-  ) {
-    int totalHeight = lowerSize.getY() + upperSize.getY();
-    return new BoundingBox(
-        lowerPos.getX(),
-        lowerPos.getY(),
-        lowerPos.getZ(),
-        lowerPos.getX() + lowerSize.getX() - 1,
-        lowerPos.getY() + totalHeight - 1,
-        lowerPos.getZ() + lowerSize.getZ() - 1
     );
   }
 

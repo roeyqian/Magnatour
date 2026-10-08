@@ -305,18 +305,6 @@ public class NetheriteGolem extends AbstractGolem implements NeutralMob {
     return this.customGolem;
   }
 
-  private boolean shouldTargetEntity(
-      final LivingEntity target
-  ) {
-    if (!this.canAttack(target)) {
-      return false;
-    }
-
-    return target instanceof Enemy
-        || this.isNotPlayerCreated()
-        || this.shouldProtectPlayersAgainst(target);
-  }
-
   private boolean shouldProtectPlayersAgainst(
       final LivingEntity target
   ) {
@@ -340,6 +328,18 @@ public class NetheriteGolem extends AbstractGolem implements NeutralMob {
       final LivingEntity target
   ) {
     return this.canAttack(target) && target instanceof Enemy;
+  }
+
+  private boolean shouldTargetEntity(
+      final LivingEntity target
+  ) {
+    if (!this.canAttack(target)) {
+      return false;
+    }
+
+    return target instanceof Enemy
+        || this.isNotPlayerCreated()
+        || this.shouldProtectPlayersAgainst(target);
   }
 
 }

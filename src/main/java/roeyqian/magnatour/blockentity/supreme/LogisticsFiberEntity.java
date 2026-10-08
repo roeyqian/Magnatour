@@ -81,6 +81,219 @@ public class LogisticsFiberEntity extends BlockEntity {
     transferItems(network);
   }
 
+  private static BlockPos resolveContainerAnchor(
+      Level level,
+      BlockPos pos
+  ) {
+    BlockState state = level.getBlockState(pos);
+
+    if (state.getBlock() instanceof SupremeChest) {
+      List<SupremeChestEntity> chests = SupremeChest.getConnectedChestsForRender(level, pos);
+      if (!chests.isEmpty()) {
+        BlockPos anchor = chests.getFirst().getBlockPos();
+        for (SupremeChestEntity chest : chests) {
+          anchor = minPos(anchor, chest.getBlockPos());
+        }
+        return anchor;
+      }
+    }
+
+    if (state.getBlock() instanceof ChestBlock
+        && state.hasProperty(BlockStateProperties.CHEST_TYPE)
+        && state.hasProperty(BlockStateProperties.HORIZONTAL_FACING)) {
+      ChestType type = state.getValue(BlockStateProperties.CHEST_TYPE);
+      if (type != ChestType.SINGLE) {
+        Direction facing = state.getValue(BlockStateProperties.HORIZONTAL_FACING);
+        Direction otherDirection = type == ChestType.LEFT
+            ? facing.getClockWise()
+            : facing.getCounterClockWise();
+        return minPos(pos, pos.relative(otherDirection));
+      }
+    }
+
+    return pos;
+  }
+
+  private static int[] getSlots(
+      Container container,
+      Direction direction
+  ) {
+    if (container instanceof WorldlyContainer worldlyContainer) {
+      return worldlyContainer.getSlotsForFace(direction);
+    }
+
+    int[] slots = new int[container.getContainerSize()];
+    for (int index = 0; index < slots.length; index++) {
+      slots[index] = index;
+    }
+    return slots;
+  }
+
+  private static boolean canPlaceItemInContainer(
+      Container container,
+      ItemStack itemStack,
+      int slot,
+      Direction direction
+  ) {
+    if (!container.canPlaceItem(slot, itemStack)) {
+      return false;
+    }
+
+    return !(container instanceof WorldlyContainer worldlyContainer)
+        || worldlyContainer.canPlaceItemThroughFace(slot, itemStack, direction);
+  }
+
+  private static void addDestination(
+      Level level,
+      FiberNode fiber,
+      Direction direction,
+      Map<BlockPos, DestinationEndpoint> destinations
+  ) {
+    BlockPos pos = fiber.pos().relative(direction);
+    Container container = getContainerAt(level, pos);
+    if (container == null) return;
+
+    BlockPos anchor = resolveContainerAnchor(level, pos);
+    destinations.put(fiber.pos(), new DestinationEndpoint(anchor, container, direction.getOpposite()));
+  }
+
+  private static void addSource(
+      Level level,
+      FiberNode fiber,
+      Direction direction,
+      Map<BlockPos, SourceEndpoint> sources
+  ) {
+    BlockPos pos = fiber.pos().relative(direction);
+    Container container = getContainerAt(level, pos);
+    if (container == null) return;
+
+    BlockPos anchor = resolveContainerAnchor(level, pos);
+    sources.putIfAbsent(
+        anchor,
+        new SourceEndpoint(anchor, container, direction.getOpposite(), fiber.pos())
+    );
+  }
+
+  private static boolean isFullContainer(
+      Container container,
+      Direction direction
+  ) {
+    for (int slot : getSlots(container, direction)) {
+      ItemStack stack = container.getItem(slot);
+      if (stack.isEmpty() || stack.getCount() < container.getMaxStackSize(stack)) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  private static int moveSourceSlot(
+      Container source,
+      Container destination,
+      int slot,
+      Direction sourceAccess,
+      Direction destinationAccess,
+      int remainingMoves
+  ) {
+    ItemStack stack = source.getItem(slot);
+    if (stack.isEmpty()) return remainingMoves;
+    if (!canTakeItemFromContainer(destination, source, stack, slot, sourceAccess)) {
+      return remainingMoves;
+    }
+    if (!canInsertIntoContainer(destination, stack, destinationAccess)) {
+      return remainingMoves;
+    }
+
+    ItemStack original = stack.copy();
+    ItemStack extracted = source.removeItem(slot, stack.getCount());
+    if (extracted.isEmpty()) return remainingMoves;
+
+    int extractedCount = extracted.getCount();
+    ItemStack remainder = HopperBlockEntity.addItem(source, destination, extracted, destinationAccess);
+    int movedCount = extractedCount - remainder.getCount();
+
+    if (movedCount <= 0) {
+      restoreSourceSlot(source, slot, original);
+      return remainingMoves;
+    }
+
+    if (!remainder.isEmpty()) {
+      restoreSourceSlot(source, slot, remainder);
+    }
+
+    source.setChanged();
+    destination.setChanged();
+    return remainingMoves - 1;
+  }
+
+  private static boolean canTakeItemFromContainer(
+      Container into,
+      Container from,
+      ItemStack itemStack,
+      int slot,
+      Direction direction
+  ) {
+    if (!from.canTakeItem(into, slot, itemStack)) {
+      return false;
+    }
+
+    return !(from instanceof WorldlyContainer worldlyContainer)
+        || worldlyContainer.canTakeItemThroughFace(slot, itemStack, direction);
+  }
+
+  private static boolean canInsertIntoContainer(
+      Container destination,
+      ItemStack itemStack,
+      Direction destinationAccess
+  ) {
+    for (int slot : getSlots(destination, destinationAccess)) {
+      if (!canPlaceItemInContainer(destination, itemStack, slot, destinationAccess)) {
+        continue;
+      }
+
+      ItemStack destinationStack = destination.getItem(slot);
+      if (destinationStack.isEmpty()) {
+        return true;
+      }
+
+      int maxCount = Math.min(
+          destinationStack.getMaxStackSize(),
+          destination.getMaxStackSize(destinationStack)
+      );
+      if (ItemStack.isSameItemSameComponents(destinationStack, itemStack)
+          && destinationStack.getCount() < maxCount
+      ) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  private static void restoreSourceSlot(
+      Container source,
+      int slot,
+      ItemStack stack
+  ) {
+    ItemStack current = source.getItem(slot);
+    if (current.isEmpty()) {
+      source.setItem(slot, stack);
+      return;
+    }
+
+    if (ItemStack.isSameItemSameComponents(current, stack)) {
+      current.grow(stack.getCount());
+      source.setChanged();
+    }
+  }
+
+  private static BlockPos minPos(
+      BlockPos first,
+      BlockPos second
+  ) {
+    return POSITION_ORDER.compare(first, second) <= 0 ? first : second;
+  }
+
   /**
    * Collects every physically connected fiber into a single routing graph.
    * Each fiber still treats its facing side as the only output side and all
@@ -191,37 +404,6 @@ public class LogisticsFiberEntity extends BlockEntity {
     }
   }
 
-  private static void addDestination(
-      Level level,
-      FiberNode fiber,
-      Direction direction,
-      Map<BlockPos, DestinationEndpoint> destinations
-  ) {
-    BlockPos pos = fiber.pos().relative(direction);
-    Container container = getContainerAt(level, pos);
-    if (container == null) return;
-
-    BlockPos anchor = resolveContainerAnchor(level, pos);
-    destinations.put(fiber.pos(), new DestinationEndpoint(anchor, container, direction.getOpposite()));
-  }
-
-  private static void addSource(
-      Level level,
-      FiberNode fiber,
-      Direction direction,
-      Map<BlockPos, SourceEndpoint> sources
-  ) {
-    BlockPos pos = fiber.pos().relative(direction);
-    Container container = getContainerAt(level, pos);
-    if (container == null) return;
-
-    BlockPos anchor = resolveContainerAnchor(level, pos);
-    sources.putIfAbsent(
-        anchor,
-        new SourceEndpoint(anchor, container, direction.getOpposite(), fiber.pos())
-    );
-  }
-
   private static List<DestinationEndpoint> collectReachableDestinations(
       FiberNetwork network,
       BlockPos startFiber
@@ -282,188 +464,6 @@ public class LogisticsFiberEntity extends BlockEntity {
     }
 
     return remainingMoves;
-  }
-
-  private static BlockPos resolveContainerAnchor(
-      Level level,
-      BlockPos pos
-  ) {
-    BlockState state = level.getBlockState(pos);
-
-    if (state.getBlock() instanceof SupremeChest) {
-      List<SupremeChestEntity> chests = SupremeChest.getConnectedChestsForRender(level, pos);
-      if (!chests.isEmpty()) {
-        BlockPos anchor = chests.getFirst().getBlockPos();
-        for (SupremeChestEntity chest : chests) {
-          anchor = minPos(anchor, chest.getBlockPos());
-        }
-        return anchor;
-      }
-    }
-
-    if (state.getBlock() instanceof ChestBlock
-        && state.hasProperty(BlockStateProperties.CHEST_TYPE)
-        && state.hasProperty(BlockStateProperties.HORIZONTAL_FACING)) {
-      ChestType type = state.getValue(BlockStateProperties.CHEST_TYPE);
-      if (type != ChestType.SINGLE) {
-        Direction facing = state.getValue(BlockStateProperties.HORIZONTAL_FACING);
-        Direction otherDirection = type == ChestType.LEFT
-            ? facing.getClockWise()
-            : facing.getCounterClockWise();
-        return minPos(pos, pos.relative(otherDirection));
-      }
-    }
-
-    return pos;
-  }
-
-  private static boolean isFullContainer(
-      Container container,
-      Direction direction
-  ) {
-    for (int slot : getSlots(container, direction)) {
-      ItemStack stack = container.getItem(slot);
-      if (stack.isEmpty() || stack.getCount() < container.getMaxStackSize(stack)) {
-        return false;
-      }
-    }
-    return true;
-  }
-
-  private static int[] getSlots(
-      Container container,
-      Direction direction
-  ) {
-    if (container instanceof WorldlyContainer worldlyContainer) {
-      return worldlyContainer.getSlotsForFace(direction);
-    }
-
-    int[] slots = new int[container.getContainerSize()];
-    for (int index = 0; index < slots.length; index++) {
-      slots[index] = index;
-    }
-    return slots;
-  }
-
-  private static int moveSourceSlot(
-      Container source,
-      Container destination,
-      int slot,
-      Direction sourceAccess,
-      Direction destinationAccess,
-      int remainingMoves
-  ) {
-    ItemStack stack = source.getItem(slot);
-    if (stack.isEmpty()) return remainingMoves;
-    if (!canTakeItemFromContainer(destination, source, stack, slot, sourceAccess)) {
-      return remainingMoves;
-    }
-    if (!canInsertIntoContainer(destination, stack, destinationAccess)) {
-      return remainingMoves;
-    }
-
-    ItemStack original = stack.copy();
-    ItemStack extracted = source.removeItem(slot, stack.getCount());
-    if (extracted.isEmpty()) return remainingMoves;
-
-    int extractedCount = extracted.getCount();
-    ItemStack remainder = HopperBlockEntity.addItem(source, destination, extracted, destinationAccess);
-    int movedCount = extractedCount - remainder.getCount();
-
-    if (movedCount <= 0) {
-      restoreSourceSlot(source, slot, original);
-      return remainingMoves;
-    }
-
-    if (!remainder.isEmpty()) {
-      restoreSourceSlot(source, slot, remainder);
-    }
-
-    source.setChanged();
-    destination.setChanged();
-    return remainingMoves - 1;
-  }
-
-  private static BlockPos minPos(
-      BlockPos first,
-      BlockPos second
-  ) {
-    return POSITION_ORDER.compare(first, second) <= 0 ? first : second;
-  }
-
-  private static boolean canTakeItemFromContainer(
-      Container into,
-      Container from,
-      ItemStack itemStack,
-      int slot,
-      Direction direction
-  ) {
-    if (!from.canTakeItem(into, slot, itemStack)) {
-      return false;
-    }
-
-    return !(from instanceof WorldlyContainer worldlyContainer)
-        || worldlyContainer.canTakeItemThroughFace(slot, itemStack, direction);
-  }
-
-  private static boolean canInsertIntoContainer(
-      Container destination,
-      ItemStack itemStack,
-      Direction destinationAccess
-  ) {
-    for (int slot : getSlots(destination, destinationAccess)) {
-      if (!canPlaceItemInContainer(destination, itemStack, slot, destinationAccess)) {
-        continue;
-      }
-
-      ItemStack destinationStack = destination.getItem(slot);
-      if (destinationStack.isEmpty()) {
-        return true;
-      }
-
-      int maxCount = Math.min(
-          destinationStack.getMaxStackSize(),
-          destination.getMaxStackSize(destinationStack)
-      );
-      if (ItemStack.isSameItemSameComponents(destinationStack, itemStack)
-          && destinationStack.getCount() < maxCount
-      ) {
-        return true;
-      }
-    }
-
-    return false;
-  }
-
-  private static void restoreSourceSlot(
-      Container source,
-      int slot,
-      ItemStack stack
-  ) {
-    ItemStack current = source.getItem(slot);
-    if (current.isEmpty()) {
-      source.setItem(slot, stack);
-      return;
-    }
-
-    if (ItemStack.isSameItemSameComponents(current, stack)) {
-      current.grow(stack.getCount());
-      source.setChanged();
-    }
-  }
-
-  private static boolean canPlaceItemInContainer(
-      Container container,
-      ItemStack itemStack,
-      int slot,
-      Direction direction
-  ) {
-    if (!container.canPlaceItem(slot, itemStack)) {
-      return false;
-    }
-
-    return !(container instanceof WorldlyContainer worldlyContainer)
-        || worldlyContainer.canPlaceItemThroughFace(slot, itemStack, direction);
   }
 
   private record DestinationEndpoint(

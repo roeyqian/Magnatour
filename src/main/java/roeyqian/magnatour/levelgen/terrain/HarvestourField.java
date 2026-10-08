@@ -36,27 +36,6 @@ final class HarvestourField {
 
   private HarvestourField() {}
 
-  private static double fade(
-      double value
-  ) {
-    return value * value * value * (value * (value * 6.0 - 15.0) + 10.0);
-  }
-
-  private static double lerp(
-      double delta,
-      double start,
-      double end
-  ) {
-    return start + delta * (end - start);
-  }
-
-  private static double medianNode(
-      Node node
-  ) {
-    if (MEDIAN_NODES.size() > CACHE_LIMIT) MEDIAN_NODES.clear();
-    return MEDIAN_NODES.computeIfAbsent(node, HarvestourField::computeMedian);
-  }
-
   private static double raw(
       long seed,
       double x,
@@ -86,6 +65,27 @@ final class HarvestourField {
     double south = lerp(tx, medianNode(new Node(seed, gx, gz + 1)), medianNode(new Node(seed, gx + 1, gz + 1)));
     // Median nodes suppress isolated extrema before convex interpolation.
     return lerp(tz, north, south);
+  }
+
+  private static double fade(
+      double value
+  ) {
+    return value * value * value * (value * (value * 6.0 - 15.0) + 10.0);
+  }
+
+  private static double lerp(
+      double delta,
+      double start,
+      double end
+  ) {
+    return start + delta * (end - start);
+  }
+
+  private static double medianNode(
+      Node node
+  ) {
+    if (MEDIAN_NODES.size() > CACHE_LIMIT) MEDIAN_NODES.clear();
+    return MEDIAN_NODES.computeIfAbsent(node, HarvestourField::computeMedian);
   }
 
   private static double computeMedian(

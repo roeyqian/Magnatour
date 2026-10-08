@@ -190,38 +190,6 @@ public final class NetworkManagerForBlock {
     );
   }
 
-  private static void execTogglingMode(
-      ServerPlayer player,
-      ItemStack stack,
-      DataComponentType<Integer> component,
-      String translation
-  ) {
-    int current = stack.getOrDefault(component, 0);
-    int next = (current == 0) ? 1 : 0;
-    stack.set(component, next);
-
-    Component message = Component.translatable(next == 1 ? translation + ".mode_1" : translation + ".mode_0")
-        .withStyle(next == 1 ? ChatFormatting.DARK_RED : ChatFormatting.RED);
-    player.sendOverlayMessage(message);
-  }
-
-  private static Vec3 calcDirection(
-      ServerPlayer player
-  ) {
-    double rad = Math.toRadians(player.getYRot());
-    return new Vec3(-Math.sin(rad), 0, Math.cos(rad));
-  }
-
-  private static void handleUniverseConsoleBoundBlockAction(
-      UniverseConsoleBoundBlockPayload payload,
-      ServerPlayNetworking.Context context
-  ) {
-    switch (payload.act()) {
-      case OPEN -> execBlockOpen(payload, context);
-      case REMOVE -> execBlockRemove(payload, context);
-    }
-  }
-
   private static void execBlockOpen(
       UniverseConsoleBoundBlockPayload payload,
       ServerPlayNetworking.Context context
@@ -316,6 +284,38 @@ public final class NetworkManagerForBlock {
         Component.translatable("msg.magnatour.universe_console.remove")
             .withStyle(ChatFormatting.GREEN)
     );
+  }
+
+  private static void execTogglingMode(
+      ServerPlayer player,
+      ItemStack stack,
+      DataComponentType<Integer> component,
+      String translation
+  ) {
+    int current = stack.getOrDefault(component, 0);
+    int next = (current == 0) ? 1 : 0;
+    stack.set(component, next);
+
+    Component message = Component.translatable(next == 1 ? translation + ".mode_1" : translation + ".mode_0")
+        .withStyle(next == 1 ? ChatFormatting.DARK_RED : ChatFormatting.RED);
+    player.sendOverlayMessage(message);
+  }
+
+  private static Vec3 calcDirection(
+      ServerPlayer player
+  ) {
+    double rad = Math.toRadians(player.getYRot());
+    return new Vec3(-Math.sin(rad), 0, Math.cos(rad));
+  }
+
+  private static void handleUniverseConsoleBoundBlockAction(
+      UniverseConsoleBoundBlockPayload payload,
+      ServerPlayNetworking.Context context
+  ) {
+    switch (payload.act()) {
+      case OPEN -> execBlockOpen(payload, context);
+      case REMOVE -> execBlockRemove(payload, context);
+    }
   }
 
 }

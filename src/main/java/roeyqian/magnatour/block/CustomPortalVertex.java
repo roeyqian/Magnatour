@@ -138,6 +138,77 @@ public interface CustomPortalVertex {
     return true;
   }
 
+  private static Optional<CustomPortalShape> findEmptyPortalShape(
+      LevelAccessor world,
+      BlockPos pos,
+      Direction.Axis preferredAxis
+  ) {
+    for (PortalSpec spec : portalSpecs()) {
+      if (!spec.canIgniteIn(world)) continue;
+      Optional<CustomPortalShape> shape = findNearbyEmptyPortalShape(
+          world,
+          pos,
+          preferredAxis,
+          spec
+      );
+      if (shape.isPresent()) return shape;
+    }
+    return Optional.empty();
+  }
+
+  private static BlockPos getPortalOrigin(
+      LevelReader world,
+      BlockPos portalPos,
+      Block frameBlock,
+      Block portalBlock
+  ) {
+    CustomPortalShape shape = findAnyShape(
+        world, portalPos, portalAxis(world, portalPos), frameBlock, portalBlock
+    );
+    return shape.isComplete() ? shape.bottomLeft() : portalPos;
+  }
+
+  static boolean isValidPortal(
+      LevelReader world,
+      BlockPos pos,
+      Direction.Axis axis,
+      Block frameBlock,
+      Block portalBlock
+  ) {
+    return findAnyShape(world, pos, axis, frameBlock, portalBlock).isComplete();
+  }
+
+  private static Direction.Axis portalAxis(
+      LevelReader world,
+      BlockPos portalPos
+  ) {
+    BlockState state = world.getBlockState(portalPos);
+    return state.hasProperty(AXIS) ? state.getValue(AXIS) : Direction.Axis.X;
+  }
+
+  static BlockPos findOrCreatePortal(
+      ServerLevel targetWorld,
+      BlockPos sourcePos,
+      Direction.Axis axis,
+      Block frameBlock,
+      Block portalBlock
+  ) {
+    BlockPos existing = findExistingPortal(
+        targetWorld,
+        sourcePos.getX(),
+        sourcePos.getZ(),
+        portalBlock
+    );
+    if (existing != null) return existing;
+
+    int surfaceY = targetWorld.getHeight(
+        Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+        sourcePos.getX(), sourcePos.getZ()
+    );
+    BlockPos buildPos = new BlockPos(sourcePos.getX(), surfaceY, sourcePos.getZ());
+    return buildPortalAt(targetWorld, buildPos, axis, frameBlock, portalBlock);
+  }
+
   private static BlockPos calculateBottomLeft(
       BlockGetter world,
       Direction rightDir,
@@ -190,31 +261,53 @@ public interface CustomPortalVertex {
         : 0;
   }
 
-  private static CustomPortalShape findAnyShape(
-      BlockGetter world,
-      BlockPos pos,
-      Direction.Axis axis,
-      Block frameBlock,
-      Block portalBlock
+  private static List<PortalSpec> portalSpecs() {
+    return List.of(
+        new PortalSpec(
+            SupremeBlocks.ORE_BLOCK,
+            SupremeBlocks.ORE_CONTINENT_PORTAL,
+            CustomDimensions.ORE_CONTINENT
+        ),
+        new PortalSpec(
+            SupremeBlocks.HARVEST_BLOCK,
+            SupremeBlocks.HARVEST_CONTINENT_PORTAL,
+            CustomDimensions.HARVEST_CONTINENT
+        )
+    );
+  }
+
+  private static Optional<CustomPortalShape> findNearbyEmptyPortalShape(
+      LevelAccessor world,
+      BlockPos origin,
+      Direction.Axis preferredAxis,
+      PortalSpec spec
   ) {
-    Direction rightDir = axis == Direction.Axis.X ? Direction.WEST : Direction.SOUTH;
-    BlockPos bottomLeft = calculateBottomLeft(world, rightDir, pos, frameBlock, portalBlock);
-    if (bottomLeft == null) {
-      return new CustomPortalShape(axis, rightDir, pos, 0, 0, 0, portalBlock);
+    BlockPos.MutableBlockPos mutable = new BlockPos.MutableBlockPos();
+
+    // One-block-tall interiors such as a 4x3 frame are sensitive to which
+    // interior cell the fire happens to occupy, so probe a tight neighborhood.
+    for (int x = -1; x <= 1; x++) {
+      for (int y = -1; y <= 1; y++) {
+        for (int z = -1; z <= 1; z++) {
+          mutable.set(origin.getX() + x, origin.getY() + y, origin.getZ() + z);
+          if (!isEmpty(world.getBlockState(mutable), spec.portalBlock())) continue;
+          if (!hasAdjacentFrame(world, mutable, spec.frameBlock())) continue;
+
+          Optional<CustomPortalShape> shape = findPortalShape(
+              world,
+              mutable.immutable(),
+              customPortalShape -> customPortalShape.isValid()
+                  && customPortalShape.numPortalBlocks() == 0,
+              preferredAxis,
+              spec.frameBlock(),
+              spec.portalBlock()
+          );
+          if (shape.isPresent()) return shape;
+        }
+      }
     }
 
-    int width = calculateWidth(world, bottomLeft, rightDir, frameBlock, portalBlock);
-    if (width == 0) {
-      return new CustomPortalShape(axis, rightDir, bottomLeft, 0, 0, 0, portalBlock);
-    }
-
-    int[] portalBlockCount = new int[]{0};
-    int height = calculateHeight(
-        world, bottomLeft, rightDir, width, portalBlockCount, frameBlock, portalBlock
-    );
-    return new CustomPortalShape(
-        axis, rightDir, bottomLeft, width, height, portalBlockCount[0], portalBlock
-    );
+    return Optional.empty();
   }
 
   private static boolean hasAdjacentFrame(
@@ -248,14 +341,6 @@ public interface CustomPortalVertex {
     return Optional.of(
         findAnyShape(world, pos, otherAxis, frameBlock, portalBlock)
     ).filter(isValid);
-  }
-
-  private static Direction.Axis portalAxis(
-      LevelReader world,
-      BlockPos portalPos
-  ) {
-    BlockState state = world.getBlockState(portalPos);
-    return state.hasProperty(AXIS) ? state.getValue(AXIS) : Direction.Axis.X;
   }
 
   private static BlockPos findExistingPortal(
@@ -332,116 +417,31 @@ public interface CustomPortalVertex {
     return groundPos.above(1);
   }
 
-  private static List<PortalSpec> portalSpecs() {
-    return List.of(
-        new PortalSpec(
-            SupremeBlocks.ORE_BLOCK,
-            SupremeBlocks.ORE_CONTINENT_PORTAL,
-            CustomDimensions.ORE_CONTINENT
-        ),
-        new PortalSpec(
-            SupremeBlocks.HARVEST_BLOCK,
-            SupremeBlocks.HARVEST_CONTINENT_PORTAL,
-            CustomDimensions.HARVEST_CONTINENT
-        )
-    );
-  }
-
-  private static Optional<CustomPortalShape> findNearbyEmptyPortalShape(
-      LevelAccessor world,
-      BlockPos origin,
-      Direction.Axis preferredAxis,
-      PortalSpec spec
-  ) {
-    BlockPos.MutableBlockPos mutable = new BlockPos.MutableBlockPos();
-
-    // One-block-tall interiors such as a 4x3 frame are sensitive to which
-    // interior cell the fire happens to occupy, so probe a tight neighborhood.
-    for (int x = -1; x <= 1; x++) {
-      for (int y = -1; y <= 1; y++) {
-        for (int z = -1; z <= 1; z++) {
-          mutable.set(origin.getX() + x, origin.getY() + y, origin.getZ() + z);
-          if (!isEmpty(world.getBlockState(mutable), spec.portalBlock())) continue;
-          if (!hasAdjacentFrame(world, mutable, spec.frameBlock())) continue;
-
-          Optional<CustomPortalShape> shape = findPortalShape(
-              world,
-              mutable.immutable(),
-              customPortalShape -> customPortalShape.isValid()
-                  && customPortalShape.numPortalBlocks() == 0,
-              preferredAxis,
-              spec.frameBlock(),
-              spec.portalBlock()
-          );
-          if (shape.isPresent()) return shape;
-        }
-      }
-    }
-
-    return Optional.empty();
-  }
-
-  private static BlockPos getPortalOrigin(
-      LevelReader world,
-      BlockPos portalPos,
-      Block frameBlock,
-      Block portalBlock
-  ) {
-    CustomPortalShape shape = findAnyShape(
-        world, portalPos, portalAxis(world, portalPos), frameBlock, portalBlock
-    );
-    return shape.isComplete() ? shape.bottomLeft() : portalPos;
-  }
-
-  static boolean isValidPortal(
-      LevelReader world,
+  private static CustomPortalShape findAnyShape(
+      BlockGetter world,
       BlockPos pos,
       Direction.Axis axis,
       Block frameBlock,
       Block portalBlock
   ) {
-    return findAnyShape(world, pos, axis, frameBlock, portalBlock).isComplete();
-  }
-
-  static BlockPos findOrCreatePortal(
-      ServerLevel targetWorld,
-      BlockPos sourcePos,
-      Direction.Axis axis,
-      Block frameBlock,
-      Block portalBlock
-  ) {
-    BlockPos existing = findExistingPortal(
-        targetWorld,
-        sourcePos.getX(),
-        sourcePos.getZ(),
-        portalBlock
-    );
-    if (existing != null) return existing;
-
-    int surfaceY = targetWorld.getHeight(
-        Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
-        sourcePos.getX(), sourcePos.getZ()
-    );
-    BlockPos buildPos = new BlockPos(sourcePos.getX(), surfaceY, sourcePos.getZ());
-    return buildPortalAt(targetWorld, buildPos, axis, frameBlock, portalBlock);
-  }
-
-  private static Optional<CustomPortalShape> findEmptyPortalShape(
-      LevelAccessor world,
-      BlockPos pos,
-      Direction.Axis preferredAxis
-  ) {
-    for (PortalSpec spec : portalSpecs()) {
-      if (!spec.canIgniteIn(world)) continue;
-      Optional<CustomPortalShape> shape = findNearbyEmptyPortalShape(
-          world,
-          pos,
-          preferredAxis,
-          spec
-      );
-      if (shape.isPresent()) return shape;
+    Direction rightDir = axis == Direction.Axis.X ? Direction.WEST : Direction.SOUTH;
+    BlockPos bottomLeft = calculateBottomLeft(world, rightDir, pos, frameBlock, portalBlock);
+    if (bottomLeft == null) {
+      return new CustomPortalShape(axis, rightDir, pos, 0, 0, 0, portalBlock);
     }
-    return Optional.empty();
+
+    int width = calculateWidth(world, bottomLeft, rightDir, frameBlock, portalBlock);
+    if (width == 0) {
+      return new CustomPortalShape(axis, rightDir, bottomLeft, 0, 0, 0, portalBlock);
+    }
+
+    int[] portalBlockCount = new int[]{0};
+    int height = calculateHeight(
+        world, bottomLeft, rightDir, width, portalBlockCount, frameBlock, portalBlock
+    );
+    return new CustomPortalShape(
+        axis, rightDir, bottomLeft, width, height, portalBlockCount[0], portalBlock
+    );
   }
 
   static void execTeleport(

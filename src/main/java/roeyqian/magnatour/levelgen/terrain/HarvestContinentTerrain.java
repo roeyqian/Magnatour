@@ -237,6 +237,48 @@ public final class HarvestContinentTerrain {
     return ResourceKey.create(Registries.BIOME, Identifier.fromNamespaceAndPath(Magnatour.MOD_ID, path));
   }
 
+  private static double lerp(
+      double delta,
+      double start,
+      double end
+  ) {
+    return start + delta * (end - start);
+  }
+
+  private static double fade(
+      double value
+  ) {
+    return value * value * value * (value * (value * 6.0 - 15.0) + 10.0);
+  }
+
+  private static double fbmValue3D(
+      long seed,
+      double x,
+      double y,
+      double z,
+      double scale,
+      int octaves
+  ) {
+    double amplitude = 1.0;
+    double frequency = scale;
+    double sum = 0.0;
+    double normalization = 0.0;
+    for (int octave = 0; octave < octaves; octave++) {
+      sum += amplitude * valueNoise3D(seed + octave * 2089L, x * frequency, y * frequency, z * frequency);
+      normalization += amplitude;
+      amplitude *= 0.5;
+      frequency *= 2.0;
+    }
+    return sum / normalization;
+  }
+
+  private static double smoothStep(
+      double value
+  ) {
+    double clamped = Mth.clamp(value, 0.0, 1.0);
+    return clamped * clamped * (3.0 - 2.0 * clamped);
+  }
+
   private static double perlin2D(
       long seed,
       double x,
@@ -253,6 +295,38 @@ public final class HarvestContinentTerrain {
     double n01 = gradientDot(seed, x0, z0 + 1, tx, tz - 1.0);
     double n11 = gradientDot(seed, x0 + 1, z0 + 1, tx - 1.0, tz - 1.0);
     return lerp(v, lerp(u, n00, n10), lerp(u, n01, n11));
+  }
+
+  private static double valueNoise3D(
+      long seed,
+      double x,
+      double y,
+      double z
+  ) {
+    int x0 = fastFloor(x);
+    int y0 = fastFloor(y);
+    int z0 = fastFloor(z);
+    double tx = fade(x - x0);
+    double ty = fade(y - y0);
+    double tz = fade(z - z0);
+    double x00 = lerp(tx, value(seed, x0, y0, z0), value(seed, x0 + 1, y0, z0));
+    double x10 = lerp(tx, value(seed, x0, y0 + 1, z0), value(seed, x0 + 1, y0 + 1, z0));
+    double x01 = lerp(tx, value(seed, x0, y0, z0 + 1), value(seed, x0 + 1, y0, z0 + 1));
+    double x11 = lerp(tx, value(seed, x0, y0 + 1, z0 + 1), value(seed, x0 + 1, y0 + 1, z0 + 1));
+    return lerp(tz, lerp(ty, x00, x10), lerp(ty, x01, x11));
+  }
+
+  private static long mix(
+      long seed,
+      int x,
+      int z
+  ) {
+    long h = seed ^ (long) x * 0x9E3779B97F4A7C15L ^ (long) z * 0xC2B2AE3D27D4EB4FL;
+    h ^= h >>> 27;
+    h *= 0x3C79AC492BA7B653L;
+    h ^= h >>> 33;
+    h *= 0x1C69B3F74AC4AE35L;
+    return h ^ h >>> 27;
   }
 
   private static double blendHeight(
@@ -292,20 +366,6 @@ public final class HarvestContinentTerrain {
       case 7 -> HarvestRegionalTerrain.sacredMountainHeight(seed, x, z);
       default -> lakeBedHeight(seed, x, z);
     };
-  }
-
-  private static double lerp(
-      double delta,
-      double start,
-      double end
-  ) {
-    return start + delta * (end - start);
-  }
-
-  private static double fade(
-      double value
-  ) {
-    return value * value * value * (value * (value * 6.0 - 15.0) + 10.0);
   }
 
   private static int fastFloor(
@@ -369,19 +429,6 @@ public final class HarvestContinentTerrain {
     return HarvestMelonTerrain.height(seed, x, z) + SURFACE_Y_OFFSET;
   }
 
-  private static long mix(
-      long seed,
-      int x,
-      int z
-  ) {
-    long h = seed ^ (long) x * 0x9E3779B97F4A7C15L ^ (long) z * 0xC2B2AE3D27D4EB4FL;
-    h ^= h >>> 27;
-    h *= 0x3C79AC492BA7B653L;
-    h ^= h >>> 33;
-    h *= 0x1C69B3F74AC4AE35L;
-    return h ^ h >>> 27;
-  }
-
   private static double value(
       long seed,
       int x,
@@ -390,53 +437,6 @@ public final class HarvestContinentTerrain {
   ) {
     long h = mix(mix(seed, x, z), y, x ^ z);
     return ((h >>> 11) * 0x1.0p-53) * 2.0 - 1.0;
-  }
-
-  private static double valueNoise3D(
-      long seed,
-      double x,
-      double y,
-      double z
-  ) {
-    int x0 = fastFloor(x);
-    int y0 = fastFloor(y);
-    int z0 = fastFloor(z);
-    double tx = fade(x - x0);
-    double ty = fade(y - y0);
-    double tz = fade(z - z0);
-    double x00 = lerp(tx, value(seed, x0, y0, z0), value(seed, x0 + 1, y0, z0));
-    double x10 = lerp(tx, value(seed, x0, y0 + 1, z0), value(seed, x0 + 1, y0 + 1, z0));
-    double x01 = lerp(tx, value(seed, x0, y0, z0 + 1), value(seed, x0 + 1, y0, z0 + 1));
-    double x11 = lerp(tx, value(seed, x0, y0 + 1, z0 + 1), value(seed, x0 + 1, y0 + 1, z0 + 1));
-    return lerp(tz, lerp(ty, x00, x10), lerp(ty, x01, x11));
-  }
-
-  private static double fbmValue3D(
-      long seed,
-      double x,
-      double y,
-      double z,
-      double scale,
-      int octaves
-  ) {
-    double amplitude = 1.0;
-    double frequency = scale;
-    double sum = 0.0;
-    double normalization = 0.0;
-    for (int octave = 0; octave < octaves; octave++) {
-      sum += amplitude * valueNoise3D(seed + octave * 2089L, x * frequency, y * frequency, z * frequency);
-      normalization += amplitude;
-      amplitude *= 0.5;
-      frequency *= 2.0;
-    }
-    return sum / normalization;
-  }
-
-  private static double smoothStep(
-      double value
-  ) {
-    double clamped = Mth.clamp(value, 0.0, 1.0);
-    return clamped * clamped * (3.0 - 2.0 * clamped);
   }
 
   static boolean canCarveCave(

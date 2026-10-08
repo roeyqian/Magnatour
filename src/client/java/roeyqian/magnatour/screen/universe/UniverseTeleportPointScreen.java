@@ -267,6 +267,120 @@ public class UniverseTeleportPointScreen extends AbstractContainerScreen<Univers
     setAddMode(false);
   }
 
+  private void setAddMode(
+      boolean addMode
+  ) {
+    this.addMode = addMode;
+    this.errorText = "";
+
+    this.addButton.visible = !addMode;
+    this.currentButton.visible = addMode;
+    this.saveButton.visible = addMode;
+    this.cancelButton.visible = addMode;
+
+    this.nameField.visible = addMode;
+    this.dimensionField.visible = addMode;
+    this.xField.visible = addMode;
+    this.yField.visible = addMode;
+    this.zField.visible = addMode;
+  }
+
+  private void saveDestination() {
+    try {
+      String name = nameField.getValue().trim();
+      if (name.isEmpty()) {
+        name = Component.translatable("gui.magnatour.universe_teleport_point.default_name").getString();
+      }
+
+      Identifier dimensionId = Identifier.parse(dimensionField.getValue().trim());
+      ResourceKey<Level> dimension = ResourceKey.create(Registries.DIMENSION, dimensionId);
+      UniverseTeleportPointEntity.Destination destination = new UniverseTeleportPointEntity.Destination(
+          name,
+          dimension,
+          Integer.parseInt(xField.getValue().trim()),
+          Integer.parseInt(yField.getValue().trim()),
+          Integer.parseInt(zField.getValue().trim())
+      );
+
+      sendAction(UniverseTeleportPointPayload.Action.ADD, -1, destination);
+      setAddMode(false);
+      if (this.minecraft.player != null) {
+        this.minecraft.player.closeContainer();
+      }
+    } catch (RuntimeException exception) {
+      this.errorText = Component.translatable(
+          "gui.magnatour.universe_teleport_point.invalid_input"
+      ).getString();
+    }
+  }
+
+  private void fillCurrentPosition() {
+    if (this.minecraft.player == null || this.minecraft.level == null) return;
+
+    BlockPos playerPos = this.minecraft.player.blockPosition();
+    Identifier dimension = this.minecraft.level.dimension().identifier();
+
+    this.dimensionField.setValue(dimension.toString());
+    this.xField.setValue(Integer.toString(playerPos.getX()));
+    this.yField.setValue(Integer.toString(playerPos.getY()));
+    this.zField.setValue(Integer.toString(playerPos.getZ()));
+  }
+
+  private EditBox coordinateField(
+      int x,
+      int y,
+      String name
+  ) {
+    EditBox field = new EditBox(
+        this.font,
+        leftPos + x,
+        topPos + y,
+        48,
+        18,
+        Component.literal(name)
+    );
+    field.setMaxLength(8);
+    return field;
+  }
+
+  private boolean mouseOverMain(
+      int mouseX,
+      int mouseY,
+      int buttonX,
+      int buttonY
+  ) {
+    return mouseX >= buttonX && mouseX < buttonX + ROW_BUTTON_WIDTH
+        && mouseY >= buttonY && mouseY < buttonY + ROW_BUTTON_HEIGHT;
+  }
+
+  private boolean mouseOverDelete(
+      int mouseX,
+      int mouseY,
+      int buttonX,
+      int buttonY
+  ) {
+    return mouseX >= buttonX && mouseX < buttonX + ROW_DELETE_BUTTON_WIDTH
+        && mouseY >= buttonY && mouseY < buttonY + ROW_BUTTON_HEIGHT;
+  }
+
+  private String truncateToWidth(
+      String value,
+      int maxWidth
+  ) {
+    if (maxWidth <= 0) return "";
+    if (this.font.width(value) <= maxWidth) return value;
+
+    int end = value.length();
+    while (end > 0 && this.font.width(value.substring(0, end) + "...") > maxWidth) {
+      end--;
+    }
+    return end > 0 ? value.substring(0, end) + "..." : "...";
+  }
+
+  private boolean canScroll() {
+    return this.destinations.size() > VISIBLE_ROWS;
+  }
+
   private void drawAddForm(
       GuiGraphicsExtractor graphics
   ) {
@@ -399,41 +513,70 @@ public class UniverseTeleportPointScreen extends AbstractContainerScreen<Univers
     }
   }
 
+  private void createButtons() {
+    this.addButton = Button.builder(
+            Component.translatable("gui.magnatour.universe_teleport_point.add"),
+            _ -> setAddMode(true)
+        )
+        .bounds(leftPos + 10, topPos + 195, 52, 20)
+        .build();
+    this.saveButton = Button.builder(
+            Component.translatable("gui.magnatour.universe_teleport_point.save"),
+            _ -> saveDestination()
+        )
+        .bounds(leftPos + 10, topPos + 195, 52, 20)
+        .build();
+    this.cancelButton = Button.builder(
+            Component.translatable("gui.magnatour.universe_teleport_point.cancel"),
+            _ -> setAddMode(false)
+        )
+        .bounds(leftPos + 67, topPos + 195, 52, 20)
+        .build();
+    this.currentButton = Button.builder(
+            Component.translatable("gui.magnatour.universe_teleport_point.current"),
+            _ -> fillCurrentPosition()
+        )
+        .bounds(leftPos + 124, topPos + 195, 92, 20)
+        .build();
+
+    this.addRenderableWidget(addButton);
+    this.addRenderableWidget(currentButton);
+    this.addRenderableWidget(saveButton);
+    this.addRenderableWidget(cancelButton);
+  }
+
+  private void createTextFields() {
+    this.nameField = new EditBox(
+        this.font,
+        leftPos + 46, topPos + 44, 168, 18,
+        Component.translatable("gui.magnatour.universe_teleport_point.name")
+    );
+    this.dimensionField = new EditBox(
+        this.font,
+        leftPos + 46, topPos + 70, 168, 18,
+        Component.translatable("gui.magnatour.universe_teleport_point.dimension")
+    );
+    this.xField = coordinateField(46, 96, "x");
+    this.yField = coordinateField(106, 96, "y");
+    this.zField = coordinateField(166, 96, "z");
+
+    nameField.setMaxLength(32);
+    dimensionField.setMaxLength(96);
+    dimensionField.setValue("minecraft:overworld");
+
+    this.addRenderableWidget(nameField);
+    this.addRenderableWidget(dimensionField);
+    this.addRenderableWidget(xField);
+    this.addRenderableWidget(yField);
+    this.addRenderableWidget(zField);
+  }
+
   private boolean hasFocusedTextField() {
     return this.nameField != null && this.nameField.isFocused()
         || this.dimensionField != null && this.dimensionField.isFocused()
         || this.xField != null && this.xField.isFocused()
         || this.yField != null && this.yField.isFocused()
         || this.zField != null && this.zField.isFocused();
-  }
-
-  private void saveDestination() {
-    try {
-      String name = nameField.getValue().trim();
-      if (name.isEmpty()) {
-        name = Component.translatable("gui.magnatour.universe_teleport_point.default_name").getString();
-      }
-
-      Identifier dimensionId = Identifier.parse(dimensionField.getValue().trim());
-      ResourceKey<Level> dimension = ResourceKey.create(Registries.DIMENSION, dimensionId);
-      UniverseTeleportPointEntity.Destination destination = new UniverseTeleportPointEntity.Destination(
-          name,
-          dimension,
-          Integer.parseInt(xField.getValue().trim()),
-          Integer.parseInt(yField.getValue().trim()),
-          Integer.parseInt(zField.getValue().trim())
-      );
-
-      sendAction(UniverseTeleportPointPayload.Action.ADD, -1, destination);
-      setAddMode(false);
-      if (this.minecraft.player != null) {
-        this.minecraft.player.closeContainer();
-      }
-    } catch (RuntimeException exception) {
-      this.errorText = Component.translatable(
-          "gui.magnatour.universe_teleport_point.invalid_input"
-      ).getString();
-    }
   }
 
   private boolean mouseOverScrollbar(
@@ -446,10 +589,6 @@ public class UniverseTeleportPointScreen extends AbstractContainerScreen<Univers
         && mouseX < scrollbarX + SCROLLER_WIDTH
         && mouseY >= scrollbarY
         && mouseY < scrollbarY + SCROLLBAR_HEIGHT;
-  }
-
-  private boolean canScroll() {
-    return this.destinations.size() > VISIBLE_ROWS;
   }
 
   private void updateScroll(
@@ -526,145 +665,6 @@ public class UniverseTeleportPointScreen extends AbstractContainerScreen<Univers
   private void syncScrollPosition() {
     int maxOffset = getMaxScrollOffset();
     this.scrollPosition = maxOffset > 0 ? (float) this.scrollOffset / (float) maxOffset : 0.0f;
-  }
-
-  private void createButtons() {
-    this.addButton = Button.builder(
-            Component.translatable("gui.magnatour.universe_teleport_point.add"),
-            _ -> setAddMode(true)
-        )
-        .bounds(leftPos + 10, topPos + 195, 52, 20)
-        .build();
-    this.saveButton = Button.builder(
-            Component.translatable("gui.magnatour.universe_teleport_point.save"),
-            _ -> saveDestination()
-        )
-        .bounds(leftPos + 10, topPos + 195, 52, 20)
-        .build();
-    this.cancelButton = Button.builder(
-            Component.translatable("gui.magnatour.universe_teleport_point.cancel"),
-            _ -> setAddMode(false)
-        )
-        .bounds(leftPos + 67, topPos + 195, 52, 20)
-        .build();
-    this.currentButton = Button.builder(
-            Component.translatable("gui.magnatour.universe_teleport_point.current"),
-            _ -> fillCurrentPosition()
-        )
-        .bounds(leftPos + 124, topPos + 195, 92, 20)
-        .build();
-
-    this.addRenderableWidget(addButton);
-    this.addRenderableWidget(currentButton);
-    this.addRenderableWidget(saveButton);
-    this.addRenderableWidget(cancelButton);
-  }
-
-  private void createTextFields() {
-    this.nameField = new EditBox(
-        this.font,
-        leftPos + 46, topPos + 44, 168, 18,
-        Component.translatable("gui.magnatour.universe_teleport_point.name")
-    );
-    this.dimensionField = new EditBox(
-        this.font,
-        leftPos + 46, topPos + 70, 168, 18,
-        Component.translatable("gui.magnatour.universe_teleport_point.dimension")
-    );
-    this.xField = coordinateField(46, 96, "x");
-    this.yField = coordinateField(106, 96, "y");
-    this.zField = coordinateField(166, 96, "z");
-
-    nameField.setMaxLength(32);
-    dimensionField.setMaxLength(96);
-    dimensionField.setValue("minecraft:overworld");
-
-    this.addRenderableWidget(nameField);
-    this.addRenderableWidget(dimensionField);
-    this.addRenderableWidget(xField);
-    this.addRenderableWidget(yField);
-    this.addRenderableWidget(zField);
-  }
-
-  private void setAddMode(
-      boolean addMode
-  ) {
-    this.addMode = addMode;
-    this.errorText = "";
-
-    this.addButton.visible = !addMode;
-    this.currentButton.visible = addMode;
-    this.saveButton.visible = addMode;
-    this.cancelButton.visible = addMode;
-
-    this.nameField.visible = addMode;
-    this.dimensionField.visible = addMode;
-    this.xField.visible = addMode;
-    this.yField.visible = addMode;
-    this.zField.visible = addMode;
-  }
-
-  private boolean mouseOverMain(
-      int mouseX,
-      int mouseY,
-      int buttonX,
-      int buttonY
-  ) {
-    return mouseX >= buttonX && mouseX < buttonX + ROW_BUTTON_WIDTH
-        && mouseY >= buttonY && mouseY < buttonY + ROW_BUTTON_HEIGHT;
-  }
-
-  private boolean mouseOverDelete(
-      int mouseX,
-      int mouseY,
-      int buttonX,
-      int buttonY
-  ) {
-    return mouseX >= buttonX && mouseX < buttonX + ROW_DELETE_BUTTON_WIDTH
-        && mouseY >= buttonY && mouseY < buttonY + ROW_BUTTON_HEIGHT;
-  }
-
-  private String truncateToWidth(
-      String value,
-      int maxWidth
-  ) {
-    if (maxWidth <= 0) return "";
-    if (this.font.width(value) <= maxWidth) return value;
-
-    int end = value.length();
-    while (end > 0 && this.font.width(value.substring(0, end) + "...") > maxWidth) {
-      end--;
-    }
-    return end > 0 ? value.substring(0, end) + "..." : "...";
-  }
-
-  private void fillCurrentPosition() {
-    if (this.minecraft.player == null || this.minecraft.level == null) return;
-
-    BlockPos playerPos = this.minecraft.player.blockPosition();
-    Identifier dimension = this.minecraft.level.dimension().identifier();
-
-    this.dimensionField.setValue(dimension.toString());
-    this.xField.setValue(Integer.toString(playerPos.getX()));
-    this.yField.setValue(Integer.toString(playerPos.getY()));
-    this.zField.setValue(Integer.toString(playerPos.getZ()));
-  }
-
-  private EditBox coordinateField(
-      int x,
-      int y,
-      String name
-  ) {
-    EditBox field = new EditBox(
-        this.font,
-        leftPos + x,
-        topPos + y,
-        48,
-        18,
-        Component.literal(name)
-    );
-    field.setMaxLength(8);
-    return field;
   }
 
 }

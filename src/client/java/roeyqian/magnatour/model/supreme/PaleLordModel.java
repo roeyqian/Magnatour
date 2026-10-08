@@ -110,6 +110,26 @@ public final class PaleLordModel extends EntityModel<PaleLordRenderState> {
     }
   }
 
+  private static void addBranch(
+      PartDefinition head,
+      String name,
+      float x,
+      float tilt
+  ) {
+    PartDefinition branch = head.addOrReplaceChild(
+        name,
+        CubeListBuilder.create().texOffs(84, 12)
+            .addBox(-1.0F, -10.0F, -1.0F, 2.0F, 10.0F, 2.0F),
+        PartPose.offsetAndRotation(x, -6.0F, 1.0F, 0.12F, 0.0F, tilt)
+    );
+    branch.addOrReplaceChild(
+        "fork",
+        CubeListBuilder.create().texOffs(84, 0)
+            .addBox(-1.0F, -7.0F, -1.0F, 2.0F, 7.0F, 2.0F),
+        PartPose.offsetAndRotation(0.0F, -6.0F, 0.0F, -0.2F, 0.0F, -tilt * 0.8F)
+    );
+  }
+
   private static void addHead(
       PartDefinition upperBody
   ) {
@@ -199,26 +219,6 @@ public final class PaleLordModel extends EntityModel<PaleLordRenderState> {
         CubeListBuilder.create().texOffs(footU, 54)
             .addBox(-2.5F, -3.0F, -5.0F, 5.0F, 3.0F, 8.0F),
         PartPose.offset(0.0F, 18.0F, 0.0F)
-    );
-  }
-
-  private static void addBranch(
-      PartDefinition head,
-      String name,
-      float x,
-      float tilt
-  ) {
-    PartDefinition branch = head.addOrReplaceChild(
-        name,
-        CubeListBuilder.create().texOffs(84, 12)
-            .addBox(-1.0F, -10.0F, -1.0F, 2.0F, 10.0F, 2.0F),
-        PartPose.offsetAndRotation(x, -6.0F, 1.0F, 0.12F, 0.0F, tilt)
-    );
-    branch.addOrReplaceChild(
-        "fork",
-        CubeListBuilder.create().texOffs(84, 0)
-            .addBox(-1.0F, -7.0F, -1.0F, 2.0F, 7.0F, 2.0F),
-        PartPose.offsetAndRotation(0.0F, -6.0F, 0.0F, -0.2F, 0.0F, -tilt * 0.8F)
     );
   }
 

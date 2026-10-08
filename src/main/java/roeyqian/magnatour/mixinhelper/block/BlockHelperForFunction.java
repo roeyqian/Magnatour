@@ -176,6 +176,19 @@ public final class BlockHelperForFunction {
     return getActiveCustomRecipe(player, craftSlots) != null;
   }
 
+  private static int getBaseResultCount(
+      CraftingRecipe recipe
+  ) {
+    if (recipe instanceof SupremeCraftingRecipe supremeRecipe) {
+      return supremeRecipe.getBaseResultCount();
+    }
+    if (recipe instanceof UniverseCraftingRecipe universeRecipe) {
+      return universeRecipe.getBaseResultCount();
+    }
+
+    return 1;
+  }
+
   /**
    * Vanilla only considers the Overworld and Nether valid Nether-portal dimensions. Universe
    * Meta is intentionally a portal hub, so let its obsidian frames use the standard shape.
@@ -225,19 +238,6 @@ public final class BlockHelperForFunction {
 
     var universeMatch = recipeManager.getFirstMatch(CustomRecipes.UNIVERSE_CRAFTING_TYPE, recipeInput, world);
     return universeMatch.orElse(null);
-  }
-
-  private static int getBaseResultCount(
-      CraftingRecipe recipe
-  ) {
-    if (recipe instanceof SupremeCraftingRecipe supremeRecipe) {
-      return supremeRecipe.getBaseResultCount();
-    }
-    if (recipe instanceof UniverseCraftingRecipe universeRecipe) {
-      return universeRecipe.getBaseResultCount();
-    }
-
-    return 1;
   }
 
   private static void consumeSingleCraft(

@@ -166,18 +166,6 @@ public class UniverseLibraryMenu extends AbstractContainerMenu {
     super.broadcastFullState();
   }
 
-  private boolean moveItemStackToSourceInventory(
-      ItemStack stack
-  ) {
-    if (stack.isEmpty()) return false;
-
-    int originalCount = stack.getCount();
-    mergeIntoExistingSourceStacks(stack);
-    fillEmptySourceSlots(stack);
-
-    return stack.getCount() < originalCount;
-  }
-
   private void mergeIntoExistingSourceStacks(
       ItemStack stack
   ) {
@@ -221,6 +209,18 @@ public class UniverseLibraryMenu extends AbstractContainerMenu {
       stack.shrink(moved);
       this.sourceInventory.setItem(slotIndex, movedStack);
     }
+  }
+
+  private boolean moveItemStackToSourceInventory(
+      ItemStack stack
+  ) {
+    if (stack.isEmpty()) return false;
+
+    int originalCount = stack.getCount();
+    mergeIntoExistingSourceStacks(stack);
+    fillEmptySourceSlots(stack);
+
+    return stack.getCount() < originalCount;
   }
 
   private int getRealIndex(

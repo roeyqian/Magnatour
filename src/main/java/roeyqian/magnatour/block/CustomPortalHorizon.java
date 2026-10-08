@@ -46,6 +46,107 @@ public interface CustomPortalHorizon {
 
   EnumProperty<Direction.Axis> AXIS = BlockStateProperties.HORIZONTAL_AXIS;
 
+  static BlockPos getPortalCenter(
+      Level world,
+      BlockPos portalPos,
+      Block frameBlock
+  ) {
+    BlockPos corner = findCompleteFrame(world, portalPos, frameBlock, false);
+    return corner == null ? portalPos : corner.offset(2, 0, 2);
+  }
+
+  /**
+   * Loads every chunk that can contain the 5x5 portal centered at {@code center}.
+   *
+   * <p>Portal links survive a server restart, but their target chunks are normally unloaded until
+   * a player visits that dimension. Validating an unloaded endpoint would otherwise look like a
+   * missing frame and permanently discard the link.</p>
+   */
+  private static void loadPortalChunks(
+      ServerLevel world,
+      BlockPos center
+  ) {
+    int minChunkX = (center.getX() - 2) >> 4;
+    int maxChunkX = (center.getX() + 2) >> 4;
+    int minChunkZ = (center.getZ() - 2) >> 4;
+    int maxChunkZ = (center.getZ() + 2) >> 4;
+
+    for (int chunkX = minChunkX; chunkX <= maxChunkX; chunkX++) {
+      for (int chunkZ = minChunkZ; chunkZ <= maxChunkZ; chunkZ++) {
+        world.getChunkSource().getChunk(chunkX, chunkZ, true);
+      }
+    }
+  }
+
+  static boolean isValidPortal(
+      LevelReader world,
+      BlockPos pos,
+      Block frameBlock,
+      Block portalBlock
+  ) {
+    BlockPos corner = findCompleteFrame((Level)world, pos, frameBlock, false);
+    if (corner == null) return false;
+
+    // Match the ore-continent portal's complete-shape check: a sound frame is
+    // not enough; all nine cells in the interior must still be portal blocks.
+    for (int dx = 1; dx < 4; dx++) {
+      for (int dz = 1; dz < 4; dz++) {
+        if (!world.getBlockState(corner.offset(dx, 0, dz)).is(portalBlock)) {
+          return false;
+        }
+      }
+    }
+    return true;
+  }
+
+  static BlockPos findOrCreatePortal(
+      ServerLevel targetWorld,
+      BlockPos fallbackPortalCenter,
+      Block frameBlock,
+      Block portalBlock
+  ) {
+    BlockPos existing = findExistingPortal(targetWorld, fallbackPortalCenter, portalBlock);
+    if (existing != null) return existing;
+
+    return buildPortalAt(
+        targetWorld,
+        findSafeFallbackPortalCenter(targetWorld, fallbackPortalCenter),
+        frameBlock,
+        portalBlock
+    );
+  }
+
+  /**
+   * Search around the clicked position to find a valid 5x5 frame.
+   * Returns the corner position if found, null otherwise.
+   */
+  static BlockPos findCompleteFrame(
+      Level world,
+      BlockPos clickedPos,
+      Block frameBlock
+  ) {
+    return findCompleteFrame(world, clickedPos, frameBlock, true);
+  }
+
+  private static BlockPos findCompleteFrame(
+      Level world,
+      BlockPos clickedPos,
+      Block frameBlock,
+      boolean requireLit
+  ) {
+    // The clicked position could be any of the 12 frame blocks
+    // Try all possible corner positions where this block could be part of a 5x5 frame
+    for (int dx = -4; dx <= 0; dx++) {
+      for (int dz = -4; dz <= 0; dz++) {
+        BlockPos corner = clickedPos.offset(dx, 0, dz);
+        if (isCompleteFrame(world, corner, frameBlock, requireLit)) {
+          return corner;
+        }
+      }
+    }
+    return null;
+  }
+
   /**
    * Check if a 5x5 area starting at corner forms a valid activated portal frame.
    * The 12 edge positions (outer ring, EXCLUDING corners) must all be the frame block and all must be lit.
@@ -94,55 +195,6 @@ public interface CustomPortalHorizon {
       }
     }
     return true;
-  }
-
-  private static boolean hasClearArrivalSpace(
-      ServerLevel world,
-      BlockPos center
-  ) {
-    if (world.isEmptyBlock(center.below())) return false;
-
-    for (int dx = -1; dx <= 1; dx++) {
-      for (int dz = -1; dz <= 1; dz++) {
-        BlockPos portalPos = center.offset(dx, 0, dz);
-        if (!world.isEmptyBlock(portalPos.above())
-            || !world.isEmptyBlock(portalPos.above(2))) {
-          return false;
-        }
-      }
-    }
-    return true;
-  }
-
-  /**
-   * Search around the clicked position to find a valid 5x5 frame.
-   * Returns the corner position if found, null otherwise.
-   */
-  static BlockPos findCompleteFrame(
-      Level world,
-      BlockPos clickedPos,
-      Block frameBlock
-  ) {
-    return findCompleteFrame(world, clickedPos, frameBlock, true);
-  }
-
-  private static BlockPos findCompleteFrame(
-      Level world,
-      BlockPos clickedPos,
-      Block frameBlock,
-      boolean requireLit
-  ) {
-    // The clicked position could be any of the 12 frame blocks
-    // Try all possible corner positions where this block could be part of a 5x5 frame
-    for (int dx = -4; dx <= 0; dx++) {
-      for (int dz = -4; dz <= 0; dz++) {
-        BlockPos corner = clickedPos.offset(dx, 0, dz);
-        if (isCompleteFrame(world, corner, frameBlock, requireLit)) {
-          return corner;
-        }
-      }
-    }
-    return null;
   }
 
   static BlockPos findExistingPortal(
@@ -232,74 +284,22 @@ public interface CustomPortalHorizon {
     );
   }
 
-  static BlockPos getPortalCenter(
-      Level world,
-      BlockPos portalPos,
-      Block frameBlock
-  ) {
-    BlockPos corner = findCompleteFrame(world, portalPos, frameBlock, false);
-    return corner == null ? portalPos : corner.offset(2, 0, 2);
-  }
-
-  /**
-   * Loads every chunk that can contain the 5x5 portal centered at {@code center}.
-   *
-   * <p>Portal links survive a server restart, but their target chunks are normally unloaded until
-   * a player visits that dimension. Validating an unloaded endpoint would otherwise look like a
-   * missing frame and permanently discard the link.</p>
-   */
-  private static void loadPortalChunks(
+  private static boolean hasClearArrivalSpace(
       ServerLevel world,
       BlockPos center
   ) {
-    int minChunkX = (center.getX() - 2) >> 4;
-    int maxChunkX = (center.getX() + 2) >> 4;
-    int minChunkZ = (center.getZ() - 2) >> 4;
-    int maxChunkZ = (center.getZ() + 2) >> 4;
+    if (world.isEmptyBlock(center.below())) return false;
 
-    for (int chunkX = minChunkX; chunkX <= maxChunkX; chunkX++) {
-      for (int chunkZ = minChunkZ; chunkZ <= maxChunkZ; chunkZ++) {
-        world.getChunkSource().getChunk(chunkX, chunkZ, true);
-      }
-    }
-  }
-
-  static boolean isValidPortal(
-      LevelReader world,
-      BlockPos pos,
-      Block frameBlock,
-      Block portalBlock
-  ) {
-    BlockPos corner = findCompleteFrame((Level)world, pos, frameBlock, false);
-    if (corner == null) return false;
-
-    // Match the ore-continent portal's complete-shape check: a sound frame is
-    // not enough; all nine cells in the interior must still be portal blocks.
-    for (int dx = 1; dx < 4; dx++) {
-      for (int dz = 1; dz < 4; dz++) {
-        if (!world.getBlockState(corner.offset(dx, 0, dz)).is(portalBlock)) {
+    for (int dx = -1; dx <= 1; dx++) {
+      for (int dz = -1; dz <= 1; dz++) {
+        BlockPos portalPos = center.offset(dx, 0, dz);
+        if (!world.isEmptyBlock(portalPos.above())
+            || !world.isEmptyBlock(portalPos.above(2))) {
           return false;
         }
       }
     }
     return true;
-  }
-
-  static BlockPos findOrCreatePortal(
-      ServerLevel targetWorld,
-      BlockPos fallbackPortalCenter,
-      Block frameBlock,
-      Block portalBlock
-  ) {
-    BlockPos existing = findExistingPortal(targetWorld, fallbackPortalCenter, portalBlock);
-    if (existing != null) return existing;
-
-    return buildPortalAt(
-        targetWorld,
-        findSafeFallbackPortalCenter(targetWorld, fallbackPortalCenter),
-        frameBlock,
-        portalBlock
-    );
   }
 
   static void execTeleport(

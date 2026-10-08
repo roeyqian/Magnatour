@@ -249,6 +249,39 @@ public class LogisticsFiber extends BaseEntityBlock {
     return state.setValue(CONNECTION_PROPERTIES.get(direction), connectsTo(level, neighborPos, neighborState));
   }
 
+  private static boolean isContainerBlock(
+      BlockState state,
+      BlockPos pos
+  ) {
+    if (!state.hasBlockEntity()) {
+      return false;
+    }
+
+    if (!(state.getBlock() instanceof EntityBlock entityBlock)) {
+      return false;
+    }
+
+    BlockEntity probe = entityBlock.newBlockEntity(pos, state);
+    return probe instanceof net.minecraft.world.Container;
+  }
+
+  private static boolean connectsTo(
+      LevelReader level,
+      BlockPos pos,
+      BlockState neighborState
+  ) {
+    if (neighborState.getBlock() instanceof LogisticsFiber) {
+      return true;
+    }
+
+    if (level instanceof Level world
+        && LogisticsFiberEntity.getContainerAt(world, pos) != null) {
+      return true;
+    }
+
+    return isContainerBlock(neighborState, pos);
+  }
+
   private static BlockState updateConnections(
       BlockState state,
       LevelReader level,
@@ -299,39 +332,6 @@ public class LogisticsFiber extends BaseEntityBlock {
       };
       default -> facing;
     };
-  }
-
-  private static boolean connectsTo(
-      LevelReader level,
-      BlockPos pos,
-      BlockState neighborState
-  ) {
-    if (neighborState.getBlock() instanceof LogisticsFiber) {
-      return true;
-    }
-
-    if (level instanceof Level world
-        && LogisticsFiberEntity.getContainerAt(world, pos) != null) {
-      return true;
-    }
-
-    return isContainerBlock(neighborState, pos);
-  }
-
-  private static boolean isContainerBlock(
-      BlockState state,
-      BlockPos pos
-  ) {
-    if (!state.hasBlockEntity()) {
-      return false;
-    }
-
-    if (!(state.getBlock() instanceof EntityBlock entityBlock)) {
-      return false;
-    }
-
-    BlockEntity probe = entityBlock.newBlockEntity(pos, state);
-    return probe instanceof net.minecraft.world.Container;
   }
 
 }

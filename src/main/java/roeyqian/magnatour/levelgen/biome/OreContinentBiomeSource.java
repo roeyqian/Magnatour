@@ -101,13 +101,6 @@ public final class OreContinentBiomeSource extends BiomeSource {
     return Stream.of(this.oreLand, this.oreForest);
   }
 
-  private static int fastFloor(
-      double value
-  ) {
-    int i = (int) value;
-    return value < i ? i - 1 : i;
-  }
-
   private static long mix(
       long seed,
       int x,
@@ -128,6 +121,13 @@ public final class OreContinentBiomeSource extends BiomeSource {
       long value
   ) {
     return ((value & 0xFFFFL) / 65535.0D) * 2.0D - 1.0D;
+  }
+
+  private static int fastFloor(
+      double value
+  ) {
+    int i = (int) value;
+    return value < i ? i - 1 : i;
   }
 
   private Cell nearestCell(

@@ -452,6 +452,31 @@ public class ItemHubEntity extends RandomizableContainerBlockEntity implements H
     return itemStack;
   }
 
+  @Nullable
+  private static Container getAttachedContainer(
+      Level level,
+      BlockPos pos,
+      ItemHubEntity itemHubEntity
+  ) {
+    return getContainerAt(level, pos.relative(itemHubEntity.getFacing()));
+  }
+
+  private static boolean isFullContainer(
+      Container container,
+      Direction direction
+  ) {
+    int[] slots = getSlots(container, direction);
+
+    for (int slot : slots) {
+      ItemStack itemStack = container.getItem(slot);
+      if (itemStack.getCount() < itemStack.getMaxStackSize()) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
   private static boolean tryMoveItems(
       Level level,
       BlockPos pos,
@@ -501,20 +526,53 @@ public class ItemHubEntity extends RandomizableContainerBlockEntity implements H
   }
 
   @Nullable
-  private static Container getSourceContainer(
+  private static Container getBlockContainer(
       Level level,
-      Hopper hopper,
       BlockPos pos,
       BlockState state
   ) {
-    return getContainerAt(
-        level,
-        pos,
-        state,
-        hopper.getLevelX(),
-        hopper.getLevelY() + 1.0,
-        hopper.getLevelZ()
+    Block block = state.getBlock();
+    if (block instanceof WorldlyContainerHolder) {
+      return ((WorldlyContainerHolder) block).getContainer(state, level, pos);
+    } else if (state.hasBlockEntity() && level.getBlockEntity(pos) instanceof Container container) {
+      if (container instanceof ChestBlockEntity && block instanceof ChestBlock) {
+        container = ChestBlock.getContainer((ChestBlock) block, state, level, pos, true);
+      }
+
+      return container;
+    } else {
+      return null;
+    }
+  }
+
+  @Nullable
+  private static Container getEntityContainer(
+      Level level,
+      double x,
+      double y,
+      double z
+  ) {
+    List<Entity> entities = level.getEntities(
+        (Entity) null,
+        new AABB(x - 0.5, y - 0.5, z - 0.5, x + 0.5, y + 0.5, z + 0.5),
+        EntitySelector.CONTAINER_ENTITY_SELECTOR
     );
+    return !entities.isEmpty()
+        ? (Container) entities.get(level.getRandom().nextInt(entities.size()))
+        : null;
+  }
+
+  private static int[] createFlatSlots(
+      int containerSize
+  ) {
+    int[] slots = new int[containerSize];
+    int i = 0;
+
+    while (i < slots.length) {
+      slots[i] = i++;
+    }
+
+    return slots;
   }
 
   private static int[] getSlots(
@@ -538,6 +596,23 @@ public class ItemHubEntity extends RandomizableContainerBlockEntity implements H
         return createFlatSlots(containerSize);
       }
     }
+  }
+
+  @Nullable
+  private static Container getSourceContainer(
+      Level level,
+      Hopper hopper,
+      BlockPos pos,
+      BlockState state
+  ) {
+    return getContainerAt(
+        level,
+        pos,
+        state,
+        hopper.getLevelX(),
+        hopper.getLevelY() + 1.0,
+        hopper.getLevelZ()
+    );
   }
 
   private static boolean tryTakeInItemFromSlot(
@@ -630,56 +705,6 @@ public class ItemHubEntity extends RandomizableContainerBlockEntity implements H
     }
   }
 
-  @Nullable
-  private static Container getBlockContainer(
-      Level level,
-      BlockPos pos,
-      BlockState state
-  ) {
-    Block block = state.getBlock();
-    if (block instanceof WorldlyContainerHolder) {
-      return ((WorldlyContainerHolder) block).getContainer(state, level, pos);
-    } else if (state.hasBlockEntity() && level.getBlockEntity(pos) instanceof Container container) {
-      if (container instanceof ChestBlockEntity && block instanceof ChestBlock) {
-        container = ChestBlock.getContainer((ChestBlock) block, state, level, pos, true);
-      }
-
-      return container;
-    } else {
-      return null;
-    }
-  }
-
-  @Nullable
-  private static Container getEntityContainer(
-      Level level,
-      double x,
-      double y,
-      double z
-  ) {
-    List<Entity> entities = level.getEntities(
-        (Entity) null,
-        new AABB(x - 0.5, y - 0.5, z - 0.5, x + 0.5, y + 0.5, z + 0.5),
-        EntitySelector.CONTAINER_ENTITY_SELECTOR
-    );
-    return !entities.isEmpty()
-        ? (Container) entities.get(level.getRandom().nextInt(entities.size()))
-        : null;
-  }
-
-  private static int[] createFlatSlots(
-      int containerSize
-  ) {
-    int[] slots = new int[containerSize];
-    int i = 0;
-
-    while (i < slots.length) {
-      slots[i] = i++;
-    }
-
-    return slots;
-  }
-
   private static boolean canTakeItemFromContainer(
       Container into,
       Container from,
@@ -691,47 +716,6 @@ public class ItemHubEntity extends RandomizableContainerBlockEntity implements H
         ? false
         : !(from instanceof WorldlyContainer worldly
         && !worldly.canTakeItemThroughFace(slot, itemStack, direction));
-  }
-
-  @Nullable
-  private static Container getAttachedContainer(
-      Level level,
-      BlockPos pos,
-      ItemHubEntity itemHubEntity
-  ) {
-    return getContainerAt(level, pos.relative(itemHubEntity.getFacing()));
-  }
-
-  private static boolean isFullContainer(
-      Container container,
-      Direction direction
-  ) {
-    int[] slots = getSlots(container, direction);
-
-    for (int slot : slots) {
-      ItemStack itemStack = container.getItem(slot);
-      if (itemStack.getCount() < itemStack.getMaxStackSize()) {
-        return false;
-      }
-    }
-
-    return true;
-  }
-
-  private boolean matchesAnchor(
-      ItemStack itemStack
-  ) {
-    return this.anchoredItems.isEmpty() || this.anchoredItems.contains(itemStack.getItem());
-  }
-
-  private boolean isOnCooldown() {
-    return this.cooldownTime > 0;
-  }
-
-  private void setCooldown(
-      int cooldownTime
-  ) {
-    this.cooldownTime = cooldownTime;
   }
 
   private void setAnchoredItemsInternal(
@@ -762,6 +746,26 @@ public class ItemHubEntity extends RandomizableContainerBlockEntity implements H
     }
   }
 
+  private boolean matchesAnchor(
+      ItemStack itemStack
+  ) {
+    return this.anchoredItems.isEmpty() || this.anchoredItems.contains(itemStack.getItem());
+  }
+
+  private Direction getFacing() {
+    return this.getBlockState().getValue(HopperBlock.FACING);
+  }
+
+  private boolean isOnCooldown() {
+    return this.cooldownTime > 0;
+  }
+
+  private void setCooldown(
+      int cooldownTime
+  ) {
+    this.cooldownTime = cooldownTime;
+  }
+
   private boolean isOnCustomCooldown() {
     return this.cooldownTime > MOVE_ITEM_SPEED;
   }
@@ -774,10 +778,6 @@ public class ItemHubEntity extends RandomizableContainerBlockEntity implements H
     }
 
     return true;
-  }
-
-  private Direction getFacing() {
-    return this.getBlockState().getValue(HopperBlock.FACING);
   }
 
 }

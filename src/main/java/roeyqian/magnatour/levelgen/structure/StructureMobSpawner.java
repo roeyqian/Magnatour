@@ -257,6 +257,45 @@ public final class StructureMobSpawner {
     });
   }
 
+  private static int countEntities(
+      ServerLevel level,
+      AABB box,
+      Predicate<Entity> predicate
+  ) {
+    return level.getEntities((Entity) null, box, predicate).size();
+  }
+
+  private static boolean isTownOfFortuneAnimal(
+      EntityType<?> entityType
+  ) {
+    return entityType == EntityTypes.SHEEP
+        || entityType == EntityTypes.PIG
+        || entityType == EntityTypes.CHICKEN
+        || entityType == EntityTypes.COW;
+  }
+
+  private static boolean hasAirColumn(
+      WorldGenLevel level,
+      BlockPos pos
+  ) {
+    return level.getBlockState(pos).isAir()
+        && level.getBlockState(pos.above()).isAir();
+  }
+
+  private static boolean hasCeilingNearby(
+      WorldGenLevel level,
+      BlockPos pos,
+      int maxDistance
+  ) {
+    for (int offset = 1; offset <= maxDistance; offset++) {
+      if (!level.getBlockState(pos.above(offset)).isAir()) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
   private static <T extends Mob> int spawnGoldBellTowerFloorMobs(
       WorldGenLevel level,
       RandomSource random,
@@ -273,6 +312,80 @@ public final class StructureMobSpawner {
         _ -> true,
         true,
         pos -> isGoldBellTowerInterior(level, box, pos)
+    );
+  }
+
+  private static boolean playerNearStructure(
+      List<ServerPlayer> players,
+      BoundingBox structureBox,
+      double activationPadding
+  ) {
+    AABB activationBox = AABB.of(structureBox).inflate(
+        activationPadding,
+        24.0D,
+        activationPadding
+    );
+
+    for (ServerPlayer player : players) {
+      if (player.isAlive() && activationBox.contains(player.position())) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  private static void processStructureStart(
+      ServerLevel level,
+      StructureSpawnProfile profile,
+      StructureStart start,
+      StructureInstanceKey key,
+      long currentTick
+  ) {
+    if (profile == GOLD_BELL_TOWER_PROFILE
+        && GoldBellTowerSpawnSavedData.get(level).isDisabled(start.getChunkPos().pack())) {
+      return;
+    }
+
+    SpawnState state = SPAWN_STATES.computeIfAbsent(
+        key,
+        _ -> new SpawnState(
+            currentTick,
+            Math.max(0L, currentTick - profile.boostIntervalTicks())
+        )
+    );
+    state.lastSeenTick = currentTick;
+
+    BoundingBox structureBox = start.getBoundingBox();
+    int currentCount = profile.mobCounter().count(level, mobCountBox(structureBox, profile));
+    if (currentCount >= profile.maxPopulation()) return;
+
+    long interval = currentCount < profile.boostThreshold()
+        ? profile.boostIntervalTicks()
+        : profile.normalIntervalTicks();
+    if (currentTick - state.lastSpawnTick < interval) return;
+
+    int spawned = profile.mobSpawner().spawn(
+        level,
+        level.getRandom(),
+        structureBox,
+        profile,
+        currentCount,
+        state
+    );
+    if (spawned > 0 || profile == TOWN_OF_FORTUNE_PROFILE) {
+      state.lastSpawnTick = currentTick;
+    }
+  }
+
+  private static AABB mobCountBox(
+      BoundingBox structureBox,
+      StructureSpawnProfile profile
+  ) {
+    return AABB.of(structureBox).inflate(
+        profile.mobCountHorizontalPadding(),
+        profile.mobCountVerticalPadding(),
+        profile.mobCountHorizontalPadding()
     );
   }
 
@@ -336,6 +449,84 @@ public final class StructureMobSpawner {
     SPAWN_STATES.entrySet().removeIf(
         entry -> currentTick - entry.getValue().lastSeenTick > STATE_TTL_TICKS
     );
+  }
+
+  private static <T extends Mob> int spawnPersistentGroundMobsFromCandidates(
+      WorldGenLevel level,
+      RandomSource random,
+      EntityType<T> entityType,
+      int count,
+      List<BlockPos> candidates,
+      boolean distributeByChunk,
+      Predicate<BlockPos> spawnSitePredicate,
+      Consumer<BlockPos> onSpawn
+  ) {
+    if (count <= 0 || candidates.isEmpty()) return 0;
+
+    java.util.Random shuffleRandom = new java.util.Random(random.nextLong());
+    List<BlockPos> spawnOrder = new ArrayList<>(candidates);
+    Collections.shuffle(spawnOrder, shuffleRandom);
+    if (distributeByChunk) {
+      spawnOrder = distributeCandidatesByChunk(spawnOrder, spawnOrder.size(), shuffleRandom);
+    }
+
+    int spawned = 0;
+    for (BlockPos spawnPos : spawnOrder) {
+      if (spawned >= count) return spawned;
+      if (!spawnSitePredicate.test(spawnPos)) continue;
+
+      T mob = entityType.create(level.getLevel(), EntitySpawnReason.STRUCTURE);
+      if (mob == null) return spawned;
+      mob.snapTo(
+          spawnPos.getX() + 0.5D,
+          spawnPos.getY(),
+          spawnPos.getZ() + 0.5D,
+          0.0F,
+          0.0F
+      );
+      if (!mob.checkSpawnObstruction(level)) continue;
+
+      prepareMob(level, random, mob, spawnPos);
+      level.addFreshEntityWithPassengers(mob);
+      onSpawn.accept(spawnPos);
+      spawned++;
+    }
+
+    return spawned;
+  }
+
+  private static boolean isDiamondCitySpawnSiteAvailable(
+      ServerLevel level,
+      DiamondCitySpawnSites spawnSites,
+      Set<BlockPos> reservedSpawnSites,
+      BlockPos pos
+  ) {
+    if (!spawnSites.isLoaded(level, pos)) return false;
+    for (BlockPos reservedSpawnSite : reservedSpawnSites) {
+      double xDistance = pos.getX() - reservedSpawnSite.getX();
+      double yDistance = pos.getY() - reservedSpawnSite.getY();
+      double zDistance = pos.getZ() - reservedSpawnSite.getZ();
+      if (xDistance * xDistance
+              + yDistance * yDistance
+              + zDistance * zDistance
+          < DIAMOND_CITY_SPAWN_SEPARATION * DIAMOND_CITY_SPAWN_SEPARATION) {
+        return false;
+      }
+    }
+
+    AABB separationBox = new AABB(
+        pos.getX() - DIAMOND_CITY_SPAWN_SEPARATION,
+        pos.getY() - DIAMOND_CITY_SPAWN_SEPARATION,
+        pos.getZ() - DIAMOND_CITY_SPAWN_SEPARATION,
+        pos.getX() + 1.0D + DIAMOND_CITY_SPAWN_SEPARATION,
+        pos.getY() + 1.0D + DIAMOND_CITY_SPAWN_SEPARATION,
+        pos.getZ() + 1.0D + DIAMOND_CITY_SPAWN_SEPARATION
+    );
+    return level.getEntities(
+        (Entity) null,
+        separationBox,
+        entity -> entity.isAlive() && entity.getType() == SupremeEntities.OBSIDIAN_GOLEM
+    ).isEmpty();
   }
 
   private static <T extends Mob> int spawnPersistentGroundMobs(
@@ -420,69 +611,6 @@ public final class StructureMobSpawner {
     }
 
     return true;
-  }
-
-  private static boolean playerNearStructure(
-      List<ServerPlayer> players,
-      BoundingBox structureBox,
-      double activationPadding
-  ) {
-    AABB activationBox = AABB.of(structureBox).inflate(
-        activationPadding,
-        24.0D,
-        activationPadding
-    );
-
-    for (ServerPlayer player : players) {
-      if (player.isAlive() && activationBox.contains(player.position())) {
-        return true;
-      }
-    }
-
-    return false;
-  }
-
-  private static void processStructureStart(
-      ServerLevel level,
-      StructureSpawnProfile profile,
-      StructureStart start,
-      StructureInstanceKey key,
-      long currentTick
-  ) {
-    if (profile == GOLD_BELL_TOWER_PROFILE
-        && GoldBellTowerSpawnSavedData.get(level).isDisabled(start.getChunkPos().pack())) {
-      return;
-    }
-
-    SpawnState state = SPAWN_STATES.computeIfAbsent(
-        key,
-        _ -> new SpawnState(
-            currentTick,
-            Math.max(0L, currentTick - profile.boostIntervalTicks())
-        )
-    );
-    state.lastSeenTick = currentTick;
-
-    BoundingBox structureBox = start.getBoundingBox();
-    int currentCount = profile.mobCounter().count(level, mobCountBox(structureBox, profile));
-    if (currentCount >= profile.maxPopulation()) return;
-
-    long interval = currentCount < profile.boostThreshold()
-        ? profile.boostIntervalTicks()
-        : profile.normalIntervalTicks();
-    if (currentTick - state.lastSpawnTick < interval) return;
-
-    int spawned = profile.mobSpawner().spawn(
-        level,
-        level.getRandom(),
-        structureBox,
-        profile,
-        currentCount,
-        state
-    );
-    if (spawned > 0 || profile == TOWN_OF_FORTUNE_PROFILE) {
-      state.lastSpawnTick = currentTick;
-    }
   }
 
   private static <T extends Mob> List<BlockPos> findGroundSpawnCandidates(
@@ -602,25 +730,6 @@ public final class StructureMobSpawner {
     mob.setPersistenceRequired();
   }
 
-  private static AABB mobCountBox(
-      BoundingBox structureBox,
-      StructureSpawnProfile profile
-  ) {
-    return AABB.of(structureBox).inflate(
-        profile.mobCountHorizontalPadding(),
-        profile.mobCountVerticalPadding(),
-        profile.mobCountHorizontalPadding()
-    );
-  }
-
-  private static boolean hasAirColumn(
-      WorldGenLevel level,
-      BlockPos pos
-  ) {
-    return level.getBlockState(pos).isAir()
-        && level.getBlockState(pos.above()).isAir();
-  }
-
   private static List<BlockPos> distributeCandidatesByChunk(
       List<BlockPos> candidates,
       int targetCount,
@@ -663,115 +772,6 @@ public final class StructureMobSpawner {
   ) {
     if (min >= max) return min;
     return min + random.nextInt(max - min + 1);
-  }
-
-  private static int countEntities(
-      ServerLevel level,
-      AABB box,
-      Predicate<Entity> predicate
-  ) {
-    return level.getEntities((Entity) null, box, predicate).size();
-  }
-
-  private static boolean isTownOfFortuneAnimal(
-      EntityType<?> entityType
-  ) {
-    return entityType == EntityTypes.SHEEP
-        || entityType == EntityTypes.PIG
-        || entityType == EntityTypes.CHICKEN
-        || entityType == EntityTypes.COW;
-  }
-
-  private static boolean hasCeilingNearby(
-      WorldGenLevel level,
-      BlockPos pos,
-      int maxDistance
-  ) {
-    for (int offset = 1; offset <= maxDistance; offset++) {
-      if (!level.getBlockState(pos.above(offset)).isAir()) {
-        return true;
-      }
-    }
-
-    return false;
-  }
-
-  private static <T extends Mob> int spawnPersistentGroundMobsFromCandidates(
-      WorldGenLevel level,
-      RandomSource random,
-      EntityType<T> entityType,
-      int count,
-      List<BlockPos> candidates,
-      boolean distributeByChunk,
-      Predicate<BlockPos> spawnSitePredicate,
-      Consumer<BlockPos> onSpawn
-  ) {
-    if (count <= 0 || candidates.isEmpty()) return 0;
-
-    java.util.Random shuffleRandom = new java.util.Random(random.nextLong());
-    List<BlockPos> spawnOrder = new ArrayList<>(candidates);
-    Collections.shuffle(spawnOrder, shuffleRandom);
-    if (distributeByChunk) {
-      spawnOrder = distributeCandidatesByChunk(spawnOrder, spawnOrder.size(), shuffleRandom);
-    }
-
-    int spawned = 0;
-    for (BlockPos spawnPos : spawnOrder) {
-      if (spawned >= count) return spawned;
-      if (!spawnSitePredicate.test(spawnPos)) continue;
-
-      T mob = entityType.create(level.getLevel(), EntitySpawnReason.STRUCTURE);
-      if (mob == null) return spawned;
-      mob.snapTo(
-          spawnPos.getX() + 0.5D,
-          spawnPos.getY(),
-          spawnPos.getZ() + 0.5D,
-          0.0F,
-          0.0F
-      );
-      if (!mob.checkSpawnObstruction(level)) continue;
-
-      prepareMob(level, random, mob, spawnPos);
-      level.addFreshEntityWithPassengers(mob);
-      onSpawn.accept(spawnPos);
-      spawned++;
-    }
-
-    return spawned;
-  }
-
-  private static boolean isDiamondCitySpawnSiteAvailable(
-      ServerLevel level,
-      DiamondCitySpawnSites spawnSites,
-      Set<BlockPos> reservedSpawnSites,
-      BlockPos pos
-  ) {
-    if (!spawnSites.isLoaded(level, pos)) return false;
-    for (BlockPos reservedSpawnSite : reservedSpawnSites) {
-      double xDistance = pos.getX() - reservedSpawnSite.getX();
-      double yDistance = pos.getY() - reservedSpawnSite.getY();
-      double zDistance = pos.getZ() - reservedSpawnSite.getZ();
-      if (xDistance * xDistance
-              + yDistance * yDistance
-              + zDistance * zDistance
-          < DIAMOND_CITY_SPAWN_SEPARATION * DIAMOND_CITY_SPAWN_SEPARATION) {
-        return false;
-      }
-    }
-
-    AABB separationBox = new AABB(
-        pos.getX() - DIAMOND_CITY_SPAWN_SEPARATION,
-        pos.getY() - DIAMOND_CITY_SPAWN_SEPARATION,
-        pos.getZ() - DIAMOND_CITY_SPAWN_SEPARATION,
-        pos.getX() + 1.0D + DIAMOND_CITY_SPAWN_SEPARATION,
-        pos.getY() + 1.0D + DIAMOND_CITY_SPAWN_SEPARATION,
-        pos.getZ() + 1.0D + DIAMOND_CITY_SPAWN_SEPARATION
-    );
-    return level.getEntities(
-        (Entity) null,
-        separationBox,
-        entity -> entity.isAlive() && entity.getType() == SupremeEntities.OBSIDIAN_GOLEM
-    ).isEmpty();
   }
 
   private static <T extends Mob> boolean spawnTownOfFortuneMob(
@@ -1189,16 +1189,6 @@ public final class StructureMobSpawner {
       );
     }
 
-    private boolean isLoaded(
-        ServerLevel level,
-        BlockPos pos
-    ) {
-      int chunkX = Math.floorDiv(pos.getX(), 16);
-      int chunkZ = Math.floorDiv(pos.getZ(), 16);
-      return this.scannedChunks.contains(ChunkPos.pack(chunkX, chunkZ))
-          && level.getChunkSource().hasChunk(chunkX, chunkZ);
-    }
-
     private int loadedCandidateCount(
         ServerLevel level,
         List<BlockPos> candidates,
@@ -1215,6 +1205,16 @@ public final class StructureMobSpawner {
       }
 
       return count;
+    }
+
+    private boolean isLoaded(
+        ServerLevel level,
+        BlockPos pos
+    ) {
+      int chunkX = Math.floorDiv(pos.getX(), 16);
+      int chunkZ = Math.floorDiv(pos.getZ(), 16);
+      return this.scannedChunks.contains(ChunkPos.pack(chunkX, chunkZ))
+          && level.getChunkSource().hasChunk(chunkX, chunkZ);
     }
 
     private boolean hasCachedCandidates(

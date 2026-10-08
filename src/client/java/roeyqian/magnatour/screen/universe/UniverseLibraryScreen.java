@@ -166,6 +166,11 @@ public class UniverseLibraryScreen extends AbstractContainerScreen<UniverseLibra
     this.scrollBarY = this.topPos + scrollBarYOffset;
   }
 
+  private int getMaxOffset() {
+    int maxRows = (int) Math.ceil(this.menu.getInventorySize() / 9.0);
+    return Math.max(0, maxRows - 6);
+  }
+
   private boolean canScroll() {
     return getMaxOffset() > 0;
   }
@@ -205,11 +210,6 @@ public class UniverseLibraryScreen extends AbstractContainerScreen<UniverseLibra
         );
       }
     }
-  }
-
-  private int getMaxOffset() {
-    int maxRows = (int) Math.ceil(this.menu.getInventorySize() / 9.0);
-    return Math.max(0, maxRows - 6);
   }
 
 }

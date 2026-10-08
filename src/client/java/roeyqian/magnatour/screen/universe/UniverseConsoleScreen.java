@@ -244,6 +244,76 @@ public class UniverseConsoleScreen extends AbstractContainerScreen<UniverseConso
     this.scrollOffset = 0;
   }
 
+  private void drawMainButtons(
+      GuiGraphicsExtractor graphics,
+      int mouseX,
+      int mouseY,
+      int baseX,
+      int buttonY,
+      UniverseConsole.BoundBlocks block
+  ) {
+    Identifier mainTexture =
+        mouseOverMain(mouseX, mouseY, baseX, buttonY) ? BUTTON_HIGHLIGHTED : BUTTON_NORMAL;
+    graphics.blit(
+        RenderPipelines.GUI_TEXTURED, mainTexture,
+        baseX, buttonY, 0, 0,
+        BUTTON_WIDTH, BUTTON_HEIGHT,
+        BUTTON_WIDTH, BUTTON_HEIGHT
+    );
+
+    String fullText = block.displayName() + " [" + block.pos().toShortString() + "]";
+
+    int maxTextWidth = BUTTON_WIDTH - 10;
+    if (this.font.width(fullText) > maxTextWidth) {
+      while (!fullText.isEmpty() && this.font.width(fullText + "...") > maxTextWidth) {
+        fullText = fullText.substring(0, fullText.length() - 1);
+      }
+      fullText += "...";
+    }
+
+    int textX = baseX + (BUTTON_WIDTH - this.font.width(fullText)) / 2;
+    int textY = buttonY + (BUTTON_HEIGHT - this.font.lineHeight) / 2;
+
+    graphics.text(this.font, Component.literal(fullText), textX, textY, 0xFFFFFFFF, true);
+  }
+
+  private void drawDeleteButtons(
+      GuiGraphicsExtractor graphics,
+      int mouseX,
+      int mouseY,
+      int deleteX,
+      int buttonY
+  ) {
+    Identifier deleteTexture =
+        mouseOverDelete(mouseX, mouseY, deleteX, buttonY) ? BUTTON_DELETE_HIGHLIGHTED : BUTTON_DELETE;
+    graphics.blit(
+        RenderPipelines.GUI_TEXTURED, deleteTexture,
+        deleteX, buttonY, 0, 0,
+        DELETE_BUTTON_WIDTH, DELETE_BUTTON_HEIGHT,
+        DELETE_BUTTON_WIDTH, DELETE_BUTTON_HEIGHT
+    );
+  }
+
+  private boolean mouseOverDelete(
+      int mouseX,
+      int mouseY,
+      int deleteX,
+      int buttonY
+  ) {
+    return mouseX >= deleteX && mouseX < deleteX + DELETE_BUTTON_WIDTH &&
+        mouseY >= buttonY && mouseY < buttonY + DELETE_BUTTON_HEIGHT;
+  }
+
+  private boolean mouseOverMain(
+      int mouseX,
+      int mouseY,
+      int buttonX,
+      int buttonY
+  ) {
+    return mouseX >= buttonX && mouseX < buttonX + BUTTON_WIDTH &&
+        mouseY >= buttonY && mouseY < buttonY + BUTTON_HEIGHT;
+  }
+
   private void drawButtons(
       GuiGraphicsExtractor graphics,
       int mouseX,
@@ -391,76 +461,6 @@ public class UniverseConsoleScreen extends AbstractContainerScreen<UniverseConso
     ClientPlayNetworking.send(new UniverseConsoleBoundBlockPayload(
         UniverseConsoleBoundBlockPayload.Action.OPEN, block.pos(), block.dimension()
     ));
-  }
-
-  private void drawMainButtons(
-      GuiGraphicsExtractor graphics,
-      int mouseX,
-      int mouseY,
-      int baseX,
-      int buttonY,
-      UniverseConsole.BoundBlocks block
-  ) {
-    Identifier mainTexture =
-        mouseOverMain(mouseX, mouseY, baseX, buttonY) ? BUTTON_HIGHLIGHTED : BUTTON_NORMAL;
-    graphics.blit(
-        RenderPipelines.GUI_TEXTURED, mainTexture,
-        baseX, buttonY, 0, 0,
-        BUTTON_WIDTH, BUTTON_HEIGHT,
-        BUTTON_WIDTH, BUTTON_HEIGHT
-    );
-
-    String fullText = block.displayName() + " [" + block.pos().toShortString() + "]";
-
-    int maxTextWidth = BUTTON_WIDTH - 10;
-    if (this.font.width(fullText) > maxTextWidth) {
-      while (!fullText.isEmpty() && this.font.width(fullText + "...") > maxTextWidth) {
-        fullText = fullText.substring(0, fullText.length() - 1);
-      }
-      fullText += "...";
-    }
-
-    int textX = baseX + (BUTTON_WIDTH - this.font.width(fullText)) / 2;
-    int textY = buttonY + (BUTTON_HEIGHT - this.font.lineHeight) / 2;
-
-    graphics.text(this.font, Component.literal(fullText), textX, textY, 0xFFFFFFFF, true);
-  }
-
-  private void drawDeleteButtons(
-      GuiGraphicsExtractor graphics,
-      int mouseX,
-      int mouseY,
-      int deleteX,
-      int buttonY
-  ) {
-    Identifier deleteTexture =
-        mouseOverDelete(mouseX, mouseY, deleteX, buttonY) ? BUTTON_DELETE_HIGHLIGHTED : BUTTON_DELETE;
-    graphics.blit(
-        RenderPipelines.GUI_TEXTURED, deleteTexture,
-        deleteX, buttonY, 0, 0,
-        DELETE_BUTTON_WIDTH, DELETE_BUTTON_HEIGHT,
-        DELETE_BUTTON_WIDTH, DELETE_BUTTON_HEIGHT
-    );
-  }
-
-  private boolean mouseOverMain(
-      int mouseX,
-      int mouseY,
-      int buttonX,
-      int buttonY
-  ) {
-    return mouseX >= buttonX && mouseX < buttonX + BUTTON_WIDTH &&
-        mouseY >= buttonY && mouseY < buttonY + BUTTON_HEIGHT;
-  }
-
-  private boolean mouseOverDelete(
-      int mouseX,
-      int mouseY,
-      int deleteX,
-      int buttonY
-  ) {
-    return mouseX >= deleteX && mouseX < deleteX + DELETE_BUTTON_WIDTH &&
-        mouseY >= buttonY && mouseY < buttonY + DELETE_BUTTON_HEIGHT;
   }
 
 }

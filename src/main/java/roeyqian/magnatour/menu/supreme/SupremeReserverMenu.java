@@ -317,6 +317,54 @@ public class SupremeReserverMenu extends AbstractContainerMenu {
     return stillValid(this.context, player, SupremeBlocks.SUPREME_RESERVER);
   }
 
+  private ItemStack getRecipeResult(
+      CraftingRecipe recipe
+  ) {
+    try {
+      CraftingInput emptyInput = CraftingInput.of(1, 1, List.of(ItemStack.EMPTY));
+      return recipe.assemble(emptyInput);
+    } catch (Exception e) {
+      return ItemStack.EMPTY;
+    }
+  }
+
+  private List<Ingredient> getIngredientsList(
+      CraftingRecipe recipe
+  ) {
+    List<Ingredient> result = new ArrayList<>();
+
+    if (recipe instanceof ShapedRecipe shapedRecipe) {
+      List<Optional<Ingredient>> ingredients = shapedRecipe.getIngredients();
+      for (Optional<Ingredient> opt : ingredients) {
+        opt.ifPresent(result::add);
+      }
+    } else if (recipe instanceof ShapelessRecipe shapelessRecipe) {
+      result.addAll(
+          ((ShapelessRecipeAccessor) shapelessRecipe).getIngredients()
+      );
+    }
+
+    return result;
+  }
+
+  private int getMaxIngredientVariants(
+      List<Ingredient> ingredients
+  ) {
+    int max = 1;
+    for (Ingredient ingredient : ingredients) {
+      if (ingredient != null && !ingredient.isEmpty()) {
+        int count = (int) ((IngredientAccessor) (Object) ingredient)
+            .getEntries()
+            .stream()
+            .count();
+        if (count > max) {
+          max = count;
+        }
+      }
+    }
+    return max;
+  }
+
   private void setCurrentRecipeIndex(
       int index
   ) {
@@ -362,80 +410,6 @@ public class SupremeReserverMenu extends AbstractContainerMenu {
     }
   }
 
-  private ItemStack getRecipeResult(
-      CraftingRecipe recipe
-  ) {
-    try {
-      CraftingInput emptyInput = CraftingInput.of(1, 1, List.of(ItemStack.EMPTY));
-      return recipe.assemble(emptyInput);
-    } catch (Exception e) {
-      return ItemStack.EMPTY;
-    }
-  }
-
-  private void clearOutputSlots() {
-    for (int i = 0; i < 9; i++) {
-      outputInventory.setItem(i, ItemStack.EMPTY);
-    }
-  }
-
-  private void setSlotFromIngredient(
-      int slotIndex,
-      Ingredient ingredient,
-      int variantIndex
-  ) {
-    if (ingredient == null || ingredient.isEmpty()) {
-      return;
-    }
-
-    List<Holder<Item>> matchingItems =
-        ((IngredientAccessor) (Object) ingredient).getEntries().stream().toList();
-
-    if (!matchingItems.isEmpty()) {
-      int itemIndex = variantIndex % matchingItems.size();
-      Holder<Item> selectedItem = matchingItems.get(itemIndex);
-      ItemStack stack = new ItemStack(selectedItem.value());
-      outputInventory.setItem(slotIndex, stack);
-    }
-  }
-
-  private List<Ingredient> getIngredientsList(
-      CraftingRecipe recipe
-  ) {
-    List<Ingredient> result = new ArrayList<>();
-
-    if (recipe instanceof ShapedRecipe shapedRecipe) {
-      List<Optional<Ingredient>> ingredients = shapedRecipe.getIngredients();
-      for (Optional<Ingredient> opt : ingredients) {
-        opt.ifPresent(result::add);
-      }
-    } else if (recipe instanceof ShapelessRecipe shapelessRecipe) {
-      result.addAll(
-          ((ShapelessRecipeAccessor) shapelessRecipe).getIngredients()
-      );
-    }
-
-    return result;
-  }
-
-  private int getMaxIngredientVariants(
-      List<Ingredient> ingredients
-  ) {
-    int max = 1;
-    for (Ingredient ingredient : ingredients) {
-      if (ingredient != null && !ingredient.isEmpty()) {
-        int count = (int) ((IngredientAccessor) (Object) ingredient)
-            .getEntries()
-            .stream()
-            .count();
-        if (count > max) {
-          max = count;
-        }
-      }
-    }
-    return max;
-  }
-
   private void setRecipeCount(
       int count
   ) {
@@ -470,6 +444,32 @@ public class SupremeReserverMenu extends AbstractContainerMenu {
           }
         }
       }
+    }
+  }
+
+  private void clearOutputSlots() {
+    for (int i = 0; i < 9; i++) {
+      outputInventory.setItem(i, ItemStack.EMPTY);
+    }
+  }
+
+  private void setSlotFromIngredient(
+      int slotIndex,
+      Ingredient ingredient,
+      int variantIndex
+  ) {
+    if (ingredient == null || ingredient.isEmpty()) {
+      return;
+    }
+
+    List<Holder<Item>> matchingItems =
+        ((IngredientAccessor) (Object) ingredient).getEntries().stream().toList();
+
+    if (!matchingItems.isEmpty()) {
+      int itemIndex = variantIndex % matchingItems.size();
+      Holder<Item> selectedItem = matchingItems.get(itemIndex);
+      ItemStack stack = new ItemStack(selectedItem.value());
+      outputInventory.setItem(slotIndex, stack);
     }
   }
 

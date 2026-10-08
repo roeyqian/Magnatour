@@ -258,6 +258,21 @@ public class StarAtlasScreen extends Screen {
     }
   }
 
+  private void panelPart(
+      GuiGraphicsExtractor graphics,
+      int x,
+      int y,
+      int partWidth,
+      int partHeight,
+      int u,
+      int v,
+      int sourceWidth,
+      int sourceHeight
+  ) {
+    graphics.blit(RenderPipelines.GUI_TEXTURED, PANEL_TEXTURE, left + x, top + y, u, v,
+        partWidth, partHeight, sourceWidth, sourceHeight, 256, 256);
+  }
+
   private void extractPanel(
       GuiGraphicsExtractor graphics
   ) {
@@ -280,13 +295,6 @@ public class StarAtlasScreen extends Screen {
     return x >= left + 8 && x < left + 8 + mapWidth && y >= top + 32 && y < top + 32 + mapHeight;
   }
 
-  private void setZoom(
-      double value
-  ) {
-    zoom = Math.max(0.125, Math.min(4.0, value));
-    dirty = true;
-  }
-
   private void releaseTexture() {
     if (texture != null) {
       minecraft.getTextureManager().release(MAP_TEXTURE);
@@ -295,19 +303,11 @@ public class StarAtlasScreen extends Screen {
     }
   }
 
-  private void panelPart(
-      GuiGraphicsExtractor graphics,
-      int x,
-      int y,
-      int partWidth,
-      int partHeight,
-      int u,
-      int v,
-      int sourceWidth,
-      int sourceHeight
+  private void setZoom(
+      double value
   ) {
-    graphics.blit(RenderPipelines.GUI_TEXTURED, PANEL_TEXTURE, left + x, top + y, u, v,
-        partWidth, partHeight, sourceWidth, sourceHeight, 256, 256);
+    zoom = Math.max(0.125, Math.min(4.0, value));
+    dirty = true;
   }
 
   private static final class AtlasMap {
@@ -367,19 +367,19 @@ public class StarAtlasScreen extends Screen {
       });
     }
 
+    private int[] cellsAt(
+        int x,
+        int z
+    ) {
+      return visible.get(key(x, z));
+    }
+
     private void close() {
       if (active == this) active = null;
       if (Minecraft.getInstance().getConnection() != null && ClientPlayNetworking.canSend(StarAtlas.Payload.ID)) {
         ClientPlayNetworking.send(StarAtlas.Payload.close(level.dimension()));
       }
       visible.clear();
-    }
-
-    private int[] cellsAt(
-        int x,
-        int z
-    ) {
-      return visible.get(key(x, z));
     }
 
     private Component biomeAt(

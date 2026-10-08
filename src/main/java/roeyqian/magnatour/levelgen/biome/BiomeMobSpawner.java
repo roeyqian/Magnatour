@@ -279,15 +279,15 @@ public final class BiomeMobSpawner {
       for (ServerPlayer player : playersNear(pos)) this.localCounts.merge(player, 1, Integer::sum);
     }
 
+    private boolean canSpawn() {
+      return this.population < this.populationLimit && this.spawned < MAX_SPAWN_PER_CYCLE;
+    }
+
     private List<ServerPlayer> playersNear(
         ChunkPos pos
     ) {
       return this.playersNearChunk.computeIfAbsent(pos,
           chunkPos -> this.level.getChunkSource().chunkMap.getPlayersCloseForSpawning(chunkPos));
-    }
-
-    private boolean canSpawn() {
-      return this.population < this.populationLimit && this.spawned < MAX_SPAWN_PER_CYCLE;
     }
 
     private void afterSpawn(

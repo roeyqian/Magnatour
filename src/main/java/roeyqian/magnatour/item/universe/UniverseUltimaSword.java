@@ -111,6 +111,38 @@ public class UniverseUltimaSword extends Item {
         );
   }
 
+  private static ItemAttributeModifiers createAttributes() {
+    return ItemAttributeModifiers.builder()
+        .add(
+            Attributes.ATTACK_DAMAGE,
+            new AttributeModifier(
+                Item.BASE_ATTACK_DAMAGE_ID,
+                CustomToolMaterial.UNIVERSE_TOOL.attackDamageBonus() - 1,
+                AttributeModifier.Operation.ADD_VALUE
+            ),
+            EquipmentSlotGroup.HAND
+        )
+        .add(
+            Attributes.ATTACK_SPEED,
+            new AttributeModifier(
+                Item.BASE_ATTACK_SPEED_ID,
+                CustomToolMaterial.UNIVERSE_TOOL.speed() - 4,
+                AttributeModifier.Operation.ADD_VALUE
+            ),
+            EquipmentSlotGroup.HAND
+        )
+        .add(
+            Attributes.ENTITY_INTERACTION_RANGE,
+            new AttributeModifier(
+                Identifier.fromNamespaceAndPath(Magnatour.MOD_ID, "universe_entity_range"),
+                1024.0F,
+                AttributeModifier.Operation.ADD_VALUE
+            ),
+            EquipmentSlotGroup.HAND
+        )
+        .build();
+  }
+
   private static void execUniverseKill(
       ServerLevel world,
       LivingEntity target
@@ -200,38 +232,6 @@ public class UniverseUltimaSword extends Item {
       world.gameEvent(player, GameEvent.BLOCK_CHANGE, blockPos);
       return InteractionResult.SUCCESS;
     }
-  }
-
-  private static ItemAttributeModifiers createAttributes() {
-    return ItemAttributeModifiers.builder()
-        .add(
-            Attributes.ATTACK_DAMAGE,
-            new AttributeModifier(
-                Item.BASE_ATTACK_DAMAGE_ID,
-                CustomToolMaterial.UNIVERSE_TOOL.attackDamageBonus() - 1,
-                AttributeModifier.Operation.ADD_VALUE
-            ),
-            EquipmentSlotGroup.HAND
-        )
-        .add(
-            Attributes.ATTACK_SPEED,
-            new AttributeModifier(
-                Item.BASE_ATTACK_SPEED_ID,
-                CustomToolMaterial.UNIVERSE_TOOL.speed() - 4,
-                AttributeModifier.Operation.ADD_VALUE
-            ),
-            EquipmentSlotGroup.HAND
-        )
-        .add(
-            Attributes.ENTITY_INTERACTION_RANGE,
-            new AttributeModifier(
-                Identifier.fromNamespaceAndPath(Magnatour.MOD_ID, "universe_entity_range"),
-                1024.0F,
-                AttributeModifier.Operation.ADD_VALUE
-            ),
-            EquipmentSlotGroup.HAND
-        )
-        .build();
   }
 
 }

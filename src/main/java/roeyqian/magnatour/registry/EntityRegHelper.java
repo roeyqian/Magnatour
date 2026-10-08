@@ -30,6 +30,12 @@ import roeyqian.magnatour.Magnatour;
 
 public interface EntityRegHelper {
 
+  static Identifier id(
+      String path
+  ) {
+    return Identifier.fromNamespaceAndPath(Magnatour.MOD_ID, path);
+  }
+
   static <T extends Entity> EntityType<T> register(
       ResourceKey<EntityType<?>> key,
       EntityType.EntityFactory<T> factory,
@@ -42,12 +48,6 @@ public interface EntityRegHelper {
         key,
         EntityType.Builder.of(factory, category).sized(width, height).build(key)
     );
-  }
-
-  static Identifier id(
-      String path
-  ) {
-    return Identifier.fromNamespaceAndPath(Magnatour.MOD_ID, path);
   }
 
   static ResourceKey<EntityType<?>> entityKey(

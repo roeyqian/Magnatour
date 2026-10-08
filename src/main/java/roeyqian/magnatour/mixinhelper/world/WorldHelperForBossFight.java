@@ -107,6 +107,16 @@ public final class WorldHelperForBossFight {
     return SupremeBlocks.SUPREME_WORKTABLE;
   }
 
+  private static boolean canPlaceWorktable(
+      ServerLevel world,
+      BlockPos pos
+  ) {
+    BlockPos belowPos = pos.below();
+    return world.getWorldBorder().isWithinBounds(pos)
+        && world.getBlockState(pos).canBeReplaced()
+        && world.getBlockState(belowPos).isFaceSturdy(world, belowPos, Direction.UP);
+  }
+
   private static Block getCachedKillReward(
       EnderDragonFight fight,
       EnderDragon dragon
@@ -150,16 +160,6 @@ public final class WorldHelperForBossFight {
         && player.getInventory().contains(new ItemStack(UniverseItems.UNIVERSE_GEMGREEN))
         && player.getInventory().contains(new ItemStack(UniverseItems.UNIVERSE_GEMBLACK))
         && player.getInventory().contains(new ItemStack(UniverseItems.UNIVERSE_GEMWHITE));
-  }
-
-  private static boolean canPlaceWorktable(
-      ServerLevel world,
-      BlockPos pos
-  ) {
-    BlockPos belowPos = pos.below();
-    return world.getWorldBorder().isWithinBounds(pos)
-        && world.getBlockState(pos).canBeReplaced()
-        && world.getBlockState(belowPos).isFaceSturdy(world, belowPos, Direction.UP);
   }
 
   private record DragonKillReward(

@@ -297,6 +297,32 @@ public final class HarvestContinentChunkGenerator extends ChunkGenerator {
     worldSurface.update(localX, y, localZ, state);
   }
 
+  private static BlockState surfaceTop(
+      ResourceKeyBiome profile
+  ) {
+    if (profile.pumpkinGorge()) return Blocks.RED_SAND.defaultBlockState();
+    if (profile.desert()) return Blocks.SAND.defaultBlockState();
+    if (profile.sacredMountain()) return Blocks.STONE.defaultBlockState();
+    if (profile.marsh()) return profile.surfaceY() < HarvestContinentTerrain.SEA_LEVEL
+        ? Blocks.MUD.defaultBlockState() : Blocks.GRASS_BLOCK.defaultBlockState();
+    if (profile.berrySnowfield()) return profile.berryClearing()
+        ? Blocks.GRASS_BLOCK.defaultBlockState() : Blocks.SNOW_BLOCK.defaultBlockState();
+    return profile.crop() ? SupremeBlocks.EVER_WATER_FARMLAND.defaultBlockState()
+        : SupremeBlocks.EVER_WATER_GRASS_BLOCK.defaultBlockState();
+  }
+
+  private static BlockState surfaceFiller(
+      ResourceKeyBiome profile
+  ) {
+    if (profile.pumpkinGorge()) return Blocks.DYED_TERRACOTTA.orange().defaultBlockState();
+    if (profile.desert()) return Blocks.SANDSTONE.defaultBlockState();
+    if (profile.sacredMountain()) return Blocks.STONE.defaultBlockState();
+    if (profile.berrySnowfield()) return profile.berryClearing()
+        ? Blocks.DIRT.defaultBlockState() : Blocks.PACKED_ICE.defaultBlockState();
+    if (profile.marsh()) return Blocks.DIRT.defaultBlockState();
+    return SupremeBlocks.EVER_WATER_SOIL.defaultBlockState();
+  }
+
   private static BlockState blockAt(
       HarvestContinentCaveSampler caves,
       ResourceKeyBiome profile,
@@ -362,32 +388,6 @@ public final class HarvestContinentChunkGenerator extends ChunkGenerator {
     }
     if (crop && base + 1 < states.length) states[base + 1] = Blocks.WHEAT.defaultBlockState()
         .setValue(BlockStateProperties.AGE_7, 7);
-  }
-
-  private static BlockState surfaceTop(
-      ResourceKeyBiome profile
-  ) {
-    if (profile.pumpkinGorge()) return Blocks.RED_SAND.defaultBlockState();
-    if (profile.desert()) return Blocks.SAND.defaultBlockState();
-    if (profile.sacredMountain()) return Blocks.STONE.defaultBlockState();
-    if (profile.marsh()) return profile.surfaceY() < HarvestContinentTerrain.SEA_LEVEL
-        ? Blocks.MUD.defaultBlockState() : Blocks.GRASS_BLOCK.defaultBlockState();
-    if (profile.berrySnowfield()) return profile.berryClearing()
-        ? Blocks.GRASS_BLOCK.defaultBlockState() : Blocks.SNOW_BLOCK.defaultBlockState();
-    return profile.crop() ? SupremeBlocks.EVER_WATER_FARMLAND.defaultBlockState()
-        : SupremeBlocks.EVER_WATER_GRASS_BLOCK.defaultBlockState();
-  }
-
-  private static BlockState surfaceFiller(
-      ResourceKeyBiome profile
-  ) {
-    if (profile.pumpkinGorge()) return Blocks.DYED_TERRACOTTA.orange().defaultBlockState();
-    if (profile.desert()) return Blocks.SANDSTONE.defaultBlockState();
-    if (profile.sacredMountain()) return Blocks.STONE.defaultBlockState();
-    if (profile.berrySnowfield()) return profile.berryClearing()
-        ? Blocks.DIRT.defaultBlockState() : Blocks.PACKED_ICE.defaultBlockState();
-    if (profile.marsh()) return Blocks.DIRT.defaultBlockState();
-    return SupremeBlocks.EVER_WATER_SOIL.defaultBlockState();
   }
 
   /** The same pointwise function is used for chunks, columns and structures. */

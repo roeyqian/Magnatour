@@ -217,8 +217,34 @@ public class ItemHubAnchorsScreen extends Screen {
     return new ItemStack(BuiltInRegistries.ITEM.getValue(Identifier.parse(itemId)));
   }
 
+  private void showError(
+      String key
+  ) {
+    this.status = Component.translatable("gui.magnatour.item_hub." + key);
+    this.error = true;
+  }
+
+  private void sendAction(
+      int action,
+      String itemId
+  ) {
+    ClientPlayNetworking.send(new ItemHubPayload(this.menu.getBlockPos(), this.menu.getDimension(),
+        action, itemId));
+  }
+
   private int pageCount() {
     return Math.max(1, (this.anchors.size() + ROWS_PER_PAGE - 1) / ROWS_PER_PAGE);
+  }
+
+  private void removeAnchor(
+      int row
+  ) {
+    int index = this.page * ROWS_PER_PAGE + row;
+    if (index < this.anchors.size()) {
+      sendAction(ItemHubPayload.REMOVE, this.anchors.get(index));
+      this.status = Component.empty();
+      this.error = false;
+    }
   }
 
   private void addAnchor() {
@@ -248,32 +274,6 @@ public class ItemHubAnchorsScreen extends Screen {
     for (int row = 0; row < this.removeButtons.size(); row++) {
       this.removeButtons.get(row).visible = this.page * ROWS_PER_PAGE + row < this.anchors.size();
     }
-  }
-
-  private void showError(
-      String key
-  ) {
-    this.status = Component.translatable("gui.magnatour.item_hub." + key);
-    this.error = true;
-  }
-
-  private void removeAnchor(
-      int row
-  ) {
-    int index = this.page * ROWS_PER_PAGE + row;
-    if (index < this.anchors.size()) {
-      sendAction(ItemHubPayload.REMOVE, this.anchors.get(index));
-      this.status = Component.empty();
-      this.error = false;
-    }
-  }
-
-  private void sendAction(
-      int action,
-      String itemId
-  ) {
-    ClientPlayNetworking.send(new ItemHubPayload(this.menu.getBlockPos(), this.menu.getDimension(),
-        action, itemId));
   }
 
 }
