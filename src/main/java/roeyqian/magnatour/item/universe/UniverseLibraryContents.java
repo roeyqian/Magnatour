@@ -8,6 +8,8 @@
 package roeyqian.magnatour.item.universe;
 
 // Java Standard
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -49,6 +51,15 @@ public record UniverseLibraryContents(
     slots = List.copyOf(slots);
   }
 
+  public static String formatCount(
+      long count
+  ) {
+    if (count >= 1_000_000_000L) return formatCountUnit(count, 1_000_000_000L, "G");
+    if (count >= 1_000_000L) return formatCountUnit(count, 1_000_000L, "M");
+    if (count >= 1_000L) return formatCountUnit(count, 1_000L, "K");
+    return Long.toString(count);
+  }
+
   public static UniverseLibraryContents fromItems(
       List<ItemStack> items
   ) {
@@ -76,7 +87,7 @@ public record UniverseLibraryContents(
     for (StoredSlot slot : preview) {
       // Stored templates have a count of one; display the separate storage quantity directly.
       ItemStack item = slot.item().create();
-      lines.accept(Component.translatable("item.container.item_count", slot.count(), item.getHoverName()));
+      lines.accept(Component.translatable("item.container.item_count", formatCount(slot.count()), item.getHoverName()));
     }
 
     int remaining = this.slots.size() - preview.size();
@@ -96,6 +107,15 @@ public record UniverseLibraryContents(
     }
   }
 
+  private static String formatCountUnit(
+      long count,
+      long unit,
+      String suffix
+  ) {
+    return BigDecimal.valueOf(count).divide(BigDecimal.valueOf(unit), 2, RoundingMode.DOWN)
+        .stripTrailingZeros().toPlainString() + suffix;
+  }
+
   public record StoredSlot(
       int slot,
       ItemStackTemplate item,
@@ -105,7 +125,7 @@ public record UniverseLibraryContents(
     public static final Codec<StoredSlot> CODEC = RecordCodecBuilder.create(instance -> instance.group(
         ExtraCodecs.intRange(0, UniverseLibraryEntity.CONTAINER_SIZE - 1).fieldOf("slot").forGetter(StoredSlot::slot),
         ItemStackTemplate.CODEC.fieldOf("item").forGetter(StoredSlot::item),
-        ExtraCodecs.intRange(1, 396).fieldOf("count").forGetter(StoredSlot::count)
+        ExtraCodecs.intRange(1, UniverseLibraryEntity.STORAGE_STACK_LIMIT).fieldOf("count").forGetter(StoredSlot::count)
     ).apply(instance, StoredSlot::new));
 
   }

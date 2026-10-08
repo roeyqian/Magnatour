@@ -40,6 +40,7 @@ public class UniverseLibraryMenu extends AbstractContainerMenu {
   private final DataSlot searchItemHigh = DataSlot.standalone();
   private final DataSlot searchCountLow = DataSlot.standalone();
   private final DataSlot searchCountHigh = DataSlot.standalone();
+  private final DataSlot searchCountUpper = DataSlot.standalone();
 
   public final DataSlot scrollOffset = DataSlot.standalone();
 
@@ -70,6 +71,7 @@ public class UniverseLibraryMenu extends AbstractContainerMenu {
     this.addDataSlot(this.searchItemHigh);
     this.addDataSlot(this.searchCountLow);
     this.addDataSlot(this.searchCountHigh);
+    this.addDataSlot(this.searchCountUpper);
     inventory.startOpen(playerInventory.player);
 
     for (int row = 0; row < 6; row++) {
@@ -170,8 +172,10 @@ public class UniverseLibraryMenu extends AbstractContainerMenu {
     return this.sourceInventory.getContainerSize();
   }
 
-  public int getSearchCount() {
-    return (this.searchCountLow.get() & 0xFFFF) | ((this.searchCountHigh.get() & 0xFFFF) << 16);
+  public long getSearchCount() {
+    return (this.searchCountLow.get() & 0xFFFFL)
+        | ((this.searchCountHigh.get() & 0xFFFFL) << 16)
+        | ((this.searchCountUpper.get() & 0xFFFFL) << 32);
   }
 
   public ItemStack getSearchIcon() {
@@ -246,7 +250,7 @@ public class UniverseLibraryMenu extends AbstractContainerMenu {
   private void refreshSearchCount() {
     Item searched = this.getSearchedItem();
     ItemStack icon = ItemStack.EMPTY;
-    int total = 0;
+    long total = 0;
     if (searched != Items.AIR) {
       for (int slot = 0; slot < this.sourceInventory.getContainerSize(); slot++) {
         ItemStack stack = this.sourceInventory.getItem(slot);
@@ -256,10 +260,11 @@ public class UniverseLibraryMenu extends AbstractContainerMenu {
       }
       if (icon.isEmpty()) icon = new ItemStack(searched);
     }
-    if (total > 0) icon.setCount(Math.min(total, icon.getMaxStackSize()));
+    if (total > 0) icon.setCount((int) Math.min(total, icon.getMaxStackSize()));
     this.searchResultInventory.setItem(0, icon);
-    this.searchCountLow.set(total & 0xFFFF);
-    this.searchCountHigh.set(total >>> 16);
+    this.searchCountLow.set((int) (total & 0xFFFF));
+    this.searchCountHigh.set((int) ((total >>> 16) & 0xFFFF));
+    this.searchCountUpper.set((int) ((total >>> 32) & 0xFFFF));
   }
 
   private void clickStorageSlot(
@@ -410,7 +415,7 @@ public class UniverseLibraryMenu extends AbstractContainerMenu {
 
     @Override
     public int getMaxStackSize() {
-      return 64 * UniverseLibraryEntity.STACK_SIZE_MULTIPLIER;
+      return UniverseLibraryEntity.STORAGE_STACK_LIMIT;
     }
 
     @Override

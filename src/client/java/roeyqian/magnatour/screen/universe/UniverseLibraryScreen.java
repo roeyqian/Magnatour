@@ -15,6 +15,7 @@ import com.mojang.blaze3d.platform.InputConstants;
 
 // Minecraft
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -36,6 +37,7 @@ import org.jspecify.annotations.NonNull;
 
 // Magnatour
 import roeyqian.magnatour.Magnatour;
+import roeyqian.magnatour.item.universe.UniverseLibraryContents;
 import roeyqian.magnatour.menu.universe.UniverseLibraryMenu;
 
 public class UniverseLibraryScreen extends AbstractContainerScreen<UniverseLibraryMenu> {
@@ -54,6 +56,7 @@ public class UniverseLibraryScreen extends AbstractContainerScreen<UniverseLibra
   private EditBox searchField;
 
   private boolean invalidSearch = false;
+  private boolean extractingStorageSlot;
 
   private static final Identifier SCROLLER_SPRITE = Identifier.withDefaultNamespace(
       "container/creative_inventory/scroller"
@@ -75,6 +78,34 @@ public class UniverseLibraryScreen extends AbstractContainerScreen<UniverseLibra
       Component title
   ) {
     super(handler, inventory, title, 195, 222 + UniverseLibraryMenu.SEARCH_PANEL_HEIGHT);
+  }
+
+  public static void drawCount(
+      GuiGraphicsExtractor graphics,
+      Font font,
+      String text,
+      float x,
+      float y,
+      float scale,
+      int color,
+      boolean shadow
+  ) {
+    graphics.pose().pushMatrix();
+    try {
+      graphics.pose().translate(x, y);
+      graphics.pose().scale(scale, scale);
+      graphics.text(font, text, 0, 0, color, shadow);
+    } finally {
+      graphics.pose().popMatrix();
+    }
+  }
+
+  public static float getCountScale(
+      String text
+  ) {
+    String visibleText = ChatFormatting.stripFormatting(text);
+    int length = visibleText.codePointCount(0, visibleText.length());
+    return length <= 3 ? 1.0F : 3.0F / length;
   }
 
   @Override
@@ -119,6 +150,10 @@ public class UniverseLibraryScreen extends AbstractContainerScreen<UniverseLibra
       graphics.setTooltipForNextFrame(this.font,
           Component.translatable("gui.magnatour.universe_library.invalid"), mouseX, mouseY);
     }
+  }
+
+  public boolean isExtractingStorageSlot() {
+    return this.extractingStorageSlot;
   }
 
   @Override
@@ -222,7 +257,12 @@ public class UniverseLibraryScreen extends AbstractContainerScreen<UniverseLibra
       int mouseY
   ) {
     if (slot.index == UniverseLibraryMenu.SEARCH_RESULT_SLOT) return;
-    super.extractSlot(graphics, slot, mouseX, mouseY);
+    this.extractingStorageSlot = slot.index >= 0 && slot.index < 54;
+    try {
+      super.extractSlot(graphics, slot, mouseX, mouseY);
+    } finally {
+      this.extractingStorageSlot = false;
+    }
   }
 
   @Override
@@ -283,8 +323,9 @@ public class UniverseLibraryScreen extends AbstractContainerScreen<UniverseLibra
           this.leftPos + RESULT_X + 16, this.topPos + RESULT_Y + 16, 0x80FFFFFF);
     }
     graphics.item(icon, this.leftPos + RESULT_X, this.topPos + RESULT_Y);
-    graphics.text(this.font, "x" + this.menu.getSearchCount(),
-        this.leftPos + 144, this.topPos + RESULT_Y + 4, 0xFF404040, false);
+    String countText = "x" + UniverseLibraryContents.formatCount(this.menu.getSearchCount());
+    drawCount(graphics, this.font, countText,
+        this.leftPos + 144, this.topPos + RESULT_Y + 4, getCountScale(countText), 0xFF404040, false);
   }
 
   private void submitSearch() {

@@ -44,7 +44,7 @@ import roeyqian.magnatour.registry.logic.CustomComponents;
 public class UniverseLibraryEntity extends BaseContainerBlockEntity {
 
   public static final int CONTAINER_SIZE = 252;
-  public static final int STACK_SIZE_MULTIPLIER = 4;
+  public static final int STORAGE_STACK_LIMIT = 1_000_000_000;
 
   private final ChestLidController lidAnimator = new ChestLidController();
 
@@ -114,8 +114,7 @@ public class UniverseLibraryEntity extends BaseContainerBlockEntity {
   public static int getStorageStackLimit(
       ItemStack stack
   ) {
-    int limit = stack.getMaxStackSize();
-    return limit > 1 ? limit * STACK_SIZE_MULTIPLIER : limit;
+    return STORAGE_STACK_LIMIT;
   }
 
   public static void tick(
@@ -137,7 +136,7 @@ public class UniverseLibraryEntity extends BaseContainerBlockEntity {
 
   @Override
   public int getMaxStackSize() {
-    return 64 * STACK_SIZE_MULTIPLIER;
+    return STORAGE_STACK_LIMIT;
   }
 
   @Override
