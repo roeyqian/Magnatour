@@ -9,6 +9,7 @@ package roeyqian.magnatour.registry;
 
 // Java Standard
 import java.util.Objects;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
 
@@ -42,14 +43,24 @@ public interface BlockRegHelper {
       BlockBehaviour.Properties blockSettings,
       UnaryOperator<Item.Properties> itemModifier
   ) {
+    return register(name, factory, blockSettings.requiresCorrectToolForDrops(), itemModifier, BlockItem::new);
+  }
+
+  private static Block register(
+      String name,
+      Function<BlockBehaviour.Properties, Block> factory,
+      BlockBehaviour.Properties blockSettings,
+      UnaryOperator<Item.Properties> itemModifier,
+      BiFunction<Block, Item.Properties, BlockItem> itemFactory
+  ) {
     Identifier id = Identifier.fromNamespaceAndPath(Magnatour.MOD_ID, name);
     ResourceKey<Block> blockKey = ResourceKey.create(Registries.BLOCK, id);
     ResourceKey<Item> itemKey = ResourceKey.create(Registries.ITEM, id);
 
-    Block block = Blocks.register(blockKey, factory, blockSettings.requiresCorrectToolForDrops());
+    Block block = Blocks.register(blockKey, factory, blockSettings);
     Item.Properties itemProperties = itemModifier.apply(new Item.Properties().setId(itemKey));
 
-    BlockItem blockItem = new BlockItem(block, itemProperties);
+    BlockItem blockItem = itemFactory.apply(block, itemProperties);
     blockItem.registerBlocks(Item.BY_BLOCK, blockItem);
     Registry.register(BuiltInRegistries.ITEM, itemKey, blockItem);
 
@@ -191,6 +202,22 @@ public interface BlockRegHelper {
           setting -> setting.rarity(Rarity.EPIC)
       );
     }
+  }
+
+  static Block registerPortableContainer(
+      String name,
+      String type,
+      Function<BlockBehaviour.Properties, Block> factory,
+      BlockBehaviour.Properties properties,
+      BiFunction<Block, Item.Properties, BlockItem> itemFactory
+  ) {
+    boolean supreme = Objects.equals(type, "supreme");
+    return register(
+        name, factory,
+        properties.strength(supreme ? 64.0F : 256.0F, supreme ? 2400.0F : 3600000.0F),
+        setting -> setting.rarity(supreme ? Rarity.RARE : Rarity.EPIC),
+        itemFactory
+    );
   }
 
   static Block registerPortal(

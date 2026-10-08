@@ -441,5 +441,8 @@
   "block.magnatour.golden_wall_sign": "黄金告示牌",
   "item.magnatour.golden_hanging_sign": "黄金悬挂式告示牌",
   "block.magnatour.golden_hanging_sign": "黄金悬挂式告示牌",
-  "block.magnatour.golden_wall_hanging_sign": "黄金悬挂式告示牌"
+  "block.magnatour.golden_wall_hanging_sign": "黄金悬挂式告示牌",
+  "gui.magnatour.universe_library.search": "物品名称或ID",
+  "gui.magnatour.universe_library.take": "单击取出一组；Shift+单击尽量取出到背包",
+  "gui.magnatour.universe_library.invalid": "名称或ID无效，或名称有重名；请使用完整物品ID"
 }

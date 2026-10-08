@@ -20,6 +20,7 @@ import net.minecraft.network.codec.ByteBufCodecs;
 // Magnatour
 import roeyqian.magnatour.Magnatour;
 import roeyqian.magnatour.item.universe.UniverseConsole;
+import roeyqian.magnatour.item.universe.UniverseLibraryContents;
 import roeyqian.magnatour.registry.LogicRegHelper;
 
 /*
@@ -93,6 +94,13 @@ public final class CustomComponents {
   );
 
   private CustomComponents() {}
+
+  public static final DataComponentType<UniverseLibraryContents> UNIVERSE_LIBRARY_CONTENTS = register(
+      "universe_library_contents",
+      builder -> builder
+          .persistent(UniverseLibraryContents.CODEC)
+          .networkSynchronized(ByteBufCodecs.fromCodecWithRegistries(UniverseLibraryContents.CODEC))
+  );
 
   public static void init() {
     Magnatour.LOGGER.info("[Server] Initializing 'CustomComponents'");

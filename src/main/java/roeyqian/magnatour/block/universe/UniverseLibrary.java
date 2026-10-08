@@ -7,15 +7,12 @@
  */
 package roeyqian.magnatour.block.universe;
 
-// Java Standard
-import java.util.Collections;
-import java.util.List;
-
 // Minecraft
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
@@ -32,7 +29,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
-import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -96,9 +92,33 @@ public class UniverseLibrary extends BaseEntityBlock {
       @NonNull Player player
   ) {
     BlockEntity blockEntity = world.getBlockEntity(pos);
-    if (!world.isClientSide()) execShulker(world, pos, blockEntity, player);
+    if (!world.isClientSide()
+        && player.preventsBlockDrops()
+        && blockEntity instanceof UniverseLibraryEntity libraryEntity
+        && !libraryEntity.isEmpty()) {
+      ItemStack dropStack = new ItemStack(this);
+      dropStack.applyComponents(blockEntity.collectComponents());
+
+      ItemEntity itemEntity = new ItemEntity(
+          world,
+          pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5,
+          dropStack
+      );
+      itemEntity.setDefaultPickUpDelay();
+      world.addFreshEntity(itemEntity);
+    }
 
     return super.playerWillDestroy(world, pos, state, player);
+  }
+
+  @Override
+  protected void affectNeighborsAfterRemoval(
+      @NonNull BlockState state,
+      @NonNull ServerLevel level,
+      @NonNull BlockPos pos,
+      boolean movedByPiston
+  ) {
+    Containers.updateNeighboursAfterDestroy(state, level, pos);
   }
 
   @Override
@@ -106,14 +126,6 @@ public class UniverseLibrary extends BaseEntityBlock {
       StateDefinition.@NonNull Builder<Block, BlockState> builder
   ) {
     builder.add(FACING);
-  }
-
-  @Override @NonNull
-  protected List<ItemStack> getDrops(
-      @NonNull BlockState state,
-      LootParams.@NonNull Builder builder
-  ) {
-    return Collections.emptyList();
   }
 
   @Override @NonNull
@@ -150,31 +162,6 @@ public class UniverseLibrary extends BaseEntityBlock {
       if (be instanceof UniverseLibraryEntity libraryBe) player.openMenu(libraryBe);
     }
     return InteractionResult.SUCCESS;
-  }
-
-  private void execShulker(
-      Level world,
-      BlockPos pos,
-      BlockEntity blockEntity,
-      Player player
-  ) {
-    if (blockEntity instanceof UniverseLibraryEntity libraryEntity) {
-      if (!player.isCreative() || !libraryEntity.isEmpty()) {
-        ItemStack dropStack;
-        dropStack = new ItemStack(this);
-        if (!libraryEntity.isEmpty()) dropStack.applyComponents(blockEntity.collectComponents());
-
-        ItemEntity itemEntity = new ItemEntity(
-            world,
-            pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5,
-            dropStack
-        );
-        itemEntity.setDefaultPickUpDelay();
-        world.addFreshEntity(itemEntity);
-      }
-
-      libraryEntity.clearContent();
-    }
   }
 
 }

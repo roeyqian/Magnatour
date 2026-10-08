@@ -14,6 +14,7 @@ import java.util.Optional;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -60,9 +61,9 @@ public final class UniverseBlocks {
   private static final String universe = "universe";
 
   // Active Blocks - Stateless
-  public static final Block UNIVERSE_LIBRARY = BlockRegHelper.registerBase(
+  public static final Block UNIVERSE_LIBRARY = BlockRegHelper.registerPortableContainer(
       "universe_library", universe,
-      UniverseLibrary::new, BlockBehaviour.Properties.of()
+      UniverseLibrary::new, BlockBehaviour.Properties.of(), BlockItem::new
   );
   public static final Block UNIVERSE_WORKSTATION = BlockRegHelper.registerBase(
       "universe_workstation", universe,

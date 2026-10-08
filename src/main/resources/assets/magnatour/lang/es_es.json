@@ -441,5 +441,8 @@
   "block.magnatour.golden_wall_sign": "Cartel de madera dorada",
   "item.magnatour.golden_hanging_sign": "Cartel colgante de madera dorada",
   "block.magnatour.golden_hanging_sign": "Cartel colgante de madera dorada",
-  "block.magnatour.golden_wall_hanging_sign": "Cartel colgante de madera dorada"
+  "block.magnatour.golden_wall_hanging_sign": "Cartel colgante de madera dorada",
+  "gui.magnatour.universe_library.search": "Nombre o ID",
+  "gui.magnatour.universe_library.take": "Clic para retirar una pila; Mayús-clic para retirar lo que quepa en el inventario",
+  "gui.magnatour.universe_library.invalid": "Nombre o ID inválido o ambiguo; utiliza el ID completo del objeto"
 }

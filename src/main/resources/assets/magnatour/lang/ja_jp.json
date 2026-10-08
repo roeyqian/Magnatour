@@ -441,5 +441,8 @@
   "block.magnatour.golden_wall_sign": "黄金の看板",
   "item.magnatour.golden_hanging_sign": "黄金の吊り看板",
   "block.magnatour.golden_hanging_sign": "黄金の吊り看板",
-  "block.magnatour.golden_wall_hanging_sign": "黄金の吊り看板"
+  "block.magnatour.golden_wall_hanging_sign": "黄金の吊り看板",
+  "gui.magnatour.universe_library.search": "アイテム名またはID",
+  "gui.magnatour.universe_library.take": "クリックで1スタック取り出す；Shift＋クリックで持てる分を取り出す",
+  "gui.magnatour.universe_library.invalid": "名前またはIDが無効、または同名です。完全なアイテムIDを入力してください"
 }

@@ -441,5 +441,8 @@
   "block.magnatour.golden_wall_sign": "Golden Sign",
   "item.magnatour.golden_hanging_sign": "Golden Hanging Sign",
   "block.magnatour.golden_hanging_sign": "Golden Hanging Sign",
-  "block.magnatour.golden_wall_hanging_sign": "Golden Hanging Sign"
+  "block.magnatour.golden_wall_hanging_sign": "Golden Hanging Sign",
+  "gui.magnatour.universe_library.search": "Item name or ID",
+  "gui.magnatour.universe_library.take": "Click to take one stack; Shift-click to take as much as your inventory can hold",
+  "gui.magnatour.universe_library.invalid": "Invalid or ambiguous item name or ID; use the full item ID"
 }

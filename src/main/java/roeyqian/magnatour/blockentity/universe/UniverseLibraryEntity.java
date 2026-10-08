@@ -17,9 +17,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
-import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.ContainerUser;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -27,7 +25,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.ItemContainerContents;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BaseContainerBlockEntity;
 import net.minecraft.world.level.block.entity.ChestLidController;
 import net.minecraft.world.level.block.entity.ContainerOpenersCounter;
 import net.minecraft.world.level.block.state.BlockState;
@@ -36,14 +34,17 @@ import net.minecraft.world.level.storage.ValueOutput;
 
 // JSpecify
 import org.jspecify.annotations.NonNull;
-import org.jspecify.annotations.Nullable;
 
 // Magnatour
-import roeyqian.magnatour.block.CustomContainer;
+import roeyqian.magnatour.item.universe.UniverseLibraryContents;
 import roeyqian.magnatour.menu.universe.UniverseLibraryMenu;
 import roeyqian.magnatour.registry.content.UniverseBlockEntities;
+import roeyqian.magnatour.registry.logic.CustomComponents;
 
-public class UniverseLibraryEntity extends BlockEntity implements MenuProvider, CustomContainer {
+public class UniverseLibraryEntity extends BaseContainerBlockEntity {
+
+  public static final int CONTAINER_SIZE = 252;
+  public static final int STACK_SIZE_MULTIPLIER = 4;
 
   private final ChestLidController lidAnimator = new ChestLidController();
 
@@ -101,7 +102,7 @@ public class UniverseLibraryEntity extends BlockEntity implements MenuProvider, 
 
   };
 
-  private final NonNullList<ItemStack> inventory = NonNullList.withSize(252, ItemStack.EMPTY);
+  private NonNullList<ItemStack> inventory = NonNullList.withSize(CONTAINER_SIZE, ItemStack.EMPTY);
 
   public UniverseLibraryEntity(
       BlockPos pos,
@@ -110,19 +111,17 @@ public class UniverseLibraryEntity extends BlockEntity implements MenuProvider, 
     super(UniverseBlockEntities.UNIVERSE_LIBRARY_ENTITY, pos, state);
   }
 
+  public static int getStorageStackLimit(
+      ItemStack stack
+  ) {
+    int limit = stack.getMaxStackSize();
+    return limit > 1 ? limit * STACK_SIZE_MULTIPLIER : limit;
+  }
+
   public static void tick(
       UniverseLibraryEntity libraryBe
   ) {
     libraryBe.lidAnimator.tickLid();
-  }
-
-  @Nullable @Override
-  public AbstractContainerMenu createMenu(
-      int syncId,
-      @NonNull Inventory playerInventory,
-      @NonNull Player player
-  ) {
-    return new UniverseLibraryMenu(syncId, playerInventory, this);
   }
 
   public float getAnimationProgress(
@@ -133,17 +132,27 @@ public class UniverseLibraryEntity extends BlockEntity implements MenuProvider, 
 
   @Override
   public int getContainerSize() {
-    return 252;
-  }
-
-  @Override @NonNull
-  public Component getDisplayName() {
-    return Component.translatable("item.magnatour.universe_library");
+    return CONTAINER_SIZE;
   }
 
   @Override
-  public NonNullList<ItemStack> getItems() {
-    return this.inventory;
+  public int getMaxStackSize() {
+    return 64 * STACK_SIZE_MULTIPLIER;
+  }
+
+  @Override
+  public int getMaxStackSize(
+      @NonNull ItemStack stack
+  ) {
+    return getStorageStackLimit(stack);
+  }
+
+  @Override
+  public void preRemoveSideEffects(
+      @NonNull BlockPos pos,
+      @NonNull BlockState state
+  ) {
+    // The loot table preserves the inventory inside the dropped container item.
   }
 
   public void recheckOpen() {
@@ -154,6 +163,14 @@ public class UniverseLibraryEntity extends BlockEntity implements MenuProvider, 
           this.getBlockState()
       );
     }
+  }
+
+  @Override
+  public void removeComponentsFromTag(
+      @NonNull ValueOutput view
+  ) {
+    super.removeComponentsFromTag(view);
+    view.discard("LibraryContents");
   }
 
   @Override
@@ -187,13 +204,6 @@ public class UniverseLibraryEntity extends BlockEntity implements MenuProvider, 
   }
 
   @Override
-  public boolean stillValid(
-      @NonNull Player player
-  ) {
-    return Container.stillValidBlockEntity(this, player);
-  }
-
-  @Override
   public void stopOpen(
       @NonNull ContainerUser containerUser
   ) {
@@ -224,12 +234,8 @@ public class UniverseLibraryEntity extends BlockEntity implements MenuProvider, 
       @NonNull DataComponentGetter components
   ) {
     super.applyImplicitComponents(components);
-
-    ItemContainerContents container = components.get(DataComponents.CONTAINER);
-    if (container != null) {
-      this.inventory.clear();
-      container.copyInto(this.inventory);
-    }
+    UniverseLibraryContents contents = components.get(CustomComponents.UNIVERSE_LIBRARY_CONTENTS);
+    if (contents != null) contents.copyInto(this.inventory);
   }
 
   @Override
@@ -237,15 +243,26 @@ public class UniverseLibraryEntity extends BlockEntity implements MenuProvider, 
       DataComponentMap.@NonNull Builder builder
   ) {
     super.collectImplicitComponents(builder);
+    builder.set(DataComponents.CONTAINER, ItemContainerContents.EMPTY);
+    builder.set(CustomComponents.UNIVERSE_LIBRARY_CONTENTS, UniverseLibraryContents.fromItems(this.inventory));
+  }
 
-    if (!this.inventory.isEmpty()) {
-      builder.set(DataComponents.CONTAINER, ItemContainerContents.fromItems(this.inventory));
-    } else {
-      builder.set(
-          DataComponents.CONTAINER,
-          ItemContainerContents.fromItems(NonNullList.withSize(252, ItemStack.EMPTY))
-      );
-    }
+  @Override @NonNull
+  protected AbstractContainerMenu createMenu(
+      int syncId,
+      @NonNull Inventory playerInventory
+  ) {
+    return new UniverseLibraryMenu(syncId, playerInventory, this);
+  }
+
+  @Override @NonNull
+  protected Component getDefaultName() {
+    return Component.translatable("item.magnatour.universe_library");
+  }
+
+  @Override
+  protected NonNullList<ItemStack> getItems() {
+    return this.inventory;
   }
 
   @Override
@@ -253,7 +270,10 @@ public class UniverseLibraryEntity extends BlockEntity implements MenuProvider, 
       @NonNull ValueInput view
   ) {
     super.loadAdditional(view);
-    ContainerHelper.loadAllItems(view, this.inventory);
+    this.inventory = NonNullList.withSize(CONTAINER_SIZE, ItemStack.EMPTY);
+    UniverseLibraryContents contents = view.read("LibraryContents", UniverseLibraryContents.CODEC).orElse(null);
+    if (contents != null) contents.copyInto(this.inventory);
+    else ContainerHelper.loadAllItems(view, this.inventory);
   }
 
   @Override
@@ -261,7 +281,14 @@ public class UniverseLibraryEntity extends BlockEntity implements MenuProvider, 
       @NonNull ValueOutput view
   ) {
     super.saveAdditional(view);
-    ContainerHelper.saveAllItems(view, this.inventory);
+    view.store("LibraryContents", UniverseLibraryContents.CODEC, UniverseLibraryContents.fromItems(this.inventory));
+  }
+
+  @Override
+  protected void setItems(
+      @NonNull NonNullList<ItemStack> items
+  ) {
+    this.inventory = items;
   }
 
 }

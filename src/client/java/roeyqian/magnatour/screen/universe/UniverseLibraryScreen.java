@@ -7,18 +7,29 @@
  */
 package roeyqian.magnatour.screen.universe;
 
+// Java Standard
+import java.util.Locale;
+
 // Mojang
 import com.mojang.blaze3d.platform.InputConstants;
 
 // Minecraft
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.ItemStack;
 
 // JSpecify
 import org.jspecify.annotations.NonNull;
@@ -33,7 +44,16 @@ public class UniverseLibraryScreen extends AbstractContainerScreen<UniverseLibra
   private static final int scrollBarTrackHeight = 106;
   private static final int scrollBarWidth = 12;
   private static final int scrollBarXOffset = 174;
-  private static final int scrollBarYOffset = 18;
+  private static final int scrollBarYOffset = 18 + UniverseLibraryMenu.SEARCH_PANEL_HEIGHT;
+  private static final int SEARCH_X = 8;
+  private static final int SEARCH_Y = 20;
+  private static final int SEARCH_WIDTH = 108;
+  private static final int RESULT_X = 122;
+  private static final int RESULT_Y = 20;
+
+  private EditBox searchField;
+
+  private boolean invalidSearch = false;
 
   private static final Identifier SCROLLER_SPRITE = Identifier.withDefaultNamespace(
       "container/creative_inventory/scroller"
@@ -54,7 +74,7 @@ public class UniverseLibraryScreen extends AbstractContainerScreen<UniverseLibra
       Inventory inventory,
       Component title
   ) {
-    super(handler, inventory, title, 195, 222);
+    super(handler, inventory, title, 195, 222 + UniverseLibraryMenu.SEARCH_PANEL_HEIGHT);
   }
 
   @Override
@@ -84,6 +104,39 @@ public class UniverseLibraryScreen extends AbstractContainerScreen<UniverseLibra
     }
 
     super.extractContents(graphics, mouseX, mouseY, delta);
+    this.drawSearchResult(graphics, mouseX, mouseY);
+  }
+
+  @Override
+  public void extractRenderState(
+      @NonNull GuiGraphicsExtractor graphics,
+      int mouseX,
+      int mouseY,
+      float delta
+  ) {
+    super.extractRenderState(graphics, mouseX, mouseY, delta);
+    if (this.invalidSearch && this.searchField.isMouseOver(mouseX, mouseY)) {
+      graphics.setTooltipForNextFrame(this.font,
+          Component.translatable("gui.magnatour.universe_library.invalid"), mouseX, mouseY);
+    }
+  }
+
+  @Override
+  public boolean keyPressed(
+      @NonNull KeyEvent event
+  ) {
+    if (this.searchField != null && this.searchField.isFocused()) {
+      if (event.key() == InputConstants.KEY_RETURN || event.key() == InputConstants.KEY_NUMPADENTER) {
+        this.submitSearch();
+      } else if (event.key() == InputConstants.KEY_ESCAPE) {
+        this.searchField.setFocused(false);
+        this.setFocused(null);
+      } else {
+        this.searchField.keyPressed(event);
+      }
+      return true;
+    }
+    return super.keyPressed(event);
   }
 
   @Override
@@ -94,6 +147,13 @@ public class UniverseLibraryScreen extends AbstractContainerScreen<UniverseLibra
     double mouseX = event.x();
     double mouseY = event.y();
     int button = event.button();
+
+    if (this.searchField.isMouseOver(mouseX, mouseY)) {
+      this.setFocused(this.searchField);
+      return this.searchField.mouseClicked(event, doubled);
+    }
+    this.searchField.setFocused(false);
+    this.setFocused(null);
 
     if (button == InputConstants.MOUSE_BUTTON_LEFT && isPointInScrollbarArea(mouseX, mouseY) && canScroll()) {
       this.isDragging = true;
@@ -155,15 +215,43 @@ public class UniverseLibraryScreen extends AbstractContainerScreen<UniverseLibra
   }
 
   @Override
+  protected void extractSlot(
+      @NonNull GuiGraphicsExtractor graphics,
+      @NonNull Slot slot,
+      int mouseX,
+      int mouseY
+  ) {
+    if (slot.index == UniverseLibraryMenu.SEARCH_RESULT_SLOT) return;
+    super.extractSlot(graphics, slot, mouseX, mouseY);
+  }
+
+  @Override
   protected void init() {
     super.init();
     this.titleLabelX = 8;
     this.titleLabelY = 6;
     this.inventoryLabelX = 8;
-    this.inventoryLabelY = 129;
+    this.inventoryLabelY = 129 + UniverseLibraryMenu.SEARCH_PANEL_HEIGHT;
 
     this.scrollBarX = this.leftPos + scrollBarXOffset;
     this.scrollBarY = this.topPos + scrollBarYOffset;
+
+    String previousQuery = this.searchField == null ? "" : this.searchField.getValue();
+    this.searchField = new EditBox(this.font,
+        this.leftPos + SEARCH_X + 3, this.topPos + SEARCH_Y + 4,
+        SEARCH_WIDTH - 6, 12,
+        Component.translatable("gui.magnatour.universe_library.search"));
+    this.searchField.setBordered(false);
+    this.searchField.setMaxLength(256);
+    this.searchField.setHint(Component.translatable("gui.magnatour.universe_library.search")
+        .withStyle(ChatFormatting.WHITE));
+    this.searchField.setValue(previousQuery);
+    this.searchField.setTextColor(this.invalidSearch ? 0xFFFF5555 : 0xFFFFFFFF);
+    this.searchField.setResponder(_ -> {
+      this.invalidSearch = false;
+      this.searchField.setTextColor(0xFFFFFFFF);
+    });
+    this.addRenderableWidget(this.searchField);
   }
 
   private int getMaxOffset() {
@@ -171,8 +259,63 @@ public class UniverseLibraryScreen extends AbstractContainerScreen<UniverseLibra
     return Math.max(0, maxRows - 6);
   }
 
+  private boolean isOverResult(
+      double mouseX,
+      double mouseY
+  ) {
+    return mouseX >= this.leftPos + RESULT_X - 1 && mouseX < this.leftPos + RESULT_X + 17
+        && mouseY >= this.topPos + RESULT_Y - 1 && mouseY < this.topPos + RESULT_Y + 17;
+  }
+
   private boolean canScroll() {
     return getMaxOffset() > 0;
+  }
+
+  private void drawSearchResult(
+      GuiGraphicsExtractor graphics,
+      int mouseX,
+      int mouseY
+  ) {
+    ItemStack icon = this.menu.getSearchIcon();
+    if (icon.isEmpty()) return;
+    if (this.isOverResult(mouseX, mouseY) && this.menu.getSearchCount() > 0) {
+      graphics.fill(this.leftPos + RESULT_X, this.topPos + RESULT_Y,
+          this.leftPos + RESULT_X + 16, this.topPos + RESULT_Y + 16, 0x80FFFFFF);
+    }
+    graphics.item(icon, this.leftPos + RESULT_X, this.topPos + RESULT_Y);
+    graphics.text(this.font, "x" + this.menu.getSearchCount(),
+        this.leftPos + 144, this.topPos + RESULT_Y + 4, 0xFF404040, false);
+  }
+
+  private void submitSearch() {
+    String query = this.searchField.getValue().strip();
+    if (query.isEmpty()) {
+      this.sendMenuButton(UniverseLibraryMenu.CLEAR_SEARCH_BUTTON);
+      return;
+    }
+
+    Identifier id = Identifier.tryParse(query.toLowerCase(Locale.ROOT));
+    Item result = id == null ? null : BuiltInRegistries.ITEM.getOptional(id).orElse(null);
+    if (result == null) {
+      for (Item item : BuiltInRegistries.ITEM) {
+        if (item == Items.AIR) continue;
+        if (new ItemStack(item).getHoverName().getString().equalsIgnoreCase(query)) {
+          if (result != null) {
+            this.rejectSearch();
+            return;
+          }
+          result = item;
+        }
+      }
+    }
+
+    if (result == null || result == Items.AIR) {
+      this.rejectSearch();
+      return;
+    }
+    this.invalidSearch = false;
+    this.searchField.setTextColor(0xFFFFFFFF);
+    this.sendMenuButton(UniverseLibraryMenu.SEARCH_BUTTON_BASE + Item.getId(result));
   }
 
   private boolean isPointInScrollbarArea(
@@ -210,6 +353,20 @@ public class UniverseLibraryScreen extends AbstractContainerScreen<UniverseLibra
         );
       }
     }
+  }
+
+  private void sendMenuButton(
+      int id
+  ) {
+    if (this.minecraft.gameMode != null) {
+      this.minecraft.gameMode.handleInventoryButtonClick(this.menu.containerId, id);
+    }
+  }
+
+  private void rejectSearch() {
+    this.invalidSearch = true;
+    this.searchField.setTextColor(0xFFFF5555);
+    this.sendMenuButton(UniverseLibraryMenu.CLEAR_SEARCH_BUTTON);
   }
 
 }

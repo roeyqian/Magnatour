@@ -6,12 +6,19 @@
       "entries": [
         {
           "type": "minecraft:item",
+          "modifier": {
+            "type": "minecraft:copy_components",
+            "include": [
+              "minecraft:custom_name",
+              "minecraft:container",
+              "magnatour:universe_library_contents",
+              "minecraft:lock"
+            ],
+            "source": "block_entity"
+          },
           "name": "magnatour:universe_library"
         }
-      ],
-      "condition": {
-        "type": "minecraft:survives_explosion"
-      }
+      ]
     }
   ]
 }
