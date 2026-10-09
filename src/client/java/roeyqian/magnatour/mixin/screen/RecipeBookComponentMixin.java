@@ -24,7 +24,9 @@ import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Constant;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyConstant;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 // Magnatour
@@ -89,6 +91,14 @@ public class RecipeBookComponentMixin {
         mouseX, mouseY,
         delta, ci
     );
+  }
+
+  @ModifyConstant(method = {"getYOrigin", "updateTabs"}, constant = @Constant(intValue = 166))
+  private int magnatour$alignUniverseRecipeBook(
+      int original
+  ) {
+    return (Object) this instanceof UniverseCraftingBookComponent
+        ? original + 2 * UniverseCraftingBookComponent.VERTICAL_OFFSET : original;
   }
 
 }

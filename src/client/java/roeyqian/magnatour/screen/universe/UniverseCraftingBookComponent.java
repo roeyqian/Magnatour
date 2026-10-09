@@ -38,6 +38,9 @@ import roeyqian.magnatour.screen.CustomRecipeDisplay;
 
 public final class UniverseCraftingBookComponent extends RecipeBookComponent<UniverseWorkstationMenu> {
 
+  public static final int MIN_SIDE_BY_SIDE_WIDTH = 379;
+  public static final int VERTICAL_OFFSET = 18;
+
   private static final Component TOGGLE_CRAFTABLE_TEXT =
       Component.translatable("gui.recipebook.toggleRecipes.craftable");
 

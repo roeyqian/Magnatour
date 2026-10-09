@@ -17,6 +17,7 @@
     "equipment.EquipmentLayerRendererMixin",
     "equipment.FogRendererMixin",
     "portal.LocalPlayerMixin",
+    "screen.AbstractContainerScreenAccessor",
     "screen.GhostSlotsInvoker",
     "screen.RecipeBookComponentMixin",
     "client.ClientPacketListenerMixin",

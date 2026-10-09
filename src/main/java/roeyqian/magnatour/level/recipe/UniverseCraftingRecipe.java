@@ -28,7 +28,6 @@ import net.minecraft.world.item.crafting.PlacementInfo;
 import net.minecraft.world.item.crafting.RecipeBookCategory;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.item.crafting.ShapedRecipePattern;
 import net.minecraft.world.item.crafting.display.RecipeDisplay;
 import net.minecraft.world.item.crafting.display.ShapedCraftingRecipeDisplay;
 import net.minecraft.world.item.crafting.display.SlotDisplay;
@@ -54,7 +53,7 @@ public class UniverseCraftingRecipe implements CraftingRecipe {
               .orElse(CraftingBookCategory.MISC)
               .forGetter(recipe -> recipe.recipeCategory),
 
-          ShapedRecipePattern.MAP_CODEC
+          UniverseCraftingPattern.MAP_CODEC
               .forGetter(recipe -> recipe.rawContents),
 
           ItemStackTemplate.CODEC
@@ -79,14 +78,14 @@ public class UniverseCraftingRecipe implements CraftingRecipe {
 
   final ItemStackTemplate resultStack;
 
-  final ShapedRecipePattern rawContents;
+  final UniverseCraftingPattern rawContents;
 
   final CraftingBookCategory recipeCategory;
 
   public UniverseCraftingRecipe(
       String group,
       CraftingBookCategory category,
-      ShapedRecipePattern raw,
+      UniverseCraftingPattern raw,
       ItemStackTemplate result,
       boolean showNotification
   ) {
@@ -189,7 +188,7 @@ public class UniverseCraftingRecipe implements CraftingRecipe {
   ) {
     String group = buf.readUtf();
     CraftingBookCategory category = CraftingBookCategory.STREAM_CODEC.decode(buf);
-    ShapedRecipePattern raw = ShapedRecipePattern.STREAM_CODEC.decode(buf);
+    UniverseCraftingPattern raw = UniverseCraftingPattern.STREAM_CODEC.decode(buf);
     ItemStackTemplate result = ItemStackTemplate.STREAM_CODEC.decode(buf);
     boolean showNotification = buf.readBoolean();
 
@@ -202,7 +201,7 @@ public class UniverseCraftingRecipe implements CraftingRecipe {
   ) {
     buf.writeUtf(recipe.recipeGroup);
     CraftingBookCategory.STREAM_CODEC.encode(buf, recipe.recipeCategory);
-    ShapedRecipePattern.STREAM_CODEC.encode(buf, recipe.rawContents);
+    UniverseCraftingPattern.STREAM_CODEC.encode(buf, recipe.rawContents);
 
     ItemStackTemplate.STREAM_CODEC.encode(buf, recipe.resultStack);
     buf.writeBoolean(recipe.notification);

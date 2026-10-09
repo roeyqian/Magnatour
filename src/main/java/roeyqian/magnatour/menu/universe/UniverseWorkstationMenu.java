@@ -37,12 +37,12 @@ public class UniverseWorkstationMenu extends AbstractCraftingMenu implements Cus
 
   public static final int RESULT_ID = 0;
 
-  private static final int HOTBAR_END = 46;
-  private static final int HOTBAR_START = 37;
-  private static final int INPUT_END = 10;
+  private static final int HOTBAR_END = 62;
+  private static final int HOTBAR_START = 53;
+  private static final int INPUT_END = 26;
   private static final int INPUT_START = 1;
-  private static final int INVENTORY_END = 37;
-  private static final int INVENTORY_START = 10;
+  private static final int INVENTORY_END = 53;
+  private static final int INVENTORY_START = 26;
 
   private boolean filling;
 
@@ -62,13 +62,13 @@ public class UniverseWorkstationMenu extends AbstractCraftingMenu implements Cus
       Inventory playerInventory,
       ContainerLevelAccess context
   ) {
-    super(UniverseMenus.UNIVERSE_WORKSTATION_HANDLER, syncId, 3, 3);
+    super(UniverseMenus.UNIVERSE_WORKSTATION_HANDLER, syncId, 5, 5);
     this.context = context;
     this.player = playerInventory.player;
 
-    this.addResultSlot(this.player, 124, 35);
+    this.addResultSlot(this.player, 149, 54);
     this.addCraftingGridSlots(30, 17);
-    this.addStandardInventorySlots(playerInventory, 8, 84);
+    this.addStandardInventorySlots(playerInventory, 8, 120);
   }
 
   @Override
@@ -140,7 +140,7 @@ public class UniverseWorkstationMenu extends AbstractCraftingMenu implements Cus
 
   @Override @NonNull
   public List<Slot> getInputGridSlots() {
-    return this.slots.subList(1, 10);
+    return this.slots.subList(INPUT_START, INPUT_END);
   }
 
   @Override

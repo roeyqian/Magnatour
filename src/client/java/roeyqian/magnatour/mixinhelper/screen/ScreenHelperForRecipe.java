@@ -52,7 +52,7 @@ public final class ScreenHelperForRecipe {
     int textureWidth = 147;
     int textureHeight = 194;
     int posX = (width - textureWidth) / 2 - xOffset;
-    int posY = (height - textureHeight) / 2 + 14;
+    int posY = (height - textureHeight) / 2 + 14 - UniverseCraftingBookComponent.VERTICAL_OFFSET;
 
     context.blit(
         RenderPipelines.GUI_TEXTURED,
