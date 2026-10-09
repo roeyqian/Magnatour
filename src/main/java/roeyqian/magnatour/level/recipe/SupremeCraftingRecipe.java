@@ -120,7 +120,7 @@ public class SupremeCraftingRecipe implements CraftingRecipe {
 
     SlotDisplay resultDisplay = new SlotDisplay.ItemStackSlotDisplay(this.resultStack);
     SlotDisplay craftingStationDisplay = new SlotDisplay.ItemSlotDisplay(
-        SupremeBlocks.SUPREME_WORKTABLE.asItem()
+        SupremeBlocks.SUPREME_CRAFTABLE.asItem()
     );
 
     return List.of(

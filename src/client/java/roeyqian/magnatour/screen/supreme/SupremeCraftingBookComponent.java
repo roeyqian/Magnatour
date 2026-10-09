@@ -29,13 +29,13 @@ import net.minecraft.world.item.crafting.display.RecipeDisplay;
 import org.jspecify.annotations.NonNull;
 
 // Magnatour
-import roeyqian.magnatour.menu.supreme.SupremeWorktableMenu;
+import roeyqian.magnatour.menu.supreme.SupremeCraftableMenu;
 import roeyqian.magnatour.mixin.screen.GhostSlotsInvoker;
 import roeyqian.magnatour.registry.content.SupremeItems;
 import roeyqian.magnatour.registry.logic.CustomRecipes;
 import roeyqian.magnatour.screen.CustomRecipeDisplay;
 
-public final class SupremeCraftingBookComponent extends RecipeBookComponent<SupremeWorktableMenu> {
+public final class SupremeCraftingBookComponent extends RecipeBookComponent<SupremeCraftableMenu> {
 
   private static final Component TOGGLE_CRAFTABLE_TEXT =
       Component.translatable("gui.recipebook.toggleRecipes.craftable");
@@ -57,7 +57,7 @@ public final class SupremeCraftingBookComponent extends RecipeBookComponent<Supr
   );
 
   public SupremeCraftingBookComponent(
-      SupremeWorktableMenu screenHandler
+      SupremeCraftableMenu screenHandler
   ) {
     super(screenHandler, TABS);
   }

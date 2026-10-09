@@ -28,7 +28,7 @@ import roeyqian.magnatour.screen.supreme.RedstoneTriggerScreen;
 import roeyqian.magnatour.screen.supreme.SupremeChestScreen;
 import roeyqian.magnatour.screen.supreme.SupremeFurnaceScreen;
 import roeyqian.magnatour.screen.supreme.SupremeReserverScreen;
-import roeyqian.magnatour.screen.supreme.SupremeWorktableScreen;
+import roeyqian.magnatour.screen.supreme.SupremeCraftableScreen;
 import roeyqian.magnatour.screen.universe.UniverseConsoleScreen;
 import roeyqian.magnatour.screen.universe.UniverseLibraryScreen;
 import roeyqian.magnatour.screen.universe.UniverseRefineryScreen;
@@ -43,7 +43,7 @@ public final class RegScreens {
 
   public static void init() {
     MenuScreens.register(SupremeMenus.SUPREME_FURNACE_HANDLER, SupremeFurnaceScreen::new);
-    MenuScreens.register(SupremeMenus.SUPREME_WORKTABLE_HANDLER, SupremeWorktableScreen::new);
+    MenuScreens.register(SupremeMenus.SUPREME_CRAFTABLE_HANDLER, SupremeCraftableScreen::new);
     MenuScreens.register(SupremeMenus.SUPREME_RESERVER_HANDLER, SupremeReserverScreen::new);
     MenuScreens.register(SupremeMenus.SUPREME_CHEST_HANDLER, SupremeChestScreen::new);
     MenuScreens.register(SupremeMenus.REDSTONE_TRIGGER_HANDLER, RedstoneTriggerScreen::new);

@@ -30,13 +30,13 @@ import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 // Magnatour
-import roeyqian.magnatour.menu.supreme.SupremeWorktableMenu;
+import roeyqian.magnatour.menu.supreme.SupremeCraftableMenu;
 
-public class SupremeWorktable extends Block {
+public class SupremeCraftable extends Block {
 
   public static final EnumProperty<Direction> FACING = BlockStateProperties.HORIZONTAL_FACING;
 
-  public SupremeWorktable(
+  public SupremeCraftable(
       Properties settings
   ) {
     super(settings);
@@ -64,7 +64,7 @@ public class SupremeWorktable extends Block {
       @NonNull BlockPos pos
   ) {
     return new SimpleMenuProvider(
-        (syncId, inventory, _) -> new SupremeWorktableMenu(
+        (syncId, inventory, _) -> new SupremeCraftableMenu(
             syncId,
             inventory,
             ContainerLevelAccess.create(world, pos)

@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "up": "magnatour:block/supreme_craftable_top",
+    "down": "magnatour:block/supreme_craftable_bottom",
+    "particle": "magnatour:block/supreme_craftable_front",
+    "north": "magnatour:block/supreme_craftable_front",
+    "south": "magnatour:block/supreme_craftable_side",
+    "west": "magnatour:block/supreme_craftable_side",
+    "east": "magnatour:block/supreme_craftable_side"
+  }
+}

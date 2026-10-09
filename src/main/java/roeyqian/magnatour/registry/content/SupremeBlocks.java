@@ -57,7 +57,7 @@ import roeyqian.magnatour.block.supreme.SupremeChest;
 import roeyqian.magnatour.block.supreme.SupremeFurnace;
 import roeyqian.magnatour.block.supreme.SupremePumpkinHead;
 import roeyqian.magnatour.block.supreme.SupremeReserver;
-import roeyqian.magnatour.block.supreme.SupremeWorktable;
+import roeyqian.magnatour.block.supreme.SupremeCraftable;
 import roeyqian.magnatour.levelgen.tree.SaplingGenerators;
 import roeyqian.magnatour.registry.BlockRegHelper;
 
@@ -102,9 +102,9 @@ public final class SupremeBlocks {
       "supreme_reserver", supreme,
       SupremeReserver::new, BlockBehaviour.Properties.of()
   );
-  public static final Block SUPREME_WORKTABLE = BlockRegHelper.registerBase(
-      "supreme_worktable", supreme,
-      SupremeWorktable::new, BlockBehaviour.Properties.of()
+  public static final Block SUPREME_CRAFTABLE = BlockRegHelper.registerBase(
+      "supreme_craftable", supreme,
+      SupremeCraftable::new, BlockBehaviour.Properties.of()
   );
 
   // Insert Blocks - Entity

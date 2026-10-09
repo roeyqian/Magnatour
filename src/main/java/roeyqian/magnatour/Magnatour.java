@@ -194,7 +194,7 @@ public class Magnatour implements ModInitializer {
               entries.accept(SupremeBlocks.CHUNK_TNT);
               entries.accept(SupremeBlocks.SUPREME_PUMPKIN_HEAD);
               entries.accept(SupremeBlocks.SUPREME_BLOCK);
-              entries.accept(SupremeBlocks.SUPREME_WORKTABLE);
+              entries.accept(SupremeBlocks.SUPREME_CRAFTABLE);
               entries.accept(SupremeBlocks.SUPREME_FURNACE);
               entries.accept(SupremeBlocks.SUPREME_RESERVER);
               entries.accept(SupremeBlocks.SUPREME_CHEST);

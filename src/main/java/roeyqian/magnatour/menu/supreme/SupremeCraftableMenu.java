@@ -33,7 +33,7 @@ import roeyqian.magnatour.registry.content.SupremeBlocks;
 import roeyqian.magnatour.registry.content.SupremeMenus;
 import roeyqian.magnatour.registry.logic.CustomRecipes;
 
-public class SupremeWorktableMenu extends AbstractCraftingMenu implements CustomCraftingBlock {
+public class SupremeCraftableMenu extends AbstractCraftingMenu implements CustomCraftingBlock {
 
   public static final int RESULT_ID = 0;
 
@@ -50,19 +50,19 @@ public class SupremeWorktableMenu extends AbstractCraftingMenu implements Custom
 
   private final ContainerLevelAccess context;
 
-  public SupremeWorktableMenu(
+  public SupremeCraftableMenu(
       int syncId,
       Inventory playerInventory
   ) {
     this(syncId, playerInventory, ContainerLevelAccess.NULL);
   }
 
-  public SupremeWorktableMenu(
+  public SupremeCraftableMenu(
       int syncId,
       Inventory playerInventory,
       ContainerLevelAccess context
   ) {
-    super(SupremeMenus.SUPREME_WORKTABLE_HANDLER, syncId, 3, 3);
+    super(SupremeMenus.SUPREME_CRAFTABLE_HANDLER, syncId, 3, 3);
     this.context = context;
     this.player = playerInventory.player;
 
@@ -218,7 +218,7 @@ public class SupremeWorktableMenu extends AbstractCraftingMenu implements Custom
   public boolean stillValid(
       @NonNull Player player
   ) {
-    return stillValid(this.context, player, SupremeBlocks.SUPREME_WORKTABLE);
+    return stillValid(this.context, player, SupremeBlocks.SUPREME_CRAFTABLE);
   }
 
   @Override @NonNull

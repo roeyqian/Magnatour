@@ -1,6 +1,6 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "magnatour:block/supreme_worktable"
+    "model": "magnatour:block/supreme_craftable"
   }
 }

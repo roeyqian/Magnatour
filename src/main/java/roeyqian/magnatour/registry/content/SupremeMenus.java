@@ -17,7 +17,7 @@ import roeyqian.magnatour.menu.supreme.RedstoneTriggerMenu;
 import roeyqian.magnatour.menu.supreme.SupremeChestMenu;
 import roeyqian.magnatour.menu.supreme.SupremeFurnaceMenu;
 import roeyqian.magnatour.menu.supreme.SupremeReserverMenu;
-import roeyqian.magnatour.menu.supreme.SupremeWorktableMenu;
+import roeyqian.magnatour.menu.supreme.SupremeCraftableMenu;
 import roeyqian.magnatour.registry.MenuRegHelper;
 
 /*
@@ -54,8 +54,8 @@ public final class SupremeMenus {
   public static final MenuType<SupremeReserverMenu> SUPREME_RESERVER_HANDLER =
       MenuRegHelper.register("supreme_reserver", SupremeReserverMenu::new);
 
-  public static final MenuType<SupremeWorktableMenu> SUPREME_WORKTABLE_HANDLER =
-      MenuRegHelper.register("supreme_worktable", SupremeWorktableMenu::new);
+  public static final MenuType<SupremeCraftableMenu> SUPREME_CRAFTABLE_HANDLER =
+      MenuRegHelper.register("supreme_craftable", SupremeCraftableMenu::new);
 
 
   private SupremeMenus() {}

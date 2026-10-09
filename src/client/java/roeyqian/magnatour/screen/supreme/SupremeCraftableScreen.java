@@ -20,16 +20,16 @@ import net.minecraft.world.entity.player.Inventory;
 import org.jspecify.annotations.NonNull;
 
 // Magnatour
-import roeyqian.magnatour.menu.supreme.SupremeWorktableMenu;
+import roeyqian.magnatour.menu.supreme.SupremeCraftableMenu;
 
-public class SupremeWorktableScreen extends AbstractRecipeBookScreen<SupremeWorktableMenu> {
+public class SupremeCraftableScreen extends AbstractRecipeBookScreen<SupremeCraftableMenu> {
 
   private static final Identifier TEXTURE = Identifier.withDefaultNamespace(
       "textures/gui/container/crafting_table.png"
   );
 
-  public SupremeWorktableScreen(
-      SupremeWorktableMenu handler,
+  public SupremeCraftableScreen(
+      SupremeCraftableMenu handler,
       Inventory inventory,
       Component title
   ) {

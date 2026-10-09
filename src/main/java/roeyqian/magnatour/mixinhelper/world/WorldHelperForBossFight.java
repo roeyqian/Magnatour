@@ -92,8 +92,8 @@ public final class WorldHelperForBossFight {
         Heightmap.Types.MOTION_BLOCKING,
         origin
     );
-    BlockPos worktablePos = findWorktablePos(level, eggPos);
-    level.setBlockAndUpdate(worktablePos, rewardBlock.defaultBlockState());
+    BlockPos craftablePos = findCraftablePos(level, eggPos);
+    level.setBlockAndUpdate(craftablePos, rewardBlock.defaultBlockState());
   }
 
   private static Block resolveDragonKillRewardBlock(
@@ -104,10 +104,10 @@ public final class WorldHelperForBossFight {
       return UniverseBlocks.UNIVERSE_WORKSTATION;
     }
 
-    return SupremeBlocks.SUPREME_WORKTABLE;
+    return SupremeBlocks.SUPREME_CRAFTABLE;
   }
 
-  private static boolean canPlaceWorktable(
+  private static boolean canPlaceCraftable(
       ServerLevel world,
       BlockPos pos
   ) {
@@ -131,7 +131,7 @@ public final class WorldHelperForBossFight {
     return resolveDragonKillRewardBlock(dragon);
   }
 
-  private static BlockPos findWorktablePos(
+  private static BlockPos findCraftablePos(
       ServerLevel world,
       BlockPos eggPos
   ) {
@@ -141,7 +141,7 @@ public final class WorldHelperForBossFight {
           if (Math.abs(offsetX) != radius && Math.abs(offsetZ) != radius) continue;
 
           BlockPos candidatePos = eggPos.offset(offsetX, 0, offsetZ);
-          if (canPlaceWorktable(world, candidatePos)) {
+          if (canPlaceCraftable(world, candidatePos)) {
             return candidatePos;
           }
         }

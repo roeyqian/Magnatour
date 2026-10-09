@@ -1,10 +1,10 @@
 {
   "criteria": {
-    "supreme_worktable": {
+    "supreme_craftable": {
       "conditions": {
         "items": [
           {
-            "items": "magnatour:supreme_worktable"
+            "items": "magnatour:supreme_craftable"
           }
         ]
       },
@@ -18,7 +18,7 @@
       "translate": "advancements.magnatour.supreme.description"
     },
     "icon": {
-      "id": "magnatour:supreme_worktable"
+      "id": "magnatour:supreme_craftable"
     },
     "show_toast": true,
     "title": {
@@ -27,7 +27,7 @@
   },
   "requirements": [
     [
-      "supreme_worktable"
+      "supreme_craftable"
     ]
   ],
   "sends_telemetry_event": false
