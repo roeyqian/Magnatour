@@ -12,6 +12,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerLevelAccess;
@@ -25,6 +26,7 @@ import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.block.AbstractFurnaceBlock;
 import net.minecraft.world.level.block.entity.AbstractFurnaceBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 
 // JSpecify
 import org.jspecify.annotations.NonNull;
@@ -39,8 +41,8 @@ import roeyqian.magnatour.registry.logic.CustomRecipes;
 
 public class UniverseRefineryEntity extends AbstractFurnaceBlockEntity {
 
-  private static final int FUEL_EFFICIENCY_MULTIPLIER = 32;
-  private static final int ITEMS_PER_TICK = 2;
+  private static final int MIN_FUEL_DURATION = 1_000_000;
+  private static final int EXPERIENCE_PER_ITEM = 1_000;
 
   private final RecipeManager.CachedCheck<SingleRecipeInput, SupremeCookingRecipe> supremeMatchGetter;
 
@@ -65,6 +67,7 @@ public class UniverseRefineryEntity extends AbstractFurnaceBlockEntity {
 
     boolean wasLit = accessor.getLitTimeRemaining() > 0;
     boolean changed = false;
+    int processedItems = 0;
 
     if (accessor.getLitTimeRemaining() > 0) {
       accessor.setLitTimeRemaining(accessor.getLitTimeRemaining() - 1);
@@ -107,7 +110,7 @@ public class UniverseRefineryEntity extends AbstractFurnaceBlockEntity {
       }
 
       if (accessor.getLitTimeRemaining() > 0) {
-        for (int i = 0; i < ITEMS_PER_TICK; i++) {
+        while (true) {
           inputStack = blockEntity.items.getFirst();
           if (inputStack.isEmpty()) break;
 
@@ -129,6 +132,7 @@ public class UniverseRefineryEntity extends AbstractFurnaceBlockEntity {
             )) {
               blockEntity.setRecipeUsed(recipe);
               changed = true;
+              processedItems++;
             }
           } else {
             break;
@@ -140,6 +144,14 @@ public class UniverseRefineryEntity extends AbstractFurnaceBlockEntity {
       }
     } else if (accessor.getLitTimeRemaining() <= 0 && accessor.getCookingTimeSpent() > 0) {
       accessor.setCookingTimeSpent(0);
+    }
+
+    if (processedItems > 0) {
+      ExperienceOrb.award(
+          world,
+          Vec3.atCenterOf(pos),
+          processedItems * EXPERIENCE_PER_ITEM
+      );
     }
 
     boolean isLit = accessor.getLitTimeRemaining() > 0;
@@ -183,10 +195,7 @@ public class UniverseRefineryEntity extends AbstractFurnaceBlockEntity {
       @NonNull ItemStack stack
   ) {
     int baseFuelTime = super.getBurnDuration(world, stack);
-    if (baseFuelTime > Integer.MAX_VALUE / FUEL_EFFICIENCY_MULTIPLIER) {
-      return Integer.MAX_VALUE;
-    }
-    return baseFuelTime * FUEL_EFFICIENCY_MULTIPLIER;
+    return Math.max(baseFuelTime, MIN_FUEL_DURATION);
   }
 
   @Override @NonNull

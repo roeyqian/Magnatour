@@ -32,6 +32,9 @@ import roeyqian.magnatour.registry.logic.CustomRecipes;
 
 public class UniverseRefineryMenu extends AbstractFurnaceMenu {
 
+  // Container data packets encode values as signed 16-bit integers.
+  private static final int MAX_SYNCED_FUEL_VALUE = Short.MAX_VALUE;
+
   private final ContainerData propertyDelegate;
 
   private final ContainerLevelAccess context;
@@ -52,12 +55,12 @@ public class UniverseRefineryMenu extends AbstractFurnaceMenu {
     this(syncId, playerInventory, ContainerLevelAccess.NULL, inventory, propertyDelegate);
   }
 
-  public UniverseRefineryMenu(
+  private UniverseRefineryMenu(
       int syncId,
       Inventory playerInventory,
       ContainerLevelAccess context,
       Container inventory,
-      ContainerData propertyDelegate
+      FuelProgressData syncedData
   ) {
     super(
         UniverseMenus.UNIVERSE_REFINERY_HANDLER,
@@ -66,10 +69,26 @@ public class UniverseRefineryMenu extends AbstractFurnaceMenu {
         syncId,
         playerInventory,
         inventory,
-        propertyDelegate
+        syncedData
     );
     this.context = context;
-    this.propertyDelegate = propertyDelegate;
+    this.propertyDelegate = syncedData;
+  }
+
+  public UniverseRefineryMenu(
+      int syncId,
+      Inventory playerInventory,
+      ContainerLevelAccess context,
+      Container inventory,
+      ContainerData propertyDelegate
+  ) {
+    this(
+        syncId,
+        playerInventory,
+        context,
+        inventory,
+        new FuelProgressData(propertyDelegate)
+    );
   }
 
   public float getCookProgress() {
@@ -121,6 +140,61 @@ public class UniverseRefineryMenu extends AbstractFurnaceMenu {
     } else {
       return false;
     }
+  }
+
+  @Override
+  protected boolean isFuel(
+      @NonNull ItemStack itemStack
+  ) {
+    return !itemStack.isEmpty();
+  }
+
+  private static final class FuelProgressData implements ContainerData {
+
+    private final ContainerData delegate;
+
+    private FuelProgressData(
+        ContainerData delegate
+    ) {
+      this.delegate = delegate;
+    }
+
+    @Override
+    public int get(
+        int index
+    ) {
+      if (index == 0) {
+        int totalTime = this.delegate.get(1);
+        int remainingTime = this.delegate.get(0);
+        if (totalTime > MAX_SYNCED_FUEL_VALUE) {
+          if (remainingTime <= 0) return 0;
+          long scaledTime = ((long) remainingTime * MAX_SYNCED_FUEL_VALUE + totalTime - 1L)
+              / totalTime;
+          return (int) Math.min(scaledTime, MAX_SYNCED_FUEL_VALUE);
+        }
+        return Math.max(remainingTime, 0);
+      }
+
+      if (index == 1) {
+        return Math.max(0, Math.min(this.delegate.get(1), MAX_SYNCED_FUEL_VALUE));
+      }
+
+      return this.delegate.get(index);
+    }
+
+    @Override
+    public int getCount() {
+      return this.delegate.getCount();
+    }
+
+    @Override
+    public void set(
+        int index,
+        int value
+    ) {
+      this.delegate.set(index, value);
+    }
+
   }
 
 }
