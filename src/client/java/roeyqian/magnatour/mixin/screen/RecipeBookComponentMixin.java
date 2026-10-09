@@ -31,6 +31,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 // Magnatour
 import roeyqian.magnatour.mixinhelper.screen.ScreenHelperForRecipe;
+import roeyqian.magnatour.screen.supreme.SupremeCraftingBookComponent;
 import roeyqian.magnatour.screen.universe.UniverseCraftingBookComponent;
 
 @Mixin(value = RecipeBookComponent.class, priority = 3600000)
@@ -93,9 +94,12 @@ public class RecipeBookComponentMixin {
   }
 
   @ModifyConstant(method = {"getYOrigin", "updateTabs"}, constant = @Constant(intValue = 166))
-  private int magnatour$alignUniverseRecipeBook(
+  private int magnatour$alignCustomRecipeBook(
       int original
   ) {
+    if ((Object) this instanceof SupremeCraftingBookComponent) {
+      return original + 2 * SupremeCraftingBookComponent.VERTICAL_OFFSET;
+    }
     return (Object) this instanceof UniverseCraftingBookComponent
         ? original + 2 * UniverseCraftingBookComponent.VERTICAL_OFFSET : original;
   }

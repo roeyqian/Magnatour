@@ -37,6 +37,9 @@ import roeyqian.magnatour.screen.CustomRecipeDisplay;
 
 public final class SupremeCraftingBookComponent extends RecipeBookComponent<SupremeCraftableMenu> {
 
+  public static final int MIN_SIDE_BY_SIDE_WIDTH = 379;
+  public static final int VERTICAL_OFFSET = 9;
+
   private static final Component TOGGLE_CRAFTABLE_TEXT =
       Component.translatable("gui.recipebook.toggleRecipes.craftable");
 

@@ -21,19 +21,38 @@ import org.jspecify.annotations.NonNull;
 
 // Magnatour
 import roeyqian.magnatour.menu.supreme.SupremeCraftableMenu;
+import roeyqian.magnatour.mixin.screen.AbstractContainerScreenAccessor;
 
 public class SupremeCraftableScreen extends AbstractRecipeBookScreen<SupremeCraftableMenu> {
 
-  private static final Identifier TEXTURE = Identifier.withDefaultNamespace(
-      "textures/gui/container/crafting_table.png"
+  private static final int BACKGROUND_HEIGHT = 184;
+  private static final int BACKGROUND_WIDTH = 176;
+
+  private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(
+      "magnatour", "textures/gui/container/supreme_craftable.png"
   );
+
+  private final SupremeCraftingBookComponent craftingBook;
 
   public SupremeCraftableScreen(
       SupremeCraftableMenu handler,
       Inventory inventory,
       Component title
   ) {
-    super(handler, new SupremeCraftingBookComponent(handler), inventory, title);
+    this(handler, new SupremeCraftingBookComponent(handler), inventory, title);
+  }
+
+  private SupremeCraftableScreen(
+      SupremeCraftableMenu handler,
+      SupremeCraftingBookComponent craftingBook,
+      Inventory inventory,
+      Component title
+  ) {
+    super(handler, craftingBook, inventory, title);
+    this.craftingBook = craftingBook;
+    AbstractContainerScreenAccessor accessor = (AbstractContainerScreenAccessor) this;
+    accessor.magnatour$setImageWidth(BACKGROUND_WIDTH);
+    accessor.magnatour$setImageHeight(BACKGROUND_HEIGHT);
   }
 
   @Override
@@ -43,11 +62,11 @@ public class SupremeCraftableScreen extends AbstractRecipeBookScreen<SupremeCraf
       float delta
   ) {
     super.extractBackground(graphics, mouseX, mouseY, delta);
-    int xo = this.leftPos;
-    int yo = (this.height - this.imageHeight) / 2;
+    if (this.width < SupremeCraftingBookComponent.MIN_SIDE_BY_SIDE_WIDTH && this.craftingBook.isVisible()) return;
+
     graphics.blit(
         RenderPipelines.GUI_TEXTURED, TEXTURE,
-        xo, yo,
+        this.leftPos, this.topPos,
         0.0F, 0.0F,
         this.imageWidth, this.imageHeight,
         256, 256
@@ -56,13 +75,14 @@ public class SupremeCraftableScreen extends AbstractRecipeBookScreen<SupremeCraf
 
   @NonNull @Override
   protected ScreenPosition getRecipeBookButtonPosition() {
-    return new ScreenPosition(this.leftPos + 5, this.height / 2 - 49);
+    return new ScreenPosition(this.leftPos + 5, this.topPos + 35);
   }
 
   @Override
   protected void init() {
     super.init();
     this.titleLabelX = 29;
+    this.inventoryLabelY = 90;
   }
 
 }
