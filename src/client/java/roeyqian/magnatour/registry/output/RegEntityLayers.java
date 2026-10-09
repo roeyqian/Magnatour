@@ -17,6 +17,7 @@ import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.minecraft.client.renderer.entity.TntRenderer;
 import net.minecraft.resources.Identifier;
+import net.minecraft.world.entity.EntityType;
 
 // Magnatour
 import roeyqian.magnatour.Magnatour;
@@ -104,7 +105,7 @@ public final class RegEntityLayers {
 
   @SuppressWarnings({"unchecked", "rawtypes"})
   private static void registerTntLike(
-      net.minecraft.world.entity.EntityType type
+      EntityType type
   ) {
     EntityRenderers.register(type, ctx -> new TntRenderer(ctx));
   }

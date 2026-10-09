@@ -26,6 +26,7 @@ import net.minecraft.util.Util;
 import net.minecraft.world.level.LevelHeightAccessor;
 import net.minecraft.world.level.NoiseColumn;
 import net.minecraft.world.level.StructureManager;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.BiomeManager;
 import net.minecraft.world.level.biome.BiomeSource;
 import net.minecraft.world.level.block.Blocks;
@@ -97,7 +98,7 @@ public final class OreContinentChunkGenerator extends ChunkGenerator {
       @NonNull StructureManager structureManager,
       @NonNull BiomeManager biomeManager,
       @NonNull WorldGenRegion region,
-      @NonNull Set<Holder<net.minecraft.world.level.biome.Biome>> availableBiomes
+      @NonNull Set<Holder<Biome>> availableBiomes
   ) {
     List<BlockState> layers = this.settings.getLayers();
     BlockPos.MutableBlockPos mutable = new BlockPos.MutableBlockPos();
