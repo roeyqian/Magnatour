@@ -15,9 +15,9 @@ import roeyqian.magnatour.Magnatour;
 import roeyqian.magnatour.menu.supreme.ItemHubMenu;
 import roeyqian.magnatour.menu.supreme.RedstoneTriggerMenu;
 import roeyqian.magnatour.menu.supreme.SupremeChestMenu;
+import roeyqian.magnatour.menu.supreme.SupremeCraftableMenu;
 import roeyqian.magnatour.menu.supreme.SupremeFurnaceMenu;
 import roeyqian.magnatour.menu.supreme.SupremeReserverMenu;
-import roeyqian.magnatour.menu.supreme.SupremeCraftableMenu;
 import roeyqian.magnatour.registry.MenuRegHelper;
 
 /*

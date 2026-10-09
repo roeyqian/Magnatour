@@ -54,10 +54,10 @@ import roeyqian.magnatour.block.supreme.OreContinentPortal;
 import roeyqian.magnatour.block.supreme.RedstoneTrigger;
 import roeyqian.magnatour.block.supreme.SupremeBlock;
 import roeyqian.magnatour.block.supreme.SupremeChest;
+import roeyqian.magnatour.block.supreme.SupremeCraftable;
 import roeyqian.magnatour.block.supreme.SupremeFurnace;
 import roeyqian.magnatour.block.supreme.SupremePumpkinHead;
 import roeyqian.magnatour.block.supreme.SupremeReserver;
-import roeyqian.magnatour.block.supreme.SupremeCraftable;
 import roeyqian.magnatour.levelgen.tree.SaplingGenerators;
 import roeyqian.magnatour.registry.BlockRegHelper;
 

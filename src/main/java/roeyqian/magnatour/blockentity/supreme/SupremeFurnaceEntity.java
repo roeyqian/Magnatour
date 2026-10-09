@@ -39,7 +39,7 @@ import roeyqian.magnatour.registry.logic.CustomRecipes;
 
 public class SupremeFurnaceEntity extends AbstractFurnaceBlockEntity {
 
-  private static final int FUEL_EFFICIENCY_MULTIPLIER = 8;
+  private static final int FUEL_EFFICIENCY_MULTIPLIER = 16;
 
   private final RecipeManager.CachedCheck<SingleRecipeInput, SupremeCookingRecipe> supremeMatchGetter;
 
