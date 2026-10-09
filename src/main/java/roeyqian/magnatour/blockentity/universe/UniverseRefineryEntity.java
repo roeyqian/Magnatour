@@ -41,8 +41,8 @@ import roeyqian.magnatour.registry.logic.CustomRecipes;
 
 public class UniverseRefineryEntity extends AbstractFurnaceBlockEntity {
 
-  private static final int MIN_FUEL_DURATION = 1_000_000;
   private static final int EXPERIENCE_PER_ITEM = 1_000;
+  private static final int MIN_FUEL_DURATION = 1_000_000;
 
   private final RecipeManager.CachedCheck<SingleRecipeInput, SupremeCookingRecipe> supremeMatchGetter;
 

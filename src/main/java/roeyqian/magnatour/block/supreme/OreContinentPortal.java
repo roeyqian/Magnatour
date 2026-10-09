@@ -49,9 +49,9 @@ import roeyqian.magnatour.registry.worldgen.CustomDimensions;
 
 public class OreContinentPortal extends Block {
 
-  public static int clientPortalTicks = 0;
-
   public static boolean clientInPortal = false;
+
+  public static int clientPortalTicks = 0;
 
   private static final Set<UUID> IN_PORTAL_THIS_TICK = ConcurrentHashMap.newKeySet();
 

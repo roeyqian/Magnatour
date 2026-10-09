@@ -137,8 +137,7 @@ public final class GoldBellTowerStructure extends Structure {
 
   private static long mix(
       long seed,
-      int x,
-      int z
+      int x, int z
   ) {
     long h = seed;
     h ^= (long) x * 0x9E3779B97F4A7C15L;
@@ -155,8 +154,7 @@ public final class GoldBellTowerStructure extends Structure {
       GenerationContext context,
       Climate.Sampler sampler,
       BlockPos lowerPos,
-      Vec3i lowerSize,
-      Vec3i upperSize
+      Vec3i lowerSize, Vec3i upperSize
   ) {
     int minX = lowerPos.getX() - LAND_MARGIN;
     int minZ = lowerPos.getZ() - LAND_MARGIN;

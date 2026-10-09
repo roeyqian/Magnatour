@@ -49,6 +49,12 @@ public class StarAtlasScreen extends Screen {
   private static final Identifier PANEL_TEXTURE = Identifier.withDefaultNamespace("textures/gui/container/generic_54.png");
   private static final Identifier PLAYER_TEXTURE = Identifier.withDefaultNamespace("textures/map/decorations/player.png");
 
+  private final AtlasMap map;
+
+  private final ClientLevel level;
+
+  private boolean dragging;
+
   private int left;
   private int mapHeight;
   private int mapWidth;
@@ -57,22 +63,19 @@ public class StarAtlasScreen extends Screen {
   private int windowWidth;
 
   private long nextMapRefresh;
-  private long renderedRevision = -1;
 
   private double centerX;
   private double centerZ;
-  private double zoom = 1.0;
-
-  private boolean dirty = true;
-  private boolean dragging;
-
-  private final AtlasMap map;
 
   private NativeImage image;
 
-  private final ClientLevel level;
-
   private DynamicTexture texture;
+
+  private boolean dirty = true;
+
+  private long renderedRevision = -1;
+
+  private double zoom = 1.0;
 
   private StarAtlasScreen(
       AtlasMap map,
@@ -90,8 +93,7 @@ public class StarAtlasScreen extends Screen {
   @Override
   public void extractRenderState(
       @NonNull GuiGraphicsExtractor graphics,
-      int mouseX,
-      int mouseY,
+      int mouseX, int mouseY,
       float delta
   ) {
     if (minecraft.level != level || minecraft.player == null || image == null) return;
@@ -170,8 +172,7 @@ public class StarAtlasScreen extends Screen {
   @Override
   public boolean mouseDragged(
       @NonNull MouseButtonEvent event,
-      double offsetX,
-      double offsetY
+      double offsetX, double offsetY
   ) {
     if (dragging && event.button() == InputConstants.MOUSE_BUTTON_LEFT) {
       centerX -= offsetX * WORLD_SPAN_MULTIPLIER / zoom;
@@ -196,10 +197,7 @@ public class StarAtlasScreen extends Screen {
 
   @Override
   public boolean mouseScrolled(
-      double mouseX,
-      double mouseY,
-      double horizontal,
-      double vertical
+      double mouseX, double mouseY, double horizontal, double vertical
   ) {
     if (!overMap(mouseX, mouseY)) return super.mouseScrolled(mouseX, mouseY, horizontal, vertical);
     double offsetX = mouseX - left - 8 - mapWidth / 2.0;
@@ -260,14 +258,7 @@ public class StarAtlasScreen extends Screen {
 
   private void panelPart(
       GuiGraphicsExtractor graphics,
-      int x,
-      int y,
-      int partWidth,
-      int partHeight,
-      int u,
-      int v,
-      int sourceWidth,
-      int sourceHeight
+      int x, int y, int partWidth, int partHeight, int u, int v, int sourceWidth, int sourceHeight
   ) {
     graphics.blit(RenderPipelines.GUI_TEXTURED, PANEL_TEXTURE, left + x, top + y, u, v,
         partWidth, partHeight, sourceWidth, sourceHeight, 256, 256);
@@ -289,8 +280,7 @@ public class StarAtlasScreen extends Screen {
   }
 
   private boolean overMap(
-      double x,
-      double y
+      double x, double y
   ) {
     return x >= left + 8 && x < left + 8 + mapWidth && y >= top + 32 && y < top + 32 + mapHeight;
   }
@@ -314,16 +304,16 @@ public class StarAtlasScreen extends Screen {
 
     private static AtlasMap active;
 
-    private long nextRequest;
-    private long revision;
-
-    private final Map<Long, int[]> visible = new HashMap<>();
+    private final Registry<Biome> biomes;
 
     private final ClientLevel level;
 
-    private StarAtlas.Payload lastView;
+    private final Map<Long, int[]> visible = new HashMap<>();
 
-    private final Registry<Biome> biomes;
+    private long nextRequest;
+    private long revision;
+
+    private StarAtlas.Payload lastView;
 
     private AtlasMap(
         ClientLevel level
@@ -333,8 +323,7 @@ public class StarAtlasScreen extends Screen {
     }
 
     private static long key(
-        int x,
-        int z
+        int x, int z
     ) { return ((long) x << 32) | (z & 0xFFFFFFFFL); }
 
     private static void init() {
@@ -368,8 +357,7 @@ public class StarAtlasScreen extends Screen {
     }
 
     private int[] cellsAt(
-        int x,
-        int z
+        int x, int z
     ) {
       return visible.get(key(x, z));
     }
@@ -383,8 +371,7 @@ public class StarAtlasScreen extends Screen {
     }
 
     private Component biomeAt(
-        int x,
-        int z
+        int x, int z
     ) {
       int[] cells = cellsAt(Math.floorDiv(x, 16), Math.floorDiv(z, 16));
       Biome biome = cells == null ? null
@@ -396,9 +383,7 @@ public class StarAtlasScreen extends Screen {
 
     private void copyTo(
         NativeImage image,
-        double centerX,
-        double centerZ,
-        double zoom
+        double centerX, double centerZ, double zoom
     ) {
       int width = image.getWidth();
       int height = image.getHeight();
@@ -442,11 +427,8 @@ public class StarAtlasScreen extends Screen {
     private void open() { active = this; }
 
     private void requestView(
-        double centerX,
-        double centerZ,
-        double zoom,
-        int width,
-        int height
+        double centerX, double centerZ, double zoom,
+        int width, int height
     ) {
       if (!ClientPlayNetworking.canSend(StarAtlas.Payload.ID)) return;
       int minX = Math.max(-1875000, (int) Math.floor((centerX - width / (2.0 * zoom)) / 16));

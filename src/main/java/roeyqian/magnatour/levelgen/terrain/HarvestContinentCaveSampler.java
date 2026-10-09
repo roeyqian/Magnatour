@@ -27,11 +27,7 @@ public final class HarvestContinentCaveSampler {
 
   public HarvestContinentCaveSampler(
       long seed,
-      int minX,
-      int minZ,
-      int width,
-      int depth,
-      int maxSurfaceY
+      int minX, int minZ, int width, int depth, int maxSurfaceY
   ) {
     this.originX = Math.floorDiv(minX, HORIZONTAL_STEP) * HORIZONTAL_STEP;
     this.originY = Math.floorDiv(HarvestContinentTerrain.CAVE_MIN_Y, VERTICAL_STEP) * VERTICAL_STEP;
@@ -59,10 +55,7 @@ public final class HarvestContinentCaveSampler {
   }
 
   public boolean isCave(
-      int worldX,
-      int y,
-      int worldZ,
-      int surfaceY
+      int worldX, int y, int worldZ, int surfaceY
   ) {
     if (this.sizeY == 0 || y >= this.maxY || !HarvestContinentTerrain.canCarveCave(y, surfaceY)) {
       return false;
@@ -72,33 +65,25 @@ public final class HarvestContinentCaveSampler {
   }
 
   private static double lerp(
-      double delta,
-      double first,
-      double second
+      double delta, double first, double second
   ) {
     return first + delta * (second - first);
   }
 
   private int index(
-      int x,
-      int y,
-      int z
+      int x, int y, int z
   ) {
     return (x * this.sizeY + y) * this.sizeZ + z;
   }
 
   private double at(
-      int x,
-      int y,
-      int z
+      int x, int y, int z
   ) {
     return this.densities[index(x, y, z)];
   }
 
   private double interpolatedDensity(
-      int worldX,
-      int y,
-      int worldZ
+      int worldX, int y, int worldZ
   ) {
     int offsetX = worldX - this.originX;
     int offsetY = y - this.originY;

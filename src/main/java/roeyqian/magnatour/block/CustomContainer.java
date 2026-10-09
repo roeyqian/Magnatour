@@ -43,8 +43,7 @@ public interface CustomContainer extends Container {
 
   @Override @NonNull
   default ItemStack removeItem(
-      int slot,
-      int count
+      int slot, int count
   ) {
     ItemStack result = ContainerHelper.removeItem(getItems(), slot, count);
     if (!result.isEmpty()) setChanged();

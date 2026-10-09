@@ -17,8 +17,7 @@ public final class HarvestRegionalTerrain {
 
   static double berrySnowfieldHeight(
       long seed,
-      int x,
-      int z
+      int x, int z
   ) {
     double rolling = HarvestContinentTerrain.fbmPerlin(seed ^ 0x629A292A367CD507L, x, z, 0.004, 3);
     double detail = HarvestContinentTerrain.fbmPerlin(seed ^ 0x9159015A3070DD17L, x, z, 0.018, 2);
@@ -27,8 +26,7 @@ public final class HarvestRegionalTerrain {
 
   static double desertHeight(
       long seed,
-      int x,
-      int z
+      int x, int z
   ) {
     double dunes = HarvestContinentTerrain.fbmPerlin(seed ^ 0xCBBB9D5DC1059ED8L, x, z, 0.006, 3);
     double ripples = Math.sin(x * 0.045 + z * 0.018 + dunes * 5.0);
@@ -37,8 +35,7 @@ public final class HarvestRegionalTerrain {
 
   static double marshHeight(
       long seed,
-      int x,
-      int z
+      int x, int z
   ) {
     double pools = HarvestContinentTerrain.fbmPerlin(seed ^ 0x5BE0CD19137E2179L, x, z, 0.025, 3);
     return Mth.clamp(64.0 + pools * 12.0, 59.0, 69.0) + HarvestContinentTerrain.SURFACE_Y_OFFSET;
@@ -46,8 +43,7 @@ public final class HarvestRegionalTerrain {
 
   static double sacredMountainHeight(
       long seed,
-      int x,
-      int z
+      int x, int z
   ) {
     double broad = HarvestContinentTerrain.fbmPerlin(seed ^ 0x510E527FADE682D1L, x, z, 0.002, 3);
     double ridge = 1.0 - Math.abs(HarvestContinentTerrain.fbmPerlin(seed ^ 0x9B05688C2B3E6C1FL, x, z, 0.008, 3));

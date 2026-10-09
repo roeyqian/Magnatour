@@ -134,8 +134,7 @@ public final class BlockHelperForNetherPortal {
   }
 
   private static int comparePosition(
-      BlockPos first,
-      BlockPos second
+      BlockPos first, BlockPos second
   ) {
     int compareX = Integer.compare(first.getX(), second.getX());
     if (compareX != 0) return compareX;
@@ -158,8 +157,7 @@ public final class BlockHelperForNetherPortal {
   }
 
   private static boolean isUniverseMetaNetherPair(
-      ResourceKey<Level> sourceDimension,
-      ResourceKey<Level> destinationDimension
+      ResourceKey<Level> sourceDimension, ResourceKey<Level> destinationDimension
   ) {
     return (CustomDimensions.UNIVERSE_META.equals(sourceDimension) && Level.NETHER.equals(destinationDimension))
         || (Level.NETHER.equals(sourceDimension) && CustomDimensions.UNIVERSE_META.equals(destinationDimension));

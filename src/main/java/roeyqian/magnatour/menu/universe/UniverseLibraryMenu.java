@@ -31,25 +31,27 @@ import roeyqian.magnatour.registry.content.UniverseMenus;
 
 public class UniverseLibraryMenu extends AbstractContainerMenu {
 
-  public static final int SEARCH_PANEL_HEIGHT = 32;
-  public static final int SEARCH_BUTTON_BASE = 1000;
   public static final int CLEAR_SEARCH_BUTTON = -1;
+  public static final int SEARCH_BUTTON_BASE = 1000;
+  public static final int SEARCH_PANEL_HEIGHT = 32;
   public static final int SEARCH_RESULT_SLOT = 90;
-
-  private final DataSlot searchItemLow = DataSlot.standalone();
-  private final DataSlot searchItemHigh = DataSlot.standalone();
-  private final DataSlot searchCountLow = DataSlot.standalone();
-  private final DataSlot searchCountHigh = DataSlot.standalone();
-  private final DataSlot searchCountUpper = DataSlot.standalone();
 
   public final DataSlot scrollOffset = DataSlot.standalone();
 
   private final boolean liveSourceInventory;
-  private boolean processingInteraction;
+
+  private final Container sourceInventory;
 
   private final Container displayInventory = new DisplayInventory();
   private final Container searchResultInventory = new SimpleContainer(1);
-  private final Container sourceInventory;
+
+  private final DataSlot searchCountHigh = DataSlot.standalone();
+  private final DataSlot searchCountLow = DataSlot.standalone();
+  private final DataSlot searchCountUpper = DataSlot.standalone();
+  private final DataSlot searchItemHigh = DataSlot.standalone();
+  private final DataSlot searchItemLow = DataSlot.standalone();
+
+  private boolean processingInteraction;
 
   public UniverseLibraryMenu(
       int syncId,
@@ -152,8 +154,7 @@ public class UniverseLibraryMenu extends AbstractContainerMenu {
 
   @Override
   public void clicked(
-      int slotIndex,
-      int button,
+      int slotIndex, int button,
       @NonNull ContainerInput input,
       @NonNull Player player
   ) {
@@ -268,8 +269,7 @@ public class UniverseLibraryMenu extends AbstractContainerMenu {
   }
 
   private void clickStorageSlot(
-      int slotIndex,
-      int button,
+      int slotIndex, int button,
       ContainerInput input,
       Player player
   ) {
@@ -435,8 +435,7 @@ public class UniverseLibraryMenu extends AbstractContainerMenu {
 
     @Override @NonNull
     public ItemStack removeItem(
-        int slot,
-        int count
+        int slot, int count
     ) {
       if (!UniverseLibraryMenu.this.liveSourceInventory) {
         ItemStack result = ContainerHelper.removeItem(this.clientItems, slot, count);
@@ -501,9 +500,7 @@ public class UniverseLibraryMenu extends AbstractContainerMenu {
 
     public DisplaySlot(
         Container inventory,
-        int index,
-        int x,
-        int y
+        int index, int x, int y
     ) {
       super(inventory, index, x, y);
     }
@@ -598,8 +595,7 @@ public class UniverseLibraryMenu extends AbstractContainerMenu {
 
     @Override
     public void setByPlayer(
-        @NonNull ItemStack stack,
-        @NonNull ItemStack previous
+        @NonNull ItemStack stack, @NonNull ItemStack previous
     ) {
       // Vanilla hotbar swaps clear the slot directly instead of calling remove.
       if (stack.isEmpty()) this.remove(this.getItem().getCount());

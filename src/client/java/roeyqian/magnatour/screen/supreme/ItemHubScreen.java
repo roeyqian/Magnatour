@@ -55,8 +55,7 @@ public class ItemHubScreen extends AbstractContainerScreen<ItemHubMenu> {
   @Override
   public void extractContents(
       @NonNull GuiGraphicsExtractor graphics,
-      int mouseX,
-      int mouseY,
+      int mouseX, int mouseY,
       float delta
   ) {
     graphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, this.leftPos, this.topPos,
@@ -67,8 +66,7 @@ public class ItemHubScreen extends AbstractContainerScreen<ItemHubMenu> {
   @Override
   public void extractRenderState(
       @NonNull GuiGraphicsExtractor graphics,
-      int mouseX,
-      int mouseY,
+      int mouseX, int mouseY,
       float delta
   ) {
     // Keep the same container open while the modal owns input and tooltips.
@@ -98,8 +96,7 @@ public class ItemHubScreen extends AbstractContainerScreen<ItemHubMenu> {
   @Override
   public boolean mouseDragged(
       @NonNull MouseButtonEvent event,
-      double deltaX,
-      double deltaY
+      double deltaX, double deltaY
   ) {
     return this.anchorsScreen == null ? super.mouseDragged(event, deltaX, deltaY)
         : this.anchorsScreen.mouseDragged(event, deltaX, deltaY);
@@ -115,10 +112,7 @@ public class ItemHubScreen extends AbstractContainerScreen<ItemHubMenu> {
 
   @Override
   public boolean mouseScrolled(
-      double mouseX,
-      double mouseY,
-      double horizontal,
-      double vertical
+      double mouseX, double mouseY, double horizontal, double vertical
   ) {
     return this.anchorsScreen == null ? super.mouseScrolled(mouseX, mouseY, horizontal, vertical)
         : this.anchorsScreen.mouseScrolled(mouseX, mouseY, horizontal, vertical);
@@ -135,8 +129,7 @@ public class ItemHubScreen extends AbstractContainerScreen<ItemHubMenu> {
   @Override
   protected void extractLabels(
       @NonNull GuiGraphicsExtractor graphics,
-      int mouseX,
-      int mouseY
+      int mouseX, int mouseY
   ) {
     super.extractLabels(graphics, mouseX, mouseY);
     graphics.text(this.font, Component.translatable("gui.magnatour.item_hub.anchor_count",

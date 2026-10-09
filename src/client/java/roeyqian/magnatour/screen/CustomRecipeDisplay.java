@@ -25,8 +25,7 @@ public interface CustomRecipeDisplay {
 
   static boolean canDisplay(
       RecipeDisplay display,
-      int width,
-      int height
+      int width, int height
   ) {
     return switch (display) {
       case ShapedCraftingRecipeDisplay shaped ->
@@ -42,8 +41,7 @@ public interface CustomRecipeDisplay {
       ContextMap context,
       GhostSlotsInvoker invoker,
       List<Slot> inputSlots,
-      int width,
-      int height
+      int width, int height
   ) {
     switch (display) {
       case ShapedCraftingRecipeDisplay shaped -> PlaceRecipeHelper.placeRecipe(

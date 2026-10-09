@@ -58,7 +58,8 @@ public class SupremeChestEntity extends BlockEntity implements CustomContainer {
   private static final Component DEFAULT_NAME =
       Component.translatable("block.magnatour.supreme_chest");
 
-  private long groupOrigin = NO_GROUP_ORIGIN;
+  private final NonNullList<ItemStack> inventory =
+      NonNullList.withSize(SLOT_COUNT, ItemStack.EMPTY);
 
   private final ChestLidController lidAnimator = new ChestLidController();
 
@@ -107,8 +108,7 @@ public class SupremeChestEntity extends BlockEntity implements CustomContainer {
 
   };
 
-  private final NonNullList<ItemStack> inventory =
-      NonNullList.withSize(SLOT_COUNT, ItemStack.EMPTY);
+  private long groupOrigin = NO_GROUP_ORIGIN;
 
   public SupremeChestEntity(
       BlockPos pos,
@@ -229,8 +229,7 @@ public class SupremeChestEntity extends BlockEntity implements CustomContainer {
 
   @Override
   public boolean triggerEvent(
-      int type,
-      int data
+      int type, int data
   ) {
     if (type == 1) {
       this.lidAnimator.shouldBeOpen(data > 0);

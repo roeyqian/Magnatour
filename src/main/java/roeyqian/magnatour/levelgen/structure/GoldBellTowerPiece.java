@@ -66,8 +66,7 @@ public final class GoldBellTowerPiece extends StructurePiece {
   public GoldBellTowerPiece(
       StructurePieceType type,
       BlockPos lowerPos,
-      Vec3i lowerSize,
-      Vec3i upperSize
+      Vec3i lowerSize, Vec3i upperSize
   ) {
     super(type, 0, makeBoundingBox(lowerPos, lowerSize, upperSize));
     this.lowerPos = lowerPos;
@@ -127,8 +126,7 @@ public final class GoldBellTowerPiece extends StructurePiece {
 
   private static BoundingBox makeBoundingBox(
       BlockPos lowerPos,
-      Vec3i lowerSize,
-      Vec3i upperSize
+      Vec3i lowerSize, Vec3i upperSize
   ) {
     int totalHeight = lowerSize.getY() + upperSize.getY();
     return new BoundingBox(

@@ -86,14 +86,7 @@ public class UniverseTeleportPointScreen extends AbstractContainerScreen<Univers
       Magnatour.MOD_ID, "textures/gui/teleport/window.png"
   );
 
-  private int scrollOffset = 0;
-
-  private float scrollPosition = 0.0f;
-
-  private boolean addMode = false;
-  private boolean isScrolling = false;
-
-  private String errorText = "";
+  private final List<UniverseTeleportPointEntity.Destination> destinations = new ArrayList<>();
 
   private Button addButton;
   private Button cancelButton;
@@ -106,7 +99,14 @@ public class UniverseTeleportPointScreen extends AbstractContainerScreen<Univers
   private EditBox yField;
   private EditBox zField;
 
-  private final List<UniverseTeleportPointEntity.Destination> destinations = new ArrayList<>();
+  private boolean addMode = false;
+  private boolean isScrolling = false;
+
+  private int scrollOffset = 0;
+
+  private float scrollPosition = 0.0f;
+
+  private String errorText = "";
 
   public UniverseTeleportPointScreen(
       UniverseTeleportPointMenu handler,
@@ -120,8 +120,7 @@ public class UniverseTeleportPointScreen extends AbstractContainerScreen<Univers
   @Override
   public void extractContents(
       @NonNull GuiGraphicsExtractor graphics,
-      int mouseX,
-      int mouseY,
+      int mouseX, int mouseY,
       float delta
   ) {
     int x = (this.width - BACKGROUND_WIDTH) / 2;
@@ -147,8 +146,7 @@ public class UniverseTeleportPointScreen extends AbstractContainerScreen<Univers
   @Override
   public void extractRenderState(
       @NonNull GuiGraphicsExtractor graphics,
-      int mouseX,
-      int mouseY,
+      int mouseX, int mouseY,
       float delta
   ) {
     super.extractRenderState(graphics, mouseX, mouseY, delta);
@@ -207,8 +205,7 @@ public class UniverseTeleportPointScreen extends AbstractContainerScreen<Univers
   @Override
   public boolean mouseDragged(
       @NonNull MouseButtonEvent event,
-      double offsetX,
-      double offsetY
+      double offsetX, double offsetY
   ) {
     if (this.isScrolling && canScroll()) {
       updateScroll(event.y());
@@ -230,10 +227,7 @@ public class UniverseTeleportPointScreen extends AbstractContainerScreen<Univers
 
   @Override
   public boolean mouseScrolled(
-      double mouseX,
-      double mouseY,
-      double horizontalAmount,
-      double verticalAmount
+      double mouseX, double mouseY, double horizontalAmount, double verticalAmount
   ) {
     if (!addMode && canScroll()) {
       this.scrollOffset = Mth.clamp(
@@ -250,8 +244,7 @@ public class UniverseTeleportPointScreen extends AbstractContainerScreen<Univers
   @Override
   protected void extractLabels(
       @NonNull GuiGraphicsExtractor graphics,
-      int mouseX,
-      int mouseY
+      int mouseX, int mouseY
   ) {
     graphics.text(this.font, this.title, this.titleLabelX, this.titleLabelY, -12566464, false);
   }
@@ -327,8 +320,7 @@ public class UniverseTeleportPointScreen extends AbstractContainerScreen<Univers
   }
 
   private EditBox coordinateField(
-      int x,
-      int y,
+      int x, int y,
       String name
   ) {
     EditBox field = new EditBox(
@@ -344,20 +336,14 @@ public class UniverseTeleportPointScreen extends AbstractContainerScreen<Univers
   }
 
   private boolean mouseOverMain(
-      int mouseX,
-      int mouseY,
-      int buttonX,
-      int buttonY
+      int mouseX, int mouseY, int buttonX, int buttonY
   ) {
     return mouseX >= buttonX && mouseX < buttonX + ROW_BUTTON_WIDTH
         && mouseY >= buttonY && mouseY < buttonY + ROW_BUTTON_HEIGHT;
   }
 
   private boolean mouseOverDelete(
-      int mouseX,
-      int mouseY,
-      int buttonX,
-      int buttonY
+      int mouseX, int mouseY, int buttonX, int buttonY
   ) {
     return mouseX >= buttonX && mouseX < buttonX + ROW_DELETE_BUTTON_WIDTH
         && mouseY >= buttonY && mouseY < buttonY + ROW_BUTTON_HEIGHT;
@@ -434,8 +420,7 @@ public class UniverseTeleportPointScreen extends AbstractContainerScreen<Univers
 
   private void drawDestinationList(
       GuiGraphicsExtractor graphics,
-      int mouseX,
-      int mouseY
+      int mouseX, int mouseY
   ) {
     if (destinations.isEmpty()) {
       Component empty = Component.translatable("gui.magnatour.universe_teleport_point.empty");
@@ -480,8 +465,7 @@ public class UniverseTeleportPointScreen extends AbstractContainerScreen<Univers
 
   private void drawTooltips(
       GuiGraphicsExtractor graphics,
-      int mouseX,
-      int mouseY
+      int mouseX, int mouseY
   ) {
     if (addMode || destinations.isEmpty()) return;
 
@@ -580,8 +564,7 @@ public class UniverseTeleportPointScreen extends AbstractContainerScreen<Univers
   }
 
   private boolean mouseOverScrollbar(
-      double mouseX,
-      double mouseY
+      double mouseX, double mouseY
   ) {
     int scrollbarX = this.leftPos + SCROLLBAR_X;
     int scrollbarY = this.topPos + LIST_BUTTON_TOP;
@@ -603,8 +586,7 @@ public class UniverseTeleportPointScreen extends AbstractContainerScreen<Univers
   }
 
   private int getHoveredIndex(
-      double mouseX,
-      double mouseY
+      double mouseX, double mouseY
   ) {
     int rows = Math.min(VISIBLE_ROWS, destinations.size() - scrollOffset);
     for (int i = 0; i < rows; i++) {
@@ -642,8 +624,7 @@ public class UniverseTeleportPointScreen extends AbstractContainerScreen<Univers
   }
 
   private int getHoveredDeleteIndex(
-      double mouseX,
-      double mouseY
+      double mouseX, double mouseY
   ) {
     int rows = Math.min(VISIBLE_ROWS, destinations.size() - scrollOffset);
     for (int i = 0; i < rows; i++) {

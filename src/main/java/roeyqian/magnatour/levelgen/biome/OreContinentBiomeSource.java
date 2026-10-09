@@ -59,8 +59,7 @@ public final class OreContinentBiomeSource extends BiomeSource {
   private final Holder<Biome> oreLand;
 
   public OreContinentBiomeSource(
-      Holder<Biome> oreLand,
-      Holder<Biome> oreForest,
+      Holder<Biome> oreLand, Holder<Biome> oreForest,
       long seed,
       int cellSize,
       float jitter
@@ -82,9 +81,7 @@ public final class OreContinentBiomeSource extends BiomeSource {
 
   @NonNull
   public Holder<Biome> getNoiseBiome(
-      int x,
-      int y,
-      int z,
+      int x, int y, int z,
       Climate.@NonNull Sampler noise
   ) {
     Cell cell = nearestCell(x * 4.0D, z * 4.0D);
@@ -103,8 +100,7 @@ public final class OreContinentBiomeSource extends BiomeSource {
 
   private static long mix(
       long seed,
-      int x,
-      int z
+      int x, int z
   ) {
     long h = seed;
     h ^= (long) x * 0x9E3779B97F4A7C15L;
@@ -131,8 +127,7 @@ public final class OreContinentBiomeSource extends BiomeSource {
   }
 
   private Cell nearestCell(
-      double worldX,
-      double worldZ
+      double worldX, double worldZ
   ) {
     int baseCellX = fastFloor(worldX / this.cellSize);
     int baseCellZ = fastFloor(worldZ / this.cellSize);
@@ -162,16 +157,14 @@ public final class OreContinentBiomeSource extends BiomeSource {
   }
 
   private Holder<Biome> pickBiome(
-      int cellX,
-      int cellZ
+      int cellX, int cellZ
   ) {
     long selector = Math.floorMod(mix(this.seed, cellX, cellZ), 2L);
     return selector == 0L ? this.oreForest : this.oreLand;
   }
 
   private double cellCenter(
-      int cellX,
-      int cellZ,
+      int cellX, int cellZ,
       long salt,
       boolean xAxis
   ) {
@@ -183,8 +176,7 @@ public final class OreContinentBiomeSource extends BiomeSource {
   }
 
   private record Cell(
-      int x,
-      int z
+      int x, int z
   ) {}
 
 }

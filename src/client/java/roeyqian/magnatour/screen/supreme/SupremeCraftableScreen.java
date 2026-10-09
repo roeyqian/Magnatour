@@ -39,8 +39,7 @@ public class SupremeCraftableScreen extends AbstractRecipeBookScreen<SupremeCraf
   @Override
   public void extractBackground(
       @NonNull GuiGraphicsExtractor graphics,
-      int mouseX,
-      int mouseY,
+      int mouseX, int mouseY,
       float delta
   ) {
     super.extractBackground(graphics, mouseX, mouseY, delta);

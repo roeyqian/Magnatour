@@ -35,8 +35,7 @@ public interface CustomCraftingBlock {
 
   boolean noInsertItem(
       ItemStack stack,
-      int start,
-      int end,
+      int start, int end,
       boolean fromPlayer
   );
 

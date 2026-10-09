@@ -35,8 +35,7 @@ public class GuiGraphicsExtractorMixin {
   private void extractLibraryCount(
       Font font,
       ItemStack stack,
-      int x,
-      int y,
+      int x, int y,
       String countText,
       CallbackInfo ci
   ) {

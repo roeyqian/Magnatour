@@ -28,10 +28,6 @@ public final class HarvestMelonTerrain {
   private static final int Y_STEP = 8;
   private static final int Y_NODES = (MAX_Y - MIN_Y) / Y_STEP + 1;
 
-  // A worker owns its noise generators and bounded tile cache: no shared mutable
-  // interpolation cursor, cross-world cache reuse, or generation-order dependency.
-  private static final ThreadLocal<Context> CONTEXT = new ThreadLocal<>();
-
   private static final CubicSpline<Coordinate> FACTOR = TerrainProvider.overworldFactor(
       Coordinate.CONTINENTS, Coordinate.EROSION, Coordinate.RIDGES, Coordinate.FOLDED_RIDGES, false);
   private static final CubicSpline<Coordinate> JAGGEDNESS = TerrainProvider.overworldJaggedness(
@@ -39,14 +35,16 @@ public final class HarvestMelonTerrain {
   private static final CubicSpline<Coordinate> OFFSET = TerrainProvider.overworldOffset(
       Coordinate.CONTINENTS, Coordinate.EROSION, Coordinate.FOLDED_RIDGES, false);
 
+  // A worker owns its noise generators and bounded tile cache: no shared mutable
+  // interpolation cursor, cross-world cache reuse, or generation-order dependency.
+  private static final ThreadLocal<Context> CONTEXT = new ThreadLocal<>();
+
   private HarvestMelonTerrain() {}
 
   /** Precompute occupancy once; chunk filling and height queries use the same mask. */
   public static Column column(
       long seed,
-      int x,
-      int z,
-      int surfaceY,
+      int x, int z, int surfaceY,
       double weight
   ) {
     if (weight <= 0.0) return null;
@@ -79,16 +77,14 @@ public final class HarvestMelonTerrain {
 
   public static double height(
       long seed,
-      int x,
-      int z
+      int x, int z
   ) {
     return tile(seed, x, z).heights[index(x, z)];
   }
 
   private static Tile tile(
       long seed,
-      int x,
-      int z
+      int x, int z
   ) {
     Context context = CONTEXT.get();
     if (context == null || context.seed != seed) {
@@ -113,16 +109,14 @@ public final class HarvestMelonTerrain {
   }
 
   private static int index(
-      int x,
-      int z
+      int x, int z
   ) {
     return Math.floorMod(x, 16) * 16 + Math.floorMod(z, 16);
   }
 
   private static double climate(
       long seed,
-      int x,
-      int z,
+      int x, int z,
       double scale,
       int octaves
   ) {
@@ -138,8 +132,7 @@ public final class HarvestMelonTerrain {
 
   public record Column(
       int bottom,
-      long lower,
-      long upper
+      long lower, long upper
   ) {
 
     public boolean solid(
@@ -156,16 +149,17 @@ public final class HarvestMelonTerrain {
 
   private static final class Context {
 
-    private Tile lastTile;
-
-    private long lastKey;
     private final long seed;
-
-    private final LinkedHashMap<Long, Tile> tiles = new LinkedHashMap<>(CACHE_LIMIT, 0.75F, true);
 
     private final PerlinNoise lower;
     private final PerlinNoise selector;
     private final PerlinNoise upper;
+
+    private final LinkedHashMap<Long, Tile> tiles = new LinkedHashMap<>(CACHE_LIMIT, 0.75F, true);
+
+    private long lastKey;
+
+    private Tile lastTile;
 
     private Context(
         long seed
@@ -199,9 +193,7 @@ public final class HarvestMelonTerrain {
   }
 
   private record Point(
-      float continents,
-      float erosion,
-      float ridges
+      float continents, float erosion, float ridges
   ) {}
 
   private static final class Tile {
@@ -212,8 +204,7 @@ public final class HarvestMelonTerrain {
 
     private Tile(
         Context context,
-        int minX,
-        int minZ
+        int minX, int minZ
     ) {
       float[] nodes = new float[25 * Y_NODES];
       for (int gx = 0; gx <= 4; gx++) {

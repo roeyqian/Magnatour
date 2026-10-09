@@ -67,8 +67,7 @@ public class EquipmentLayerRendererMixin {
       SubmitNodeCollector submitNodeCollector,
       int lightCoords,
       Identifier playerTexture,
-      int layerColor,
-      int outlineColor,
+      int layerColor, int outlineColor,
       CallbackInfo ci
   ) {
     if (equipmentAssets.get(equipmentAssetId).getLayers(layerType).isEmpty()) {
@@ -142,8 +141,7 @@ public class EquipmentLayerRendererMixin {
       SubmitNodeCollector submitNodeCollector,
       int lightCoords,
       Identifier playerTexture,
-      int layerColor,
-      int outlineColor,
+      int layerColor, int outlineColor,
       CallbackInfo ci
   ) {
     magnatour$animateUniverseHumanoid = layerType == EquipmentClientInfo.LayerType.HUMANOID

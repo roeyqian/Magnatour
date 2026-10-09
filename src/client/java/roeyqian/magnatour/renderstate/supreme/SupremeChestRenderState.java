@@ -19,10 +19,10 @@ import net.minecraft.world.level.block.state.properties.ChestType;
 @Environment(EnvType.CLIENT)
 public final class SupremeChestRenderState extends BlockEntityRenderState {
 
+  public float lidProgress;
+
   public int connectedChestCount = 1;
   public int connectedChestIndex = 0;
-
-  public float lidProgress;
 
   public Direction facing = Direction.SOUTH;
 

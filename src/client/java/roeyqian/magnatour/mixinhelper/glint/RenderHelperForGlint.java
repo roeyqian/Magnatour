@@ -115,8 +115,7 @@ public final class RenderHelperForGlint {
       ItemStack itemStack,
       PoseStack poseStack,
       SubmitNodeCollector submitNodeCollector,
-      int lightCoords,
-      int outlineColor
+      int lightCoords, int outlineColor
   ) {
     GlintType glintType = glintType(itemStack);
     if (glintType == GlintType.NONE) {

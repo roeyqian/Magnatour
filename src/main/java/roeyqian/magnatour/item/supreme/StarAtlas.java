@@ -203,10 +203,7 @@ public class StarAtlas extends Item {
   public record Payload(
       int action,
       ResourceKey<Level> dimension,
-      int minX,
-      int minZ,
-      int maxX,
-      int maxZ,
+      int minX, int minZ, int maxX, int maxZ,
       byte[] pixels
   ) implements CustomPacketPayload {
 
@@ -257,8 +254,7 @@ public class StarAtlas extends Item {
 
     public static Payload batch(
         ResourceKey<Level> dimension,
-        int unusedX,
-        int unusedZ,
+        int unusedX, int unusedZ,
         byte[] cells
     ) {
       return new Payload(BATCH, dimension, unusedX, unusedZ, 0, 0, cells);
@@ -272,8 +268,7 @@ public class StarAtlas extends Item {
 
     public static Payload tile(
         ResourceKey<Level> dimension,
-        int x,
-        int z,
+        int x, int z,
         byte[] pixels
     ) {
       return new Payload(TILE, dimension, x, z, 0, 0, pixels);
@@ -281,10 +276,7 @@ public class StarAtlas extends Item {
 
     public static Payload view(
         ResourceKey<Level> dimension,
-        int minX,
-        int minZ,
-        int maxX,
-        int maxZ
+        int minX, int minZ, int maxX, int maxZ
     ) {
       return new Payload(VIEW, dimension, minX, minZ, maxX, maxZ, new byte[0]);
     }
@@ -468,14 +460,9 @@ public class StarAtlas extends Item {
 
     private static final class Job {
 
-      private int maxX;
-      private int maxZ;
-      private int minX;
-      private int minZ;
       private final int quartY;
-      private int started;
 
-      private volatile boolean cancelled;
+      private final Registry<Biome> registry;
 
       private final ServerLevel level;
 
@@ -487,9 +474,15 @@ public class StarAtlas extends Item {
 
       private final ArrayDeque<ChunkPos> pending = new ArrayDeque<>();
 
-      private final Registry<Biome> registry;
-
       private final Map<ChunkPos, CompletableFuture<int[]>> active = new HashMap<>();
+
+      private volatile boolean cancelled;
+
+      private int maxX;
+      private int maxZ;
+      private int minX;
+      private int minZ;
+      private int started;
 
       private Job(
           ServerPlayer player,

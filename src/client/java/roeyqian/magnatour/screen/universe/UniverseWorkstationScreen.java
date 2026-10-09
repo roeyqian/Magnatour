@@ -25,12 +25,12 @@ import roeyqian.magnatour.mixin.screen.AbstractContainerScreenAccessor;
 
 public class UniverseWorkstationScreen extends AbstractRecipeBookScreen<UniverseWorkstationMenu> {
 
+  private static final int BACKGROUND_HEIGHT = 202;
+  private static final int BACKGROUND_WIDTH = 176;
+
   private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(
       "magnatour", "textures/gui/container/universe_workstation.png"
   );
-
-  private static final int BACKGROUND_WIDTH = 176;
-  private static final int BACKGROUND_HEIGHT = 202;
 
   private final UniverseCraftingBookComponent craftingBook;
 
@@ -58,8 +58,7 @@ public class UniverseWorkstationScreen extends AbstractRecipeBookScreen<Universe
   @Override
   public void extractBackground(
       @NonNull GuiGraphicsExtractor graphics,
-      int mouseX,
-      int mouseY,
+      int mouseX, int mouseY,
       float delta
   ) {
     super.extractBackground(graphics, mouseX, mouseY, delta);

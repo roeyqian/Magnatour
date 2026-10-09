@@ -37,39 +37,8 @@ import roeyqian.magnatour.Magnatour;
 
 public interface BlockRegHelper {
 
-  private static Block register(
-      String name,
-      Function<BlockBehaviour.Properties, Block> factory,
-      BlockBehaviour.Properties blockSettings,
-      UnaryOperator<Item.Properties> itemModifier
-  ) {
-    return register(name, factory, blockSettings.requiresCorrectToolForDrops(), itemModifier, BlockItem::new);
-  }
-
-  private static Block register(
-      String name,
-      Function<BlockBehaviour.Properties, Block> factory,
-      BlockBehaviour.Properties blockSettings,
-      UnaryOperator<Item.Properties> itemModifier,
-      BiFunction<Block, Item.Properties, BlockItem> itemFactory
-  ) {
-    Identifier id = Identifier.fromNamespaceAndPath(Magnatour.MOD_ID, name);
-    ResourceKey<Block> blockKey = ResourceKey.create(Registries.BLOCK, id);
-    ResourceKey<Item> itemKey = ResourceKey.create(Registries.ITEM, id);
-
-    Block block = Blocks.register(blockKey, factory, blockSettings);
-    Item.Properties itemProperties = itemModifier.apply(new Item.Properties().setId(itemKey));
-
-    BlockItem blockItem = itemFactory.apply(block, itemProperties);
-    blockItem.registerBlocks(Item.BY_BLOCK, blockItem);
-    Registry.register(BuiltInRegistries.ITEM, itemKey, blockItem);
-
-    return block;
-  }
-
   static Block registerBase(
-      String name,
-      String type,
+      String name, String type,
       Function<BlockBehaviour.Properties, Block> factory,
       BlockBehaviour.Properties properties
   ) {
@@ -87,8 +56,7 @@ public interface BlockRegHelper {
   }
 
   static Block registerCrop(
-      String name,
-      String type,
+      String name, String type,
       Function<BlockBehaviour.Properties, Block> factory,
       BlockBehaviour.Properties properties
   ) {
@@ -116,8 +84,7 @@ public interface BlockRegHelper {
   }
 
   static Block registerGrass(
-      String name,
-      String type,
+      String name, String type,
       Function<BlockBehaviour.Properties, Block> factory,
       BlockBehaviour.Properties properties
   ) {
@@ -141,8 +108,7 @@ public interface BlockRegHelper {
   }
 
   static Block registerGravel(
-      String name,
-      String type,
+      String name, String type,
       Function<BlockBehaviour.Properties, Block> factory,
       BlockBehaviour.Properties properties
   ) {
@@ -166,8 +132,7 @@ public interface BlockRegHelper {
   }
 
   static Block registerLeaves(
-      String name,
-      String type,
+      String name, String type,
       Function<BlockBehaviour.Properties, Block> factory,
       BlockBehaviour.Properties properties
   ) {
@@ -205,8 +170,7 @@ public interface BlockRegHelper {
   }
 
   static Block registerPortableContainer(
-      String name,
-      String type,
+      String name, String type,
       Function<BlockBehaviour.Properties, Block> factory,
       BlockBehaviour.Properties properties,
       BiFunction<Block, Item.Properties, BlockItem> itemFactory
@@ -237,8 +201,7 @@ public interface BlockRegHelper {
   }
 
   static Block registerSapling(
-      String name,
-      String type,
+      String name, String type,
       Function<BlockBehaviour.Properties, Block> factory,
       BlockBehaviour.Properties properties
   ) {
@@ -268,8 +231,7 @@ public interface BlockRegHelper {
   }
 
   static Block registerWood(
-      String name,
-      String type,
+      String name, String type,
       Function<BlockBehaviour.Properties, Block> factory,
       BlockBehaviour.Properties properties
   ) {
@@ -293,8 +255,7 @@ public interface BlockRegHelper {
   }
 
   static Block registerWoodBlockOnly(
-      String name,
-      String type,
+      String name, String type,
       Function<BlockBehaviour.Properties, Block> factory,
       BlockBehaviour.Properties properties
   ) {
@@ -309,8 +270,7 @@ public interface BlockRegHelper {
   }
 
   static Block registerWoodDoor(
-      String name,
-      String type,
+      String name, String type,
       Function<BlockBehaviour.Properties, Block> factory,
       BlockBehaviour.Properties properties
   ) {
@@ -333,10 +293,8 @@ public interface BlockRegHelper {
   }
 
   static Item registerWoodSignItem(
-      String name,
-      String type,
-      Block standing,
-      Block wall,
+      String name, String type,
+      Block standing, Block wall,
       boolean hanging
   ) {
     Identifier id = Identifier.fromNamespaceAndPath(Magnatour.MOD_ID, name);
@@ -349,6 +307,36 @@ public interface BlockRegHelper {
     item.registerBlocks(Item.BY_BLOCK, item);
     Registry.register(BuiltInRegistries.ITEM, key, item);
     return item;
+  }
+
+  private static Block register(
+      String name,
+      Function<BlockBehaviour.Properties, Block> factory,
+      BlockBehaviour.Properties blockSettings,
+      UnaryOperator<Item.Properties> itemModifier
+  ) {
+    return register(name, factory, blockSettings.requiresCorrectToolForDrops(), itemModifier, BlockItem::new);
+  }
+
+  private static Block register(
+      String name,
+      Function<BlockBehaviour.Properties, Block> factory,
+      BlockBehaviour.Properties blockSettings,
+      UnaryOperator<Item.Properties> itemModifier,
+      BiFunction<Block, Item.Properties, BlockItem> itemFactory
+  ) {
+    Identifier id = Identifier.fromNamespaceAndPath(Magnatour.MOD_ID, name);
+    ResourceKey<Block> blockKey = ResourceKey.create(Registries.BLOCK, id);
+    ResourceKey<Item> itemKey = ResourceKey.create(Registries.ITEM, id);
+
+    Block block = Blocks.register(blockKey, factory, blockSettings);
+    Item.Properties itemProperties = itemModifier.apply(new Item.Properties().setId(itemKey));
+
+    BlockItem blockItem = itemFactory.apply(block, itemProperties);
+    blockItem.registerBlocks(Item.BY_BLOCK, blockItem);
+    Registry.register(BuiltInRegistries.ITEM, itemKey, blockItem);
+
+    return block;
   }
 
 }

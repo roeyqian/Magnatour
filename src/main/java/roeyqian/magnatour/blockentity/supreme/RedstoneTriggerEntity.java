@@ -40,10 +40,10 @@ public class RedstoneTriggerEntity extends BlockEntity {
   private static final String MODE_KEY = "Mode";
   private static final String PROGRESS_KEY = "PulseProgress";
 
+  private boolean enabled = false;
+
   private int intervalTicks = DEFAULT_INTERVAL_TICKS;
   private int pulseProgress = 0;
-
-  private boolean enabled = false;
 
   private TriggerMode mode = TriggerMode.NORMAL;
 

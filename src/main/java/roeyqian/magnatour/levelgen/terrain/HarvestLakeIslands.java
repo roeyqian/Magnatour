@@ -33,8 +33,7 @@ public final class HarvestLakeIslands {
 
   /** The cache is bounded and stores immutable candidates, never generated chunks. */
   public Island at(
-      int x,
-      int z,
+      int x, int z,
       double harvestour
   ) {
     if (harvestour >= HarvestContinentTerrain.LAKE_HARVESTOUR_LIMIT) return null;
@@ -60,8 +59,7 @@ public final class HarvestLakeIslands {
 
   private static long mix(
       long seed,
-      int x,
-      int z
+      int x, int z
   ) {
     long h = seed ^ (long) x * 0x9E3779B97F4A7C15L ^ (long) z * 0xC2B2AE3D27D4EB4FL;
     h ^= h >>> 27;
@@ -78,8 +76,7 @@ public final class HarvestLakeIslands {
   }
 
   private Island createIsland(
-      int gx,
-      int gz
+      int gx, int gz
   ) {
     long choice = mix(this.seed ^ 0x6A09E667F3BCC909L, gx, gz);
     if (unit(choice) >= ISLAND_CHANCE) return null;
@@ -109,14 +106,12 @@ public final class HarvestLakeIslands {
   }
 
   public record Island(
-      int x,
-      int z,
+      int x, int z,
       double radius
   ) {
 
     public double distance(
-        int worldX,
-        int worldZ
+        int worldX, int worldZ
     ) {
       return Math.hypot(worldX - this.x, worldZ - this.z);
     }

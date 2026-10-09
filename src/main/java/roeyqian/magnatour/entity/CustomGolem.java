@@ -62,14 +62,14 @@ public final class CustomGolem<T extends AbstractGolem & NeutralMob> {
 
   private static final UniformInt PERSISTENT_ANGER_TIME = TimeUtil.rangeOfSeconds(20, 39);
 
+  private final EntityDataAccessor<Byte> dataFlagsId;
+
   private final T owner;
 
   private int attackAnimationTick;
   private int offerFlowerTick;
 
   private long persistentAngerEndTime;
-
-  private final EntityDataAccessor<Byte> dataFlagsId;
 
   private @Nullable EntityReference<LivingEntity> persistentAngerTarget;
 
@@ -82,13 +82,7 @@ public final class CustomGolem<T extends AbstractGolem & NeutralMob> {
   }
 
   public static AttributeSupplier.Builder createBaseAttributes(
-      final double maxHealth,
-      final double movementSpeed,
-      final double knockbackResistance,
-      final double attackDamage,
-      final double armor,
-      final double followRange,
-      final double stepHeight
+      final double maxHealth, final double movementSpeed, final double knockbackResistance, final double attackDamage, final double armor, final double followRange, final double stepHeight
   ) {
     return Mob.createMobAttributes()
         .add(Attributes.MAX_HEALTH, maxHealth)
@@ -368,10 +362,10 @@ public final class CustomGolem<T extends AbstractGolem & NeutralMob> {
 
   private static final class FasterMeleeAttackGoal extends MeleeAttackGoal {
 
+    private final int[] attackIntervals;
+
     private int attackCooldown;
     private int attackPatternIndex;
-
-    private final int[] attackIntervals;
 
     private FasterMeleeAttackGoal(
         final AbstractGolem mob,

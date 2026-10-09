@@ -52,7 +52,8 @@ import org.jspecify.annotations.Nullable;
 import roeyqian.magnatour.entity.CustomBossEntity;
 import roeyqian.magnatour.entity.EntityLootTableHelper;
 
-public class SculkBehemoth extends Mob implements Enemy, CustomBossEntity {
+public class SculkBehemoth extends Mob
+    implements Enemy, CustomBossEntity {
 
   private static final int EXPERIENCE_REWARD = 5000;
   private static final int MOVE_BACK_DISTANCE = 15;
@@ -77,6 +78,10 @@ public class SculkBehemoth extends Mob implements Enemy, CustomBossEntity {
       SculkBehemoth.class, EntityDataSerializers.INT
   );
 
+  private final ServerBossEvent bossBar;
+
+  private boolean chargeHit = false;
+
   private int chargeDetourSide = 0;
   private int chargeStunTimer = 0;
   private int heartAnimation = 0;
@@ -89,14 +94,10 @@ public class SculkBehemoth extends Mob implements Enemy, CustomBossEntity {
 
   private Phase currentPhase = Phase.IDLE;
 
-  private boolean chargeHit = false;
-
   private SmashState smashState = SmashState.JUMPING;
 
   private @Nullable Vec3 chargeDirection = null;
   private @Nullable Vec3 smashTargetEntityPos = null;
-
-  private final ServerBossEvent bossBar;
 
   public SculkBehemoth(
       EntityType<? extends Mob> entityType,
@@ -184,18 +185,14 @@ public class SculkBehemoth extends Mob implements Enemy, CustomBossEntity {
 
   @Override
   public void knockback(
-      double strength,
-      double x,
-      double z,
+      double strength, double x, double z,
       @NonNull DamageSource source,
       float knockbackResistance
   ) {}
 
   @Override
   public void knockback(
-      double strength,
-      double x,
-      double z,
+      double strength, double x, double z,
       @NonNull DamageSource source,
       float knockbackResistance,
       boolean indicateDamage
@@ -203,9 +200,7 @@ public class SculkBehemoth extends Mob implements Enemy, CustomBossEntity {
 
   @Override
   public void push(
-      double deltaX,
-      double deltaY,
-      double deltaZ
+      double deltaX, double deltaY, double deltaZ
   ) {}
 
   @Override
@@ -535,9 +530,7 @@ public class SculkBehemoth extends Mob implements Enemy, CustomBossEntity {
   }
 
   private void setVelocityInternal(
-      double x,
-      double y,
-      double z
+      double x, double y, double z
   ) {
     super.setDeltaMovement(x, y, z);
   }
@@ -944,8 +937,7 @@ public class SculkBehemoth extends Mob implements Enemy, CustomBossEntity {
   }
 
   private record ChargeStep(
-      Vec3 rise,
-      Vec3 forward
+      Vec3 rise, Vec3 forward
   ) {}
 
   public enum Phase {

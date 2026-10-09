@@ -229,17 +229,18 @@ public final class BiomeMobSpawner {
 
   private static final class SpawnState {
 
-    private int population;
     private final int populationLimit;
-    private int spawned;
 
     private final ServerLevel level;
-
-    private final PotentialCalculator potential = new PotentialCalculator();
 
     private final Map<ServerPlayer, Integer> localCounts = new HashMap<>();
 
     private final Map<ChunkPos, List<ServerPlayer>> playersNearChunk = new HashMap<>();
+
+    private final PotentialCalculator potential = new PotentialCalculator();
+
+    private int population;
+    private int spawned;
 
     private SpawnState(
         ServerLevel level,

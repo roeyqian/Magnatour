@@ -44,11 +44,11 @@ public class UniverseWorkstationMenu extends AbstractCraftingMenu implements Cus
   private static final int INVENTORY_END = 53;
   private static final int INVENTORY_START = 26;
 
-  private boolean filling;
-
   private final Player player;
 
   private final ContainerLevelAccess context;
+
+  private boolean filling;
 
   public UniverseWorkstationMenu(
       int syncId,
@@ -181,8 +181,7 @@ public class UniverseWorkstationMenu extends AbstractCraftingMenu implements Cus
   @Override
   public boolean noInsertItem(
       ItemStack stack,
-      int start,
-      int end,
+      int start, int end,
       boolean fromPlayer
   ) {
     return !super.moveItemStackTo(stack, start, end, fromPlayer);

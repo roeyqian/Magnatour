@@ -78,7 +78,8 @@ import roeyqian.magnatour.menu.supreme.SupremeChestContainer;
 import roeyqian.magnatour.menu.supreme.SupremeChestMenu;
 import roeyqian.magnatour.registry.content.SupremeBlockEntities;
 
-public class SupremeChest extends BaseEntityBlock implements SimpleWaterloggedBlock, WorldlyContainerHolder {
+public class SupremeChest extends BaseEntityBlock
+    implements SimpleWaterloggedBlock, WorldlyContainerHolder {
 
   public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 
@@ -428,8 +429,7 @@ public class SupremeChest extends BaseEntityBlock implements SimpleWaterloggedBl
   private static void collectLine(
       LevelReader level,
       BlockPos origin,
-      Direction direction,
-      Direction facing,
+      Direction direction, Direction facing,
       long requiredGroupOrigin,
       List<BlockPos> positions
   ) {

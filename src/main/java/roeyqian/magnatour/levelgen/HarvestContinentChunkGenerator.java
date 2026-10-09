@@ -73,11 +73,11 @@ public final class HarvestContinentChunkGenerator extends ChunkGenerator {
   private static final int MIN_Y = -64;
   private static final int MAX_Y = MIN_Y + GEN_DEPTH - 1;
 
-  private volatile long terrainSeed;
-
   private final Identifier settings;
 
   private final HarvestContinentBiomeSource harvestourSource;
+
+  private volatile long terrainSeed;
 
   public HarvestContinentChunkGenerator(
       BiomeSource biomeSource,
@@ -209,8 +209,7 @@ public final class HarvestContinentChunkGenerator extends ChunkGenerator {
 
   @Override @NonNull
   public NoiseColumn getBaseColumn(
-      int x,
-      int z,
+      int x, int z,
       @NonNull LevelHeightAccessor level,
       @NonNull RandomState randomState
   ) {
@@ -228,8 +227,7 @@ public final class HarvestContinentChunkGenerator extends ChunkGenerator {
 
   @Override
   public int getBaseHeight(
-      int x,
-      int z,
+      int x, int z,
       Heightmap.@NonNull Types heightmap,
       @NonNull LevelHeightAccessor level,
       @NonNull RandomState randomState
@@ -283,8 +281,7 @@ public final class HarvestContinentChunkGenerator extends ChunkGenerator {
   private static void set(
       ChunkAccess chunk,
       BlockPos.MutableBlockPos pos,
-      Heightmap oceanFloor,
-      Heightmap worldSurface,
+      Heightmap oceanFloor, Heightmap worldSurface,
       int y,
       BlockState state
   ) {
@@ -326,9 +323,7 @@ public final class HarvestContinentChunkGenerator extends ChunkGenerator {
   private static BlockState blockAt(
       HarvestContinentCaveSampler caves,
       ResourceKeyBiome profile,
-      int x,
-      int y,
-      int z
+      int x, int y, int z
   ) {
     if (y < MIN_Y || y > MAX_Y) return Blocks.AIR.defaultBlockState();
     if (y > profile.surfaceY()) {
@@ -350,8 +345,7 @@ public final class HarvestContinentChunkGenerator extends ChunkGenerator {
       ResourceKeyBiome profile,
       BlockPos.MutableBlockPos pos,
       ChunkAccess chunk,
-      Heightmap oceanFloor,
-      Heightmap worldSurface
+      Heightmap oceanFloor, Heightmap worldSurface
   ) {
     if (profile.greatLake()) return;
     int y = profile.surfaceY();
@@ -392,8 +386,7 @@ public final class HarvestContinentChunkGenerator extends ChunkGenerator {
 
   /** The same pointwise function is used for chunks, columns and structures. */
   private ResourceKeyBiome sampleSingleColumn(
-      int x,
-      int z
+      int x, int z
   ) {
     HarvestContinentBiomeSource.SurfaceSample surface = this.harvestourSource.sampleSurface(x, z, this.terrainSeed);
     ResourceKey<Biome> biome = surface.biome();
@@ -413,10 +406,8 @@ public final class HarvestContinentChunkGenerator extends ChunkGenerator {
 
   private record ResourceKeyBiome(
       ResourceKey<Biome> biome,
-      int surfaceY,
-      int waterLevel,
-      boolean treeReservation,
-      boolean berryClearing,
+      int surfaceY, int waterLevel,
+      boolean treeReservation, boolean berryClearing,
       HarvestMelonTerrain.Column melonTerrain
   ) {
 

@@ -27,11 +27,11 @@ import roeyqian.magnatour.mixinhelper.client.ClientHelperForParticle;
 @Mixin(value = ClientPacketListener.class, priority = 3600000)
 public class ClientPacketListenerMixin {
 
-  @Shadow @Final
-  private RandomSource random;
-
   @Shadow
   private ClientLevel level;
+
+  @Shadow @Final
+  private RandomSource random;
 
   /* Universe Particles: Large Particle Packet Count Cap
    */

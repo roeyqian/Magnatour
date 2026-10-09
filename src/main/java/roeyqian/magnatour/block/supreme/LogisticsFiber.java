@@ -86,15 +86,6 @@ public class LogisticsFiber extends BaseEntityBlock {
       Block.box(0.0, 5.0, 5.0, 1.0, 11.0, 11.0)
   );
 
-  private static final Map<Direction, VoxelShape> CONNECTION_SHAPES = Map.of(
-      Direction.DOWN, DOWN_SHAPE,
-      Direction.NORTH, NORTH_SHAPE,
-      Direction.EAST, EAST_SHAPE,
-      Direction.SOUTH, SOUTH_SHAPE,
-      Direction.WEST, WEST_SHAPE,
-      Direction.UP, UP_SHAPE
-  );
-
   private static final Map<Direction, BooleanProperty> CONNECTION_PROPERTIES = Map.of(
       Direction.DOWN, DOWN,
       Direction.NORTH, NORTH,
@@ -102,6 +93,15 @@ public class LogisticsFiber extends BaseEntityBlock {
       Direction.SOUTH, SOUTH,
       Direction.WEST, WEST,
       Direction.UP, UP
+  );
+
+  private static final Map<Direction, VoxelShape> CONNECTION_SHAPES = Map.of(
+      Direction.DOWN, DOWN_SHAPE,
+      Direction.NORTH, NORTH_SHAPE,
+      Direction.EAST, EAST_SHAPE,
+      Direction.SOUTH, SOUTH_SHAPE,
+      Direction.WEST, WEST_SHAPE,
+      Direction.UP, UP_SHAPE
   );
 
   public LogisticsFiber(

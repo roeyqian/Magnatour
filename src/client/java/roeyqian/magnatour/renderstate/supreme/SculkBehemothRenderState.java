@@ -12,10 +12,10 @@ import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 
 public final class SculkBehemothRenderState extends LivingEntityRenderState {
 
+  public boolean inAir;
+
   public int phaseType;
 
   public float heartAnimation;
-
-  public boolean inAir;
 
 }

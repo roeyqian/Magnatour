@@ -36,10 +36,26 @@ final class HarvestourField {
 
   private HarvestourField() {}
 
+  static double sample(
+      long seed,
+      int worldX, int worldZ
+  ) {
+    if (DISTRIBUTIONS.size() > DISTRIBUTION_CACHE_LIMIT) DISTRIBUTIONS.clear();
+    double[] distribution = DISTRIBUTIONS.computeIfAbsent(seed, HarvestourField::createDistribution);
+    double value = rawSample(seed, worldX * WORLD_COORDINATE_SCALE, worldZ * WORLD_COORDINATE_SCALE);
+    int index = Arrays.binarySearch(distribution, value);
+    if (index >= 0) return index * HarvestContinentTerrain.HARVESTOUR_MAX / (distribution.length - 1);
+    int upper = -index - 1;
+    if (upper == 0) return 0.0;
+    if (upper == distribution.length) return HarvestContinentTerrain.HARVESTOUR_MAX;
+    double span = distribution[upper] - distribution[upper - 1];
+    double fraction = span == 0.0 ? 0.0 : (value - distribution[upper - 1]) / span;
+    return (upper - 1 + fraction) * HarvestContinentTerrain.HARVESTOUR_MAX / (distribution.length - 1);
+  }
+
   private static double raw(
       long seed,
-      double x,
-      double z
+      double x, double z
   ) {
     long noiseSeed = seed ^ NOISE_SALT;
     double broad = HarvestContinentTerrain.fbmPerlin(noiseSeed,
@@ -54,8 +70,7 @@ final class HarvestourField {
 
   private static double rawSample(
       long seed,
-      double worldX,
-      double worldZ
+      double worldX, double worldZ
   ) {
     int gx = (int) Math.floor(worldX / GRID_SIZE);
     int gz = (int) Math.floor(worldZ / GRID_SIZE);
@@ -74,9 +89,7 @@ final class HarvestourField {
   }
 
   private static double lerp(
-      double delta,
-      double start,
-      double end
+      double delta, double start, double end
   ) {
     return start + delta * (end - start);
   }
@@ -120,28 +133,9 @@ final class HarvestourField {
     return distribution;
   }
 
-  static double sample(
-      long seed,
-      int worldX,
-      int worldZ
-  ) {
-    if (DISTRIBUTIONS.size() > DISTRIBUTION_CACHE_LIMIT) DISTRIBUTIONS.clear();
-    double[] distribution = DISTRIBUTIONS.computeIfAbsent(seed, HarvestourField::createDistribution);
-    double value = rawSample(seed, worldX * WORLD_COORDINATE_SCALE, worldZ * WORLD_COORDINATE_SCALE);
-    int index = Arrays.binarySearch(distribution, value);
-    if (index >= 0) return index * HarvestContinentTerrain.HARVESTOUR_MAX / (distribution.length - 1);
-    int upper = -index - 1;
-    if (upper == 0) return 0.0;
-    if (upper == distribution.length) return HarvestContinentTerrain.HARVESTOUR_MAX;
-    double span = distribution[upper] - distribution[upper - 1];
-    double fraction = span == 0.0 ? 0.0 : (value - distribution[upper - 1]) / span;
-    return (upper - 1 + fraction) * HarvestContinentTerrain.HARVESTOUR_MAX / (distribution.length - 1);
-  }
-
   private record Node(
       long seed,
-      int x,
-      int z
+      int x, int z
   ) {}
 
 }

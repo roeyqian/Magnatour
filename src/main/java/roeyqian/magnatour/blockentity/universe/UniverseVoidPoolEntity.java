@@ -36,11 +36,12 @@ import roeyqian.magnatour.block.CustomContainer;
 import roeyqian.magnatour.menu.universe.UniverseVoidPoolMenu;
 import roeyqian.magnatour.registry.content.UniverseBlockEntities;
 
-public class UniverseVoidPoolEntity extends BlockEntity implements MenuProvider, CustomContainer {
-
-  private int progress = 0;
+public class UniverseVoidPoolEntity extends BlockEntity
+    implements MenuProvider, CustomContainer {
 
   private final NonNullList<ItemStack> inventory = NonNullList.withSize(7, ItemStack.EMPTY);
+
+  private int progress = 0;
 
   public UniverseVoidPoolEntity(
       BlockPos pos,

@@ -64,9 +64,9 @@ final class DiamondCityLayout {
       id("diamond_house_iii_16")
   };
 
-  private final List<Building> buildings;
-
   private final Vec3i citySize;
+
+  private final List<Building> buildings;
 
   private DiamondCityLayout(
       Vec3i citySize,
@@ -74,6 +74,148 @@ final class DiamondCityLayout {
   ) {
     this.citySize = citySize;
     this.buildings = buildings;
+  }
+
+  static Optional<DiamondCityLayout> create(
+      StructureTemplateManager templates,
+      long seed
+  ) {
+    Optional<Vec3i> houseISize = templateSize(templates, HOUSE_I);
+    Optional<Vec3i> houseIiSize = calculateGridSize(
+        templates,
+        HOUSE_II,
+        HOUSE_II_COLUMNS
+    );
+    Optional<Vec3i> houseIiiSize = calculateGridSize(
+        templates,
+        HOUSE_III,
+        HOUSE_III_COLUMNS
+    );
+    if (houseISize.isEmpty() || houseIiSize.isEmpty() || houseIiiSize.isEmpty()) {
+      return Optional.empty();
+    }
+
+    Random random = new Random(seed);
+    int buildingCount = MIN_BUILDINGS + random.nextInt(MAX_BUILDINGS - MIN_BUILDINGS + 1);
+    int columns = MIN_COLUMNS + random.nextInt(MAX_COLUMNS - MIN_COLUMNS + 1);
+
+    List<BuildingPlan> plans = new ArrayList<>(buildingCount);
+    plans.add(createPlan(BuildingType.HOUSE_I));
+    plans.add(createPlan(BuildingType.HOUSE_II));
+    plans.add(createPlan(BuildingType.HOUSE_III));
+    while (plans.size() < buildingCount) {
+      plans.add(createPlan(randomBuildingType(random)));
+    }
+    Collections.shuffle(plans, random);
+
+    List<Building> buildings = new ArrayList<>(buildingCount);
+    int xOffset = 0;
+    int zOffset = 0;
+    int rowDepth = 0;
+    int maxWidth = 0;
+    int maxHeight = 0;
+
+    for (int index = 0; index < plans.size(); index++) {
+      if (index > 0 && index % columns == 0) {
+        xOffset = 0;
+        zOffset += rowDepth + BUILDING_PADDING;
+        rowDepth = 0;
+      }
+
+      BuildingPlan plan = plans.get(index);
+      Vec3i baseSize = switch (plan.type()) {
+        case HOUSE_I -> houseISize.get();
+        case HOUSE_II -> houseIiSize.get();
+        case HOUSE_III -> houseIiiSize.get();
+      };
+      Vec3i fullSize = new Vec3i(
+          baseSize.getX(),
+          baseSize.getY() * plan.levels(),
+          baseSize.getZ()
+      );
+
+      buildings.add(new Building(
+          plan.type(),
+          xOffset,
+          zOffset,
+          plan.levels()
+      ));
+
+      xOffset += fullSize.getX();
+      maxWidth = Math.max(maxWidth, xOffset);
+      maxHeight = Math.max(maxHeight, fullSize.getY());
+      rowDepth = Math.max(rowDepth, fullSize.getZ());
+      xOffset += BUILDING_PADDING;
+    }
+
+    int cityDepth = zOffset + rowDepth;
+    return Optional.of(new DiamondCityLayout(
+        new Vec3i(maxWidth, maxHeight, cityDepth),
+        buildings
+    ));
+  }
+
+  static long seed(
+      long worldSeed,
+      int chunkX, int chunkZ
+  ) {
+    long h = worldSeed;
+    h ^= (long) chunkX * 0x9E3779B97F4A7C15L;
+    h ^= (long) chunkZ * 0xC2B2AE3D27D4EB4FL;
+    h ^= h >>> 27;
+    h *= 0x3C79AC492BA7B653L;
+    h ^= h >>> 33;
+    h *= 0x1C69B3F74AC4AE35L;
+    h ^= h >>> 27;
+    return h;
+  }
+
+  Vec3i citySize() {
+    return this.citySize;
+  }
+
+  void place(
+      StructureTemplateManager templateManager,
+      WorldGenLevel level,
+      RandomSource random,
+      StructurePlaceSettings settings,
+      BlockPos cityPos
+  ) {
+    for (Building building : this.buildings) {
+      BlockPos buildingPos = cityPos.offset(building.offsetX(), 0, building.offsetZ());
+
+      switch (building.type()) {
+        case HOUSE_I -> placeStack(
+            templateManager,
+            level,
+            random,
+            settings,
+            buildingPos,
+            HOUSE_I,
+            building.levels()
+        );
+        case HOUSE_II -> placeGridStack(
+            templateManager,
+            level,
+            random,
+            settings,
+            buildingPos,
+            HOUSE_II,
+            HOUSE_II_COLUMNS,
+            building.levels()
+        );
+        case HOUSE_III -> placeGridStack(
+            templateManager,
+            level,
+            random,
+            settings,
+            buildingPos,
+            HOUSE_III,
+            HOUSE_III_COLUMNS,
+            1
+        );
+      }
+    }
   }
 
   private static Identifier id(
@@ -165,8 +307,7 @@ final class DiamondCityLayout {
       StructurePlaceSettings settings,
       BlockPos origin,
       Identifier[] ids,
-      int columns,
-      int levels
+      int columns, int levels
   ) {
     Optional<Vec3i> gridSize = calculateGridSize(templateManager, ids, columns);
     if (gridSize.isEmpty()) return;
@@ -221,154 +362,9 @@ final class DiamondCityLayout {
     }
   }
 
-  static Optional<DiamondCityLayout> create(
-      StructureTemplateManager templates,
-      long seed
-  ) {
-    Optional<Vec3i> houseISize = templateSize(templates, HOUSE_I);
-    Optional<Vec3i> houseIiSize = calculateGridSize(
-        templates,
-        HOUSE_II,
-        HOUSE_II_COLUMNS
-    );
-    Optional<Vec3i> houseIiiSize = calculateGridSize(
-        templates,
-        HOUSE_III,
-        HOUSE_III_COLUMNS
-    );
-    if (houseISize.isEmpty() || houseIiSize.isEmpty() || houseIiiSize.isEmpty()) {
-      return Optional.empty();
-    }
-
-    Random random = new Random(seed);
-    int buildingCount = MIN_BUILDINGS + random.nextInt(MAX_BUILDINGS - MIN_BUILDINGS + 1);
-    int columns = MIN_COLUMNS + random.nextInt(MAX_COLUMNS - MIN_COLUMNS + 1);
-
-    List<BuildingPlan> plans = new ArrayList<>(buildingCount);
-    plans.add(createPlan(BuildingType.HOUSE_I));
-    plans.add(createPlan(BuildingType.HOUSE_II));
-    plans.add(createPlan(BuildingType.HOUSE_III));
-    while (plans.size() < buildingCount) {
-      plans.add(createPlan(randomBuildingType(random)));
-    }
-    Collections.shuffle(plans, random);
-
-    List<Building> buildings = new ArrayList<>(buildingCount);
-    int xOffset = 0;
-    int zOffset = 0;
-    int rowDepth = 0;
-    int maxWidth = 0;
-    int maxHeight = 0;
-
-    for (int index = 0; index < plans.size(); index++) {
-      if (index > 0 && index % columns == 0) {
-        xOffset = 0;
-        zOffset += rowDepth + BUILDING_PADDING;
-        rowDepth = 0;
-      }
-
-      BuildingPlan plan = plans.get(index);
-      Vec3i baseSize = switch (plan.type()) {
-        case HOUSE_I -> houseISize.get();
-        case HOUSE_II -> houseIiSize.get();
-        case HOUSE_III -> houseIiiSize.get();
-      };
-      Vec3i fullSize = new Vec3i(
-          baseSize.getX(),
-          baseSize.getY() * plan.levels(),
-          baseSize.getZ()
-      );
-
-      buildings.add(new Building(
-          plan.type(),
-          xOffset,
-          zOffset,
-          plan.levels()
-      ));
-
-      xOffset += fullSize.getX();
-      maxWidth = Math.max(maxWidth, xOffset);
-      maxHeight = Math.max(maxHeight, fullSize.getY());
-      rowDepth = Math.max(rowDepth, fullSize.getZ());
-      xOffset += BUILDING_PADDING;
-    }
-
-    int cityDepth = zOffset + rowDepth;
-    return Optional.of(new DiamondCityLayout(
-        new Vec3i(maxWidth, maxHeight, cityDepth),
-        buildings
-    ));
-  }
-
-  static long seed(
-      long worldSeed,
-      int chunkX,
-      int chunkZ
-  ) {
-    long h = worldSeed;
-    h ^= (long) chunkX * 0x9E3779B97F4A7C15L;
-    h ^= (long) chunkZ * 0xC2B2AE3D27D4EB4FL;
-    h ^= h >>> 27;
-    h *= 0x3C79AC492BA7B653L;
-    h ^= h >>> 33;
-    h *= 0x1C69B3F74AC4AE35L;
-    h ^= h >>> 27;
-    return h;
-  }
-
-  Vec3i citySize() {
-    return this.citySize;
-  }
-
-  void place(
-      StructureTemplateManager templateManager,
-      WorldGenLevel level,
-      RandomSource random,
-      StructurePlaceSettings settings,
-      BlockPos cityPos
-  ) {
-    for (Building building : this.buildings) {
-      BlockPos buildingPos = cityPos.offset(building.offsetX(), 0, building.offsetZ());
-
-      switch (building.type()) {
-        case HOUSE_I -> placeStack(
-            templateManager,
-            level,
-            random,
-            settings,
-            buildingPos,
-            HOUSE_I,
-            building.levels()
-        );
-        case HOUSE_II -> placeGridStack(
-            templateManager,
-            level,
-            random,
-            settings,
-            buildingPos,
-            HOUSE_II,
-            HOUSE_II_COLUMNS,
-            building.levels()
-        );
-        case HOUSE_III -> placeGridStack(
-            templateManager,
-            level,
-            random,
-            settings,
-            buildingPos,
-            HOUSE_III,
-            HOUSE_III_COLUMNS,
-            1
-        );
-      }
-    }
-  }
-
   private record Building(
       BuildingType type,
-      int offsetX,
-      int offsetZ,
-      int levels
+      int offsetX, int offsetZ, int levels
   ) {}
 
   private record BuildingPlan(

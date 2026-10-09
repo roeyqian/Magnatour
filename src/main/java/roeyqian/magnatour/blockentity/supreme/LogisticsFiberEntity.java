@@ -188,11 +188,9 @@ public class LogisticsFiberEntity extends BlockEntity {
   }
 
   private static int moveSourceSlot(
-      Container source,
-      Container destination,
+      Container source, Container destination,
       int slot,
-      Direction sourceAccess,
-      Direction destinationAccess,
+      Direction sourceAccess, Direction destinationAccess,
       int remainingMoves
   ) {
     ItemStack stack = source.getItem(slot);
@@ -227,8 +225,7 @@ public class LogisticsFiberEntity extends BlockEntity {
   }
 
   private static boolean canTakeItemFromContainer(
-      Container into,
-      Container from,
+      Container into, Container from,
       ItemStack itemStack,
       int slot,
       Direction direction
@@ -288,8 +285,7 @@ public class LogisticsFiberEntity extends BlockEntity {
   }
 
   private static BlockPos minPos(
-      BlockPos first,
-      BlockPos second
+      BlockPos first, BlockPos second
   ) {
     return POSITION_ORDER.compare(first, second) <= 0 ? first : second;
   }
@@ -438,10 +434,8 @@ public class LogisticsFiberEntity extends BlockEntity {
   }
 
   private static int moveItems(
-      Container source,
-      Container destination,
-      Direction sourceAccess,
-      Direction destinationAccess,
+      Container source, Container destination,
+      Direction sourceAccess, Direction destinationAccess,
       int remainingMoves
   ) {
     if (remainingMoves <= 0 || isFullContainer(destination, destinationAccess)) {

@@ -19,13 +19,13 @@ import net.minecraft.world.entity.Crackiness;
 @Environment(EnvType.CLIENT)
 public final class CustomGolemRenderState extends LivingEntityRenderState {
 
+  public final BlockModelRenderState flowerBlock = new BlockModelRenderState();
+
   public int offerFlowerTick;
 
   public float attackTicksRemaining;
 
   public Crackiness.Level crackiness;
-
-  public final BlockModelRenderState flowerBlock = new BlockModelRenderState();
 
   public CustomGolemRenderState() {
     this.crackiness = Crackiness.Level.NONE;

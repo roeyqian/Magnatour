@@ -39,11 +39,9 @@ public final class ScreenHelperForRecipe {
       CycleButton<Boolean> filterButton,
       RecipeBookPage recipeBookPage,
       List<RecipeBookTabButton> tabButtons,
-      int width,
-      int height,
+      int width, int height,
       GuiGraphicsExtractor context,
-      int mouseX,
-      int mouseY,
+      int mouseX, int mouseY,
       float delta,
       CallbackInfo ci
   ) {

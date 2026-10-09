@@ -49,9 +49,7 @@ public class ThrownStrangeSplashPotion extends ThrownSplashPotion {
 
   public ThrownStrangeSplashPotion(
       Level level,
-      double x,
-      double y,
-      double z,
+      double x, double y, double z,
       ItemStack stack
   ) {
     super(level, x, y, z, stack);

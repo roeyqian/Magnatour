@@ -39,11 +39,11 @@ public class RedstoneTriggerScreen extends AbstractContainerScreen<RedstoneTrigg
       Magnatour.MOD_ID, "textures/gui/container/redstone_trigger.png"
   );
 
-  private int intervalTicks;
-
   private boolean enabled;
 
-  private String errorText = "";
+  private int intervalTicks;
+
+  private RedstoneTriggerEntity.TriggerMode mode;
 
   private Button applyButton;
   private Button modeButton;
@@ -51,7 +51,7 @@ public class RedstoneTriggerScreen extends AbstractContainerScreen<RedstoneTrigg
 
   private EditBox intervalField;
 
-  private RedstoneTriggerEntity.TriggerMode mode;
+  private String errorText = "";
 
   public RedstoneTriggerScreen(
       RedstoneTriggerMenu handler,
@@ -67,8 +67,7 @@ public class RedstoneTriggerScreen extends AbstractContainerScreen<RedstoneTrigg
   @Override
   public void extractContents(
       @NonNull GuiGraphicsExtractor graphics,
-      int mouseX,
-      int mouseY,
+      int mouseX, int mouseY,
       float delta
   ) {
     graphics.blit(
@@ -109,8 +108,7 @@ public class RedstoneTriggerScreen extends AbstractContainerScreen<RedstoneTrigg
   @Override
   protected void extractLabels(
       @NonNull GuiGraphicsExtractor graphics,
-      int mouseX,
-      int mouseY
+      int mouseX, int mouseY
   ) {
     graphics.text(this.font, this.title, 8, 6, TEXT_COLOR, false);
     graphics.text(

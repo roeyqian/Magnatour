@@ -218,8 +218,7 @@ public class UniverseLibraryEntity extends BaseContainerBlockEntity {
 
   @Override
   public boolean triggerEvent(
-      int type,
-      int data
+      int type, int data
   ) {
     if (type == 1) {
       this.lidAnimator.shouldBeOpen(data > 0);

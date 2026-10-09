@@ -73,8 +73,7 @@ public class PortalLinkSavedData extends SavedData {
   }
 
   public void link(
-      Endpoint first,
-      Endpoint second
+      Endpoint first, Endpoint second
   ) {
     this.unlink(first);
     this.unlink(second);
@@ -112,8 +111,7 @@ public class PortalLinkSavedData extends SavedData {
   }
 
   private record PortalLink(
-      Endpoint source,
-      Endpoint destination
+      Endpoint source, Endpoint destination
   ) {
 
     private static final Codec<PortalLink> CODEC = RecordCodecBuilder.create(instance ->

@@ -21,11 +21,11 @@ import roeyqian.magnatour.Magnatour;
 
 public record DurableItemModePayload() implements CustomPacketPayload {
 
-  public static final Type<DurableItemModePayload> UNIVERSE_MODE_CHANGE =
-      new Type<>(Identifier.fromNamespaceAndPath(Magnatour.MOD_ID, "universe_mode_change"));
-
   public static final StreamCodec<RegistryFriendlyByteBuf, DurableItemModePayload> CODEC =
       StreamCodec.unit(new DurableItemModePayload());
+
+  public static final Type<DurableItemModePayload> UNIVERSE_MODE_CHANGE =
+      new Type<>(Identifier.fromNamespaceAndPath(Magnatour.MOD_ID, "universe_mode_change"));
 
   @Override @NonNull
   public Type<? extends CustomPacketPayload> type() {

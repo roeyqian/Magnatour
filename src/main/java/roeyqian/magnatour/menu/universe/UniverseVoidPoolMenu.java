@@ -110,9 +110,7 @@ public class UniverseVoidPoolMenu extends AbstractContainerMenu {
 
     public OutputSlot(
         Container inventory,
-        int index,
-        int x,
-        int y
+        int index, int x, int y
     ) {
       super(inventory, index, x, y);
     }

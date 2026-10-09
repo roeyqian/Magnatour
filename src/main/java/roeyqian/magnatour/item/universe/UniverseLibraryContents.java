@@ -41,11 +41,11 @@ public record UniverseLibraryContents(
     List<StoredSlot> slots
 ) implements TooltipProvider {
 
-  public static final UniverseLibraryContents EMPTY = new UniverseLibraryContents(List.of());
-
   public static final Codec<UniverseLibraryContents> CODEC = StoredSlot.CODEC
       .listOf(0, UniverseLibraryEntity.CONTAINER_SIZE)
       .xmap(UniverseLibraryContents::new, UniverseLibraryContents::slots);
+
+  public static final UniverseLibraryContents EMPTY = new UniverseLibraryContents(List.of());
 
   public UniverseLibraryContents {
     slots = List.copyOf(slots);
@@ -108,8 +108,7 @@ public record UniverseLibraryContents(
   }
 
   private static String formatCountUnit(
-      long count,
-      long unit,
+      long count, long unit,
       String suffix
   ) {
     return BigDecimal.valueOf(count).divide(BigDecimal.valueOf(unit), 2, RoundingMode.DOWN)

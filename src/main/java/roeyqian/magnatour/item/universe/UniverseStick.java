@@ -32,8 +32,7 @@ public class UniverseStick extends Item {
   @Override
   public void hurtEnemy(
       @NonNull ItemStack stack,
-      @NonNull LivingEntity target,
-      @NonNull LivingEntity user
+      @NonNull LivingEntity target, @NonNull LivingEntity user
   ) {
     if (!(user instanceof Player player)) return;
     if (!(player.level() instanceof ServerLevel world)) return;

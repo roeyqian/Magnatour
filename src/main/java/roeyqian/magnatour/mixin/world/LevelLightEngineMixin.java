@@ -59,8 +59,7 @@ public abstract class LevelLightEngineMixin {
   @Inject(method = "<init>(Lnet/minecraft/world/level/chunk/LightChunkGetter;ZZ)V", at = @At("RETURN"))
   private void inInit(
       LightChunkGetter chunkSource,
-      boolean blockLight,
-      boolean skyLight,
+      boolean blockLight, boolean skyLight,
       CallbackInfo ci
   ) {
     this.magnatour$chunkSource = chunkSource;

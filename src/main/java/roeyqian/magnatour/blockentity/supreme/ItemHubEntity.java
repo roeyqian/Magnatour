@@ -71,8 +71,6 @@ public class ItemHubEntity extends RandomizableContainerBlockEntity implements H
   private static final int NO_COOLDOWN_TIME = -1;
   private static final int OUTPUT_ITEMS_PER_TRANSFER = 2;
 
-  private static final int[][] CACHED_SLOTS = new int[54][];
-
   private static final String ANCHORED_ITEM_IDS_KEY = "AnchoredItemIds";
   private static final String LEGACY_FILTER_ITEM_ID_KEY = "FilterItemId";
   private static final String TRANSFER_COOLDOWN_KEY = "TransferCooldown";
@@ -80,15 +78,17 @@ public class ItemHubEntity extends RandomizableContainerBlockEntity implements H
   private static final Component DEFAULT_NAME =
       Component.translatable("block.magnatour.item_hub");
 
-  private int cooldownTime = NO_COOLDOWN_TIME;
+  private static final int[][] CACHED_SLOTS = new int[54][];
 
   private long tickedGameTime;
 
+  private int cooldownTime = NO_COOLDOWN_TIME;
+
   private List<String> anchoredItemIds = List.of();
 
-  private Set<Item> anchoredItems = Set.of();
-
   private NonNullList<ItemStack> items = NonNullList.withSize(HOPPER_CONTAINER_SIZE, ItemStack.EMPTY);
+
+  private Set<Item> anchoredItems = Set.of();
 
   public ItemHubEntity(
       BlockPos pos,
@@ -116,8 +116,7 @@ public class ItemHubEntity extends RandomizableContainerBlockEntity implements H
   }
 
   public static ItemStack addItem(
-      @Nullable Container from,
-      Container container,
+      @Nullable Container from, Container container,
       ItemStack itemStack,
       @Nullable Direction direction
   ) {
@@ -328,8 +327,7 @@ public class ItemHubEntity extends RandomizableContainerBlockEntity implements H
 
   @Override
   public @NonNull ItemStack removeItem(
-      int slot,
-      int count
+      int slot, int count
   ) {
     this.unpackLootTable(null);
     return ContainerHelper.removeItem(this.getItems(), slot, count);
@@ -408,8 +406,7 @@ public class ItemHubEntity extends RandomizableContainerBlockEntity implements H
   }
 
   private static ItemStack tryMoveInItem(
-      @Nullable Container from,
-      Container container,
+      @Nullable Container from, Container container,
       ItemStack itemStack,
       int slot,
       @Nullable Direction direction
@@ -513,9 +510,7 @@ public class ItemHubEntity extends RandomizableContainerBlockEntity implements H
       Level level,
       BlockPos pos,
       BlockState state,
-      double x,
-      double y,
-      double z
+      double x, double y, double z
   ) {
     Container result = getBlockContainer(level, pos, state);
     if (result == null) {
@@ -548,9 +543,7 @@ public class ItemHubEntity extends RandomizableContainerBlockEntity implements H
   @Nullable
   private static Container getEntityContainer(
       Level level,
-      double x,
-      double y,
-      double z
+      double x, double y, double z
   ) {
     List<Entity> entities = level.getEntities(
         (Entity) null,
@@ -655,8 +648,7 @@ public class ItemHubEntity extends RandomizableContainerBlockEntity implements H
   }
 
   private static boolean canMergeItems(
-      ItemStack first,
-      ItemStack second
+      ItemStack first, ItemStack second
   ) {
     return first.getCount() <= first.getMaxStackSize()
         && ItemStack.isSameItemSameComponents(first, second);
@@ -706,8 +698,7 @@ public class ItemHubEntity extends RandomizableContainerBlockEntity implements H
   }
 
   private static boolean canTakeItemFromContainer(
-      Container into,
-      Container from,
+      Container into, Container from,
       ItemStack itemStack,
       int slot,
       Direction direction

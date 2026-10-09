@@ -42,8 +42,7 @@ public class ServerPlayerGameModeMixin {
       BlockPos pos,
       ServerboundPlayerActionPacket.Action action,
       Direction direction,
-      int worldHeight,
-      int sequence,
+      int worldHeight, int sequence,
       CallbackInfo ci
   ) {
     ServerHelperForEquipment.handleBlockBreakAction(

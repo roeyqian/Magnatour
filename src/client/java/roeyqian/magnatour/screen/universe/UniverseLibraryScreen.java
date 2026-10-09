@@ -42,21 +42,16 @@ import roeyqian.magnatour.menu.universe.UniverseLibraryMenu;
 
 public class UniverseLibraryScreen extends AbstractContainerScreen<UniverseLibraryMenu> {
 
+  private static final int RESULT_X = 122;
+  private static final int RESULT_Y = 20;
+  private static final int SEARCH_WIDTH = 108;
+  private static final int SEARCH_X = 8;
+  private static final int SEARCH_Y = 20;
   private static final int scrollBarThumbHeight = 15;
   private static final int scrollBarTrackHeight = 106;
   private static final int scrollBarWidth = 12;
   private static final int scrollBarXOffset = 174;
   private static final int scrollBarYOffset = 18 + UniverseLibraryMenu.SEARCH_PANEL_HEIGHT;
-  private static final int SEARCH_X = 8;
-  private static final int SEARCH_Y = 20;
-  private static final int SEARCH_WIDTH = 108;
-  private static final int RESULT_X = 122;
-  private static final int RESULT_Y = 20;
-
-  private EditBox searchField;
-
-  private boolean invalidSearch = false;
-  private boolean extractingStorageSlot;
 
   private static final Identifier SCROLLER_SPRITE = Identifier.withDefaultNamespace(
       "container/creative_inventory/scroller"
@@ -65,12 +60,17 @@ public class UniverseLibraryScreen extends AbstractContainerScreen<UniverseLibra
       Magnatour.MOD_ID, "textures/gui/container/universe_library.png"
   );
 
+  private boolean extractingStorageSlot;
+
   private int scrollBarX;
   private int scrollBarY;
 
-  private float scrollPosition = 0.0f;
+  private EditBox searchField;
 
+  private boolean invalidSearch = false;
   private boolean isDragging = false;
+
+  private float scrollPosition = 0.0f;
 
   public UniverseLibraryScreen(
       UniverseLibraryMenu handler,
@@ -84,9 +84,7 @@ public class UniverseLibraryScreen extends AbstractContainerScreen<UniverseLibra
       GuiGraphicsExtractor graphics,
       Font font,
       String text,
-      float x,
-      float y,
-      float scale,
+      float x, float y, float scale,
       int color,
       boolean shadow
   ) {
@@ -111,8 +109,7 @@ public class UniverseLibraryScreen extends AbstractContainerScreen<UniverseLibra
   @Override
   public void extractContents(
       @NonNull GuiGraphicsExtractor graphics,
-      int mouseX,
-      int mouseY,
+      int mouseX, int mouseY,
       float delta
   ) {
     graphics.blit(
@@ -141,8 +138,7 @@ public class UniverseLibraryScreen extends AbstractContainerScreen<UniverseLibra
   @Override
   public void extractRenderState(
       @NonNull GuiGraphicsExtractor graphics,
-      int mouseX,
-      int mouseY,
+      int mouseX, int mouseY,
       float delta
   ) {
     super.extractRenderState(graphics, mouseX, mouseY, delta);
@@ -202,8 +198,7 @@ public class UniverseLibraryScreen extends AbstractContainerScreen<UniverseLibra
   @Override
   public boolean mouseDragged(
       @NonNull MouseButtonEvent event,
-      double offsetX,
-      double offsetY
+      double offsetX, double offsetY
   ) {
     if (this.isDragging && canScroll()) {
       updateScrollFromMouseY(event.y());
@@ -225,10 +220,7 @@ public class UniverseLibraryScreen extends AbstractContainerScreen<UniverseLibra
 
   @Override
   public boolean mouseScrolled(
-      double mouseX,
-      double mouseY,
-      double horizontalAmount,
-      double verticalAmount
+      double mouseX, double mouseY, double horizontalAmount, double verticalAmount
   ) {
     int maxOffset = getMaxOffset();
     if (maxOffset > 0) {
@@ -253,8 +245,7 @@ public class UniverseLibraryScreen extends AbstractContainerScreen<UniverseLibra
   protected void extractSlot(
       @NonNull GuiGraphicsExtractor graphics,
       @NonNull Slot slot,
-      int mouseX,
-      int mouseY
+      int mouseX, int mouseY
   ) {
     if (slot.index == UniverseLibraryMenu.SEARCH_RESULT_SLOT) return;
     this.extractingStorageSlot = slot.index >= 0 && slot.index < 54;
@@ -300,8 +291,7 @@ public class UniverseLibraryScreen extends AbstractContainerScreen<UniverseLibra
   }
 
   private boolean isOverResult(
-      double mouseX,
-      double mouseY
+      double mouseX, double mouseY
   ) {
     return mouseX >= this.leftPos + RESULT_X - 1 && mouseX < this.leftPos + RESULT_X + 17
         && mouseY >= this.topPos + RESULT_Y - 1 && mouseY < this.topPos + RESULT_Y + 17;
@@ -313,8 +303,7 @@ public class UniverseLibraryScreen extends AbstractContainerScreen<UniverseLibra
 
   private void drawSearchResult(
       GuiGraphicsExtractor graphics,
-      int mouseX,
-      int mouseY
+      int mouseX, int mouseY
   ) {
     ItemStack icon = this.menu.getSearchIcon();
     if (icon.isEmpty()) return;
@@ -360,8 +349,7 @@ public class UniverseLibraryScreen extends AbstractContainerScreen<UniverseLibra
   }
 
   private boolean isPointInScrollbarArea(
-      double mouseX,
-      double mouseY
+      double mouseX, double mouseY
   ) {
     return mouseX >= scrollBarX && mouseX < scrollBarX + scrollBarWidth
         && mouseY >= scrollBarY && mouseY < scrollBarY + scrollBarTrackHeight;

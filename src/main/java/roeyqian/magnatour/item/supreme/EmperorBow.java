@@ -56,8 +56,7 @@ public class EmperorBow extends BowItem {
   protected @NonNull Projectile createProjectile(
       @NonNull Level world,
       @NonNull LivingEntity shooter,
-      @NonNull ItemStack weapon,
-      @NonNull ItemStack ammunition,
+      @NonNull ItemStack weapon, @NonNull ItemStack ammunition,
       boolean critical
   ) {
     Projectile projectile = super.createProjectile(world, shooter, weapon, ammunition, critical);
@@ -73,9 +72,7 @@ public class EmperorBow extends BowItem {
       @NonNull LivingEntity shooter,
       @NonNull Projectile projectile,
       int index,
-      float velocity,
-      float inaccuracy,
-      float angle,
+      float velocity, float inaccuracy, float angle,
       @Nullable LivingEntity target
   ) {
     super.shootProjectile(shooter, projectile, index,

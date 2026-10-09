@@ -34,9 +34,7 @@ public class StrangeAreaEffectCloud extends AreaEffectCloud {
 
   public StrangeAreaEffectCloud(
       Level level,
-      double x,
-      double y,
-      double z
+      double x, double y, double z
   ) {
     super(level, x, y, z);
   }

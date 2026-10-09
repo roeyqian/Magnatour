@@ -41,19 +41,19 @@ public final class SupremeCookingBookComponent extends RecipeBookComponent<Supre
       "gui.recipebook.toggleRecipes.smeltable"
   );
 
-  private static final WidgetSprites FILTER_BUTTON_TEXTURES = new WidgetSprites(
-      Identifier.withDefaultNamespace("recipe_book/furnace_filter_enabled"),
-      Identifier.withDefaultNamespace("recipe_book/furnace_filter_disabled"),
-      Identifier.withDefaultNamespace("recipe_book/furnace_filter_enabled_highlighted"),
-      Identifier.withDefaultNamespace("recipe_book/furnace_filter_disabled_highlighted")
-  );
-
   private static final List<RecipeBookComponent.TabInfo> TABS = List.of(
       new RecipeBookComponent.TabInfo(SearchRecipeBookCategory.FURNACE),
       new RecipeBookComponent.TabInfo(Items.PORKCHOP, RecipeBookCategories.FURNACE_FOOD),
       new RecipeBookComponent.TabInfo(Items.STONE, RecipeBookCategories.FURNACE_BLOCKS),
       new RecipeBookComponent.TabInfo(Items.LAVA_BUCKET, Items.EMERALD, RecipeBookCategories.FURNACE_MISC),
       new RecipeBookComponent.TabInfo(SupremeItems.SUPREME_CORE, CustomRecipes.SUPREME_COOKING)
+  );
+
+  private static final WidgetSprites FILTER_BUTTON_TEXTURES = new WidgetSprites(
+      Identifier.withDefaultNamespace("recipe_book/furnace_filter_enabled"),
+      Identifier.withDefaultNamespace("recipe_book/furnace_filter_disabled"),
+      Identifier.withDefaultNamespace("recipe_book/furnace_filter_enabled_highlighted"),
+      Identifier.withDefaultNamespace("recipe_book/furnace_filter_disabled_highlighted")
   );
 
   public SupremeCookingBookComponent(

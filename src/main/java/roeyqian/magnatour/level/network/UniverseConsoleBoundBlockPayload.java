@@ -30,10 +30,6 @@ public record UniverseConsoleBoundBlockPayload(
     ResourceKey<Level> dimension
 ) implements CustomPacketPayload {
 
-  public static final Type<UniverseConsoleBoundBlockPayload> ID = new Type<>(
-      Identifier.fromNamespaceAndPath(Magnatour.MOD_ID, "bound_block_action")
-  );
-
   public static final StreamCodec<RegistryFriendlyByteBuf, UniverseConsoleBoundBlockPayload> CODEC =
       StreamCodec.composite(
           ByteBufCodecs.idMapper(id -> Action.values()[id], Action::ordinal),
@@ -44,6 +40,10 @@ public record UniverseConsoleBoundBlockPayload(
           UniverseConsoleBoundBlockPayload::dimension,
           UniverseConsoleBoundBlockPayload::new
       );
+
+  public static final Type<UniverseConsoleBoundBlockPayload> ID = new Type<>(
+      Identifier.fromNamespaceAndPath(Magnatour.MOD_ID, "bound_block_action")
+  );
 
   @Override @NonNull
   public Type<? extends CustomPacketPayload> type() {

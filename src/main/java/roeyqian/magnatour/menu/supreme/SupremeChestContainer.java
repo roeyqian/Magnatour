@@ -122,8 +122,7 @@ public class SupremeChestContainer implements WorldlyContainer {
 
   @NonNull @Override
   public ItemStack removeItem(
-      int slot,
-      int count
+      int slot, int count
   ) {
     SlotLocation location = findSlot(slot);
     return location.container.removeItem(location.slot, count);

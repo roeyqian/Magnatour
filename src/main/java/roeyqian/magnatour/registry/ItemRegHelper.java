@@ -32,20 +32,6 @@ import roeyqian.magnatour.Magnatour;
 
 public interface ItemRegHelper {
 
-  private static Item registerItem(
-      String name,
-      Function<Item.Properties, Item> factory,
-      Item.Properties settings
-  ) {
-    ResourceKey<Item> key = ResourceKey.create(
-        Registries.ITEM,
-        Identifier.fromNamespaceAndPath(Magnatour.MOD_ID, name)
-    );
-    Item item = factory.apply(settings.setId(key));
-    if (item instanceof BlockItem blockItem) blockItem.registerBlocks(Item.BY_BLOCK, item);
-    return Registry.register(BuiltInRegistries.ITEM, key, item);
-  }
-
   static Item registerConsumableItem(
       String name,
       int stacks,
@@ -73,6 +59,20 @@ public interface ItemRegHelper {
             ResolvableFloat.fromKey(ContextFloatProviders.COOKING_DEFAULT_SPEED_MULTIPLIER)
         ))
     ));
+  }
+
+  private static Item registerItem(
+      String name,
+      Function<Item.Properties, Item> factory,
+      Item.Properties settings
+  ) {
+    ResourceKey<Item> key = ResourceKey.create(
+        Registries.ITEM,
+        Identifier.fromNamespaceAndPath(Magnatour.MOD_ID, name)
+    );
+    Item item = factory.apply(settings.setId(key));
+    if (item instanceof BlockItem blockItem) blockItem.registerBlocks(Item.BY_BLOCK, item);
+    return Registry.register(BuiltInRegistries.ITEM, key, item);
   }
 
 }

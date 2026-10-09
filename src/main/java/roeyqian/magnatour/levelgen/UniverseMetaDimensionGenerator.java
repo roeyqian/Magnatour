@@ -57,8 +57,7 @@ public final class UniverseMetaDimensionGenerator {
 
   private static void generateCubeSlice(
       ServerLevel world,
-      int startIndex,
-      int endIndex
+      int startIndex, int endIndex
   ) {
     for (int index = startIndex; index < endIndex; index++) {
       int x = CUBE_MIN + index / CUBE_LAYER_SIZE;

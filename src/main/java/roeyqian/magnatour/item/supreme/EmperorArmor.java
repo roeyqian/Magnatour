@@ -22,8 +22,7 @@ public class EmperorArmor extends Item {
 
   public EmperorArmor(
       Properties settings,
-      int reductionPerLevel,
-      int maxReductionPercent
+      int reductionPerLevel, int maxReductionPercent
   ) {
     super(settings);
     this.reductionPerLevel = reductionPerLevel;

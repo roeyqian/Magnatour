@@ -17,11 +17,8 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.level.block.state.BlockState;
 
 public record OreTreeConfiguration(
-    BlockState trunk,
-    BlockState foliage,
-    int minHeight,
-    int maxHeight,
-    int foliageRadius
+    BlockState trunk, BlockState foliage,
+    int minHeight, int maxHeight, int foliageRadius
 ) {
 
   public static final MapCodec<OreTreeConfiguration> CODEC =

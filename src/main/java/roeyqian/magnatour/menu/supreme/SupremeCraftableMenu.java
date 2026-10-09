@@ -44,11 +44,11 @@ public class SupremeCraftableMenu extends AbstractCraftingMenu implements Custom
   private static final int INVENTORY_END = 37;
   private static final int INVENTORY_START = 10;
 
-  private boolean filling;
-
   private final Player player;
 
   private final ContainerLevelAccess context;
+
+  private boolean filling;
 
   public SupremeCraftableMenu(
       int syncId,
@@ -173,8 +173,7 @@ public class SupremeCraftableMenu extends AbstractCraftingMenu implements Custom
   @Override
   public boolean noInsertItem(
       ItemStack stack,
-      int start,
-      int end,
+      int start, int end,
       boolean fromPlayer
   ) {
     return !super.moveItemStackTo(stack, start, end, fromPlayer);

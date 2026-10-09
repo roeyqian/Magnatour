@@ -77,13 +77,13 @@ public class UniverseConsoleScreen extends AbstractContainerScreen<UniverseConso
       Magnatour.MOD_ID, "textures/gui/console/scroller_disabled.png"
   );
 
-  private int scrollOffset = 0;
-
-  private float scrollPosition = 0.0f;
+  private List<UniverseConsole.BoundBlocks> boundBlocks;
 
   private boolean isScrolling = false;
 
-  private List<UniverseConsole.BoundBlocks> boundBlocks;
+  private int scrollOffset = 0;
+
+  private float scrollPosition = 0.0f;
 
   public UniverseConsoleScreen(
       UniverseConsoleMenu handler,
@@ -96,8 +96,7 @@ public class UniverseConsoleScreen extends AbstractContainerScreen<UniverseConso
   @Override
   public void extractContents(
       @NonNull GuiGraphicsExtractor graphics,
-      int mouseX,
-      int mouseY,
+      int mouseX, int mouseY,
       float delta
   ) {
     int x = (this.width - BACKGROUND_WIDTH) / 2;
@@ -140,8 +139,7 @@ public class UniverseConsoleScreen extends AbstractContainerScreen<UniverseConso
   @Override
   public void extractRenderState(
       @NonNull GuiGraphicsExtractor graphics,
-      int mouseX,
-      int mouseY,
+      int mouseX, int mouseY,
       float delta
   ) {
     super.extractRenderState(graphics, mouseX, mouseY, delta);
@@ -180,8 +178,7 @@ public class UniverseConsoleScreen extends AbstractContainerScreen<UniverseConso
   @Override
   public boolean mouseDragged(
       @NonNull MouseButtonEvent event,
-      double offsetX,
-      double offsetY
+      double offsetX, double offsetY
   ) {
     if (this.isScrolling && canScroll()) {
       updateScroll(event.y());
@@ -203,10 +200,7 @@ public class UniverseConsoleScreen extends AbstractContainerScreen<UniverseConso
 
   @Override
   public boolean mouseScrolled(
-      double mouseX,
-      double mouseY,
-      double horizontalAmount,
-      double verticalAmount
+      double mouseX, double mouseY, double horizontalAmount, double verticalAmount
   ) {
     if (canScroll()) {
       int maxOffset = (boundBlocks == null) ? 0 : Math.max(0, boundBlocks.size() - VISIBLE_BUTTONS);
@@ -227,8 +221,7 @@ public class UniverseConsoleScreen extends AbstractContainerScreen<UniverseConso
   @Override
   protected void extractLabels(
       @NonNull GuiGraphicsExtractor graphics,
-      int mouseX,
-      int mouseY
+      int mouseX, int mouseY
   ) {
     graphics.text(this.font, this.title, this.titleLabelX, this.titleLabelY, -12566464, false);
   }
@@ -246,10 +239,7 @@ public class UniverseConsoleScreen extends AbstractContainerScreen<UniverseConso
 
   private void drawMainButtons(
       GuiGraphicsExtractor graphics,
-      int mouseX,
-      int mouseY,
-      int baseX,
-      int buttonY,
+      int mouseX, int mouseY, int baseX, int buttonY,
       UniverseConsole.BoundBlocks block
   ) {
     Identifier mainTexture =
@@ -279,10 +269,7 @@ public class UniverseConsoleScreen extends AbstractContainerScreen<UniverseConso
 
   private void drawDeleteButtons(
       GuiGraphicsExtractor graphics,
-      int mouseX,
-      int mouseY,
-      int deleteX,
-      int buttonY
+      int mouseX, int mouseY, int deleteX, int buttonY
   ) {
     Identifier deleteTexture =
         mouseOverDelete(mouseX, mouseY, deleteX, buttonY) ? BUTTON_DELETE_HIGHLIGHTED : BUTTON_DELETE;
@@ -295,20 +282,14 @@ public class UniverseConsoleScreen extends AbstractContainerScreen<UniverseConso
   }
 
   private boolean mouseOverDelete(
-      int mouseX,
-      int mouseY,
-      int deleteX,
-      int buttonY
+      int mouseX, int mouseY, int deleteX, int buttonY
   ) {
     return mouseX >= deleteX && mouseX < deleteX + DELETE_BUTTON_WIDTH &&
         mouseY >= buttonY && mouseY < buttonY + DELETE_BUTTON_HEIGHT;
   }
 
   private boolean mouseOverMain(
-      int mouseX,
-      int mouseY,
-      int buttonX,
-      int buttonY
+      int mouseX, int mouseY, int buttonX, int buttonY
   ) {
     return mouseX >= buttonX && mouseX < buttonX + BUTTON_WIDTH &&
         mouseY >= buttonY && mouseY < buttonY + BUTTON_HEIGHT;
@@ -316,8 +297,7 @@ public class UniverseConsoleScreen extends AbstractContainerScreen<UniverseConso
 
   private void drawButtons(
       GuiGraphicsExtractor graphics,
-      int mouseX,
-      int mouseY
+      int mouseX, int mouseY
   ) {
     if (boundBlocks == null || boundBlocks.isEmpty()) {
       Component emptyText = Component.translatable("gui.magnatour.universe_console.no_bind");
@@ -345,8 +325,7 @@ public class UniverseConsoleScreen extends AbstractContainerScreen<UniverseConso
 
   private void drawTooltips(
       GuiGraphicsExtractor graphics,
-      int mouseX,
-      int mouseY
+      int mouseX, int mouseY
   ) {
     if (boundBlocks == null || boundBlocks.isEmpty()) return;
 
@@ -384,8 +363,7 @@ public class UniverseConsoleScreen extends AbstractContainerScreen<UniverseConso
   }
 
   private boolean mouseOverScrollbar(
-      double mouseX,
-      double mouseY
+      double mouseX, double mouseY
   ) {
     int baseX = (this.width - BACKGROUND_WIDTH) / 2 + SCROLLBAR_X;
     int baseY = (this.height - BACKGROUND_HEIGHT) / 2 + SCROLLBAR_TOP;
@@ -412,8 +390,7 @@ public class UniverseConsoleScreen extends AbstractContainerScreen<UniverseConso
   }
 
   private int[] getClickedButton(
-      double mouseX,
-      double mouseY
+      double mouseX, double mouseY
   ) {
     if (boundBlocks == null || boundBlocks.isEmpty()) {
       return new int[]{0, -1};

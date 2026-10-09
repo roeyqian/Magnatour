@@ -69,12 +69,12 @@ public class PaleLord extends Monster implements CustomBossEntity {
       SoundEvents.SKELETON_HURT
   );
 
-  private long pendingSplitGameTime = -1L;
+  private final ServerBossEvent bossBar;
 
   private boolean pendingSplit = false;
   private boolean pendingTransfer = false;
 
-  private final ServerBossEvent bossBar;
+  private long pendingSplitGameTime = -1L;
 
   public PaleLord(
       EntityType<? extends Monster> entityType,

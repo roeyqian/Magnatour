@@ -49,8 +49,7 @@ public class SupremeChestScreen extends AbstractContainerScreen<SupremeChestMenu
   @Override
   public void extractContents(
       @NonNull GuiGraphicsExtractor graphics,
-      int mouseX,
-      int mouseY,
+      int mouseX, int mouseY,
       float delta
   ) {
     graphics.blit(

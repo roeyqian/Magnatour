@@ -98,7 +98,8 @@ public final class StructureMobSpawner {
   private static final double TOWN_OF_FORTUNE_COUNT_HORIZONTAL_PADDING = 8.0D;
   private static final double TOWN_OF_FORTUNE_COUNT_VERTICAL_PADDING = 16.0D;
 
-  private static boolean tickEventRegistered = false;
+  private static final Map<StructureInstanceKey, SpawnState> SPAWN_STATES =
+      new HashMap<>();
 
   private static final StructureSpawnProfile DIAMOND_CITY_PROFILE =
       new StructureSpawnProfile(
@@ -149,13 +150,12 @@ public final class StructureMobSpawner {
           StructureMobSpawner::spawnTownOfFortuneMobs
       );
 
-  private static final Map<StructureInstanceKey, SpawnState> SPAWN_STATES =
-      new HashMap<>();
-
   private static final Predicate<BlockState> DIAMOND_CITY_INTERIOR_FLOOR =
       floorState -> floorState.is(Blocks.OBSIDIAN);
   private static final Predicate<BlockState> DIAMOND_CITY_SPAWN_FLOOR =
       floorState -> !floorState.is(Blocks.POLISHED_DEEPSLATE);
+
+  private static boolean tickEventRegistered = false;
 
   private StructureMobSpawner() {}
 
@@ -767,8 +767,7 @@ public final class StructureMobSpawner {
 
   private static int randomBetween(
       RandomSource random,
-      int min,
-      int max
+      int min, int max
   ) {
     if (min >= max) return min;
     return min + random.nextInt(max - min + 1);
@@ -880,8 +879,7 @@ public final class StructureMobSpawner {
       WorldGenLevel level,
       BoundingBox box,
       EntityType<T> entityType,
-      Predicate<BlockState> spawnFloorPredicate,
-      Predicate<BlockState> interiorFloorPredicate,
+      Predicate<BlockState> spawnFloorPredicate, Predicate<BlockState> interiorFloorPredicate,
       int maxCeilingDistance
   ) {
     T probeMob = entityType.create(level.getLevel(), EntitySpawnReason.STRUCTURE);
@@ -1159,7 +1157,7 @@ public final class StructureMobSpawner {
 
   private static final class DiamondCitySpawnSites {
 
-    private final Set<Long> scannedChunks = new HashSet<>();
+    private final BoundingBox structureBox;
 
     private final List<Long> chunkScanOrder = new ArrayList<>();
 
@@ -1167,7 +1165,7 @@ public final class StructureMobSpawner {
     private final List<BlockPos> openAir = new ArrayList<>();
     private final List<BlockPos> underCoverInterior = new ArrayList<>();
 
-    private final BoundingBox structureBox;
+    private final Set<Long> scannedChunks = new HashSet<>();
 
     private DiamondCitySpawnSites(
         BoundingBox structureBox
@@ -1219,9 +1217,7 @@ public final class StructureMobSpawner {
 
     private boolean hasCachedCandidates(
         ServerLevel level,
-        int targetUnderCoverInterior,
-        int targetOpenAir,
-        int targetFallback
+        int targetUnderCoverInterior, int targetOpenAir, int targetFallback
     ) {
       return loadedCandidateCount(level, this.underCoverInterior, targetUnderCoverInterior)
               >= targetUnderCoverInterior
@@ -1231,8 +1227,7 @@ public final class StructureMobSpawner {
 
     private void scanChunk(
         ServerLevel level,
-        int chunkX,
-        int chunkZ
+        int chunkX, int chunkZ
     ) {
       int chunkMinX = chunkX << 4;
       int chunkMinZ = chunkZ << 4;
@@ -1272,9 +1267,7 @@ public final class StructureMobSpawner {
 
     private void scanLoadedChunks(
         ServerLevel level,
-        int targetUnderCoverInterior,
-        int targetOpenAir,
-        int targetFallback
+        int targetUnderCoverInterior, int targetOpenAir, int targetFallback
     ) {
       if (hasCachedCandidates(level, targetUnderCoverInterior, targetOpenAir, targetFallback)) {
         return;
@@ -1303,9 +1296,7 @@ public final class StructureMobSpawner {
   }
 
   private record GroundSpawnCandidates(
-      List<BlockPos> underCoverInterior,
-      List<BlockPos> openAir,
-      List<BlockPos> fallback
+      List<BlockPos> underCoverInterior, List<BlockPos> openAir, List<BlockPos> fallback
   ) {
 
     private static GroundSpawnCandidates empty() {
@@ -1346,8 +1337,7 @@ public final class StructureMobSpawner {
     private DiamondCitySpawnSites diamondCitySpawnSites;
 
     private SpawnState(
-        long lastSeenTick,
-        long lastSpawnTick
+        long lastSeenTick, long lastSpawnTick
     ) {
       this.lastSeenTick = lastSeenTick;
       this.lastSpawnTick = lastSpawnTick;
@@ -1378,12 +1368,9 @@ public final class StructureMobSpawner {
       StructureType<?> structureType,
       int playerChunkScanRadius,
       double activationPadding,
-      int boostThreshold,
-      int maxPopulation,
-      long boostIntervalTicks,
-      long normalIntervalTicks,
-      double mobCountHorizontalPadding,
-      double mobCountVerticalPadding,
+      int boostThreshold, int maxPopulation,
+      long boostIntervalTicks, long normalIntervalTicks,
+      double mobCountHorizontalPadding, double mobCountVerticalPadding,
       MobCounter mobCounter,
       MobSpawner mobSpawner
   ) {}

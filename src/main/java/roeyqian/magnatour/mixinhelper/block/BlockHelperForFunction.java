@@ -118,8 +118,7 @@ public final class BlockHelperForFunction {
   }
 
   public static <T> boolean handlePlaceRecipe(
-      int width,
-      int height,
+      int width, int height,
       Recipe<?> recipe,
       Iterable<T> slots,
       PlaceRecipeHelper.Output<T> filler
@@ -148,8 +147,7 @@ public final class BlockHelperForFunction {
   public static int handleQuickCraft(
       Player player,
       CraftingContainer craftSlots,
-      int removeCount,
-      int amount,
+      int removeCount, int amount,
       CallbackInfo ci
   ) {
     if (!shouldHandleCustomRecipe(player, craftSlots)) {

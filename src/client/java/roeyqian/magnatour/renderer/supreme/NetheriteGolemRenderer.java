@@ -93,8 +93,7 @@ public final class NetheriteGolemRenderer extends MobRenderer<NetheriteGolem, Cu
   protected void setupRotations(
       final @NonNull CustomGolemRenderState state,
       final @NonNull PoseStack poseStack,
-      final float bodyRot,
-      final float entityScale
+      final float bodyRot, final float entityScale
   ) {
     super.setupRotations(state, poseStack, bodyRot, entityScale);
     if (!((double) state.walkAnimationSpeed < 0.01)) {

@@ -30,8 +30,7 @@ public final class CraftingResultHelper {
   }
 
   public static int getConsumedCraftCount(
-      int removedItemCount,
-      int baseResultCount
+      int removedItemCount, int baseResultCount
   ) {
     if (baseResultCount <= 0) return 0;
 

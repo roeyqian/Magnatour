@@ -34,20 +34,6 @@ import roeyqian.magnatour.levelgen.terrain.HarvestLakeIslands;
 
 public final class HarvestContinentBiomeSource extends BiomeSource {
 
-  // Retained as an optional salt when decoding existing dimension settings.
-  private final long seed;
-  private volatile long worldSeed;
-
-  private volatile HarvestLakeIslands islands;
-
-  private final Holder<Biome> berrySnowfield;
-  private final Holder<Biome> cactusDesert;
-  private final Holder<Biome> greatLake;
-  private final Holder<Biome> lakeCenterIsland;
-  private final Holder<Biome> melonJungle;
-  private final Holder<Biome> pumpkinGorge;
-  private final Holder<Biome> sacredMountain;
-
   public static final MapCodec<HarvestContinentBiomeSource> CODEC =
       RecordCodecBuilder.mapCodec((instance) -> instance.group(
                   Biome.CODEC.fieldOf("wheat_plain").forGetter((source) -> source.wheatPlain),
@@ -73,19 +59,25 @@ public final class HarvestContinentBiomeSource extends BiomeSource {
                       desert.orElse(defaultDesert), berrySnowfield.orElse(defaultBerrySnowfield), seed))
       );
 
+  // Retained as an optional salt when decoding existing dimension settings.
+  private final long seed;
+
+  private final Holder<Biome> berrySnowfield;
+  private final Holder<Biome> cactusDesert;
+  private final Holder<Biome> greatLake;
+  private final Holder<Biome> lakeCenterIsland;
+  private final Holder<Biome> melonJungle;
+  private final Holder<Biome> pumpkinGorge;
+  private final Holder<Biome> sacredMountain;
   private final Holder<Biome> sugarcaneMarsh;
   private final Holder<Biome> wheatPlain;
 
+  private volatile long worldSeed;
+
+  private volatile HarvestLakeIslands islands;
+
   public HarvestContinentBiomeSource(
-      Holder<Biome> wheatPlain,
-      Holder<Biome> greatLake,
-      Holder<Biome> melonJungle,
-      Holder<Biome> pumpkinGorge,
-      Holder<Biome> lakeCenterIsland,
-      Holder<Biome> sacredMountain,
-      Holder<Biome> sugarcaneMarsh,
-      Holder<Biome> cactusDesert,
-      Holder<Biome> berrySnowfield,
+      Holder<Biome> wheatPlain, Holder<Biome> greatLake, Holder<Biome> melonJungle, Holder<Biome> pumpkinGorge, Holder<Biome> lakeCenterIsland, Holder<Biome> sacredMountain, Holder<Biome> sugarcaneMarsh, Holder<Biome> cactusDesert, Holder<Biome> berrySnowfield,
       long seed
   ) {
     this.sacredMountain = sacredMountain;
@@ -110,9 +102,7 @@ public final class HarvestContinentBiomeSource extends BiomeSource {
 
   @NonNull
   public Holder<Biome> getNoiseBiome(
-      int x,
-      int y,
-      int z,
+      int x, int y, int z,
       Climate.@NonNull Sampler noise
   ) {
     double harvestour = sampleHarvestour(x * 4, z * 4);
@@ -133,16 +123,14 @@ public final class HarvestContinentBiomeSource extends BiomeSource {
 
   /** Shared by biome selection and terrain blending, in block coordinates. */
   public double sampleHarvestour(
-      int worldX,
-      int worldZ
+      int worldX, int worldZ
   ) {
     return HarvestContinentTerrain.sampleHarvestour(this.worldSeed ^ this.seed, worldX, worldZ);
   }
 
   /** Biome ownership and blended terrain use the same harvestour intervals. */
   public SurfaceSample sampleSurface(
-      int x,
-      int z,
+      int x, int z,
       long terrainSeed
   ) {
     double harvestour = sampleHarvestour(x, z);
@@ -180,8 +168,7 @@ public final class HarvestContinentBiomeSource extends BiomeSource {
   public record SurfaceSample(
       ResourceKey<Biome> biome,
       int height,
-      double harvestour,
-      double melonWeight
+      double harvestour, double melonWeight
   ) {}
 
 }

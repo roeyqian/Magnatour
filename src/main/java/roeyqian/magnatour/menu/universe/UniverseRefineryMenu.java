@@ -189,8 +189,7 @@ public class UniverseRefineryMenu extends AbstractFurnaceMenu {
 
     @Override
     public void set(
-        int index,
-        int value
+        int index, int value
     ) {
       this.delegate.set(index, value);
     }

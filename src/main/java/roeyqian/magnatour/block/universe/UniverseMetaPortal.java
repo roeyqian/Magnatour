@@ -49,9 +49,9 @@ import roeyqian.magnatour.registry.worldgen.CustomDimensions;
 
 public class UniverseMetaPortal extends Block {
 
-  public static int clientPortalTicks = 0;
-
   public static boolean clientInPortal = false;
+
+  public static int clientPortalTicks = 0;
 
   private static final BlockPos FALLBACK_PORTAL_CENTER = new BlockPos(0, 32, 0);
 

@@ -33,9 +33,7 @@ public abstract class RangedAttributeMixin {
   @Inject(method = "<init>", at = @At("TAIL"))
   private void inInit(
       String descriptionId,
-      double defaultValue,
-      double min,
-      double max,
+      double defaultValue, double min, double max,
       CallbackInfo ci
   ) {
     this.maxValue = EntityHelperForCreature.extendAttributeLimit(descriptionId, this.maxValue);

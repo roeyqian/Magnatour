@@ -28,16 +28,13 @@ import org.jspecify.annotations.Nullable;
 @Environment(EnvType.CLIENT)
 public final class UniverseSonicBoomParticle extends SonicBoomParticle {
 
-  private final Mode mode;
-
   private final float hueOffset;
+
+  private final Mode mode;
 
   protected UniverseSonicBoomParticle(
       ClientLevel level,
-      double x,
-      double y,
-      double z,
-      double g,
+      double x, double y, double z, double g,
       SpriteSet spriteSet,
       Mode mode
   ) {
@@ -91,12 +88,7 @@ public final class UniverseSonicBoomParticle extends SonicBoomParticle {
     public Particle createParticle(
         @NonNull SimpleParticleType type,
         @NonNull ClientLevel level,
-        double x,
-        double y,
-        double z,
-        double velocityX,
-        double velocityY,
-        double velocityZ,
+        double x, double y, double z, double velocityX, double velocityY, double velocityZ,
         @NonNull RandomSource random
     ) {
       return new UniverseSonicBoomParticle(

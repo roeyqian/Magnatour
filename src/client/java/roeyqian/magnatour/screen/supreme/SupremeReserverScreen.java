@@ -43,8 +43,7 @@ public class SupremeReserverScreen extends AbstractContainerScreen<SupremeReserv
   @Override
   public void extractContents(
       @NonNull GuiGraphicsExtractor graphics,
-      int mouseX,
-      int mouseY,
+      int mouseX, int mouseY,
       float delta
   ) {
     graphics.blit(
@@ -61,8 +60,7 @@ public class SupremeReserverScreen extends AbstractContainerScreen<SupremeReserv
   @Override
   public void extractRenderState(
       @NonNull GuiGraphicsExtractor graphics,
-      int mouseX,
-      int mouseY,
+      int mouseX, int mouseY,
       float delta
   ) {
     updateButtonStates();
@@ -72,8 +70,7 @@ public class SupremeReserverScreen extends AbstractContainerScreen<SupremeReserv
   @Override
   protected void extractLabels(
       @NonNull GuiGraphicsExtractor graphics,
-      int mouseX,
-      int mouseY
+      int mouseX, int mouseY
   ) {
     graphics.text(
         this.font, this.title, this.titleLabelX, this.titleLabelY,

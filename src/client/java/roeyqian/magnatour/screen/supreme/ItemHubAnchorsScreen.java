@@ -45,28 +45,28 @@ public class ItemHubAnchorsScreen extends Screen {
       "magnatour", "textures/gui/container/item_hub_anchors.png"
   );
 
-  private int left;
-  private int page;
-  private int top;
+  private final ItemHubScreen parent;
+
+  private final ItemHubMenu menu;
+
+  private final List<Button> removeButtons = new ArrayList<>();
 
   private boolean error;
 
-  private final ItemHubScreen parent;
-
-  private String pendingItemId = "";
-
-  private List<String> anchors = List.of();
-
-  private Component status = Component.empty();
+  private int left;
+  private int page;
+  private int top;
 
   private Button nextButton;
   private Button previousButton;
 
   private EditBox itemIdField;
 
-  private final ItemHubMenu menu;
+  private String pendingItemId = "";
 
-  private final List<Button> removeButtons = new ArrayList<>();
+  private Component status = Component.empty();
+
+  private List<String> anchors = List.of();
 
   public ItemHubAnchorsScreen(
       ItemHubScreen parent,
@@ -80,8 +80,7 @@ public class ItemHubAnchorsScreen extends Screen {
   @Override
   public void extractRenderState(
       @NonNull GuiGraphicsExtractor graphics,
-      int mouseX,
-      int mouseY,
+      int mouseX, int mouseY,
       float delta
   ) {
     graphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, this.left, this.top,
@@ -143,10 +142,7 @@ public class ItemHubAnchorsScreen extends Screen {
 
   @Override
   public boolean mouseScrolled(
-      double mouseX,
-      double mouseY,
-      double horizontal,
-      double vertical
+      double mouseX, double mouseY, double horizontal, double vertical
   ) {
     if (vertical != 0 && mouseY >= this.top + 32 && mouseY < this.top + 152) {
       this.page = Math.clamp(this.page + (vertical > 0 ? -1 : 1), 0, pageCount() - 1);

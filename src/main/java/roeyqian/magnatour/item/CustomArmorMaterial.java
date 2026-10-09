@@ -63,8 +63,7 @@ public interface CustomArmorMaterial extends ArmorMaterials {
   private static ArmorMaterial makeSupremeArmor(
       ArmorType type,
       int defense,
-      float toughness,
-      float knockbackResistance
+      float toughness, float knockbackResistance
   ) {
     return new ArmorMaterial(
         100,
@@ -85,11 +84,7 @@ public interface CustomArmorMaterial extends ArmorMaterials {
   }
 
   private static Map<ArmorType, Integer> makeDefense(
-      int feet,
-      int legs,
-      int chest,
-      int head,
-      int body
+      int feet, int legs, int chest, int head, int body
   ) {
     return Maps.newEnumMap(
         Map.of(

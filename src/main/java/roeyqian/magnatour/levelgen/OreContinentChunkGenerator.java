@@ -143,8 +143,7 @@ public final class OreContinentChunkGenerator extends ChunkGenerator {
 
   @Override @NonNull
   public NoiseColumn getBaseColumn(
-      int x,
-      int z,
+      int x, int z,
       @NonNull LevelHeightAccessor level,
       @NonNull RandomState randomState
   ) {
@@ -162,8 +161,7 @@ public final class OreContinentChunkGenerator extends ChunkGenerator {
 
   @Override
   public int getBaseHeight(
-      int x,
-      int z,
+      int x, int z,
       Heightmap.@NonNull Types heightmap,
       @NonNull LevelHeightAccessor level,
       @NonNull RandomState randomState

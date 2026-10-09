@@ -21,11 +21,11 @@ import roeyqian.magnatour.Magnatour;
 
 public record UniverseBucketPickupPayload() implements CustomPacketPayload {
 
-  public static final Type<UniverseBucketPickupPayload> ID =
-      new Type<>(Identifier.fromNamespaceAndPath(Magnatour.MOD_ID, "universe_bucket_pickup"));
-
   public static final StreamCodec<RegistryFriendlyByteBuf, UniverseBucketPickupPayload> CODEC =
       StreamCodec.unit(new UniverseBucketPickupPayload());
+
+  public static final Type<UniverseBucketPickupPayload> ID =
+      new Type<>(Identifier.fromNamespaceAndPath(Magnatour.MOD_ID, "universe_bucket_pickup"));
 
   @Override @NonNull
   public Type<? extends CustomPacketPayload> type() {

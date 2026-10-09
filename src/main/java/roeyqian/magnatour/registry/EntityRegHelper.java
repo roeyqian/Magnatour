@@ -40,8 +40,7 @@ public interface EntityRegHelper {
       ResourceKey<EntityType<?>> key,
       EntityType.EntityFactory<T> factory,
       MobCategory category,
-      float width,
-      float height
+      float width, float height
   ) {
     return Registry.register(
         BuiltInRegistries.ENTITY_TYPE,

@@ -40,13 +40,6 @@ public final class SupremeCraftingBookComponent extends RecipeBookComponent<Supr
   private static final Component TOGGLE_CRAFTABLE_TEXT =
       Component.translatable("gui.recipebook.toggleRecipes.craftable");
 
-  private static final WidgetSprites FILTER_BUTTON_TEXTURES = new WidgetSprites(
-      Identifier.withDefaultNamespace("recipe_book/filter_enabled"),
-      Identifier.withDefaultNamespace("recipe_book/filter_disabled"),
-      Identifier.withDefaultNamespace("recipe_book/filter_enabled_highlighted"),
-      Identifier.withDefaultNamespace("recipe_book/filter_disabled_highlighted")
-  );
-
   private static final List<RecipeBookComponent.TabInfo> TABS = List.of(
       new RecipeBookComponent.TabInfo(SearchRecipeBookCategory.CRAFTING),
       new RecipeBookComponent.TabInfo(Items.IRON_AXE, Items.GOLDEN_SWORD, RecipeBookCategories.CRAFTING_EQUIPMENT),
@@ -54,6 +47,13 @@ public final class SupremeCraftingBookComponent extends RecipeBookComponent<Supr
       new RecipeBookComponent.TabInfo(Items.LAVA_BUCKET, Items.APPLE, RecipeBookCategories.CRAFTING_MISC),
       new RecipeBookComponent.TabInfo(Items.REDSTONE, RecipeBookCategories.CRAFTING_REDSTONE),
       new RecipeBookComponent.TabInfo(SupremeItems.SUPREME_CORE, CustomRecipes.SUPREME_CRAFTING)
+  );
+
+  private static final WidgetSprites FILTER_BUTTON_TEXTURES = new WidgetSprites(
+      Identifier.withDefaultNamespace("recipe_book/filter_enabled"),
+      Identifier.withDefaultNamespace("recipe_book/filter_disabled"),
+      Identifier.withDefaultNamespace("recipe_book/filter_enabled_highlighted"),
+      Identifier.withDefaultNamespace("recipe_book/filter_disabled_highlighted")
   );
 
   public SupremeCraftingBookComponent(

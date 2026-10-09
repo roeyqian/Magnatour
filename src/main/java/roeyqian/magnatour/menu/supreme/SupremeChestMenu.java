@@ -217,9 +217,7 @@ public class SupremeChestMenu extends AbstractContainerMenu {
 
     public SupremeChestSlot(
         Container inventory,
-        int index,
-        int x,
-        int y
+        int index, int x, int y
     ) {
       super(inventory, index, x, y);
     }

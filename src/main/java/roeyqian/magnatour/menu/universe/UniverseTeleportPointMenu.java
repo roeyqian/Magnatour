@@ -32,9 +32,9 @@ import roeyqian.magnatour.registry.content.UniverseMenus;
 
 public class UniverseTeleportPointMenu extends AbstractContainerMenu {
 
-  private final BlockPos blockPos;
-
   private final ResourceKey<Level> dimension;
+
+  private final BlockPos blockPos;
 
   private final List<UniverseTeleportPointEntity.Destination> destinations;
 

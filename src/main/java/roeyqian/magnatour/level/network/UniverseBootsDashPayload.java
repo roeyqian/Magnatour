@@ -24,15 +24,15 @@ public record UniverseBootsDashPayload(
     int direction
 ) implements CustomPacketPayload {
 
-  public static final Type<UniverseBootsDashPayload> ID =
-      new Type<>(Identifier.fromNamespaceAndPath(Magnatour.MOD_ID, "dash"));
-
   public static final StreamCodec<RegistryFriendlyByteBuf, UniverseBootsDashPayload> CODEC =
       StreamCodec.composite(
           ByteBufCodecs.VAR_INT,
           UniverseBootsDashPayload::direction,
           UniverseBootsDashPayload::new
       );
+
+  public static final Type<UniverseBootsDashPayload> ID =
+      new Type<>(Identifier.fromNamespaceAndPath(Magnatour.MOD_ID, "dash"));
 
   @Override @NonNull
   public Type<? extends CustomPacketPayload> type() {

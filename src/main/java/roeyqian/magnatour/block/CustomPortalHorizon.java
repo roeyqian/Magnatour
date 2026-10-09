@@ -55,34 +55,10 @@ public interface CustomPortalHorizon {
     return corner == null ? portalPos : corner.offset(2, 0, 2);
   }
 
-  /**
-   * Loads every chunk that can contain the 5x5 portal centered at {@code center}.
-   *
-   * <p>Portal links survive a server restart, but their target chunks are normally unloaded until
-   * a player visits that dimension. Validating an unloaded endpoint would otherwise look like a
-   * missing frame and permanently discard the link.</p>
-   */
-  private static void loadPortalChunks(
-      ServerLevel world,
-      BlockPos center
-  ) {
-    int minChunkX = (center.getX() - 2) >> 4;
-    int maxChunkX = (center.getX() + 2) >> 4;
-    int minChunkZ = (center.getZ() - 2) >> 4;
-    int maxChunkZ = (center.getZ() + 2) >> 4;
-
-    for (int chunkX = minChunkX; chunkX <= maxChunkX; chunkX++) {
-      for (int chunkZ = minChunkZ; chunkZ <= maxChunkZ; chunkZ++) {
-        world.getChunkSource().getChunk(chunkX, chunkZ, true);
-      }
-    }
-  }
-
   static boolean isValidPortal(
       LevelReader world,
       BlockPos pos,
-      Block frameBlock,
-      Block portalBlock
+      Block frameBlock, Block portalBlock
   ) {
     BlockPos corner = findCompleteFrame((Level)world, pos, frameBlock, true);
     if (corner == null) return false;
@@ -102,8 +78,7 @@ public interface CustomPortalHorizon {
   static BlockPos findOrCreatePortal(
       ServerLevel targetWorld,
       BlockPos fallbackPortalCenter,
-      Block frameBlock,
-      Block portalBlock
+      Block frameBlock, Block portalBlock
   ) {
     BlockPos existing = findExistingPortal(targetWorld, fallbackPortalCenter, portalBlock);
     if (existing != null) return existing;
@@ -128,25 +103,6 @@ public interface CustomPortalHorizon {
     return findCompleteFrame(world, clickedPos, frameBlock, true);
   }
 
-  private static BlockPos findCompleteFrame(
-      Level world,
-      BlockPos clickedPos,
-      Block frameBlock,
-      boolean requireLit
-  ) {
-    // The clicked position could be any of the 12 frame blocks
-    // Try all possible corner positions where this block could be part of a 5x5 frame
-    for (int dx = -4; dx <= 0; dx++) {
-      for (int dz = -4; dz <= 0; dz++) {
-        BlockPos corner = clickedPos.offset(dx, 0, dz);
-        if (isCompleteFrame(world, corner, frameBlock, requireLit)) {
-          return corner;
-        }
-      }
-    }
-    return null;
-  }
-
   /**
    * Check if a 5x5 area starting at corner forms a valid activated portal frame.
    * The 12 edge positions (outer ring, EXCLUDING corners) must all be the frame block and all must be lit.
@@ -158,43 +114,6 @@ public interface CustomPortalHorizon {
       Block frameBlock
   ) {
     return isCompleteFrame(world, corner, frameBlock, true);
-  }
-
-  private static boolean isCompleteFrame(
-      Level world,
-      BlockPos corner,
-      Block frameBlock,
-      boolean requireLit
-  ) {
-    // Check 5x5 grid - only outer edges EXCLUDING corners (12 blocks total)
-    for (int dx = 0; dx < 5; dx++) {
-      for (int dz = 0; dz < 5; dz++) {
-        // Skip corners: (0,0), (0,4), (4,0), (4,4)
-        boolean isCorner = (dx == 0 && dz == 0) || (dx == 0 && dz == 4) || (dx == 4 && dz == 0) || (dx == 4 && dz == 4);
-
-        // Only check outer edge, excluding corners
-        boolean isEdge = (dx == 0 || dx == 4 || dz == 0 || dz == 4) && !isCorner;
-
-        if (!isEdge) {
-          // Inner 3x3 + 4 corners - skip, can be anything
-          continue;
-        }
-
-        BlockPos pos = corner.offset(dx, 0, dz);
-        BlockState state = world.getBlockState(pos);
-
-        // Must be the frame block
-        if (!state.is(frameBlock)) {
-          return false;
-        }
-
-        // All frame blocks must stay lit for the portal to remain valid.
-        if (requireLit && (!state.hasProperty(BlockStateProperties.LIT) || !state.getValue(BlockStateProperties.LIT))) {
-          return false;
-        }
-      }
-    }
-    return true;
   }
 
   static BlockPos findExistingPortal(
@@ -220,8 +139,7 @@ public interface CustomPortalHorizon {
   static BlockPos buildPortalAt(
       ServerLevel world,
       BlockPos centerPos,
-      Block frameBlock,
-      Block portalBlock
+      Block frameBlock, Block portalBlock
   ) {
     // Build a 5x5 portal centered on the supplied destination position.
     BlockPos corner = centerPos.offset(-2, 0, -2);
@@ -288,31 +206,11 @@ public interface CustomPortalHorizon {
     );
   }
 
-  private static boolean hasClearArrivalSpace(
-      ServerLevel world,
-      BlockPos center
-  ) {
-    if (world.isEmptyBlock(center.below())) return false;
-
-    for (int dx = -1; dx <= 1; dx++) {
-      for (int dz = -1; dz <= 1; dz++) {
-        BlockPos portalPos = center.offset(dx, 0, dz);
-        if (!world.isEmptyBlock(portalPos.above())
-            || !world.isEmptyBlock(portalPos.above(2))) {
-          return false;
-        }
-      }
-    }
-    return true;
-  }
-
   static void execTeleport(
       ServerPlayer player,
       BlockPos portalPos,
-      Block frameBlock,
-      Block portalBlock,
-      ResourceKey<Level> sourceDim,
-      ResourceKey<Level> targetDim,
+      Block frameBlock, Block portalBlock,
+      ResourceKey<Level> sourceDim, ResourceKey<Level> targetDim,
       BlockPos fallbackPortalCenter
   ) {
     MinecraftServer server = player.level().getServer();
@@ -389,10 +287,8 @@ public interface CustomPortalHorizon {
       Map<UUID, Integer> portalTicks,
       Set<UUID> inPortalThisTick,
       boolean[] clientInPortalFlag,
-      Block frameBlock,
-      Block portalBlock,
-      ResourceKey<Level> sourceDim,
-      ResourceKey<Level> targetDim,
+      Block frameBlock, Block portalBlock,
+      ResourceKey<Level> sourceDim, ResourceKey<Level> targetDim,
       BlockPos fallbackPortalCenter
   ) {
     if (world.isClientSide()) {
@@ -439,8 +335,7 @@ public interface CustomPortalHorizon {
   }
 
   static boolean shouldBreakPortal(
-      Block portalBlock,
-      Block frameBlock,
+      Block portalBlock, Block frameBlock,
       BlockState neighborState,
       BlockPos pos,
       LevelReader world
@@ -460,8 +355,7 @@ public interface CustomPortalHorizon {
   static boolean tryActivatePortal(
       Level world,
       BlockPos pos,
-      Block frameBlock,
-      Block portalBlock
+      Block frameBlock, Block portalBlock
   ) {
     if (world.isClientSide()) return false;
 
@@ -489,6 +383,103 @@ public interface CustomPortalHorizon {
         1.0F
     );
 
+    return true;
+  }
+
+  /**
+   * Loads every chunk that can contain the 5x5 portal centered at {@code center}.
+   *
+   * <p>Portal links survive a server restart, but their target chunks are normally unloaded until
+   * a player visits that dimension. Validating an unloaded endpoint would otherwise look like a
+   * missing frame and permanently discard the link.</p>
+   */
+  private static void loadPortalChunks(
+      ServerLevel world,
+      BlockPos center
+  ) {
+    int minChunkX = (center.getX() - 2) >> 4;
+    int maxChunkX = (center.getX() + 2) >> 4;
+    int minChunkZ = (center.getZ() - 2) >> 4;
+    int maxChunkZ = (center.getZ() + 2) >> 4;
+
+    for (int chunkX = minChunkX; chunkX <= maxChunkX; chunkX++) {
+      for (int chunkZ = minChunkZ; chunkZ <= maxChunkZ; chunkZ++) {
+        world.getChunkSource().getChunk(chunkX, chunkZ, true);
+      }
+    }
+  }
+
+  private static BlockPos findCompleteFrame(
+      Level world,
+      BlockPos clickedPos,
+      Block frameBlock,
+      boolean requireLit
+  ) {
+    // The clicked position could be any of the 12 frame blocks
+    // Try all possible corner positions where this block could be part of a 5x5 frame
+    for (int dx = -4; dx <= 0; dx++) {
+      for (int dz = -4; dz <= 0; dz++) {
+        BlockPos corner = clickedPos.offset(dx, 0, dz);
+        if (isCompleteFrame(world, corner, frameBlock, requireLit)) {
+          return corner;
+        }
+      }
+    }
+    return null;
+  }
+
+  private static boolean isCompleteFrame(
+      Level world,
+      BlockPos corner,
+      Block frameBlock,
+      boolean requireLit
+  ) {
+    // Check 5x5 grid - only outer edges EXCLUDING corners (12 blocks total)
+    for (int dx = 0; dx < 5; dx++) {
+      for (int dz = 0; dz < 5; dz++) {
+        // Skip corners: (0,0), (0,4), (4,0), (4,4)
+        boolean isCorner = (dx == 0 && dz == 0) || (dx == 0 && dz == 4) || (dx == 4 && dz == 0) || (dx == 4 && dz == 4);
+
+        // Only check outer edge, excluding corners
+        boolean isEdge = (dx == 0 || dx == 4 || dz == 0 || dz == 4) && !isCorner;
+
+        if (!isEdge) {
+          // Inner 3x3 + 4 corners - skip, can be anything
+          continue;
+        }
+
+        BlockPos pos = corner.offset(dx, 0, dz);
+        BlockState state = world.getBlockState(pos);
+
+        // Must be the frame block
+        if (!state.is(frameBlock)) {
+          return false;
+        }
+
+        // All frame blocks must stay lit for the portal to remain valid.
+        if (requireLit && (!state.hasProperty(BlockStateProperties.LIT) || !state.getValue(BlockStateProperties.LIT))) {
+          return false;
+        }
+      }
+    }
+    return true;
+  }
+
+  private static boolean hasClearArrivalSpace(
+      ServerLevel world,
+      BlockPos center
+  ) {
+    if (world.isEmptyBlock(center.below())) return false;
+
+    for (int dx = -1; dx <= 1; dx++) {
+      for (int dz = -1; dz <= 1; dz++) {
+        BlockPos portalPos = center.offset(dx, 0, dz);
+        if (!world.isEmptyBlock(portalPos.above())
+            || !world.isEmptyBlock(portalPos.above(2))) {
+          return false;
+        }
+      }
+    }
     return true;
   }
 

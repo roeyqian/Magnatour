@@ -113,8 +113,7 @@ public final class PaleLordModel extends EntityModel<PaleLordRenderState> {
   private static void addBranch(
       PartDefinition head,
       String name,
-      float x,
-      float tilt
+      float x, float tilt
   ) {
     PartDefinition branch = head.addOrReplaceChild(
         name,
@@ -169,8 +168,7 @@ public final class PaleLordModel extends EntityModel<PaleLordRenderState> {
   private static void addArm(
       PartDefinition upperBody,
       String name,
-      float x,
-      float length,
+      float x, float length,
       int textureU
   ) {
     PartDefinition arm = upperBody.addOrReplaceChild(
@@ -205,8 +203,7 @@ public final class PaleLordModel extends EntityModel<PaleLordRenderState> {
       PartDefinition root,
       String name,
       float x,
-      int textureU,
-      int footU
+      int textureU, int footU
   ) {
     PartDefinition leg = root.addOrReplaceChild(
         name,

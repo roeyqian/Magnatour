@@ -72,20 +72,14 @@ public final class OreTreeFeature implements Feature {
   }
 
   private static boolean isFoliagePosition(
-      int dx,
-      int dy,
-      int dz,
-      int radius
+      int dx, int dy, int dz, int radius
   ) {
     int distance = dx * dx + dy * dy + dz * dz;
     return distance <= radius * radius + 1;
   }
 
   private static boolean isTrunkPosition(
-      int dx,
-      int relativeY,
-      int dz,
-      int height
+      int dx, int relativeY, int dz, int height
   ) {
     return dx == 0 && dz == 0 && relativeY >= 0 && relativeY < height;
   }
@@ -105,8 +99,7 @@ public final class OreTreeFeature implements Feature {
   private static boolean hasRoomForTree(
       WorldGenLevel level,
       BlockPos origin,
-      int height,
-      int radius
+      int height, int radius
   ) {
     BlockPos.MutableBlockPos mutable = new BlockPos.MutableBlockPos();
 
@@ -148,8 +141,7 @@ public final class OreTreeFeature implements Feature {
   private void placeFoliage(
       WorldGenLevel level,
       BlockPos origin,
-      int height,
-      int radius,
+      int height, int radius,
       BlockState state
   ) {
     BlockPos.MutableBlockPos mutable = new BlockPos.MutableBlockPos();

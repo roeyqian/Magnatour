@@ -155,13 +155,7 @@ public final class SculkBehemothModel extends EntityModel<SculkBehemothRenderSta
   private static void addHeartDecal(
       PartDefinition body,
       String name,
-      float x,
-      float y,
-      float z,
-      float xRot,
-      float yRot,
-      float xScale,
-      float yScale
+      float x, float y, float z, float xRot, float yRot, float xScale, float yScale
   ) {
     body.addOrReplaceChild(name,
         CubeListBuilder.create().texOffs(14, 17)
@@ -186,8 +180,7 @@ public final class SculkBehemothModel extends EntityModel<SculkBehemothRenderSta
   private static void createLeg(
       PartDefinition body,
       String name,
-      float x,
-      float z
+      float x, float z
   ) {
     // Attach at the belly's Y=50 surface, rather than burying the upper 20
     // units in the torso. 54-unit legs still put the resting foot at model Y=24.

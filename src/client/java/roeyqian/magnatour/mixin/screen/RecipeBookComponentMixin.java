@@ -43,6 +43,9 @@ public class RecipeBookComponentMixin {
   protected CycleButton<Boolean> filterButton;
 
   @Shadow
+  private boolean visible;
+
+  @Shadow
   private int height;
   @Shadow
   private int width;
@@ -52,8 +55,8 @@ public class RecipeBookComponentMixin {
   @Shadow
   private float time;
 
-  @Shadow
-  private boolean visible;
+  @Shadow @Final
+  private List<RecipeBookTabButton> tabButtons;
 
   @Shadow
   private EditBox searchBox;
@@ -61,16 +64,12 @@ public class RecipeBookComponentMixin {
   @Shadow @Final
   private RecipeBookPage recipeBookPage;
 
-  @Shadow @Final
-  private List<RecipeBookTabButton> tabButtons;
-
   /* Supreme & Universe Crafting Recipe: Custom Recipe Book Render State
    */
   @Inject(method = "extractRenderState", at = @At("HEAD"), cancellable = true)
   private void inExtractRenderState(
       GuiGraphicsExtractor context,
-      int mouseX,
-      int mouseY,
+      int mouseX, int mouseY,
       float delta,
       CallbackInfo ci
   ) {

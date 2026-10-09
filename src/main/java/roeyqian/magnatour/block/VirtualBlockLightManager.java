@@ -74,28 +74,26 @@ public final class VirtualBlockLightManager {
   public static final int LIGHT_LEVEL = 15;
   public static final int MAX_BLOCKS_PER_TICK = 4096;
 
-  private static final long MAX_BATCH_NANOS = 2_000_000L;
-
-  private static final int MAX_UNIVERSE_REFRESHES_PER_FRAME = 8;
-
-  private static final TicketType UNIVERSE_TICKET = new TicketType(
-      TicketType.NO_TIMEOUT,
-      TicketType.FLAG_PERSIST | TicketType.FLAG_LOADING | TicketType.FLAG_SIMULATION | TicketType.FLAG_KEEP_DIMENSION_ACTIVE
-  );
-
-  private static final int UNIVERSE_CHUNK_SIDE = 15;
-
-  private static final ChunkPos[] UNIVERSE_CHUNK_OFFSETS = createUniverseChunkOffsets();
-
   private static final int HALF_X = 32;
   private static final int HALF_Y = 16;
   private static final int HALF_Z = 32;
+  private static final int MAX_UNIVERSE_REFRESHES_PER_FRAME = 8;
+  private static final int UNIVERSE_CHUNK_SIDE = 15;
+
+  private static final long MAX_BATCH_NANOS = 2_000_000L;
 
   private static final long[] SPARSE_OFFSETS = createSourceOffsets(2);
 
   private static final int[] SPARSE_RANKS = createSourceRanks(SPARSE_OFFSETS);
 
+  private static final ChunkPos[] UNIVERSE_CHUNK_OFFSETS = createUniverseChunkOffsets();
+
   private static final Map<BlockGetter, WorldSources> LIGHT_SOURCES = new WeakHashMap<>();
+
+  private static final TicketType UNIVERSE_TICKET = new TicketType(
+      TicketType.NO_TIMEOUT,
+      TicketType.FLAG_PERSIST | TicketType.FLAG_LOADING | TicketType.FLAG_SIMULATION | TicketType.FLAG_KEEP_DIMENSION_ACTIVE
+  );
 
   private VirtualBlockLightManager() {}
 
@@ -150,9 +148,7 @@ public final class VirtualBlockLightManager {
   // Universe sources are registered once per chunk column, with no per-cell bookkeeping.
   public static boolean isUniverseLit(
       BlockGetter world,
-      int chunkX,
-      int chunkZ,
-      int y
+      int chunkX, int chunkZ, int y
   ) {
     if (!(world instanceof Level level) || level.isOutsideBuildHeight(y)) return false;
     WorldSources sources = getWorldSources(world, false);
@@ -516,9 +512,7 @@ public final class VirtualBlockLightManager {
   }
 
   private static int offsetIndex(
-      int x,
-      int y,
-      int z
+      int x, int y, int z
   ) {
     return ((x + HALF_X) * (HALF_Y * 2 + 1) + y + HALF_Y) * (HALF_Z * 2 + 1) + z + HALF_Z;
   }
@@ -664,9 +658,9 @@ public final class VirtualBlockLightManager {
 
   private static final class RestoreSection {
 
-    private int index;
-
     private final long key;
+
+    private int index;
 
     private RestoreSection(
         long key
@@ -684,9 +678,9 @@ public final class VirtualBlockLightManager {
 
   private static final class SectionSources {
 
-    private final int[][] counts = new int[LIGHT_LEVEL + 1][];
-
     private final byte[] emission = new byte[4096];
+
+    private final int[][] counts = new int[LIGHT_LEVEL + 1][];
 
     private int occupied;
 
@@ -708,8 +702,7 @@ public final class VirtualBlockLightManager {
     }
 
     private synchronized void change(
-        int index,
-        int level,
+        int index, int level,
         boolean active
     ) {
       if (this.counts[level] == null) {
@@ -746,18 +739,18 @@ public final class VirtualBlockLightManager {
 
   private static final class Source {
 
-    private int cursor;
-
-    private final BitSet applied = new BitSet();
-
     private final int size;
 
+    private final SourceKey key;
+
     private final long[] offsets;
+
+    private final BitSet applied = new BitSet();
 
     private boolean active;
     private boolean queued;
 
-    private final SourceKey key;
+    private int cursor;
 
     private Source(
         SourceKey key
@@ -781,9 +774,7 @@ public final class VirtualBlockLightManager {
     }
 
     private boolean intersects(
-        int x,
-        int y,
-        int z
+        int x, int y, int z
     ) {
       int originX = BlockPos.getX(this.key.origin());
       int originY = BlockPos.getY(this.key.origin());
@@ -878,13 +869,13 @@ public final class VirtualBlockLightManager {
       boolean active
   ) implements CustomPacketPayload {
 
-    public static final Type<UniverseLightPayload> ID = new Type<>(
-        Identifier.fromNamespaceAndPath("magnatour", "universe_light_state"));
-
     public static final StreamCodec<RegistryFriendlyByteBuf, UniverseLightPayload> CODEC = StreamCodec.composite(
         ResourceKey.streamCodec(Registries.DIMENSION), UniverseLightPayload::dimension,
         BlockPos.STREAM_CODEC, UniverseLightPayload::pos,
         ByteBufCodecs.BOOL, UniverseLightPayload::active, UniverseLightPayload::new);
+
+    public static final Type<UniverseLightPayload> ID = new Type<>(
+        Identifier.fromNamespaceAndPath("magnatour", "universe_light_state"));
 
     @Override @NonNull
     public Type<? extends CustomPacketPayload> type() { return ID; }
@@ -898,34 +889,34 @@ public final class VirtualBlockLightManager {
 
   private static final class WorldSources {
 
-    private final Map<ChunkPos, Set<Long>> universeChunks = new HashMap<>();
-
-    private final Map<ChunkPos, Integer> universeCoverage = new ConcurrentHashMap<>();
+    private final int[] rebuildCounts = new int[LIGHT_LEVEL + 1];
 
     private final LinkedHashSet<Long> universeRefresh = new LinkedHashSet<>();
-
-    private final Map<Long, Long> universeBuilds = new HashMap<>();
-
-    private final ArrayDeque<UniverseOperation> universeOperations = new ArrayDeque<>();
-
-    private final Map<Long, Boolean> universeRequested = new HashMap<>();
-
-    private final Long2IntOpenHashMap changed = new Long2IntOpenHashMap();
-
-    private final Map<Long, SectionSources> sections = new ConcurrentHashMap<>();
 
     private final LongOpenHashSet knownSections = new LongOpenHashSet();
     private final LongOpenHashSet restoreKeys = new LongOpenHashSet();
 
     private final ArrayDeque<RestoreSection> restoring = new ArrayDeque<>();
 
-    private final int[] rebuildCounts = new int[LIGHT_LEVEL + 1];
+    private final ArrayDeque<Source> pending = new ArrayDeque<>();
 
-    private boolean restoreFirst;
+    private final ArrayDeque<UniverseOperation> universeOperations = new ArrayDeque<>();
 
     private final Map<SourceKey, Source> origins = new HashMap<>();
 
-    private final ArrayDeque<Source> pending = new ArrayDeque<>();
+    private final Map<Long, SectionSources> sections = new ConcurrentHashMap<>();
+
+    private final Map<Long, Boolean> universeRequested = new HashMap<>();
+
+    private final Map<Long, Long> universeBuilds = new HashMap<>();
+
+    private final Map<ChunkPos, Integer> universeCoverage = new ConcurrentHashMap<>();
+
+    private final Map<ChunkPos, Set<Long>> universeChunks = new HashMap<>();
+
+    private final Long2IntOpenHashMap changed = new Long2IntOpenHashMap();
+
+    private boolean restoreFirst;
 
   }
 

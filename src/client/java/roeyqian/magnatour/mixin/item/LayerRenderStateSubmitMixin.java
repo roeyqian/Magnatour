@@ -38,9 +38,7 @@ public class LayerRenderStateSubmitMixin {
   private void inSubmit(
       PoseStack poseStack,
       SubmitNodeCollector submitNodeCollector,
-      int lightCoords,
-      int overlayCoords,
-      int outlineColor,
+      int lightCoords, int overlayCoords, int outlineColor,
       CallbackInfo ci
   ) {
     RenderHelperForGlint.armGlintBridge(this);
@@ -54,9 +52,7 @@ public class LayerRenderStateSubmitMixin {
   private void inSubmit2(
       PoseStack poseStack,
       SubmitNodeCollector submitNodeCollector,
-      int lightCoords,
-      int overlayCoords,
-      int outlineColor,
+      int lightCoords, int overlayCoords, int outlineColor,
       CallbackInfo ci
   ) {
     RenderHelperForGlint.disarmGlintBridge();

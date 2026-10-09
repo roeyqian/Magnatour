@@ -42,13 +42,6 @@ public final class UniverseCookingBookComponent extends RecipeBookComponent<Univ
       "gui.recipebook.toggleRecipes.smeltable"
   );
 
-  private static final WidgetSprites FILTER_BUTTON_TEXTURES = new WidgetSprites(
-      Identifier.withDefaultNamespace("recipe_book/furnace_filter_enabled"),
-      Identifier.withDefaultNamespace("recipe_book/furnace_filter_disabled"),
-      Identifier.withDefaultNamespace("recipe_book/furnace_filter_enabled_highlighted"),
-      Identifier.withDefaultNamespace("recipe_book/furnace_filter_disabled_highlighted")
-  );
-
   private static final List<RecipeBookComponent.TabInfo> TABS = List.of(
       new RecipeBookComponent.TabInfo(SearchRecipeBookCategory.FURNACE),
       new RecipeBookComponent.TabInfo(Items.PORKCHOP, RecipeBookCategories.FURNACE_FOOD),
@@ -56,6 +49,13 @@ public final class UniverseCookingBookComponent extends RecipeBookComponent<Univ
       new RecipeBookComponent.TabInfo(Items.LAVA_BUCKET, Items.EMERALD, RecipeBookCategories.FURNACE_MISC),
       new RecipeBookComponent.TabInfo(SupremeItems.SUPREME_CORE, CustomRecipes.SUPREME_COOKING),
       new RecipeBookComponent.TabInfo(UniverseItems.UNIVERSE_STAR, CustomRecipes.UNIVERSE_COOKING)
+  );
+
+  private static final WidgetSprites FILTER_BUTTON_TEXTURES = new WidgetSprites(
+      Identifier.withDefaultNamespace("recipe_book/furnace_filter_enabled"),
+      Identifier.withDefaultNamespace("recipe_book/furnace_filter_disabled"),
+      Identifier.withDefaultNamespace("recipe_book/furnace_filter_enabled_highlighted"),
+      Identifier.withDefaultNamespace("recipe_book/furnace_filter_disabled_highlighted")
   );
 
   public UniverseCookingBookComponent(

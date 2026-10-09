@@ -71,8 +71,7 @@ public final class ClientHelperForEquipment {
   public static void handleBeforeSetScreen(
       Minecraft client,
       MouseHandler mouseHandler,
-      Screen currentScreen,
-      Screen newScreen
+      Screen currentScreen, Screen newScreen
   ) {
     if (newScreen != null || !(currentScreen instanceof UniverseConsoleScreen)) return;
 
@@ -135,8 +134,7 @@ public final class ClientHelperForEquipment {
     private final double mouseY;
 
     private MouseRestoreState(
-        double mouseX,
-        double mouseY
+        double mouseX, double mouseY
     ) {
       this.mouseX = mouseX;
       this.mouseY = mouseY;

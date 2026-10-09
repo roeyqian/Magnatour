@@ -34,10 +34,6 @@ public record ItemHubPayload(
   public static final int ADD = 0;
   public static final int REMOVE = 1;
 
-  public static final Type<ItemHubPayload> ID = new Type<>(
-      Identifier.fromNamespaceAndPath(Magnatour.MOD_ID, "item_hub")
-  );
-
   public static final StreamCodec<RegistryFriendlyByteBuf, ItemHubPayload> CODEC =
       StreamCodec.composite(
           BlockPos.STREAM_CODEC,
@@ -50,6 +46,10 @@ public record ItemHubPayload(
           ItemHubPayload::itemId,
           ItemHubPayload::new
       );
+
+  public static final Type<ItemHubPayload> ID = new Type<>(
+      Identifier.fromNamespaceAndPath(Magnatour.MOD_ID, "item_hub")
+  );
 
   @Override
   public @NonNull Type<? extends CustomPacketPayload> type() {

@@ -55,10 +55,10 @@ public class SupremeReserverMenu extends AbstractContainerMenu {
   public static final int OUTPUT_END = 10;
   public static final int OUTPUT_START = 1;
 
+  private final Player player;
+
   private final SimpleContainer inputInventory;
   private final SimpleContainer outputInventory;
-
-  private final Player player;
 
   private final ContainerData propertyDelegate;
 
@@ -170,8 +170,7 @@ public class SupremeReserverMenu extends AbstractContainerMenu {
 
   @Override
   public void clicked(
-      int slotIndex,
-      int buttonNum,
+      int slotIndex, int buttonNum,
       @NonNull ContainerInput input,
       @NonNull Player player
   ) {
@@ -500,9 +499,7 @@ public class SupremeReserverMenu extends AbstractContainerMenu {
 
     public DisplaySlot(
         Container inventory,
-        int index,
-        int x,
-        int y
+        int index, int x, int y
     ) {
       super(inventory, index, x, y);
     }

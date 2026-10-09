@@ -22,8 +22,7 @@ public interface CustomBossEntity {
   static void spawnExperienceOrbs(
       ServerLevel world,
       Vec3 position,
-      int experience,
-      int maxOrbValue
+      int experience, int maxOrbValue
   ) {
     int cappedOrbValue = Math.max(1, maxOrbValue);
     int remainingExperience = experience;

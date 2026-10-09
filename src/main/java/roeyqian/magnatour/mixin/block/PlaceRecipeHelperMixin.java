@@ -31,8 +31,7 @@ public interface PlaceRecipeHelperMixin {
       at = @At("HEAD"),
       cancellable = true)
   private static <T> void inPlaceRecipe(
-      int width,
-      int height,
+      int width, int height,
       Recipe<?> recipe,
       Iterable<T> slots,
       PlaceRecipeHelper.Output<T> filler,

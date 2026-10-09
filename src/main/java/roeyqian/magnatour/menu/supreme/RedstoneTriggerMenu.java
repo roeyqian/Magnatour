@@ -35,15 +35,15 @@ public class RedstoneTriggerMenu extends AbstractContainerMenu {
           RegistryFriendlyByteBuf::readBoolean
       );
 
-  private final int intervalTicks;
-
   private final boolean enabled;
 
-  private final BlockPos blockPos;
+  private final int intervalTicks;
 
   private final ResourceKey<Level> dimension;
 
   private final RedstoneTriggerEntity.TriggerMode mode;
+
+  private final BlockPos blockPos;
 
   public RedstoneTriggerMenu(
       int syncId,

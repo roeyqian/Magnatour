@@ -31,6 +31,17 @@ import net.minecraft.world.item.crafting.Ingredient;
 /** A shaped recipe pattern sized for the Universe Workstation's 5x5 grid. */
 public final class UniverseCraftingPattern {
 
+  public static final StreamCodec<RegistryFriendlyByteBuf, UniverseCraftingPattern> STREAM_CODEC =
+      StreamCodec.composite(
+          ByteBufCodecs.VAR_INT,
+          UniverseCraftingPattern::width,
+          ByteBufCodecs.VAR_INT,
+          UniverseCraftingPattern::height,
+          Ingredient.OPTIONAL_CONTENTS_STREAM_CODEC.apply(ByteBufCodecs.list(25)),
+          UniverseCraftingPattern::ingredients,
+          UniverseCraftingPattern::new
+      );
+
   private static final Codec<Character> SYMBOL_CODEC = Codec.STRING.comapFlatMap(
       symbol -> symbol.length() == 1
           ? DataResult.success(symbol.charAt(0))
@@ -54,27 +65,15 @@ public final class UniverseCraftingPattern {
       pattern -> DataResult.success(pattern.data)
   );
 
-  public static final StreamCodec<RegistryFriendlyByteBuf, UniverseCraftingPattern> STREAM_CODEC =
-      StreamCodec.composite(
-          ByteBufCodecs.VAR_INT,
-          UniverseCraftingPattern::width,
-          ByteBufCodecs.VAR_INT,
-          UniverseCraftingPattern::height,
-          Ingredient.OPTIONAL_CONTENTS_STREAM_CODEC.apply(ByteBufCodecs.list(25)),
-          UniverseCraftingPattern::ingredients,
-          UniverseCraftingPattern::new
-      );
-
-  private final int width;
   private final int height;
+  private final int width;
 
   private final List<Optional<Ingredient>> ingredients;
 
   private Data data;
 
   private UniverseCraftingPattern(
-      int width,
-      int height,
+      int width, int height,
       List<Optional<Ingredient>> ingredients
   ) {
     if (width < 1 || width > 5 || height < 1 || height > 5 || ingredients.size() != width * height) {
@@ -88,8 +87,7 @@ public final class UniverseCraftingPattern {
   }
 
   private UniverseCraftingPattern(
-      int width,
-      int height,
+      int width, int height,
       List<Optional<Ingredient>> ingredients,
       Data data
   ) {
@@ -195,8 +193,7 @@ public final class UniverseCraftingPattern {
 
   private boolean matchesAt(
       CraftingInput input,
-      int offsetX,
-      int offsetY,
+      int offsetX, int offsetY,
       boolean mirrored
   ) {
     for (int y = 0; y < input.height(); y++) {

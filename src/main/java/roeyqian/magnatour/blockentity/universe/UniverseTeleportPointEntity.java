@@ -155,9 +155,7 @@ public class UniverseTeleportPointEntity extends BlockEntity implements MenuProv
   public record Destination(
       String name,
       ResourceKey<Level> dimension,
-      int x,
-      int y,
-      int z
+      int x, int y, int z
   ) {
 
     public static final Codec<Destination> CODEC = RecordCodecBuilder.create((instance) -> instance
