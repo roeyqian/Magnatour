@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
-    "magnatour:universe_banquet"
+    "magnatour:universe_banquet",
+    "magnatour:great_banquet"
   ]
 }
