@@ -10,6 +10,7 @@
     "block.BaseFireBlockMixin",
     "block.BellBlockMixin",
     "block.FireBlockMixin",
+    "block.HopperBlockEntityMixin",
     "block.NetherPortalBlockMixin",
     "block.ResultSlotMixin",
     "block.CropBlockMixin",

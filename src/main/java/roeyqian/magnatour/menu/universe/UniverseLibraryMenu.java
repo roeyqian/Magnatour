@@ -344,6 +344,13 @@ public class UniverseLibraryMenu extends AbstractContainerMenu {
     if (stack.isEmpty()) return false;
 
     int originalCount = stack.getCount();
+    if (this.sourceInventory instanceof UniverseLibraryEntity library) {
+      library.insertItems(stack);
+      return stack.getCount() < originalCount;
+    }
+
+    // Client prediction uses a plain container; authoritative storage changes
+    // are handled by the block entity above.
     mergeIntoExistingSourceStacks(stack);
     fillEmptySourceSlots(stack);
 

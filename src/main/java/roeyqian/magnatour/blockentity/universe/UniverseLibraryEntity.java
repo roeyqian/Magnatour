@@ -146,6 +146,46 @@ public class UniverseLibraryEntity extends BaseContainerBlockEntity {
     return getStorageStackLimit(stack);
   }
 
+  public ItemStack insertItems(
+      ItemStack stack
+  ) {
+    int originalCount = stack.getCount();
+    // Keep slot identities stable for open menus: fill matching stacks first,
+    // without moving existing stacks to other slots or changing their components.
+    for (int pass = 0; pass < 2 && !stack.isEmpty(); pass++) {
+      for (int slot = 0; slot < this.getContainerSize() && !stack.isEmpty(); slot++) {
+        if (!this.canPlaceItem(slot, stack)) continue;
+
+        ItemStack existing = this.getItem(slot);
+        if (pass == 0) {
+          if (existing.isEmpty() || !ItemStack.isSameItemSameComponents(existing, stack)) continue;
+          int space = this.getMaxStackSize(existing) - existing.getCount();
+          if (space <= 0) continue;
+          int moved = Math.min(space, stack.getCount());
+          existing.grow(moved);
+          stack.shrink(moved);
+        } else {
+          if (!existing.isEmpty()) continue;
+          int moved = Math.min(this.getMaxStackSize(stack), stack.getCount());
+          if (moved <= 0) continue;
+          this.inventory.set(slot, stack.copyWithCount(moved));
+          stack.shrink(moved);
+        }
+      }
+    }
+    // Commit and refresh open menus once after the entire insertion, rather
+    // than once per slot with intermediate inventory states.
+    if (stack.getCount() < originalCount) this.setChanged();
+    return stack.isEmpty() ? ItemStack.EMPTY : stack;
+  }
+
+  public boolean isStorageFull() {
+    for (ItemStack stack : this.inventory) {
+      if (stack.isEmpty() || stack.getCount() < this.getMaxStackSize(stack)) return false;
+    }
+    return true;
+  }
+
   @Override
   public void preRemoveSideEffects(
       @NonNull BlockPos pos,

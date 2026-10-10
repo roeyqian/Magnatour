@@ -207,7 +207,7 @@ public class LogisticsFiberEntity extends BlockEntity {
     if (extracted.isEmpty()) return remainingMoves;
 
     int extractedCount = extracted.getCount();
-    ItemStack remainder = HopperBlockEntity.addItem(source, destination, extracted, destinationAccess);
+    ItemStack remainder = insertItems(source, destination, extracted, destinationAccess);
     int movedCount = extractedCount - remainder.getCount();
 
     if (movedCount <= 0) {
@@ -253,10 +253,7 @@ public class LogisticsFiberEntity extends BlockEntity {
         return true;
       }
 
-      int maxCount = Math.min(
-          destinationStack.getMaxStackSize(),
-          destination.getMaxStackSize(destinationStack)
-      );
+      int maxCount = destination.getMaxStackSize(destinationStack);
       if (ItemStack.isSameItemSameComponents(destinationStack, itemStack)
           && destinationStack.getCount() < maxCount
       ) {
@@ -265,6 +262,28 @@ public class LogisticsFiberEntity extends BlockEntity {
     }
 
     return false;
+  }
+
+  private static ItemStack insertItems(
+      Container source, Container destination,
+      ItemStack stack,
+      Direction direction
+  ) {
+    // Vanilla insertion treats an empty-slot write as accepting the whole
+    // stack, even if setItem clamps its count. Only offer a bounded copy and
+    // retain every item that the destination cannot accept. Keep vanilla
+    // insertion here so sided inventory rules and hopper cooldowns still apply.
+    while (!stack.isEmpty()) {
+      int batchSize = destination.getMaxStackSize(stack);
+      batchSize = Math.min(batchSize, stack.getCount());
+      if (batchSize <= 0) break;
+      ItemStack batch = stack.copyWithCount(batchSize);
+      ItemStack remainder = HopperBlockEntity.addItem(source, destination, batch, direction);
+      int moved = batchSize - remainder.getCount();
+      if (moved <= 0) break;
+      stack.shrink(moved);
+    }
+    return stack;
   }
 
   private static void restoreSourceSlot(
