@@ -83,20 +83,19 @@ public final class ServerHelperForEquipment {
     }
 
     BlockState blockState = player.level().getBlockState(pos);
-    OptionalInt nextMode = getBucketModeForFluid(blockState.getFluidState().getType());
-    if (nextMode.isEmpty() || !(blockState.getBlock() instanceof BucketPickup bucketPickupBlock)) {
+    OptionalInt fluidMode = getBucketModeForFluid(blockState.getFluidState().getType());
+    if (fluidMode.isEmpty() || !(blockState.getBlock() instanceof BucketPickup bucketPickupBlock)) {
       return;
     }
 
     ItemStack taken = bucketPickupBlock.pickupBlock(player, player.level(), pos, blockState);
     if (taken.isEmpty()) return;
 
-    stack.set(CustomComponents.UNIVERSE_BUCKET_MODE, nextMode.getAsInt());
     player.awardStat(Stats.ITEM_USED.get(stack.getItem()));
     player.level().playSound(
         null,
         pos,
-        nextMode.getAsInt() == 1 ? SoundEvents.BUCKET_FILL_LAVA : SoundEvents.BUCKET_FILL,
+        fluidMode.getAsInt() == 1 ? SoundEvents.BUCKET_FILL_LAVA : SoundEvents.BUCKET_FILL,
         SoundSource.BLOCKS,
         1.0F,
         1.0F
