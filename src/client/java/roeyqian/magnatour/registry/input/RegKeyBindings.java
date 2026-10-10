@@ -41,7 +41,7 @@ import roeyqian.magnatour.level.network.DurableItemModePayload;
       new KeyMapping(
           "key.magnatour.universe_mode",
           InputConstants.Type.KEYBOARD,
-          InputConstants.KEY_U,
+          InputConstants.KEY_M,
           UNIVERSE_CATEGORY
       )
   );
