@@ -6,7 +6,8 @@
       "type": "magnatour:ore_continent",
       "seed": 0,
       "ore_land": "magnatour:ore_land",
-      "ore_forest": "magnatour:ore_forest"
+      "ore_forest": "magnatour:ore_forest",
+      "ore_plain": "magnatour:ore_plain"
     },
     "settings": {
       "biome": "magnatour:ore_land",

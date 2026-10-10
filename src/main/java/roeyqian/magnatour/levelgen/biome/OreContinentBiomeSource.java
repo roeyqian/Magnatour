@@ -8,6 +8,7 @@
 package roeyqian.magnatour.levelgen.biome;
 
 // Java Standard
+import java.util.Optional;
 import java.util.stream.Stream;
 
 // Mojang
@@ -17,6 +18,10 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 // Minecraft
 import net.minecraft.core.Holder;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.RegistryOps;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.BiomeResolver;
 import net.minecraft.world.level.biome.BiomeSource;
@@ -31,8 +36,12 @@ import roeyqian.magnatour.levelgen.terrain.PercentileBiomeField;
 public final class OreContinentBiomeSource extends BiomeSource {
 
   public static final double ORETOUR_MAX = PercentileBiomeField.PARAMETER_MAX;
-  // Percentile intervals retain an approximately equal area share for both biomes.
-  public static final double FOREST_ORETOUR_LIMIT = ORETOUR_MAX / 2.0;
+  // Percentile intervals retain an approximately equal area share for all three biomes.
+  public static final double FOREST_ORETOUR_LIMIT = ORETOUR_MAX / 3.0;
+  public static final double PLAIN_ORETOUR_LIMIT = ORETOUR_MAX * 2.0 / 3.0;
+
+  public static final ResourceKey<Biome> ORE_PLAIN = ResourceKey.create(
+      Registries.BIOME, Identifier.fromNamespaceAndPath("magnatour", "ore_plain"));
 
   public static final MapCodec<OreContinentBiomeSource> CODEC =
       RecordCodecBuilder.mapCodec((instance) -> instance.group(
@@ -41,9 +50,13 @@ public final class OreContinentBiomeSource extends BiomeSource {
               Biome.CODEC
                   .fieldOf("ore_forest").forGetter((source) -> source.oreForest),
               Codec.LONG.optionalFieldOf("seed", 0L)
-                  .forGetter((source) -> source.seed)
+                  .forGetter((source) -> source.seed),
+              Biome.CODEC.optionalFieldOf("ore_plain")
+                  .forGetter((source) -> Optional.of(source.orePlain)),
+              RegistryOps.retrieveElement(ORE_PLAIN)
           )
-          .apply(instance, OreContinentBiomeSource::new)
+          .apply(instance, (land, forest, seed, plain, defaultPlain) ->
+              new OreContinentBiomeSource(land, forest, plain.orElse(defaultPlain), seed))
       );
 
   private static final long ORETOUR_SEED_SALT = 0x3C6EF372FE94F82BL;
@@ -53,16 +66,18 @@ public final class OreContinentBiomeSource extends BiomeSource {
 
   private final Holder<Biome> oreForest;
   private final Holder<Biome> oreLand;
+  private final Holder<Biome> orePlain;
 
   private volatile long worldSeed;
 
   public OreContinentBiomeSource(
-      Holder<Biome> oreLand, Holder<Biome> oreForest,
+      Holder<Biome> oreLand, Holder<Biome> oreForest, Holder<Biome> orePlain,
       long seed
   ) {
     super();
     this.oreLand = oreLand;
     this.oreForest = oreForest;
+    this.orePlain = orePlain;
     this.seed = seed;
   }
 
@@ -79,7 +94,8 @@ public final class OreContinentBiomeSource extends BiomeSource {
       Climate.@NonNull Sampler noise
   ) {
     double oretour = sampleOretour(x * 4, z * 4);
-    return oretour < FOREST_ORETOUR_LIMIT ? this.oreForest : this.oreLand;
+    if (oretour < FOREST_ORETOUR_LIMIT) return this.oreForest;
+    return oretour < PLAIN_ORETOUR_LIMIT ? this.orePlain : this.oreLand;
   }
 
   /** Continuous 0-100 biome parameter sampled in block coordinates; independent of terrain. */
@@ -102,7 +118,7 @@ public final class OreContinentBiomeSource extends BiomeSource {
 
   @Override @NonNull
   protected Stream<Holder<Biome>> collectPossibleBiomes() {
-    return Stream.of(this.oreLand, this.oreForest);
+    return Stream.of(this.oreLand, this.oreForest, this.orePlain);
   }
 
 }

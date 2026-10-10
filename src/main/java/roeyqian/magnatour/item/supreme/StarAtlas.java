@@ -158,6 +158,7 @@ public class StarAtlas extends Item {
         case "berry_snowfield" -> 0xBCD6DD;
         case "ore_land" -> 0x92908B;
         case "ore_forest" -> 0x788B91;
+        case "ore_plain" -> 0x85908E;
         case "universe_meta_void" -> 0x34334D;
         default -> 0;
       };
