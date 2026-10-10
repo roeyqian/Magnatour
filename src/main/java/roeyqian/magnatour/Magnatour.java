@@ -20,6 +20,7 @@ package roeyqian.magnatour;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.creativetab.v1.FabricCreativeModeTab;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerChunkEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 
 // Minecraft
@@ -39,6 +40,7 @@ import org.slf4j.LoggerFactory;
 
 // Magnatour
 import roeyqian.magnatour.block.VirtualBlockLightManager;
+import roeyqian.magnatour.level.UniverseAnnihilation;
 import roeyqian.magnatour.registry.content.SupremeBlockEntities;
 import roeyqian.magnatour.registry.content.SupremeBlocks;
 import roeyqian.magnatour.registry.content.SupremeEntities;
@@ -80,6 +82,8 @@ public class Magnatour implements ModInitializer {
 
   @Override
   public void onInitialize() {
+    ServerTickEvents.END_SERVER_TICK.register(UniverseAnnihilation::tick);
+    ServerLifecycleEvents.SERVER_STOPPED.register(UniverseAnnihilation::forget);
     VirtualBlockLightManager.init();
     ServerTickEvents.END_LEVEL_TICK.register(VirtualBlockLightManager::tick);
     ServerChunkEvents.CHUNK_LOAD.register((world, chunk, _) -> VirtualBlockLightManager.onChunkLoad(world, chunk));
@@ -237,6 +241,7 @@ public class Magnatour implements ModInitializer {
               entries.accept(UniverseItems.UNIVERSE_SPLASH_POTION);
               entries.accept(UniverseItems.UNIVERSE_LINGERING_POTION);
               entries.accept(UniverseItems.UNIVERSE_GUARDIAN_SPAWN_EGG);
+              entries.accept(UniverseItems.UNIVERSE_ANNIHILATOR_SPAWN_EGG);
             })
             .build()
     );

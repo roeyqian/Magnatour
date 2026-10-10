@@ -12,6 +12,7 @@ import net.minecraft.world.inventory.MenuType;
 
 // Magnatour
 import roeyqian.magnatour.Magnatour;
+import roeyqian.magnatour.menu.universe.UniverseAnnihilatorMenu;
 import roeyqian.magnatour.menu.universe.UniverseConsoleMenu;
 import roeyqian.magnatour.menu.universe.UniverseLibraryMenu;
 import roeyqian.magnatour.menu.universe.UniverseRefineryMenu;
@@ -24,6 +25,11 @@ import roeyqian.magnatour.registry.MenuRegHelper;
  * Universe Group: All Menus (Block Menus, Item Menus)
  */
 public final class UniverseMenus {
+
+  public static final MenuType<UniverseAnnihilatorMenu> UNIVERSE_ANNIHILATOR_HANDLER =
+      MenuRegHelper.registerExtended("universe_annihilator",
+          (syncId, inventory, data) -> new UniverseAnnihilatorMenu(syncId, data),
+          UniverseAnnihilatorMenu.OpeningData.PACKET_CODEC);
 
   // Block Menus
   public static final MenuType<UniverseLibraryMenu> UNIVERSE_LIBRARY_HANDLER =

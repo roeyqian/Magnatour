@@ -38,6 +38,7 @@ import roeyqian.magnatour.renderer.supreme.ObsidianGolemRenderer;
 import roeyqian.magnatour.renderer.supreme.PaleLordRenderer;
 import roeyqian.magnatour.renderer.supreme.SculkBehemothRenderer;
 import roeyqian.magnatour.renderer.supreme.TheUnnameableThingRenderer;
+import roeyqian.magnatour.renderer.universe.UniverseAnnihilatorRenderer;
 import roeyqian.magnatour.renderer.universe.UniverseGuardianRenderer;
 
 @Environment(EnvType.CLIENT)
@@ -77,6 +78,7 @@ public final class RegEntityLayers {
   private RegEntityLayers() {}
 
   public static void init() {
+    EntityRenderers.register(UniverseLiveEntities.UNIVERSE_ANNIHILATOR, UniverseAnnihilatorRenderer::new);
     ModelLayerRegistry.registerModelLayer(SCULK_BEHEMOTH, SculkBehemothModel::createBodyLayer);
     ModelLayerRegistry.registerModelLayer(SCULK_BEHEMOTH_HEART, SculkBehemothModel::createHeartLayer);
     ModelLayerRegistry.registerModelLayer(BELL_RINGER, BellRingerModel::createBodyLayer);

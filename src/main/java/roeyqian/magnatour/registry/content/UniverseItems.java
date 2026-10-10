@@ -39,6 +39,11 @@ import roeyqian.magnatour.registry.ItemRegHelper;
  */
 public final class UniverseItems {
 
+  public static final Item UNIVERSE_ANNIHILATOR_SPAWN_EGG = ItemRegHelper.registerConsumableItem(
+      "universe_annihilator_spawn_egg", 64, SpawnEggItem::new,
+      CustomItemSetting.applyUniverseDefaults(
+          new Item.Properties().spawnEgg(UniverseLiveEntities.UNIVERSE_ANNIHILATOR)));
+
   // Handheld
   public static final Item UNIVERSE_BUCKET = ItemRegHelper.registerDurableItem(
       "universe_bucket",
