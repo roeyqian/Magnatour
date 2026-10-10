@@ -71,14 +71,24 @@ public final class DiamondCityStructure extends Structure {
     }
 
     Vec3i citySize = layoutOpt.get().citySize();
-    int surfaceY = context.chunkGenerator().getFirstOccupiedHeight(
-        originX,
-        originZ,
-        Heightmap.Types.WORLD_SURFACE_WG,
-        context.heightAccessor(),
-        context.randomState()
-    );
-    int baseY = surfaceY + 1;
+    // Sample the enlarged footprint, using bare ground rather than treetops.
+    int minSurface = Integer.MAX_VALUE;
+    int maxSurface = Integer.MIN_VALUE;
+    for (int x = 0; x <= 9; x++) {
+      for (int z = 0; z <= 9; z++) {
+        int sampleX = originX - citySize.getX() / 2 + x * (citySize.getX() - 1) / 9;
+        int sampleZ = originZ - citySize.getZ() / 2 + z * (citySize.getZ() - 1) / 9;
+        int surface = context.chunkGenerator().getFirstOccupiedHeight(
+            sampleX, sampleZ, Heightmap.Types.OCEAN_FLOOR_WG,
+            context.heightAccessor(), context.randomState()
+        );
+        if (surface < context.chunkGenerator().getSeaLevel()) return Optional.empty();
+        minSurface = Math.min(minSurface, surface);
+        maxSurface = Math.max(maxSurface, surface);
+        if (maxSurface - minSurface > 12) return Optional.empty();
+      }
+    }
+    int baseY = maxSurface + 1;
 
     BlockPos cityPos = new BlockPos(
         originX - citySize.getX() / 2,
@@ -86,7 +96,7 @@ public final class DiamondCityStructure extends Structure {
         originZ - citySize.getZ() / 2
     );
 
-    if (baseY < context.heightAccessor().getMinY()
+    if (baseY - DiamondCityLayout.FOUNDATION_DEPTH < context.heightAccessor().getMinY()
         || baseY + citySize.getY() > context.heightAccessor().getMaxY()) {
       return Optional.empty();
     }

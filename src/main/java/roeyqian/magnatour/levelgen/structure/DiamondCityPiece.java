@@ -103,6 +103,7 @@ public final class DiamondCityPiece extends StructurePiece {
     layoutOpt.get().place(
         templateManager,
         level,
+        generator,
         random,
         settings,
         this.cityPos
@@ -125,7 +126,7 @@ public final class DiamondCityPiece extends StructurePiece {
   ) {
     return new BoundingBox(
         cityPos.getX(),
-        cityPos.getY(),
+        cityPos.getY() - DiamondCityLayout.FOUNDATION_DEPTH,
         cityPos.getZ(),
         cityPos.getX() + citySize.getX() - 1,
         cityPos.getY() + citySize.getY() - 1,

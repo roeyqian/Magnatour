@@ -66,7 +66,7 @@ public final class StructureMobSpawner {
 
   private static final int DIAMOND_CITY_SCAN_RADIUS_CHUNKS = 12;
   private static final int DIAMOND_CITY_SHARED_SPAWN_DIVISOR = 3;
-  private static final int DIAMOND_CITY_SITE_CEILING_SCAN_DISTANCE = 4;
+  private static final int DIAMOND_CITY_SITE_CEILING_SCAN_DISTANCE = 8;
   private static final int DIAMOND_CITY_SPAWN_SITE_CHUNK_SCAN_BUDGET = 8;
   private static final int DIAMOND_CITY_TARGET_OBSIDIAN_GOLEMS = 64;
   private static final int GOLD_BELL_TOWER_BELL_SPAWNS_PER_TYPE = 4;
