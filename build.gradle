@@ -1694,7 +1694,9 @@ def collectJavaComments = { String source ->
 	def comments = []
 	while (tokens.find()) {
 		if (tokens.group(1) != null) {
-			comments << tokens.group(1)
+			// Layout normalization may unify mixed line endings inside block comments.
+			// Compare their text strictly while ignoring only CRLF/LF/CR differences.
+			comments << tokens.group(1).replace("\r\n", "\n").replace("\r", "\n")
 		}
 	}
 	comments.sort()
@@ -1730,9 +1732,13 @@ def rewriteJavaBodyFiles = { String taskName, boolean orderOnly ->
 		String rewritten = normalizeJavaFileDeclarations(sourceFile, true, prepared, orderGroups, orderOnly) as String
 		def before = parseJavaCompilationUnit(sourceFile, original)
 		def after = parseJavaCompilationUnit(sourceFile, rewritten)
-		if (before.unit.typeDecls.collect { buildJavaStructureFingerprint(it, !orderOnly) } != after.unit.typeDecls.collect { buildJavaStructureFingerprint(it, !orderOnly) }
-				|| collectJavaComments(prepared) != collectJavaComments(rewritten)) {
-			throw new GradleException("${taskName} would change Java structure, protected declaration order, or comments in ${sourceFile}; no source files were written.")
+		boolean structureChanged = before.unit.typeDecls.collect { buildJavaStructureFingerprint(it, !orderOnly) } != after.unit.typeDecls.collect { buildJavaStructureFingerprint(it, !orderOnly) }
+		boolean commentsChanged = collectJavaComments(prepared) != collectJavaComments(rewritten)
+		if (structureChanged || commentsChanged) {
+			def changes = []
+			if (structureChanged) changes << "Java structure or protected declaration order"
+			if (commentsChanged) changes << "comments"
+			throw new GradleException("${taskName} would change ${changes.join(' and ')} in ${sourceFile}; no source files were written.")
 		}
 		if (rewrite(rewritten) != rewritten) {
 			throw new GradleException("${taskName} did not converge for ${sourceFile}; no source files were written.")
