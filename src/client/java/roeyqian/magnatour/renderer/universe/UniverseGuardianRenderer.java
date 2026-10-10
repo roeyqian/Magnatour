@@ -12,6 +12,7 @@ import net.fabricmc.api.Environment;
 import net.fabricmc.api.EnvType;
 
 // Minecraft
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.resources.Identifier;
@@ -38,6 +39,8 @@ public final class UniverseGuardianRenderer extends MobRenderer<UniverseGuardian
       EntityRendererProvider.Context context
   ) {
     super(context, new UniverseGuardianModel(context.bakeLayer(RegEntityLayers.UNIVERSE_GUARDIAN)), 0.5F);
+    Minecraft.getInstance().getTextureManager().registerAndLoad(TEXTURE, new UniverseGuardianTexture(TEXTURE));
+    addLayer(new UniverseGuardianGlintLayer(this));
   }
 
   @NonNull @Override

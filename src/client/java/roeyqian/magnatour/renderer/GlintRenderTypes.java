@@ -42,6 +42,7 @@ public final class GlintRenderTypes {
 
   public static final RenderType ARMOR_ENTITY_GLINT = createArmorGlint("universe", UNIVERSE_ARMOR_GLINT_TEXTURE);
   public static final RenderType SUPREME_ARMOR_ENTITY_GLINT = createArmorGlint("supreme", SUPREME_ARMOR_GLINT_TEXTURE);
+  public static final RenderType UNIVERSE_GUARDIAN_GLINT = createGuardianGlint();
 
   private static final RenderType[] SUPREME_ITEM_GLINT = createItemGlintSet("supreme", SUPREME_GLINT_TEXTURE);
   private static final RenderType[] UNIVERSE_ITEM_GLINT = createItemGlintSet("universe", UNIVERSE_GLINT_TEXTURE);
@@ -100,6 +101,18 @@ public final class GlintRenderTypes {
       );
     }
     return types;
+  }
+
+  private static RenderType createGuardianGlint() {
+    return RenderTypeInvoker.magnatour$create(
+        "universe_guardian_glint",
+        RenderSetup.builder(RenderPipelines.GLINT)
+            .withTexture("Sampler0", UNIVERSE_ARMOR_GLINT_TEXTURE)
+            .setTextureTransform(TextureTransform.ARMOR_ENTITY_GLINT_TEXTURING)
+            // GLINT uses EQUAL depth testing. Match the unshifted entity base pass.
+            .withForcedSolidModelPhase()
+            .createRenderSetup()
+    );
   }
 
   private static int itemGlintVariant(
