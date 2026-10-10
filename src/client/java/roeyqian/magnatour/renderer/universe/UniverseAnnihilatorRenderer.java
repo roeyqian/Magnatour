@@ -27,6 +27,7 @@ public final class UniverseAnnihilatorRenderer extends HumanoidMobRenderer<Unive
       EntityRendererProvider.Context context
   ) {
     super(context, new HumanoidModel<>(context.bakeLayer(ModelLayers.PLAYER)), 0.5F);
+    addLayer(new UniverseAnnihilatorGlintLayer(this));
   }
 
   @Override
