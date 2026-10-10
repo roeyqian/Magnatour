@@ -25,8 +25,11 @@ import java.util.concurrent.TimeUnit;
 
 // Fabric
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLevelEvents;
+import net.fabricmc.loader.api.FabricLoader;
 
 // Minecraft
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -35,10 +38,17 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.permissions.Permissions;
+import net.minecraft.world.entity.ai.village.VillageSiege;
+import net.minecraft.world.entity.npc.CatSpawner;
+import net.minecraft.world.entity.npc.wanderingtrader.WanderingTraderSpawner;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.BiomeManager;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.dimension.LevelStem;
+import net.minecraft.world.level.levelgen.Heightmap;
+import net.minecraft.world.level.levelgen.PatrolSpawner;
+import net.minecraft.world.level.levelgen.PhantomSpawner;
 import net.minecraft.world.level.storage.DerivedLevelData;
 import net.minecraft.world.level.storage.LevelResource;
 import net.minecraft.world.phys.Vec3;
@@ -47,17 +57,24 @@ import net.minecraft.world.phys.Vec3;
 import roeyqian.magnatour.Magnatour;
 import roeyqian.magnatour.entity.universe.UniverseAnnihilator;
 import roeyqian.magnatour.mixin.server.UniverseAnnihilationServerAccessor;
+import roeyqian.magnatour.registry.worldgen.CustomDimensions;
 
 public final class UniverseAnnihilation {
 
   public static final int IDLE = 0, PREPARING = 1, QUEUED = 2, SCANNING = 3,
       BACKUP = 4, DELETING = 5, REOPENING = 6, COMPLETE = 7, FAILED = 8;
 
-  private static final Path BACKUPS = Path.of("C:/Users/RoeyQ/.Config/.backup/magnatour-annihilation")
+  private static final Path BACKUPS = FabricLoader.getInstance().getGameDir().resolve("magnatour")
+      .toAbsolutePath().normalize();
+  private static final Path LEGACY_BACKUPS = Path.of("C:/Users/RoeyQ/.Config/.backup/magnatour-annihilation")
       .toAbsolutePath().normalize();
 
   private static final AnnihilationFileJob.Budget IO_BUDGET =
       AnnihilationFileJob.Budget.adaptiveBackup(8_000_000L);
+
+  private static final List<BlockPos> REFUGE_POSITIONS = List.of(
+      new BlockPos(100, 0, 100), new BlockPos(-100, 0, 100),
+      new BlockPos(100, 0, -100), new BlockPos(-100, 0, -100));
 
   private static final Map<MinecraftServer, State> STATES = Collections.synchronizedMap(new WeakHashMap<>());
 
@@ -70,6 +87,49 @@ public final class UniverseAnnihilation {
     return server.isSingleplayer() && server.getSingleplayerProfile() != null
         && server.getSingleplayerProfile().id().equals(player.getUUID())
         || player.permissions().hasPermission(Permissions.COMMANDS_OWNER);
+  }
+
+  public static Component dimensionName(
+      ResourceKey<Level> dimension
+  ) {
+    String id = dimension.identifier().toString();
+    return Component.translatableWithFallback("dimension." + id, id);
+  }
+
+  public static ResourceKey<Level> evacuationDimension(
+      ResourceKey<Level> dimension
+  ) {
+    return dimension.equals(CustomDimensions.UNIVERSE_META) ? Level.OVERWORLD : CustomDimensions.UNIVERSE_META;
+  }
+
+  /** Shared by evacuation, login and respawn so none can redirect into a locked dimension. */
+  public static Landing evacuationLanding(
+      MinecraftServer server,
+      ResourceKey<Level> dimension
+  ) {
+    ServerLevel destination = server.getLevel(evacuationDimension(dimension));
+    if (destination == null || isLocked(destination)) throw new IllegalStateException("Evacuation dimension unavailable");
+    if (destination.dimension().equals(CustomDimensions.UNIVERSE_META)) {
+      BlockPos feet = REFUGE_POSITIONS.get(destination.getRandom().nextInt(REFUGE_POSITIONS.size()));
+      createPlatform(destination, feet);
+      return new Landing(destination, feet);
+    }
+    // Search from the origin outwards; require dry, empty space above a safe solid surface.
+    for (int radius = 0; radius <= 32; radius++) {
+      for (int x = -radius; x <= radius; x++) {
+        for (int z = -radius; z <= radius; z++) {
+          if (Math.max(Math.abs(x), Math.abs(z)) != radius) continue;
+          BlockPos feet = destination.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, new BlockPos(x, 0, z));
+          if (safeLandingArea(destination, feet)) return new Landing(destination, feet);
+        }
+      }
+    }
+    // Ocean and void worlds may have no natural safe surface around the origin.
+    int y = Math.clamp(destination.getHeight(Heightmap.Types.MOTION_BLOCKING, 0, 0),
+        destination.getMinY() + 1, destination.getMaxY() - 2);
+    BlockPos feet = new BlockPos(0, y, 0);
+    createPlatform(destination, feet);
+    return new Landing(destination, feet);
   }
 
   /** Recovery runs before any dimension loads, including journals from the previous implementation. */
@@ -121,13 +181,17 @@ public final class UniverseAnnihilation {
   public static boolean request(
       ServerPlayer player,
       UniverseAnnihilator entity,
-      ResourceKey<Level> dimension
+      ResourceKey<Level> dimension,
+      boolean createImage
   ) {
     MinecraftServer server = player.level().getServer();
     State state = STATES.computeIfAbsent(server, ignored -> new State());
     Task previous = state.tasks.get(entity.getUUID());
-    if (!canUse(player) || state.stopping || !server.isRunning() || dimension.equals(Level.OVERWORLD)
+    ResourceKey<Level> refuge = evacuationDimension(dimension);
+    if (!canUse(player) || state.stopping || !server.isRunning()
         || dimension.equals(entity.level().dimension()) || server.getLevel(dimension) == null
+        || server.getLevel(refuge) == null || state.locks.containsKey(refuge)
+        || state.locks.keySet().stream().anyMatch(key -> evacuationDimension(key).equals(dimension))
         || state.locks.containsKey(dimension) || previous != null && previous.busy()) return false;
     try {
       // Minecraft creates levels from the live registry, which also contains datapack dimensions.
@@ -135,20 +199,30 @@ public final class UniverseAnnihilation {
       LevelStem stem = requireLevelStem(server, dimension);
       Path root = server.getWorldPath(LevelResource.ROOT).toAbsolutePath().normalize();
       Path target = checkedTarget(root, dimension);
-      Files.createDirectories(BACKUPS);
-      Path backup = Files.createDirectory(BACKUPS.resolve(UUID.randomUUID().toString()));
-      Files.writeString(backup.resolve("restore.txt"), "World: " + root + "\nDimension: " + dimension.identifier()
-          + "\nRestore dimension/ to: " + target + "\nStop the server before restoring.\n");
+      Path restoreTarget = target;
+      if (dimension.equals(Level.OVERWORLD)) target = overworldStaging(root, entity.getUUID().toString());
       Path journals = root.resolve("magnatour-annihilation");
       Files.createDirectories(journals);
+      Path backup;
+      if (createImage) {
+        Files.createDirectories(BACKUPS);
+        backup = Files.createDirectory(BACKUPS.resolve(UUID.randomUUID().toString()));
+        Files.writeString(backup.resolve("restore.txt"), "World: " + root + "\nDimension: " + dimension.identifier()
+            + "\nRestore dimension/ to: " + restoreTarget
+            + "\nStop the server before restoring.\n"
+            + (dimension.equals(Level.OVERWORLD) ? "Restore only region/, entities/ and poi/; keep all other save files.\n" : ""));
+      } else {
+        // Only recovery metadata is retained; no world image is created in the game directory.
+        backup = Files.createDirectory(journals.resolve(UUID.randomUUID() + ".task"));
+      }
       Path journal = journals.resolve(entity.getUUID() + ".pending");
-      Files.writeString(journal, dimension.identifier() + "\n" + backup + "\n", StandardOpenOption.CREATE_NEW);
+      Files.writeString(journal, dimension.identifier() + "\n" + backup + "\n" + createImage + "\n", StandardOpenOption.CREATE_NEW);
       Task task = new Task(entity.getUUID(), dimension, target, backup, journal, stem,
-          server.getWorldData().isDebugWorld(), BiomeManager.obfuscateSeed(server.getWorldGenSettings().options().seed()));
+          server.getWorldData().isDebugWorld(), BiomeManager.obfuscateSeed(server.getWorldGenSettings().options().seed()), createImage);
       state.locks.put(dimension, task);
       state.tasks.put(entity.getUUID(), task);
       evacuate(server, dimension);
-      player.sendSystemMessage(Component.translatable("gui.magnatour.annihilator.started", dimension.identifier().toString()));
+      player.sendSystemMessage(Component.translatable("gui.magnatour.annihilator.started", dimensionName(dimension)));
       return true;
     } catch (IOException | RuntimeException exception) {
       Task task = state.tasks.get(entity.getUUID());
@@ -176,6 +250,10 @@ public final class UniverseAnnihilation {
     for (Task task : state.tasks.values()) {
       if (task.closingLevel == null) continue;
       ServerLevel level = task.closingLevel;
+      if (task.dimension.equals(Level.OVERWORLD) && server.getLevel(task.dimension) == level) {
+        task.closingLevel = null;
+        continue; // Vanilla shutdown owns the still-attached Overworld.
+      }
       try {
         while (level.getChunkSource().chunkMap.hasWork()) {
           while (level.getChunkSource().pollTask()) {}
@@ -199,13 +277,14 @@ public final class UniverseAnnihilation {
     for (Task task : state.tasks.values()) {
       if (task.stage == REOPENING) {
         try {
-          reopen(server, task);
+          if (!task.overworldReopened) reopen(server, task);
           AnnihilationFileJob.complete(task.backup, task.journal);
           task.update(COMPLETE, 10000);
           state.locks.remove(task.dimension, task);
-          Magnatour.LOGGER.info("Annihilation complete; dimension: {}; backup: {}", task.dimension.identifier(), task.backup);
+          Magnatour.LOGGER.info("Annihilation complete; dimension: {}; image created: {}; task files: {}",
+              task.dimension.identifier(), task.createImage, task.backup);
           Component notification = Component.translatable("gui.magnatour.annihilator.completed",
-              task.dimension.identifier().toString());
+              dimensionName(task.dimension));
           for (ServerPlayer player : server.getPlayerList().getPlayers()) player.sendSystemMessage(notification);
         } catch (IOException | RuntimeException exception) { fail(task, exception); }
       }
@@ -219,21 +298,39 @@ public final class UniverseAnnihilation {
           ServerLevel level = server.getLevel(task.dimension);
           if (level == null || !level.players().isEmpty()) throw new IOException("Dimension not empty");
           task.closingLevel = level;
-          ((UniverseAnnihilationServerAccessor) server).magnatour$getLevels().remove(task.dimension);
+          // The Overworld must remain available to server services until it can be replaced in this tick.
+          if (!task.dimension.equals(Level.OVERWORLD)) {
+            ((UniverseAnnihilationServerAccessor) server).magnatour$getLevels().remove(task.dimension);
+          }
           level.getChunkSource().deactivateTicketsOnClosing();
-          ServerLevelEvents.UNLOAD.invoker().onLevelUnload(server, level);
+          if (!task.dimension.equals(Level.OVERWORLD)) ServerLevelEvents.UNLOAD.invoker().onLevelUnload(server, level);
         }
         ServerLevel level = task.closingLevel;
         long deadline = System.nanoTime() + 2_000_000L;
         while (System.nanoTime() < deadline && level.getChunkSource().pollTask()) {}
         level.getChunkSource().tick(() -> System.nanoTime() < deadline, false);
         if (level.getChunkSource().chunkMap.hasWork()) break;
+        if (task.dimension.equals(Level.OVERWORLD)) {
+          evacuate(server, task.dimension);
+          ServerLevelEvents.UNLOAD.invoker().onLevelUnload(server, level);
+        }
         level.save(null, true, false);
         level.close();
         task.closingLevel = null;
+        if (task.dimension.equals(Level.OVERWORLD)) {
+          ((UniverseAnnihilationServerAccessor) server).magnatour$getLevels().remove(task.dimension);
+          try {
+            Path root = server.getWorldPath(LevelResource.ROOT).toAbsolutePath().normalize();
+            AnnihilationFileJob.detachOverworld(checkedTarget(root, Level.OVERWORLD), task.target, task.backup);
+          } finally {
+            // Even a failed move must leave a live Overworld for ticking and shutdown.
+            reopen(server, task);
+            task.overworldReopened = true;
+          }
+        }
         task.update(QUEUED, 100);
         state.worker.execute(() -> {
-          try { AnnihilationFileJob.run(task.target, task.backup, task::update, IO_BUDGET); }
+          try { AnnihilationFileJob.run(task.target, task.backup, task::update, IO_BUDGET, task.createImage); }
           catch (IOException | RuntimeException exception) { fail(task, exception); }
         });
       } catch (IOException | RuntimeException exception) { fail(task, exception); }
@@ -241,18 +338,72 @@ public final class UniverseAnnihilation {
     }
   }
 
+  private static boolean safeLandingArea(
+      ServerLevel level,
+      BlockPos feet
+  ) {
+    for (int x = -1; x <= 1; x++) {
+      for (int z = -1; z <= 1; z++) {
+        if (!safeStandingPosition(level, feet.offset(x, 0, z))) return false;
+      }
+    }
+    return true;
+  }
+
+  private static void createPlatform(
+      ServerLevel level,
+      BlockPos feet
+  ) {
+    if (feet.getY() <= level.getMinY() || feet.getY() + 1 >= level.getMaxY()) {
+      throw new IllegalStateException("Evacuation platform outside build height");
+    }
+    for (int x = -1; x <= 1; x++) {
+      for (int z = -1; z <= 1; z++) {
+        if (!level.getWorldBorder().isWithinBounds(feet.offset(x, 0, z))) {
+          throw new IllegalStateException("Evacuation platform outside world border");
+        }
+      }
+    }
+    for (int x = -1; x <= 1; x++) {
+      for (int z = -1; z <= 1; z++) {
+        BlockPos column = feet.offset(x, 0, z);
+        level.setBlock(column.below(), Blocks.BEDROCK.defaultBlockState(), 3);
+        level.setBlock(column, Blocks.AIR.defaultBlockState(), 3);
+        level.setBlock(column.above(), Blocks.AIR.defaultBlockState(), 3);
+      }
+    }
+    if (!safeLandingArea(level, feet)) throw new IllegalStateException("Could not create evacuation platform");
+  }
+
   private static void recover(
       Path root, Path journal
   ) throws IOException {
     if (Files.isSymbolicLink(journal)) throw new IOException("Symbolic link journal");
     var lines = Files.readAllLines(journal);
-    if (lines.size() != 2) throw new IOException("Invalid reset journal");
+    boolean createImage = AnnihilationFileJob.readCreateImage(lines);
     var dimension = ResourceKey.create(Registries.DIMENSION, Identifier.parse(lines.get(0)));
-    if (dimension.equals(Level.OVERWORLD)) throw new IOException("Cannot annihilate evacuation dimension");
     Path target = checkedTarget(root, dimension);
     Path backup = Path.of(lines.get(1)).toAbsolutePath().normalize();
-    if (!BACKUPS.equals(backup.getParent()) || Files.isSymbolicLink(backup)) throw new IOException("Invalid backup path");
-    AnnihilationFileJob.run(target, backup, (phase, percent) -> {}, IO_BUDGET);
+    if (Files.isSymbolicLink(backup)) throw new IOException("Symbolic link task directory");
+    if (createImage) {
+      if (!BACKUPS.equals(backup.getParent()) && !LEGACY_BACKUPS.equals(backup.getParent())) {
+        throw new IOException("Invalid backup path");
+      }
+    } else {
+      String name = backup.getFileName().toString();
+      if (!root.resolve("magnatour-annihilation").equals(backup.getParent()) || !name.endsWith(".task")) {
+        throw new IOException("Invalid task directory");
+      }
+      UUID.fromString(name.substring(0, name.length() - ".task".length()));
+    }
+    if (dimension.equals(Level.OVERWORLD)) {
+      String owner = journal.getFileName().toString().replace(".pending", "");
+      UUID.fromString(owner);
+      Path staging = overworldStaging(root, owner);
+      AnnihilationFileJob.detachOverworld(target, staging, backup);
+      target = staging;
+    }
+    AnnihilationFileJob.run(target, backup, (phase, percent) -> {}, IO_BUDGET, createImage);
     AnnihilationFileJob.complete(backup, journal);
   }
 
@@ -274,6 +425,21 @@ public final class UniverseAnnihilation {
     return target;
   }
 
+  private static Path overworldStaging(
+      Path root,
+      String owner
+  ) throws IOException {
+    UUID.fromString(owner);
+    Path staging = root.resolve("magnatour-annihilation").resolve(owner + ".overworld");
+    for (Path path = staging; path != null && !path.equals(root); path = path.getParent()) {
+      if (Files.isSymbolicLink(path)
+          || Files.exists(path) && !path.toRealPath().startsWith(root.toRealPath())) {
+        throw new IOException("Unsafe Overworld staging path");
+      }
+    }
+    return staging;
+  }
+
   private static LevelStem requireLevelStem(
       MinecraftServer server,
       ResourceKey<Level> dimension
@@ -290,8 +456,10 @@ public final class UniverseAnnihilation {
   ) {
     for (ServerPlayer player : List.copyOf(server.getPlayerList().getPlayers())) {
       if (!player.level().dimension().equals(dimension)) continue;
+      Landing landing = evacuationLanding(server, dimension);
       player.stopRiding(); player.closeContainer();
-      if (!player.teleportTo(server.overworld(), player.getX(), player.getY(), player.getZ(),
+      if (!player.teleportTo(landing.level(), landing.position().getX() + 0.5,
+          landing.position().getY(), landing.position().getZ() + 0.5,
           Set.of(), player.getYRot(), player.getXRot(), true)
           || player.level().dimension().equals(dimension)) {
         throw new IllegalStateException("Could not evacuate player " + player.getUUID());
@@ -310,6 +478,20 @@ public final class UniverseAnnihilation {
         failedStage, task.progress / 100.0, task.journal, exception);
   }
 
+  private static boolean safeStandingPosition(
+      ServerLevel level,
+      BlockPos feet
+  ) {
+    if (feet.getY() <= level.getMinY() || feet.getY() + 1 >= level.getMaxY()
+        || !level.getWorldBorder().isWithinBounds(feet)
+        || !level.getBlockState(feet).isAir() || !level.getBlockState(feet.above()).isAir()) return false;
+    BlockPos floor = feet.below();
+    var state = level.getBlockState(floor);
+    return state.isFaceSturdy(level, floor, Direction.UP) && state.getFluidState().isEmpty()
+        && !state.is(Blocks.MAGMA_BLOCK) && !state.is(Blocks.CACTUS)
+        && !state.is(Blocks.CAMPFIRE) && !state.is(Blocks.SOUL_CAMPFIRE);
+  }
+
   private static void reopen(
       MinecraftServer server,
       Task task
@@ -317,14 +499,23 @@ public final class UniverseAnnihilation {
     ResourceKey<Level> dimension = task.dimension;
     if (server.getLevel(dimension) != null) throw new IOException("Dimension already loaded");
     var access = (UniverseAnnihilationServerAccessor) server;
+    boolean overworld = dimension.equals(Level.OVERWORLD);
     ServerLevel level = new ServerLevel(server, access.magnatour$getExecutor(), access.magnatour$getStorage(),
-        new DerivedLevelData(server.getWorldData(), server.getWorldData().overworldData()), dimension,
-        task.stem, task.debugWorld, task.biomeSeed, List.of(), false);
+        overworld ? server.getWorldData().overworldData()
+            : new DerivedLevelData(server.getWorldData(), server.getWorldData().overworldData()), dimension,
+        task.stem, task.debugWorld, task.biomeSeed,
+        overworld ? List.of(new PhantomSpawner(), new PatrolSpawner(), new CatSpawner(),
+            new VillageSiege(), new WanderingTraderSpawner(server.getDataStorage())) : List.of(), overworld);
     level.getWorldBorder().setAbsoluteMaxSize(server.getAbsoluteMaxWorldSize());
     server.getPlayerList().addWorldborderListener(level);
     access.magnatour$getLevels().put(dimension, level);
     ServerLevelEvents.LOAD.invoker().onLevelLoad(server, level);
   }
+
+  public record Landing(
+      ServerLevel level,
+      BlockPos position
+  ) {}
 
   private static final class State {
 
@@ -347,6 +538,7 @@ public final class UniverseAnnihilation {
 
     public final ResourceKey<Level> dimension;
 
+    private final boolean createImage;
     private final boolean debugWorld;
 
     private final long biomeSeed;
@@ -354,6 +546,8 @@ public final class UniverseAnnihilation {
     private final Path target, backup, journal;
 
     private final LevelStem stem;
+
+    private boolean overworldReopened;
 
     private volatile int progress;
 
@@ -367,11 +561,13 @@ public final class UniverseAnnihilation {
         Path target, Path backup, Path journal,
         LevelStem stem,
         boolean debugWorld,
-        long biomeSeed
+        long biomeSeed,
+        boolean createImage
     ) {
       this.owner = owner; this.dimension = dimension; this.target = target;
       this.backup = backup; this.journal = journal;
       this.stem = stem; this.debugWorld = debugWorld; this.biomeSeed = biomeSeed;
+      this.createImage = createImage;
     }
 
     public boolean busy() { return stage != COMPLETE; }

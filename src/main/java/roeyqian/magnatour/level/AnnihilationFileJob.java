@@ -16,11 +16,15 @@ import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.StandardCopyOption;
+import java.nio.file.StandardOpenOption;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.util.List;
 import java.util.concurrent.locks.LockSupport;
 
 /** Bounded-memory file work; never accesses world or entity objects on the IO worker. */
 public final class AnnihilationFileJob {
+
+  private static final List<String> OVERWORLD_DIRECTORIES = List.of("region", "entities", "poi");
 
   private AnnihilationFileJob() {}
 
@@ -30,10 +34,62 @@ public final class AnnihilationFileJob {
     Files.move(journal, backup.resolve("completed-journal"), StandardCopyOption.REPLACE_EXISTING);
   }
 
+  /** Rename only chunk storage; retain dimension settings and shared generation bookkeeping. */
+  public static void detachOverworld(
+      Path storage, Path staging, Path backup
+  ) throws IOException {
+    Path detached = backup.resolve("overworld-detached");
+    if (Files.exists(detached)) return;
+    Files.createDirectories(staging);
+    try {
+      for (String name : OVERWORLD_DIRECTORIES) {
+        Path source = storage.resolve(name), destination = staging.resolve(name);
+        if (Files.isSymbolicLink(source) || Files.isSymbolicLink(destination)) {
+          throw new IOException("Symbolic link in Overworld storage");
+        }
+        if (!Files.exists(source)) continue;
+        if (Files.exists(destination)) throw new IOException("Conflicting staged Overworld storage: " + name);
+        Files.move(source, destination, StandardCopyOption.ATOMIC_MOVE);
+      }
+      // Recovery must never touch the replacement world's newly generated chunks.
+      Files.writeString(detached, "Original Overworld chunk storage detached; do not move live storage again.\n",
+          StandardOpenOption.CREATE_NEW);
+    } catch (IOException | RuntimeException exception) {
+      for (String name : OVERWORLD_DIRECTORIES) {
+        Path source = staging.resolve(name), destination = storage.resolve(name);
+        if (!Files.exists(source) || Files.exists(destination)) continue;
+        try { Files.move(source, destination, StandardCopyOption.ATOMIC_MOVE); }
+        catch (IOException rollback) { exception.addSuppressed(rollback); }
+      }
+      throw exception;
+    }
+  }
+
+  /** Two-line journals predate the option and always require a world image. */
+  public static boolean readCreateImage(
+      List<String> journal
+  ) throws IOException {
+    if (journal.size() == 2) return true;
+    if (journal.size() == 3) {
+      if (journal.get(2).equals("true")) return true;
+      if (journal.get(2).equals("false")) return false;
+    }
+    throw new IOException("Invalid annihilation journal image option");
+  }
+
   public static void run(
       Path target, Path backup,
       Progress progress,
       Budget budget
+  ) throws IOException {
+    run(target, backup, progress, budget, true);
+  }
+
+  public static void run(
+      Path target, Path backup,
+      Progress progress,
+      Budget budget,
+      boolean createImage
   ) throws IOException {
     Path copied = backup.resolve("dimension"), complete = backup.resolve("backup-complete");
     long[] totals = {0, 0};
@@ -51,7 +107,7 @@ public final class AnnihilationFileJob {
         }
       });
     }
-    if (!Files.exists(complete)) {
+    if (createImage && !Files.exists(complete)) {
       Files.createDirectories(copied);
       long[] copiedBytes = {0};
       CopyBudget copyBudget = budget.newCopyBudget();
@@ -88,16 +144,18 @@ public final class AnnihilationFileJob {
           }
         });
       }
-      // Never delete any original until every backup stream has closed successfully.
+      // When an image is requested, all copy streams must close before deleting any original.
       Files.writeString(complete, "Complete backup; safe to resume deletion.\n");
     }
-    progress.update(5, 7500);
+    int deletionStart = createImage ? 7500 : 500;
+    int deletionRange = 9500 - deletionStart;
+    progress.update(5, deletionStart);
     long[] deleted = {0};
     if (Files.exists(target, LinkOption.NOFOLLOW_LINKS)) {
       Files.walkFileTree(target, new SimpleFileVisitor<>() {
         private void remove(Path path) throws IOException {
           budget.entry(); Files.delete(path); deleted[0]++;
-          progress.update(5, 7500 + (int) (2000L * deleted[0] / Math.max(1, totals[1])));
+          progress.update(5, deletionStart + (int) ((long) deletionRange * deleted[0] / Math.max(1, totals[1])));
         }
         @Override
         public FileVisitResult preVisitDirectory(Path path, BasicFileAttributes attrs) throws IOException {

@@ -63,7 +63,6 @@ public final class UniverseAnnihilator extends PathfinderMob {
       var data = new UniverseAnnihilatorMenu.OpeningData(getId(), progressOnly ? List.of(task.dimension) :
           serverPlayer.level().getServer().levelKeys().stream()
               .filter(key -> !key.equals(level().dimension()))
-              .filter(key -> !key.equals(Level.OVERWORLD))
               .sorted(java.util.Comparator.comparing(key -> key.identifier().toString())).toList(), progressOnly);
       player.openMenu(new ExtendedMenuProvider<UniverseAnnihilatorMenu.OpeningData>() {
         @Override

@@ -70,8 +70,9 @@ public abstract class UniverseAnnihilationPlayerMixin {
     TeleportTransition transition = cir.getReturnValue();
     if (transition != null && UniverseAnnihilation.isLocked(transition.newLevel())) {
       ServerPlayer player = (ServerPlayer) (Object) this;
-      cir.setReturnValue(new TeleportTransition(player.level().getServer().overworld(),
-          player.position(), Vec3.ZERO, player.getYRot(), player.getXRot(), TeleportTransition.DO_NOTHING));
+      var landing = UniverseAnnihilation.evacuationLanding(player.level().getServer(), transition.newLevel().dimension());
+      cir.setReturnValue(new TeleportTransition(landing.level(),
+          Vec3.atBottomCenterOf(landing.position()), Vec3.ZERO, player.getYRot(), player.getXRot(), TeleportTransition.DO_NOTHING));
     }
   }
 

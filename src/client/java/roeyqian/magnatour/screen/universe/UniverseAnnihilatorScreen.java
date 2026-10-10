@@ -10,6 +10,7 @@ package roeyqian.magnatour.screen.universe;
 // Minecraft
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.Checkbox;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -24,6 +25,8 @@ public final class UniverseAnnihilatorScreen extends AbstractContainerScreen<Uni
   private boolean submitted;
 
   private int page;
+
+  private boolean createImage = true;
 
   private int selected = -1;
 
@@ -63,7 +66,7 @@ public final class UniverseAnnihilatorScreen extends AbstractContainerScreen<Uni
       graphics.text(font, Component.translatable("gui.magnatour.annihilator.progress"), 12, 43, -1, false);
       int index = menu.getTaskDimensionIndex();
       if (index >= 0 && index < menu.getOpeningData().dimensions().size()) {
-        graphics.text(font, Component.literal(menu.getOpeningData().dimensions().get(index).identifier().toString()),
+        graphics.text(font, UniverseAnnihilation.dimensionName(menu.getOpeningData().dimensions().get(index)),
             12, 62, 0xFFAAEFFF, false);
       }
       graphics.text(font, Component.translatable("gui.magnatour.annihilator.stage." + stage), 12, 89, -1, false);
@@ -80,10 +83,12 @@ public final class UniverseAnnihilatorScreen extends AbstractContainerScreen<Uni
       graphics.text(font, Component.translatable("gui.magnatour.annihilator.select"), 12, 29, -1, false);
     } else {
       graphics.text(font, Component.translatable("gui.magnatour.annihilator.target"), 12, 43, 0xFFFF8080, false);
-      graphics.text(font, Component.literal(menu.getOpeningData().dimensions().get(selected).identifier().toString()),
+      graphics.text(font, UniverseAnnihilation.dimensionName(menu.getOpeningData().dimensions().get(selected)),
           12, 60, -1, false);
       for (int i = 0; i < 4; i++) {
-        graphics.text(font, Component.translatable("gui.magnatour.annihilator.warning." + i),
+        String key = i == 1 && !createImage ? "gui.magnatour.annihilator.warning.no_image"
+            : "gui.magnatour.annihilator.warning." + i;
+        graphics.text(font, Component.translatable(key),
             12, 88 + i * 20, 0xFFFFC1DD, false);
       }
     }
@@ -108,8 +113,15 @@ public final class UniverseAnnihilatorScreen extends AbstractContainerScreen<Uni
       return;
     }
     if (selected >= 0) {
+      addRenderableWidget(Checkbox.builder(Component.translatable("gui.magnatour.annihilator.create_image"), font)
+          .pos(leftPos + 12, topPos + 174).maxWidth(276).selected(createImage)
+          .onValueChange((checkbox, checked) -> {
+            createImage = checked;
+            send(checked ? UniverseAnnihilatorMenu.IMAGE_ON : UniverseAnnihilatorMenu.IMAGE_OFF);
+          }).build());
       addRenderableWidget(Button.builder(Component.translatable("gui.magnatour.annihilator.confirm"), button -> {
         submitted = true;
+        send(createImage ? UniverseAnnihilatorMenu.IMAGE_ON : UniverseAnnihilatorMenu.IMAGE_OFF);
         send(UniverseAnnihilatorMenu.CONFIRM);
         createButtons();
       }).bounds(leftPos + 12, topPos + 198, 132, 20).build());
@@ -123,7 +135,7 @@ public final class UniverseAnnihilatorScreen extends AbstractContainerScreen<Uni
     var dimensions = menu.getOpeningData().dimensions();
     for (int row = 0; row < 6 && page * 6 + row < dimensions.size(); row++) {
       int index = page * 6 + row;
-      addRenderableWidget(Button.builder(Component.literal(dimensions.get(index).identifier().toString()), button -> {
+      addRenderableWidget(Button.builder(UniverseAnnihilation.dimensionName(dimensions.get(index)), button -> {
         selected = index;
         send(index);
         createButtons();

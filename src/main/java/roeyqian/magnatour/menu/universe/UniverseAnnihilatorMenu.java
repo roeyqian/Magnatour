@@ -33,12 +33,16 @@ public final class UniverseAnnihilatorMenu extends AbstractContainerMenu {
 
   public static final int CANCEL = Integer.MAX_VALUE - 1;
   public static final int CONFIRM = Integer.MAX_VALUE;
+  public static final int IMAGE_OFF = Integer.MAX_VALUE - 2;
+  public static final int IMAGE_ON = Integer.MAX_VALUE - 3;
 
   private final ContainerData progress;
 
   private final OpeningData data;
 
   private boolean rejected;
+
+  private boolean createImage = true;
 
   private int selected = -1;
 
@@ -85,6 +89,11 @@ public final class UniverseAnnihilatorMenu extends AbstractContainerMenu {
     if (data.progressOnly() || getStage() != UniverseAnnihilation.IDLE
         || !(player instanceof ServerPlayer serverPlayer) || !stillValid(player)
         || !UniverseAnnihilation.canUse(serverPlayer)) return false;
+    if (button == IMAGE_ON || button == IMAGE_OFF) {
+      if (selected < 0) return false;
+      createImage = button == IMAGE_ON;
+      return true;
+    }
     if (button == CANCEL) { selected = -1; return true; }
     if (button >= 0 && button < data.dimensions().size()) {
       selected = button;
@@ -96,7 +105,7 @@ public final class UniverseAnnihilatorMenu extends AbstractContainerMenu {
     // Recheck the live entity's dimension, never rely on the client's opening list.
     var entity = player.level().getEntity(data.entityId());
     if (entity == null || target.equals(entity.level().dimension())) return false;
-    boolean accepted = UniverseAnnihilation.request(serverPlayer, (UniverseAnnihilator) entity, target);
+    boolean accepted = UniverseAnnihilation.request(serverPlayer, (UniverseAnnihilator) entity, target, createImage);
     if (!accepted) {
       rejected = true;
       serverPlayer.sendSystemMessage(net.minecraft.network.chat.Component.translatable("gui.magnatour.annihilator.rejected"));
