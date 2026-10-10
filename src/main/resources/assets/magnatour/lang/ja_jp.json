@@ -1,4 +1,12 @@
 {
+  "potion.potency.9": "X",
+  "potion.potency.19": "XX",
+  "potion.potency.39": "XL",
+  "item.magnatour.universe_potion": "寰宇のポーション",
+  "item.magnatour.universe_splash_potion": "寰宇のスプラッシュポーション",
+  "item.magnatour.universe_lingering_potion": "寰宇の残留ポーション",
+  "lore.magnatour.universe_potion.0": "寰宇の力",
+  "lore.magnatour.universe_potion.1": "効果は死亡するまで永続する",
   "item.magnatour.star_atlas": "星図",
   "lore.magnatour.star_atlas.0": "超凡アイテム",
   "lore.magnatour.star_atlas.1": "シードから現在の次元のバイオームを予測（Y=64）",

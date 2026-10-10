@@ -1,4 +1,12 @@
 {
+  "potion.potency.9": "X",
+  "potion.potency.19": "XX",
+  "potion.potency.39": "XL",
+  "item.magnatour.universe_potion": "寰宇药水",
+  "item.magnatour.universe_splash_potion": "寰宇喷溅药水",
+  "item.magnatour.universe_lingering_potion": "寰宇滞留药水",
+  "lore.magnatour.universe_potion.0": "寰宇之力",
+  "lore.magnatour.universe_potion.1": "效果无限持续，直至死亡",
   "item.magnatour.star_atlas": "星图",
   "lore.magnatour.star_atlas.0": "超凡物品",
   "lore.magnatour.star_atlas.1": "按种子预测当前维度的群系（Y=64）",

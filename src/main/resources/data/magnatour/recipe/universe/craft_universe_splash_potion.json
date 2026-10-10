@@ -1,0 +1,19 @@
+{
+  "type": "magnatour:universe_crafting",
+  "category": "misc",
+  "group": "magnatour:items",
+  "pattern": [
+    " A ",
+    "ABA",
+    " A "
+  ],
+  "key": {
+    "A": "minecraft:splash_potion",
+    "B": "magnatour:universe_star"
+  },
+  "result": {
+    "count": 1,
+    "id": "magnatour:universe_splash_potion"
+  },
+  "show_notification": true
+}

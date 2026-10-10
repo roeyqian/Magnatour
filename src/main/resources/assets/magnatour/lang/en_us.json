@@ -1,4 +1,12 @@
 {
+  "potion.potency.9": "X",
+  "potion.potency.19": "XX",
+  "potion.potency.39": "XL",
+  "item.magnatour.universe_potion": "Universe Potion",
+  "item.magnatour.universe_splash_potion": "Universe Splash Potion",
+  "item.magnatour.universe_lingering_potion": "Universe Lingering Potion",
+  "lore.magnatour.universe_potion.0": "Power of the universe",
+  "lore.magnatour.universe_potion.1": "Effects last indefinitely until death",
   "item.magnatour.star_atlas": "Star Atlas",
   "lore.magnatour.star_atlas.0": "Supreme Item",
   "lore.magnatour.star_atlas.1": "Predicts dimension biomes from the seed (Y=64)",

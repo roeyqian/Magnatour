@@ -233,6 +233,9 @@ public class Magnatour implements ModInitializer {
               entries.accept(UniverseItems.UNIVERSE_BOOTS);
               entries.accept(UniverseItems.UNIVERSE_BUCKET);
               entries.accept(UniverseItems.UNIVERSE_BANQUET);
+              entries.accept(UniverseItems.UNIVERSE_POTION);
+              entries.accept(UniverseItems.UNIVERSE_SPLASH_POTION);
+              entries.accept(UniverseItems.UNIVERSE_LINGERING_POTION);
               entries.accept(UniverseItems.UNIVERSE_GUARDIAN_SPAWN_EGG);
             })
             .build()

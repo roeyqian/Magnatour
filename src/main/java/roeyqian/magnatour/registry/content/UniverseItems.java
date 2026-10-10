@@ -25,7 +25,10 @@ import roeyqian.magnatour.item.universe.UniverseChestplate;
 import roeyqian.magnatour.item.universe.UniverseConsole;
 import roeyqian.magnatour.item.universe.UniverseHelmet;
 import roeyqian.magnatour.item.universe.UniverseLeggings;
+import roeyqian.magnatour.item.universe.UniverseLingeringPotion;
 import roeyqian.magnatour.item.universe.UniverseOmniBlade;
+import roeyqian.magnatour.item.universe.UniversePotion;
+import roeyqian.magnatour.item.universe.UniverseSplashPotion;
 import roeyqian.magnatour.item.universe.UniverseStar;
 import roeyqian.magnatour.item.universe.UniverseStick;
 import roeyqian.magnatour.item.universe.UniverseUltimaSword;
@@ -134,6 +137,16 @@ public final class UniverseItems {
   public static final Item UNIVERSE_BANQUET = ItemRegHelper.registerConsumableItem(
       "universe_banquet", 1,
       UniverseBanquet::new, new Item.Properties()
+  );
+
+  public static final Item UNIVERSE_POTION = ItemRegHelper.registerConsumableItem(
+      "universe_potion", 1, UniversePotion::new, new Item.Properties()
+  );
+  public static final Item UNIVERSE_SPLASH_POTION = ItemRegHelper.registerConsumableItem(
+      "universe_splash_potion", 1, UniverseSplashPotion::new, new Item.Properties()
+  );
+  public static final Item UNIVERSE_LINGERING_POTION = ItemRegHelper.registerConsumableItem(
+      "universe_lingering_potion", 1, UniverseLingeringPotion::new, new Item.Properties()
   );
 
   // Spawn Egg

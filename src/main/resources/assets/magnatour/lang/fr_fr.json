@@ -1,4 +1,12 @@
 {
+  "potion.potency.9": "X",
+  "potion.potency.19": "XX",
+  "potion.potency.39": "XL",
+  "item.magnatour.universe_potion": "Potion de l’Univers",
+  "item.magnatour.universe_splash_potion": "Potion jetable de l’Univers",
+  "item.magnatour.universe_lingering_potion": "Potion persistante de l’Univers",
+  "lore.magnatour.universe_potion.0": "Puissance de l’univers",
+  "lore.magnatour.universe_potion.1": "Les effets persistent jusqu’à la mort",
   "item.magnatour.star_atlas": "Atlas stellaire",
   "lore.magnatour.star_atlas.0": "Objet suprême",
   "lore.magnatour.star_atlas.1": "Prédit les biomes de la dimension depuis la graine (Y=64)",
