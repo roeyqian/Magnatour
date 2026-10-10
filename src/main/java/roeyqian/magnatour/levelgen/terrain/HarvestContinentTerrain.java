@@ -218,7 +218,7 @@ public final class HarvestContinentTerrain {
       long seed,
       int worldX, int worldZ
   ) {
-    return HarvestourField.sample(seed, worldX, worldZ);
+    return PercentileBiomeField.sample(seed, worldX, worldZ);
   }
 
   static boolean canCarveCave(

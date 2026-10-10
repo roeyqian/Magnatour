@@ -44,6 +44,9 @@ import net.minecraft.world.level.levelgen.structure.StructureSet;
 // JSpecify
 import org.jspecify.annotations.NonNull;
 
+// Magnatour
+import roeyqian.magnatour.levelgen.biome.OreContinentBiomeSource;
+
 public final class OreContinentChunkGenerator extends ChunkGenerator {
 
   public static final MapCodec<OreContinentChunkGenerator> CODEC =
@@ -72,7 +75,11 @@ public final class OreContinentChunkGenerator extends ChunkGenerator {
       @NonNull RandomState randomState,
       @NonNull BlockPos pos,
       @NonNull SamplerContext samplerContext
-  ) {}
+  ) {
+    if (this.biomeSource instanceof OreContinentBiomeSource source) {
+      info.add("Ore oretour: " + source.sampleOretour(pos.getX(), pos.getZ()));
+    }
+  }
 
   public void applyCarvers(
       @NonNull WorldGenRegion region,
@@ -130,6 +137,9 @@ public final class OreContinentChunkGenerator extends ChunkGenerator {
       @NonNull RandomState randomState,
       long seed
   ) {
+    if (this.biomeSource instanceof OreContinentBiomeSource source) {
+      source.setWorldSeed(seed);
+    }
     Stream<Holder<StructureSet>> stream = this.settings.structureOverrides()
         .map((overrides) -> overrides.stream())
         .orElseGet(() -> structureSets.listElements().map((holder) -> holder));

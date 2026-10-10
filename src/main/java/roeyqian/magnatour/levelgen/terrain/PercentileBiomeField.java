@@ -12,8 +12,10 @@ import java.util.Arrays;
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 
-/** Continuous harvestour normalized to percentiles of the same seeded terrain field. */
-final class HarvestourField {
+/** Continuous biome parameter normalized to percentiles of a seeded noise field. */
+public final class PercentileBiomeField {
+
+  public static final double PARAMETER_MAX = 100.0;
 
   private static final int CACHE_LIMIT = 8192;
   private static final int DISTRIBUTION_CACHE_LIMIT = 4;
@@ -34,23 +36,23 @@ final class HarvestourField {
 
   private static final ConcurrentHashMap<Long, double[]> DISTRIBUTIONS = new ConcurrentHashMap<>();
 
-  private HarvestourField() {}
+  private PercentileBiomeField() {}
 
-  static double sample(
+  public static double sample(
       long seed,
       int worldX, int worldZ
   ) {
     if (DISTRIBUTIONS.size() > DISTRIBUTION_CACHE_LIMIT) DISTRIBUTIONS.clear();
-    double[] distribution = DISTRIBUTIONS.computeIfAbsent(seed, HarvestourField::createDistribution);
+    double[] distribution = DISTRIBUTIONS.computeIfAbsent(seed, PercentileBiomeField::createDistribution);
     double value = rawSample(seed, worldX * WORLD_COORDINATE_SCALE, worldZ * WORLD_COORDINATE_SCALE);
     int index = Arrays.binarySearch(distribution, value);
-    if (index >= 0) return index * HarvestContinentTerrain.HARVESTOUR_MAX / (distribution.length - 1);
+    if (index >= 0) return index * PARAMETER_MAX / (distribution.length - 1);
     int upper = -index - 1;
     if (upper == 0) return 0.0;
-    if (upper == distribution.length) return HarvestContinentTerrain.HARVESTOUR_MAX;
+    if (upper == distribution.length) return PARAMETER_MAX;
     double span = distribution[upper] - distribution[upper - 1];
     double fraction = span == 0.0 ? 0.0 : (value - distribution[upper - 1]) / span;
-    return (upper - 1 + fraction) * HarvestContinentTerrain.HARVESTOUR_MAX / (distribution.length - 1);
+    return (upper - 1 + fraction) * PARAMETER_MAX / (distribution.length - 1);
   }
 
   private static double raw(
@@ -98,7 +100,7 @@ final class HarvestourField {
       Node node
   ) {
     if (MEDIAN_NODES.size() > CACHE_LIMIT) MEDIAN_NODES.clear();
-    return MEDIAN_NODES.computeIfAbsent(node, HarvestourField::computeMedian);
+    return MEDIAN_NODES.computeIfAbsent(node, PercentileBiomeField::computeMedian);
   }
 
   private static double computeMedian(
