@@ -8,6 +8,7 @@
 package roeyqian.magnatour.registry.content;
 
 // Minecraft
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
@@ -135,6 +136,9 @@ public final class UniverseItems {
       "universe_banquet", 64, Item::new,
       CustomItemSetting.applyUniverseDefaults(
           new Item.Properties().food(new FoodProperties(100000, 10000000.0F, true))
+      ).component(
+          DataComponents.LORE,
+          CustomItemSetting.universeLore("universe_banquet", 2)
       )
   );
 
