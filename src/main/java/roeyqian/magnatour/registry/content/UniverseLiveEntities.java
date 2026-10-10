@@ -7,6 +7,9 @@
  */
 package roeyqian.magnatour.registry.content;
 
+// Fabric
+import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
+
 // Minecraft
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.EntityType;
@@ -35,6 +38,7 @@ public final class UniverseLiveEntities {
 
   public static void init() {
     EntityRegHelper.registerAttributes(UNIVERSE_GUARDIAN, UniverseGuardian.createAttributes());
+    ServerLivingEntityEvents.AFTER_DAMAGE.register(UniverseGuardian::recordOwnerDamage);
 
     Magnatour.LOGGER.info("[Server] Initializing 'UniverseLiveEntities'");
   }

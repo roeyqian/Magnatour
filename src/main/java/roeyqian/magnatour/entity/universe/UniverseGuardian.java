@@ -7,6 +7,12 @@
  */
 package roeyqian.magnatour.entity.universe;
 
+// Java Standard
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 // Minecraft
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
@@ -28,9 +34,8 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.control.FlyingMoveControl;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
-import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
-import net.minecraft.world.entity.ai.goal.target.OwnerHurtByTargetGoal;
-import net.minecraft.world.entity.ai.goal.target.OwnerHurtTargetGoal;
+import net.minecraft.world.entity.ai.targeting.TargetingConditions;
+import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.SwingAnimation;
@@ -50,6 +55,11 @@ import roeyqian.magnatour.registry.logic.CustomComponents;
 import roeyqian.magnatour.registry.logic.CustomParticles;
 
 public class UniverseGuardian extends TamableAnimal {
+
+  private static final int MAX_ATTACK_TARGETS = 4;
+
+  private final Set<LivingEntity> ownerAttackedTargets = new HashSet<>();
+  private final Set<LivingEntity> ownerAttackers = new HashSet<>();
 
   private int attackCooldown = 0;
 
@@ -73,6 +83,33 @@ public class UniverseGuardian extends TamableAnimal {
         .add(Attributes.ARMOR, Integer.MAX_VALUE)
         .add(Attributes.FOLLOW_RANGE, 64.0F)
         .add(Attributes.WATER_MOVEMENT_EFFICIENCY, 1.0F);
+  }
+
+  public static void recordOwnerDamage(
+      LivingEntity victim,
+      DamageSource source,
+      float originalDamage, float damageTaken,
+      boolean blocked
+  ) {
+    if (damageTaken <= 0.0F || !(source.getEntity() instanceof LivingEntity attacker)) return;
+    if (!(victim.level() instanceof ServerLevel world) || attacker.level() != world) return;
+
+    Set<UniverseGuardian> guardians = new HashSet<>();
+    for (LivingEntity participant : List.of(victim, attacker)) {
+      guardians.addAll(world.getEntitiesOfClass(
+          UniverseGuardian.class,
+          participant.getBoundingBox().inflate(64.0),
+          guardian -> guardian.isTame() && guardian.isOwnedBy(participant)
+      ));
+    }
+    for (UniverseGuardian guardian : guardians) {
+      if (guardian.isOwnedBy(attacker) && guardian.canAttack(victim)) {
+        guardian.ownerAttackedTargets.add(victim);
+      }
+      if (guardian.isOwnedBy(victim) && guardian.canAttack(attacker)) {
+        guardian.ownerAttackers.add(attacker);
+      }
+    }
   }
 
   @Override
@@ -161,9 +198,14 @@ public class UniverseGuardian extends TamableAnimal {
     if (!execTeleport(owner)) execFollow(owner);
     if (this.isRemoved() || this.level() != owner.level()) return;
 
-    if (this.getTarget() != null && this.getTarget().isAlive()) {
+    List<LivingEntity> targets = selectAttackTargets(owner);
+    this.setTarget(targets.isEmpty() ? null : targets.getFirst());
+    if (!targets.isEmpty()) {
       if (attackCooldown-- <= 0) {
-        this.execSonicBoom(this.getTarget());
+        this.playSound(SoundEvents.WARDEN_SONIC_BOOM, 1.0F, 1.0F);
+        for (LivingEntity target : targets) {
+          if (target.isAlive()) this.execSonicBoom(target);
+        }
         attackCooldown = 2;
       }
     }
@@ -188,24 +230,6 @@ public class UniverseGuardian extends TamableAnimal {
   @Override
   protected void registerGoals() {
     this.goalSelector.addGoal(0, new FloatGoal(this));
-    this.targetSelector.addGoal(
-        1,
-        new NearestAttackableTargetGoal<>(
-            this,
-            Mob.class,
-            10,
-            false,
-            false,
-            (entity, _) -> {
-              if (!this.isTame()) return false;
-              if (!(entity instanceof net.minecraft.world.entity.monster.Enemy)) return false;
-              if (entity instanceof UniverseGuardian) return false;
-              return !entity.equals(this.getOwner());
-            }
-        )
-    );
-    this.targetSelector.addGoal(2, new OwnerHurtByTargetGoal(this));
-    this.targetSelector.addGoal(3, new OwnerHurtTargetGoal(this));
   }
 
   private InteractionResult execTame(
@@ -226,6 +250,10 @@ public class UniverseGuardian extends TamableAnimal {
     } else if (player.equals(this.getOwner())) {
       this.setTame(false, true);
       this.setOwner(null);
+      this.setTarget(null);
+      this.ownerAttackedTargets.clear();
+      this.ownerAttackers.clear();
+      this.attackCooldown = 0;
 
       this.level().broadcastEntityEvent(this, (byte) 6);
       player.sendOverlayMessage(
@@ -236,6 +264,16 @@ public class UniverseGuardian extends TamableAnimal {
       return InteractionResult.SUCCESS;
     }
     return InteractionResult.PASS;
+  }
+
+  private boolean isValidAttackTarget(
+      ServerLevel world,
+      TargetingConditions conditions,
+      LivingEntity owner, LivingEntity target
+  ) {
+    return target != this && target != owner && target.isAlive() && target.level() == world
+        && this.canAttack(target) && this.wantsToAttack(target, owner)
+        && conditions.test(world, this, target);
   }
 
   private boolean execTeleport(
@@ -308,6 +346,31 @@ public class UniverseGuardian extends TamableAnimal {
     this.setYBodyRot(this.getYRot());
   }
 
+  private List<LivingEntity> selectAttackTargets(
+      LivingEntity owner
+  ) {
+    if (!(this.level() instanceof ServerLevel world)) return List.of();
+    double range = this.getAttributeValue(Attributes.FOLLOW_RANGE);
+    TargetingConditions conditions = TargetingConditions.forCombat().range(range).ignoreLineOfSight();
+
+    // Keep every observed owner combat target until it dies or leaves attack range.
+    ownerAttackedTargets.removeIf(target -> !isValidAttackTarget(world, conditions, owner, target));
+    ownerAttackers.removeIf(target -> !isValidAttackTarget(world, conditions, owner, target));
+
+    return world.getEntitiesOfClass(
+        LivingEntity.class,
+        this.getBoundingBox().inflate(range),
+        target -> isValidAttackTarget(world, conditions, owner, target)
+            && (ownerAttackedTargets.contains(target) || ownerAttackers.contains(target) || target instanceof Enemy)
+    ).stream().sorted(
+        Comparator.comparingInt((LivingEntity target) ->
+            ownerAttackedTargets.contains(target) ? 0 : ownerAttackers.contains(target) ? 1 : 2)
+            .thenComparingInt(target -> target instanceof Enemy ? 0 : 1)
+            .thenComparingDouble(this::distanceToSqr)
+            .thenComparingInt(Entity::getId)
+    ).limit(MAX_ATTACK_TARGETS).toList();
+  }
+
   private void execSonicBoom(
       LivingEntity target
   ) {
@@ -335,7 +398,6 @@ public class UniverseGuardian extends TamableAnimal {
         }
       }
 
-      this.playSound(SoundEvents.WARDEN_SONIC_BOOM, 1.0F, 1.0F);
       target.hurtServer(serverWorld, this.damageSources().sonicBoom(this), Integer.MAX_VALUE);
       if (distance > 0.0) {
         target.knockback(3.0, -dX, -dZ, this.damageSources().sonicBoom(this), 0.0F);
