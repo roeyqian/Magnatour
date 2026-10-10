@@ -11,6 +11,7 @@ package roeyqian.magnatour.mixin.item;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.component.TypedDataComponent;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
 
@@ -22,10 +23,30 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 // Magnatour
+import roeyqian.magnatour.item.universe.UniverseBanquet;
 import roeyqian.magnatour.mixinhelper.item.ItemHelperForEnchantment;
+import roeyqian.magnatour.registry.content.UniverseItems;
 
 @Mixin(value = ItemStack.class, priority = 3600000)
 public class ItemStackMixin {
+
+  /* Universe Banquet: Preserve the item when eating or feeding mobs
+   */
+  @Inject(
+      method = "consume(ILnet/minecraft/world/entity/LivingEntity;)V",
+      at = @At("HEAD"),
+      cancellable = true
+  )
+  private void inConsume(
+      int amount,
+      LivingEntity entity,
+      CallbackInfo ci
+  ) {
+    if (((ItemStack) (Object) this).is(UniverseItems.UNIVERSE_BANQUET)) {
+      UniverseBanquet.healFeedingTarget();
+      ci.cancel();
+    }
+  }
 
   /* Universe Equipment: Disallow direct enchant application
    */

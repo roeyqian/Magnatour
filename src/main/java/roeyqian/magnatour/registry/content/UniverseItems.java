@@ -8,8 +8,6 @@
 package roeyqian.magnatour.registry.content;
 
 // Minecraft
-import net.minecraft.core.component.DataComponents;
-import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.SpawnEggItem;
@@ -20,6 +18,7 @@ import roeyqian.magnatour.Magnatour;
 import roeyqian.magnatour.item.CustomArmorMaterial;
 import roeyqian.magnatour.item.CustomItemSetting;
 import roeyqian.magnatour.item.CustomToolMaterial;
+import roeyqian.magnatour.item.universe.UniverseBanquet;
 import roeyqian.magnatour.item.universe.UniverseBoots;
 import roeyqian.magnatour.item.universe.UniverseBucket;
 import roeyqian.magnatour.item.universe.UniverseChestplate;
@@ -133,13 +132,8 @@ public final class UniverseItems {
 
   // Tonic
   public static final Item UNIVERSE_BANQUET = ItemRegHelper.registerConsumableItem(
-      "universe_banquet", 64, Item::new,
-      CustomItemSetting.applyUniverseDefaults(
-          new Item.Properties().food(new FoodProperties(100000, 10000000.0F, true))
-      ).component(
-          DataComponents.LORE,
-          CustomItemSetting.universeLore("universe_banquet", 2)
-      )
+      "universe_banquet", 1,
+      UniverseBanquet::new, new Item.Properties()
   );
 
   // Spawn Egg
@@ -153,6 +147,7 @@ public final class UniverseItems {
   private UniverseItems() {}
 
   public static void init() {
+    UniverseBanquet.init();
     int universeFuelTime = Integer.MAX_VALUE / 5;
 
     ItemRegHelper.registerFuel(universeFuelTime, UNIVERSE_GEMRED);
