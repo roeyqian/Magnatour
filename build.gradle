@@ -1706,6 +1706,7 @@ def collectJavaComments = { String source ->
 tasks.register("formatJSONLang") {
 	group = "formatting"
 	description = "Groups Magnatour language JSON entries by category with a blank line between categories."
+	mustRunAfter("structJavaBody")
 	def languageFiles = fileTree("src/main/resources/assets/magnatour/lang") {
 		include "*.json"
 	}
@@ -1854,6 +1855,7 @@ tasks.withType(JavaCompile).configureEach {
 	it.dependsOn(tasks.named("formatJavaHead"))
 	it.dependsOn(tasks.named("orderJavaBody"))
 	it.dependsOn(tasks.named("structJavaBody"))
+	it.dependsOn(tasks.named("formatJSONLang"))
 }
 
 java {
