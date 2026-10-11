@@ -7,6 +7,11 @@
  */
 package roeyqian.magnatour.renderer;
 
+// Mojang
+import com.mojang.renderpearl.api.pipeline.BlendFunction;
+import com.mojang.renderpearl.api.pipeline.ColorTargetState;
+import com.mojang.renderpearl.api.pipeline.RenderPipeline;
+
 // Fabric
 import net.fabricmc.api.Environment;
 import net.fabricmc.api.EnvType;
@@ -14,6 +19,7 @@ import net.fabricmc.api.EnvType;
 // Minecraft
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.Sheets;
+import net.minecraft.client.renderer.oit.OitPipelineSet;
 import net.minecraft.client.renderer.rendertype.LayeringTransform;
 import net.minecraft.client.renderer.rendertype.RenderSetup;
 import net.minecraft.client.renderer.rendertype.RenderType;
@@ -76,14 +82,20 @@ public final class GlintRenderTypes {
       Identifier glintTexture
   ) {
     RenderType[] types = new RenderType[8];
+    // Share pipelines between the block and item atlases. Custom items need
+    // their own pipeline identity, not a new RenderType around a vanilla pipeline.
+    RenderPipeline[] itemPipelines = new RenderPipeline[4];
+    OitPipelineSet[] itemOitPipelines = new OitPipelineSet[2];
     for (int i = 0; i < types.length; i++) {
       boolean blockAtlas = i < 4;
       boolean translucent = (i % 4) >= 2;
       boolean special = (i % 2) != 0;
       Identifier atlas = blockAtlas ? Sheets.BLOCKS_MAPPER.sheet() : Sheets.ITEMS_MAPPER.sheet();
-      var pipeline = translucent
-          ? special ? RenderPipelines.ITEM_TRANSLUCENT_GLINT_SPECIAL : RenderPipelines.ITEM_TRANSLUCENT_GLINT
-          : special ? RenderPipelines.ITEM_CUTOUT_GLINT_SPECIAL : RenderPipelines.ITEM_CUTOUT_GLINT;
+      int variant = i % 4;
+      if (itemPipelines[variant] == null) {
+        itemPipelines[variant] = createCustomItemPipeline(name, translucent, special);
+      }
+      RenderPipeline pipeline = itemPipelines[variant];
       RenderSetup.RenderSetupBuilder setup = RenderSetup.builder(pipeline)
           .withTexture("Sampler0", atlas)
           .withTexture("GlintSampler", glintTexture)
@@ -93,8 +105,14 @@ public final class GlintRenderTypes {
           .affectsCrumbling()
           .setOutline(RenderSetup.OutlineProperty.AFFECTS_OUTLINE);
       if (translucent) {
-        setup.setOitPipelines(special ? RenderPipelines.OIT_ITEM_GLINT_SPECIAL : RenderPipelines.OIT_ITEM_GLINT)
-            .sortOnUpload();
+        int oitVariant = special ? 1 : 0;
+        if (itemOitPipelines[oitVariant] == null) {
+          itemOitPipelines[oitVariant] = RenderPipelines.register(OitPipelineSet.builder(
+              "magnatour_" + name + "_item_glint" + (special ? "_special" : ""),
+              customItemPipelineBuilder(special)
+          ).build());
+        }
+        setup.setOitPipelines(itemOitPipelines[oitVariant]).sortOnUpload();
       }
       types[i] = RenderTypeInvoker.magnatour$create(
           name + "_item_glint_" + i, setup.createRenderSetup()
@@ -113,6 +131,31 @@ public final class GlintRenderTypes {
             .withForcedSolidModelPhase()
             .createRenderSetup()
     );
+  }
+
+  private static RenderPipeline.Builder customItemPipelineBuilder(
+      boolean special
+  ) {
+    Identifier shader = Identifier.fromNamespaceAndPath(Magnatour.MOD_ID, "core/universe_item_glint");
+    return RenderPipeline.builder(
+        RenderPipelines.ITEM_SNIPPET,
+        special ? RenderPipelines.GLINT_SPECIAL_SNIPPET : RenderPipelines.GLINT_SNIPPET
+    )
+        .withVertexShader(shader)
+        .withFragmentShader(shader)
+        .withVertexBinding(0, special ? UniverseItemVertexFormats.ITEM_SPECIAL : UniverseItemVertexFormats.ITEM)
+        .withShaderDefine("ALPHA_CUTOUT", 0.1F);
+  }
+
+  private static RenderPipeline createCustomItemPipeline(
+      String name,
+      boolean translucent, boolean special
+  ) {
+    String variant = (translucent ? "translucent" : "cutout") + (special ? "_special" : "");
+    return RenderPipelines.register(customItemPipelineBuilder(special)
+        .withLocation(Identifier.fromNamespaceAndPath(Magnatour.MOD_ID, "pipeline/" + name + "_item_glint_" + variant))
+        .withColorTargetState(translucent ? new ColorTargetState(BlendFunction.TRANSLUCENT) : ColorTargetState.DEFAULT)
+        .build());
   }
 
   private static int itemGlintVariant(
