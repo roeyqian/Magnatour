@@ -46,6 +46,16 @@ public class PlayerMixin {
     EntityHelperForEquipment.handleUniverseHelmetFixedHunger((Player) (Object) this, this.foodData);
   }
 
+  /* Universe Chestplate & Boots: Flight Through Walls
+   */
+  @Redirect(method = "tick", at = @At(value = "INVOKE",
+      target = "Lnet/minecraft/world/entity/player/Player;isSpectator()Z", ordinal = 0))
+  private boolean allowUniverseFlightThroughWalls(
+      Player player
+  ) {
+    return player.isSpectator() || EntityHelperForEquipment.canUniverseFlyThroughWalls(player);
+  }
+
   /* Universe Armors: Absolute Defense
    */
   @Inject(method = "hurtServer", at = @At("HEAD"), cancellable = true)

@@ -9,6 +9,9 @@ package roeyqian.magnatour.mixin.entity;
 
 // Minecraft
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.MoverType;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.phys.Vec3;
 
 // SpongePowered Mixin
 import org.spongepowered.asm.mixin.Mixin;
@@ -39,6 +42,19 @@ public abstract class EntityMixin {
       CallbackInfoReturnable<Boolean> cir
   ) {
     EntityHelperForEquipment.handleEntityIsInWater((Entity) (Object) this, cir);
+  }
+
+  /* Refresh flight collision before movement, including flight toggles within a tick.
+   */
+  @Inject(method = "move", at = @At("HEAD"))
+  private void inMove(
+      MoverType type,
+      Vec3 movement,
+      CallbackInfo ci
+  ) {
+    if ((Object) this instanceof Player player) {
+      EntityHelperForEquipment.handleUniverseBootsFlightCollision(player);
+    }
   }
 
   /* Universe Boots: Fluid Walking on Water and Lava

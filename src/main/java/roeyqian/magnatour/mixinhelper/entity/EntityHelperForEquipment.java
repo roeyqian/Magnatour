@@ -48,6 +48,14 @@ public final class EntityHelperForEquipment {
 
   private EntityHelperForEquipment() {}
 
+  public static boolean canUniverseFlyThroughWalls(
+      Player player
+  ) {
+    return player.getAbilities().flying
+        && player.getItemBySlot(EquipmentSlot.CHEST).is(UniverseItems.UNIVERSE_CHESTPLATE)
+        && player.getItemBySlot(EquipmentSlot.FEET).is(UniverseItems.UNIVERSE_BOOTS);
+  }
+
   public static void handleDefaultFlight(
       Player player,
       float defaultSpeed
@@ -191,6 +199,16 @@ public final class EntityHelperForEquipment {
 
     if (count > 0 && player.getRandom().nextFloat() < (count * 0.333F)) {
       cir.setReturnValue(false);
+    }
+  }
+
+  public static void handleUniverseBootsFlightCollision(
+      Player player
+  ) {
+    player.noPhysics = player.isSpectator() || canUniverseFlyThroughWalls(player);
+    if (player.noPhysics) {
+      player.setOnGround(false);
+      player.resetFallDistance();
     }
   }
 
