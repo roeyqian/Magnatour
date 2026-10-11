@@ -10,8 +10,6 @@ package roeyqian.magnatour.mixin.entity;
 // Minecraft
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 
 // SpongePowered Mixin
@@ -40,21 +38,6 @@ public abstract class LivingEntityMixin {
     this.flightTicks = EntityHelperForEquipment.handleLivingBaseTick(
         (LivingEntity) (Object) this,
         this.flightTicks
-    );
-  }
-
-  /* Universe Helmet: Immunity to Negative Visual & Food Effects
-   */
-  @Inject(method = "forceAddEffect", at = @At("HEAD"), cancellable = true)
-  private void inForceAddEffect(
-      MobEffectInstance effect,
-      Entity source,
-      CallbackInfo ci
-  ) {
-    EntityHelperForEquipment.handleLivingForceAddEffect(
-        (LivingEntity) (Object) this,
-        effect,
-        ci
     );
   }
 

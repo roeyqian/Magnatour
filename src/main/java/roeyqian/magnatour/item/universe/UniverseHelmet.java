@@ -10,10 +10,12 @@ package roeyqian.magnatour.item.universe;
 // Minecraft
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.effect.MobEffectCategory;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
@@ -41,10 +43,18 @@ public class UniverseHelmet extends Item {
   ) {
     if (!world.isClientSide() && entity instanceof LivingEntity living) {
       if (living.getItemBySlot(EquipmentSlot.HEAD) == stack) {
-        living.removeEffect(MobEffects.HUNGER);
-        living.removeEffect(MobEffects.NAUSEA);
-        living.removeEffect(MobEffects.DARKNESS);
-        living.removeEffect(MobEffects.BLINDNESS);
+        if (living instanceof Player player) {
+          var foodData = player.getFoodData();
+          foodData.setFoodLevel(20);
+          foodData.setSaturation(20.0F);
+        }
+        living.setAirSupply(living.getMaxAirSupply());
+        // Snapshot the effects before removal mutates the active effects collection.
+        var harmfulEffects = living.getActiveEffects().stream()
+            .filter(effect -> effect.getEffect().value().getCategory() == MobEffectCategory.HARMFUL)
+            .map(MobEffectInstance::getEffect)
+            .toList();
+        harmfulEffects.forEach(living::removeEffect);
       }
     }
   }

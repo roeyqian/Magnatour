@@ -9,14 +9,10 @@ package roeyqian.magnatour.mixinhelper.entity;
 
 // Minecraft
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Holder;
 import net.minecraft.resources.Identifier;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.effect.MobEffect;
-import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -25,7 +21,6 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Abilities;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.food.FoodData;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.FluidState;
@@ -113,16 +108,6 @@ public final class EntityHelperForEquipment {
     }
 
     return flightTicks;
-  }
-
-  public static void handleLivingForceAddEffect(
-      LivingEntity living,
-      MobEffectInstance effect,
-      CallbackInfo ci
-  ) {
-    if (living instanceof Player player) {
-      handleUniverseHelmetImmunity(player, effect, ci);
-    }
   }
 
   public static void handleRemoteBlockAccess(
@@ -317,42 +302,6 @@ public final class EntityHelperForEquipment {
     }
 
     return flightTicks;
-  }
-
-  public static void handleUniverseHelmetFixedHunger(
-      Player player,
-      FoodData foodData
-  ) {
-    ItemStack head = player.getItemBySlot(EquipmentSlot.HEAD);
-    if (!head.is(UniverseItems.UNIVERSE_HELMET)) {
-      return;
-    }
-
-    if (foodData != null) {
-      foodData.setFoodLevel(20);
-      foodData.setSaturation(5.0F);
-    }
-    player.setAirSupply(player.getMaxAirSupply());
-  }
-
-  public static void handleUniverseHelmetImmunity(
-      Player player,
-      MobEffectInstance effect,
-      CallbackInfo ci
-  ) {
-    ItemStack headStack = player.getItemBySlot(EquipmentSlot.HEAD);
-    if (!headStack.is(UniverseItems.UNIVERSE_HELMET)) {
-      return;
-    }
-
-    Holder<MobEffect> effectType = effect.getEffect();
-    if (effectType.equals(MobEffects.BLINDNESS)
-        || effectType.equals(MobEffects.DARKNESS)
-        || effectType.equals(MobEffects.NAUSEA)
-        || effectType.equals(MobEffects.HUNGER)
-    ) {
-      ci.cancel();
-    }
   }
 
   public static void handleUniverseHitEffect(

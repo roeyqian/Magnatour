@@ -14,12 +14,10 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.food.FoodData;
 import net.minecraft.world.phys.Vec3;
 
 // SpongePowered Mixin
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
@@ -33,18 +31,6 @@ import roeyqian.magnatour.mixinhelper.item.ItemHelperForEnchantment;
 
 @Mixin(value = Player.class, priority = 3600000)
 public class PlayerMixin {
-
-  @Shadow
-  protected FoodData foodData;
-
-  /* Universe Helmet: Fixed Hunger
-   */
-  @Inject(method = "tick", at = @At("TAIL"))
-  public void inTick(
-      CallbackInfo ci
-  ) {
-    EntityHelperForEquipment.handleUniverseHelmetFixedHunger((Player) (Object) this, this.foodData);
-  }
 
   /* Universe Chestplate & Boots: Flight Through Walls
    */
