@@ -22,8 +22,11 @@ import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.BiomeResolver;
 import net.minecraft.world.level.biome.Climate;
+import net.minecraft.world.level.block.Mirror;
+import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.densityfunction.SamplerContext;
+import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.StructureType;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePiecesBuilder;
@@ -97,14 +100,21 @@ public final class GoldBellTowerStructure extends Structure {
 
     Vec3i lowerSize = lowerOpt.get().getSize();
     Vec3i upperSize = upperOpt.get().getSize();
+    Rotation rotation = Rotation.getRandom(context.random());
+    BlockPos rotatedCorner = StructureTemplate.transform(
+        new BlockPos(lowerSize.getX() - 1, 0, lowerSize.getZ() - 1),
+        Mirror.NONE, rotation, BlockPos.ZERO
+    );
+    int rotatedWidth = Math.abs(rotatedCorner.getX()) + 1;
+    int rotatedDepth = Math.abs(rotatedCorner.getZ()) + 1;
 
     int baseY = context.chunkGenerator().getBaseHeight(originX, originZ,
         Heightmap.Types.OCEAN_FLOOR_WG, context.heightAccessor(), context.randomState());
 
     BlockPos lowerPos = new BlockPos(
-        originX - lowerSize.getX() / 2,
+        originX - rotatedWidth / 2 - Math.min(0, rotatedCorner.getX()),
         baseY,
-        originZ - lowerSize.getZ() / 2
+        originZ - rotatedDepth / 2 - Math.min(0, rotatedCorner.getZ())
     );
     int totalTopY = baseY + lowerSize.getY() + upperSize.getY();
 
@@ -113,16 +123,17 @@ public final class GoldBellTowerStructure extends Structure {
       return Optional.empty();
     }
 
-    if (!hasSuitableTerrain(context, sampler, lowerPos, lowerSize, upperSize)) {
-      return Optional.empty();
-    }
-
     GoldBellTowerPiece piece = new GoldBellTowerPiece(
         CustomStructures.GOLD_BELL_TOWER_PIECE,
         lowerPos,
         lowerSize,
-        upperSize
+        upperSize,
+        rotation
     );
+
+    if (!hasSuitableTerrain(context, sampler, piece.getBoundingBox(), baseY)) {
+      return Optional.empty();
+    }
 
     return Optional.of(new GenerationStub(
         lowerPos,
@@ -153,13 +164,13 @@ public final class GoldBellTowerStructure extends Structure {
   private static boolean hasSuitableTerrain(
       GenerationContext context,
       Climate.Sampler sampler,
-      BlockPos lowerPos,
-      Vec3i lowerSize, Vec3i upperSize
+      BoundingBox towerBox,
+      int baseY
   ) {
-    int minX = lowerPos.getX() - LAND_MARGIN;
-    int minZ = lowerPos.getZ() - LAND_MARGIN;
-    int maxX = lowerPos.getX() + Math.max(lowerSize.getX(), upperSize.getX()) - 1 + LAND_MARGIN;
-    int maxZ = lowerPos.getZ() + Math.max(lowerSize.getZ(), upperSize.getZ()) - 1 + LAND_MARGIN;
+    int minX = towerBox.minX() - LAND_MARGIN;
+    int minZ = towerBox.minZ() - LAND_MARGIN;
+    int maxX = towerBox.maxX() + LAND_MARGIN;
+    int maxZ = towerBox.maxZ() + LAND_MARGIN;
     BiomeResolver resolver = context.biomeSource().createResolver(sampler);
 
     // Check every column, including the shore buffer, so narrow inlets cannot be missed.
@@ -181,7 +192,7 @@ public final class GoldBellTowerStructure extends Structure {
               Heightmap.Types.OCEAN_FLOOR_WG, context.heightAccessor(), context.randomState());
         }
         if (groundHeight <= context.chunkGenerator().getSeaLevel() + 1
-            || Math.abs(groundHeight - lowerPos.getY()) > MAX_GROUND_HEIGHT_DIFFERENCE) {
+            || Math.abs(groundHeight - baseY) > MAX_GROUND_HEIGHT_DIFFERENCE) {
           return false;
         }
       }

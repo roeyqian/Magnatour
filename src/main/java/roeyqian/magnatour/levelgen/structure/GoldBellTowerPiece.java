@@ -53,6 +53,8 @@ public final class GoldBellTowerPiece extends StructurePiece {
 
   private final BlockPos lowerPos;
 
+  private final Rotation rotation;
+
   public GoldBellTowerPiece(
       StructurePieceType type,
       CompoundTag tag
@@ -61,17 +63,20 @@ public final class GoldBellTowerPiece extends StructurePiece {
     this.lowerPos = readBlockPos(tag);
     this.lowerSize = readVec3i(tag, "LowerSize");
     this.upperSize = readVec3i(tag, "UpperSize");
+    this.rotation = tag.getString("Rotation").map(Rotation::valueOf).orElse(Rotation.NONE);
   }
 
   public GoldBellTowerPiece(
       StructurePieceType type,
       BlockPos lowerPos,
-      Vec3i lowerSize, Vec3i upperSize
+      Vec3i lowerSize, Vec3i upperSize,
+      Rotation rotation
   ) {
-    super(type, 0, makeBoundingBox(lowerPos, lowerSize, upperSize));
+    super(type, 0, makeBoundingBox(lowerPos, lowerSize, upperSize, rotation));
     this.lowerPos = lowerPos;
     this.lowerSize = lowerSize;
     this.upperSize = upperSize;
+    this.rotation = rotation;
   }
 
   @Override
@@ -100,7 +105,7 @@ public final class GoldBellTowerPiece extends StructurePiece {
 
     StructurePlaceSettings settings = new StructurePlaceSettings()
         .setMirror(Mirror.NONE)
-        .setRotation(Rotation.NONE)
+        .setRotation(this.rotation)
         .setIgnoreEntities(false)
         .setFinalizeEntities(true)
         .setKnownShape(true)
@@ -122,20 +127,23 @@ public final class GoldBellTowerPiece extends StructurePiece {
     writeBlockPos(tag, this.lowerPos);
     writeVec3i(tag, "LowerSize", this.lowerSize);
     writeVec3i(tag, "UpperSize", this.upperSize);
+    tag.putString("Rotation", this.rotation.name());
   }
 
   private static BoundingBox makeBoundingBox(
       BlockPos lowerPos,
-      Vec3i lowerSize, Vec3i upperSize
+      Vec3i lowerSize, Vec3i upperSize,
+      Rotation rotation
   ) {
-    int totalHeight = lowerSize.getY() + upperSize.getY();
+    BoundingBox lowerBox = templateBoundingBox(lowerPos, lowerSize, rotation);
+    BoundingBox upperBox = templateBoundingBox(lowerPos.above(lowerSize.getY()), upperSize, rotation);
     return new BoundingBox(
-        lowerPos.getX(),
-        lowerPos.getY(),
-        lowerPos.getZ(),
-        lowerPos.getX() + lowerSize.getX() - 1,
-        lowerPos.getY() + totalHeight - 1,
-        lowerPos.getZ() + lowerSize.getZ() - 1
+        Math.min(lowerBox.minX(), upperBox.minX()),
+        lowerBox.minY(),
+        Math.min(lowerBox.minZ(), upperBox.minZ()),
+        Math.max(lowerBox.maxX(), upperBox.maxX()),
+        upperBox.maxY(),
+        Math.max(lowerBox.maxZ(), upperBox.maxZ())
     );
   }
 
@@ -185,16 +193,33 @@ public final class GoldBellTowerPiece extends StructurePiece {
     tag.put(key, sizeTag);
   }
 
+  private static BoundingBox templateBoundingBox(
+      BlockPos pos,
+      Vec3i size,
+      Rotation rotation
+  ) {
+    // Both templates rotate around their shared local X/Z origin.
+    BlockPos corner = StructureTemplate.transform(
+        new BlockPos(size.getX() - 1, size.getY() - 1, size.getZ() - 1),
+        Mirror.NONE, rotation, BlockPos.ZERO
+    ).offset(pos);
+    return new BoundingBox(
+        Math.min(pos.getX(), corner.getX()), pos.getY(), Math.min(pos.getZ(), corner.getZ()),
+        Math.max(pos.getX(), corner.getX()), corner.getY(), Math.max(pos.getZ(), corner.getZ())
+    );
+  }
+
   private void replaceGrassBelow(
       WorldGenLevel level,
       BoundingBox box
   ) {
     BlockPos.MutableBlockPos mutablePos = new BlockPos.MutableBlockPos();
     int surfaceY = this.lowerPos.getY() - 1;
-    int minX = this.lowerPos.getX();
-    int maxX = this.lowerPos.getX() + this.lowerSize.getX() - 1;
-    int minZ = this.lowerPos.getZ();
-    int maxZ = this.lowerPos.getZ() + this.lowerSize.getZ() - 1;
+    BoundingBox lowerBox = templateBoundingBox(this.lowerPos, this.lowerSize, this.rotation);
+    int minX = lowerBox.minX();
+    int maxX = lowerBox.maxX();
+    int minZ = lowerBox.minZ();
+    int maxZ = lowerBox.maxZ();
 
     BlockState dirt = SupremeBlocks.EVER_WATER_SOIL.defaultBlockState();
 
