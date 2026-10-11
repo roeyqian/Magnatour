@@ -10,7 +10,6 @@ package roeyqian.magnatour.item.universe;
 // Minecraft
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -43,7 +42,6 @@ public class UniverseChestplate extends Item {
       if (living.getItemBySlot(EquipmentSlot.CHEST) == stack) {
         living.setRemainingFireTicks(0);
         living.setTicksFrozen(0);
-        living.removeEffect(MobEffects.POISON);
       }
     }
   }
