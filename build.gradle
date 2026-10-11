@@ -58,7 +58,7 @@ tasks.withType(JavaCompile).configureEach {
 	it.options.compilerArgs.addAll(['-Xlint:deprecation', '-Xlint:unchecked'])
 }
 
-def importGroupsConfigFile = layout.projectDirectory.file("gradle/config/import-groups.json")
+def importGroupsConfigFile = layout.projectDirectory.file("gradle/config/java-import-groups.json")
 def declarationOrderConfigFile = layout.projectDirectory.file("gradle/config/java-declaration-order.json")
 def javaSourceFiles = fileTree("src") {
 	include "**/*.java"
