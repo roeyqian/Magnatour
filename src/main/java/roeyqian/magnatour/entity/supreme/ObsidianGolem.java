@@ -42,6 +42,7 @@ import org.jspecify.annotations.Nullable;
 
 // Magnatour
 import roeyqian.magnatour.entity.CustomGolem;
+import roeyqian.magnatour.entity.DiamondCityGolemTargetGoal;
 import roeyqian.magnatour.entity.EntityLootTableHelper;
 
 public class ObsidianGolem extends AbstractGolem implements NeutralMob {
@@ -290,6 +291,10 @@ public class ObsidianGolem extends AbstractGolem implements NeutralMob {
       final LivingEntity target
   ) {
     if (!this.canAttack(target)) {
+      return false;
+    }
+
+    if (target instanceof AbstractGolem && DiamondCityGolemTargetGoal.isInsideDiamondCity(this)) {
       return false;
     }
 
