@@ -12,14 +12,24 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Checkbox;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 
 // Magnatour
+import roeyqian.magnatour.Magnatour;
 import roeyqian.magnatour.level.UniverseAnnihilation;
 import roeyqian.magnatour.menu.universe.UniverseAnnihilatorMenu;
 
 public final class UniverseAnnihilatorScreen extends AbstractContainerScreen<UniverseAnnihilatorMenu> {
+
+  private static final int TEXT_COLOR = 0xFF404040;
+  private static final int WARNING_COLOR = 0xFFAA0000;
+
+  private static final Identifier BACKGROUND = Identifier.fromNamespaceAndPath(
+      Magnatour.MOD_ID, "textures/gui/container/universe_annihilator.png"
+  );
 
   private boolean showingProgress;
   private boolean submitted;
@@ -44,8 +54,8 @@ public final class UniverseAnnihilatorScreen extends AbstractContainerScreen<Uni
       int mouseX, int mouseY,
       float delta
   ) {
-    graphics.fill(leftPos, topPos, leftPos + imageWidth, topPos + imageHeight, 0xFF161021);
-    graphics.fill(leftPos, topPos, leftPos + imageWidth, topPos + 2, 0xFF62E6DD);
+    graphics.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND,
+        leftPos, topPos, 0.0F, 0.0F, imageWidth, imageHeight, imageWidth, imageHeight);
     super.extractContents(graphics, mouseX, mouseY, delta);
   }
 
@@ -60,36 +70,44 @@ public final class UniverseAnnihilatorScreen extends AbstractContainerScreen<Uni
       GuiGraphicsExtractor graphics,
       int mouseX, int mouseY
   ) {
-    graphics.text(font, title, 12, 12, 0xFFAAEFFF, false);
+    graphics.text(font, title, 8, 6, TEXT_COLOR, false);
     if (progressMode()) {
       int stage = menu.getStage();
-      graphics.text(font, Component.translatable("gui.magnatour.annihilator.progress"), 12, 43, -1, false);
+      graphics.text(font, Component.translatable("gui.magnatour.annihilator.progress"), 12, 43, TEXT_COLOR, false);
       int index = menu.getTaskDimensionIndex();
       if (index >= 0 && index < menu.getOpeningData().dimensions().size()) {
         graphics.text(font, UniverseAnnihilation.dimensionName(menu.getOpeningData().dimensions().get(index)),
-            12, 62, 0xFFAAEFFF, false);
+            12, 62, TEXT_COLOR, false);
       }
-      graphics.text(font, Component.translatable("gui.magnatour.annihilator.stage." + stage), 12, 89, -1, false);
+      drawWrappedText(graphics, Component.translatable("gui.magnatour.annihilator.stage." + stage),
+          89, stage == UniverseAnnihilation.FAILED ? WARNING_COLOR : TEXT_COLOR);
       int progress = Math.clamp(menu.getProgress(), 0, 10000);
-      graphics.fill(12, 112, 288, 130, 0xFF30233E);
-      graphics.fill(13, 113, 13 + 274 * progress / 10000, 129,
-          stage == UniverseAnnihilation.FAILED ? 0xFFE45A79 : 0xFF62E6DD);
-      graphics.text(font, Component.literal(String.format(java.util.Locale.ROOT, "%.1f%%", progress / 100.0)),
-          126, 117, 0xFFFFFFFF, false);
-      graphics.text(font, Component.translatable(stage == UniverseAnnihilation.FAILED
+      graphics.fill(12, 112, 288, 130, 0xFF373737);
+      graphics.fill(13, 113, 288, 130, 0xFFFFFFFF);
+      graphics.fill(13, 113, 287, 129, 0xFF8B8B8B);
+      int progressRight = 13 + 274 * progress / 10000;
+      if (progressRight > 13) {
+        graphics.fill(13, 113, progressRight, 129,
+            stage == UniverseAnnihilation.FAILED ? WARNING_COLOR : 0xFF00AA00);
+        graphics.fill(13, 113, progressRight, 114,
+            stage == UniverseAnnihilation.FAILED ? 0xFFFF5555 : 0xFF55FF55);
+      }
+      Component percentage = Component.literal(String.format(java.util.Locale.ROOT, "%.1f%%", progress / 100.0));
+      graphics.text(font, percentage, (imageWidth - font.width(percentage)) / 2, 117, 0xFFFFFFFF, true);
+      drawWrappedText(graphics, Component.translatable(stage == UniverseAnnihilation.FAILED
           ? "gui.magnatour.annihilator.failure_hint" : "gui.magnatour.annihilator.progress_hint"),
-          12, 146, 0xFFFFC1DD, false);
+          146, stage == UniverseAnnihilation.FAILED ? WARNING_COLOR : TEXT_COLOR);
     } else if (selected < 0) {
-      graphics.text(font, Component.translatable("gui.magnatour.annihilator.select"), 12, 29, -1, false);
+      graphics.text(font, Component.translatable("gui.magnatour.annihilator.select"), 12, 29, TEXT_COLOR, false);
     } else {
-      graphics.text(font, Component.translatable("gui.magnatour.annihilator.target"), 12, 43, 0xFFFF8080, false);
+      graphics.text(font, Component.translatable("gui.magnatour.annihilator.target"), 12, 43, WARNING_COLOR, false);
       graphics.text(font, UniverseAnnihilation.dimensionName(menu.getOpeningData().dimensions().get(selected)),
-          12, 60, -1, false);
+          12, 60, TEXT_COLOR, false);
       for (int i = 0; i < 4; i++) {
         String key = i == 1 && !createImage ? "gui.magnatour.annihilator.warning.no_image"
             : "gui.magnatour.annihilator.warning." + i;
-        graphics.text(font, Component.translatable(key),
-            12, 88 + i * 20, 0xFFFFC1DD, false);
+        drawWrappedText(graphics, Component.translatable(key),
+            88 + i * 20, i == 1 && !createImage ? WARNING_COLOR : TEXT_COLOR);
       }
     }
   }
@@ -113,7 +131,8 @@ public final class UniverseAnnihilatorScreen extends AbstractContainerScreen<Uni
       return;
     }
     if (selected >= 0) {
-      addRenderableWidget(Checkbox.builder(Component.translatable("gui.magnatour.annihilator.create_image"), font)
+      addRenderableWidget(Checkbox.builder(Component.translatable("gui.magnatour.annihilator.create_image")
+              .withStyle(style -> style.withColor(TEXT_COLOR & 0xFFFFFF).withoutShadow()), font)
           .pos(leftPos + 12, topPos + 174).maxWidth(276).selected(createImage)
           .onValueChange((checkbox, checked) -> {
             createImage = checked;
@@ -159,6 +178,17 @@ public final class UniverseAnnihilatorScreen extends AbstractContainerScreen<Uni
       int button
   ) {
     if (minecraft.gameMode != null) minecraft.gameMode.handleInventoryButtonClick(menu.containerId, button);
+  }
+
+  private void drawWrappedText(
+      GuiGraphicsExtractor graphics,
+      Component text,
+      int y, int color
+  ) {
+    for (var line : font.split(text, imageWidth - 24)) {
+      graphics.text(font, line, 12, y, color, false);
+      y += font.lineHeight;
+    }
   }
 
 }
