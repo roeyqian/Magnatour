@@ -21,6 +21,7 @@
     "block.PowderSnowBlockMixin",
     "block.PlaceRecipeHelperMixin",
     "block.StemBlockMixin",
+    "entity.AbstractGolemMixin",
     "entity.EatGrassGoalMixin",
     "entity.EntityMixin",
     "entity.LivingEntityMixin",

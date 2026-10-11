@@ -38,6 +38,7 @@ import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.animal.Animal;
+import net.minecraft.world.entity.animal.golem.AbstractGolem;
 import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
@@ -64,24 +65,25 @@ import roeyqian.magnatour.registry.worldgen.CustomStructures;
 
 public final class StructureMobSpawner {
 
+  private static final int DIAMOND_CITY_MAX_SPAWNS_PER_CYCLE = 9;
   private static final int DIAMOND_CITY_SCAN_RADIUS_CHUNKS = 12;
   private static final int DIAMOND_CITY_SHARED_SPAWN_DIVISOR = 3;
   private static final int DIAMOND_CITY_SITE_CEILING_SCAN_DISTANCE = 8;
   private static final int DIAMOND_CITY_SPAWN_SITE_CHUNK_SCAN_BUDGET = 8;
-  private static final int DIAMOND_CITY_TARGET_OBSIDIAN_GOLEMS = 64;
+  private static final int DIAMOND_CITY_TARGET_GOLEMS = 80;
   private static final int GOLD_BELL_TOWER_BELL_SPAWNS_PER_TYPE = 4;
   private static final int GOLD_BELL_TOWER_MAX_POPULATION = 80;
   private static final int GOLD_BELL_TOWER_MAX_SPAWNS_PER_CYCLE = 10;
   private static final int GOLD_BELL_TOWER_SCAN_RADIUS_CHUNKS = 6;
   private static final int GOLD_BELL_TOWER_TARGET_BELL_RINGERS = 48;
   private static final int GOLD_BELL_TOWER_TARGET_BELL_SOULS = 32;
-  private static final int MAX_SPAWNS_PER_CYCLE = 8;
   private static final int TOWN_OF_FORTUNE_MAX_SPAWNS_PER_CYCLE = 2;
   private static final int TOWN_OF_FORTUNE_SCAN_RADIUS_CHUNKS = 10;
   private static final int TOWN_OF_FORTUNE_SPAWN_ATTEMPTS = 48;
   private static final int TOWN_OF_FORTUNE_TARGET_ANIMALS = 16;
   private static final int TOWN_OF_FORTUNE_TARGET_VILLAGERS = 16;
 
+  private static final long DIAMOND_CITY_SPAWN_INTERVAL_TICKS = 40L;
   private static final long GOLD_BELL_TOWER_SPAWN_INTERVAL_TICKS = 40L;
   private static final long SPAWN_INTERVAL_TICKS = 20L;
   private static final long STATE_PRUNE_INTERVAL_TICKS = 200L;
@@ -108,10 +110,10 @@ public final class StructureMobSpawner {
           CustomStructures.DIAMOND_CITY,
           DIAMOND_CITY_SCAN_RADIUS_CHUNKS,
           96.0D,
-          DIAMOND_CITY_TARGET_OBSIDIAN_GOLEMS,
-          DIAMOND_CITY_TARGET_OBSIDIAN_GOLEMS,
-          SPAWN_INTERVAL_TICKS,
-          SPAWN_INTERVAL_TICKS,
+          DIAMOND_CITY_TARGET_GOLEMS,
+          DIAMOND_CITY_TARGET_GOLEMS,
+          DIAMOND_CITY_SPAWN_INTERVAL_TICKS,
+          DIAMOND_CITY_SPAWN_INTERVAL_TICKS,
           DIAMOND_CITY_COUNT_HORIZONTAL_PADDING,
           DIAMOND_CITY_COUNT_VERTICAL_PADDING,
           StructureMobSpawner::countDiamondCityMobs,
@@ -240,11 +242,13 @@ public final class StructureMobSpawner {
             currentTick
         );
       }
-      processLevel(
-          server.getLevel(DIAMOND_CITY_PROFILE.dimensionKey()),
-          DIAMOND_CITY_PROFILE,
-          currentTick
-      );
+      if (currentTick % DIAMOND_CITY_SPAWN_INTERVAL_TICKS == 0L) {
+        processLevel(
+            server.getLevel(DIAMOND_CITY_PROFILE.dimensionKey()),
+            DIAMOND_CITY_PROFILE,
+            currentTick
+        );
+      }
       processLevel(
           server.getLevel(TOWN_OF_FORTUNE_PROFILE.dimensionKey()),
           TOWN_OF_FORTUNE_PROFILE,
@@ -263,6 +267,14 @@ public final class StructureMobSpawner {
       Predicate<Entity> predicate
   ) {
     return level.getEntities((Entity) null, box, predicate).size();
+  }
+
+  private static boolean isDiamondCityGolemType(
+      EntityType<?> type
+  ) {
+    return type == EntityTypes.IRON_GOLEM
+        || type == SupremeEntities.OBSIDIAN_GOLEM
+        || type == SupremeEntities.NETHERITE_GOLEM;
   }
 
   private static boolean isTownOfFortuneAnimal(
@@ -525,7 +537,7 @@ public final class StructureMobSpawner {
     return level.getEntities(
         (Entity) null,
         separationBox,
-        entity -> entity.isAlive() && entity.getType() == SupremeEntities.OBSIDIAN_GOLEM
+        entity -> entity.isAlive() && entity instanceof AbstractGolem
     ).isEmpty();
   }
 
@@ -841,7 +853,7 @@ public final class StructureMobSpawner {
     return countEntities(
         level,
         box,
-        entity -> entity.isAlive() && entity.getType() == SupremeEntities.OBSIDIAN_GOLEM
+        entity -> entity.isAlive() && isDiamondCityGolemType(entity.getType())
     );
   }
 
@@ -952,65 +964,56 @@ public final class StructureMobSpawner {
     if (currentCount >= profile.maxPopulation()) return 0;
 
     int spawnBatch = Math.min(
-        DIAMOND_CITY_TARGET_OBSIDIAN_GOLEMS - currentCount,
-        MAX_SPAWNS_PER_CYCLE
+        profile.maxPopulation() - currentCount,
+        DIAMOND_CITY_MAX_SPAWNS_PER_CYCLE
     );
     if (spawnBatch <= 0) return 0;
 
-    int indoorTarget = spawnBatch >= 2
-        ? Math.max(1, spawnBatch / DIAMOND_CITY_SHARED_SPAWN_DIVISOR)
-        : spawnBatch;
-    int outdoorTarget = spawnBatch - indoorTarget >= 1
-        ? Math.min(indoorTarget, spawnBatch - indoorTarget)
-        : 0;
+    List<EntityType<? extends AbstractGolem>> types = List.of(
+        EntityTypes.IRON_GOLEM, SupremeEntities.OBSIDIAN_GOLEM, SupremeEntities.NETHERITE_GOLEM
+    );
+    int[] populations = new int[types.size()];
+    AABB countBox = mobCountBox(structureBox, profile);
+    for (int index = 0; index < types.size(); index++) {
+      EntityType<?> type = types.get(index);
+      populations[index] = countEntities(
+          level, countBox, entity -> entity.isAlive() && entity.getType() == type
+      );
+    }
 
     DiamondCitySpawnSites spawnSites = state.diamondCitySpawnSites(structureBox);
-    spawnSites.scanLoadedChunks(
-        level,
-        indoorTarget,
-        outdoorTarget,
-        spawnBatch * 2
-    );
+    int preferredTarget = Math.max(1, spawnBatch / DIAMOND_CITY_SHARED_SPAWN_DIVISOR);
+    spawnSites.scanLoadedChunks(level, preferredTarget, preferredTarget, spawnBatch * 2);
 
     int spawned = 0;
     Set<BlockPos> reservedSpawnSites = new HashSet<>();
-    if (indoorTarget > 0) {
-      spawned += spawnPersistentGroundMobsFromCandidates(
-          level,
-          random,
-          SupremeEntities.OBSIDIAN_GOLEM,
-          indoorTarget,
-          spawnSites.underCoverInterior,
-          true,
+    for (int slot = 0; slot < spawnBatch; slot++) {
+      // Balance the surviving population, including replacements after deaths.
+      int typeIndex = 0;
+      for (int index = 1; index < populations.length; index++) {
+        if (populations[index] < populations[typeIndex]) typeIndex = index;
+      }
+      List<BlockPos> preferred = switch (slot % DIAMOND_CITY_SHARED_SPAWN_DIVISOR) {
+        case 0 -> spawnSites.underCoverInterior;
+        case 1 -> spawnSites.openAir;
+        default -> spawnSites.fallback;
+      };
+      int added = spawnPersistentGroundMobsFromCandidates(
+          level, random, types.get(typeIndex), 1, preferred, true,
           pos -> isDiamondCitySpawnSiteAvailable(level, spawnSites, reservedSpawnSites, pos),
           reservedSpawnSites::add
       );
-    }
-    if (outdoorTarget > 0) {
-      spawned += spawnPersistentGroundMobsFromCandidates(
-          level,
-          random,
-          SupremeEntities.OBSIDIAN_GOLEM,
-          outdoorTarget,
-          spawnSites.openAir,
-          true,
-          pos -> isDiamondCitySpawnSiteAvailable(level, spawnSites, reservedSpawnSites, pos),
-          reservedSpawnSites::add
-      );
-    }
-
-    int remaining = spawnBatch - spawned;
-    if (remaining > 0) {
-      spawned += spawnPersistentGroundMobsFromCandidates(
-          level,
-          random,
-          SupremeEntities.OBSIDIAN_GOLEM,
-          remaining,
-          spawnSites.fallback,
-          true,
-          pos -> isDiamondCitySpawnSiteAvailable(level, spawnSites, reservedSpawnSites, pos),
-          reservedSpawnSites::add
-      );
+      if (added == 0 && preferred != spawnSites.fallback) {
+        added = spawnPersistentGroundMobsFromCandidates(
+            level, random, types.get(typeIndex), 1, spawnSites.fallback, true,
+            pos -> isDiamondCitySpawnSiteAvailable(level, spawnSites, reservedSpawnSites, pos),
+            reservedSpawnSites::add
+        );
+      }
+      // Do not replace a blocked type with extra mobs of the other types.
+      if (added == 0) break;
+      populations[typeIndex] += added;
+      spawned += added;
     }
 
     return spawned;
@@ -1244,7 +1247,7 @@ public final class StructureMobSpawner {
           findGroundSpawnCandidatesByCeiling(
               level,
               chunkBox,
-              SupremeEntities.OBSIDIAN_GOLEM,
+              EntityTypes.IRON_GOLEM,
               DIAMOND_CITY_SPAWN_FLOOR,
               DIAMOND_CITY_INTERIOR_FLOOR,
               DIAMOND_CITY_SITE_CEILING_SCAN_DISTANCE

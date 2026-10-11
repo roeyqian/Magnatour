@@ -42,6 +42,7 @@ import org.jspecify.annotations.Nullable;
 
 // Magnatour
 import roeyqian.magnatour.entity.CustomGolem;
+import roeyqian.magnatour.entity.DiamondCityGolemTargetGoal;
 import roeyqian.magnatour.entity.EntityLootTableHelper;
 
 public class NetheriteGolem extends AbstractGolem implements NeutralMob {
@@ -82,7 +83,7 @@ public class NetheriteGolem extends AbstractGolem implements NeutralMob {
       final @NonNull LivingEntity target
   ) {
     if (target.is(EntityTypes.PLAYER)) {
-      return false;
+      return DiamondCityGolemTargetGoal.isHostileToPlayer(this, target) && super.canAttack(target);
     }
 
     return super.canAttack(target);
@@ -337,7 +338,8 @@ public class NetheriteGolem extends AbstractGolem implements NeutralMob {
       return false;
     }
 
-    return target instanceof Enemy
+    return DiamondCityGolemTargetGoal.isHostileToPlayer(this, target)
+        || target instanceof Enemy
         || this.isNotPlayerCreated()
         || this.shouldProtectPlayersAgainst(target);
   }
