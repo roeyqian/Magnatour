@@ -21,7 +21,6 @@ public final class CustomNetworks {
     StarAtlas.initNetworking();
     NetworkManagerForBlock.registerDurableItemModeNetworking();
     NetworkManagerForBlock.registerUniverseBucketPickupNetworking();
-    NetworkManagerForBlock.registerUniverseBootsNetworking();
     NetworkManagerForBlock.registerUniverseConsoleBoundBlockNetworking();
 
     NetworkManagerForItem.registerItemHubNetworking();

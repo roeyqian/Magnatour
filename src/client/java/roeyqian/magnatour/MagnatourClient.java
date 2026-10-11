@@ -27,7 +27,6 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 // Magnatour
 import roeyqian.magnatour.block.VirtualBlockLightManager;
 import roeyqian.magnatour.registry.input.RegKeyBindings;
-import roeyqian.magnatour.registry.input.RegUniverseBootsFlashing;
 import roeyqian.magnatour.registry.output.RegBlockLayers;
 import roeyqian.magnatour.registry.output.RegEntityLayers;
 import roeyqian.magnatour.registry.output.RegItemTooltips;
@@ -57,7 +56,6 @@ public class MagnatourClient implements ClientModInitializer {
     RegBlockLayers.init();
     RegItemTooltips.init();
     RegKeyBindings.init();
-    RegUniverseBootsFlashing.init();
   }
 
 }

@@ -7,11 +7,6 @@
  */
 package roeyqian.magnatour.level;
 
-// Java Standard
-import java.util.HashMap;
-import java.util.Set;
-import java.util.UUID;
-
 // Fabric
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
@@ -21,15 +16,11 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponentType;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -46,21 +37,13 @@ import roeyqian.magnatour.item.universe.UniverseConsole;
 import roeyqian.magnatour.item.universe.UniverseOmniBlade;
 import roeyqian.magnatour.item.universe.UniverseUltimaSword;
 import roeyqian.magnatour.level.network.DurableItemModePayload;
-import roeyqian.magnatour.level.network.UniverseBootsDashPayload;
 import roeyqian.magnatour.level.network.UniverseBucketPickupPayload;
 import roeyqian.magnatour.level.network.UniverseConsoleBoundBlockPayload;
 import roeyqian.magnatour.menu.universe.UniverseConsoleMenu;
 import roeyqian.magnatour.mixinhelper.server.ServerHelperForEquipment;
-import roeyqian.magnatour.registry.content.UniverseItems;
 import roeyqian.magnatour.registry.logic.CustomComponents;
 
 public final class NetworkManagerForBlock {
-
-  public static final long UNIVERSE_BOOTS_COOLDOWN_MS = 150;
-
-  public static final double UNIVERSE_BOOTS_DASH_DISTANCE = 5.0;
-
-  public static final HashMap<UUID, Long> cooldowns = new HashMap<>();
 
   private NetworkManagerForBlock() {}
 
@@ -100,68 +83,6 @@ public final class NetworkManagerForBlock {
             default -> {}
           }
         })
-    );
-  }
-
-  public static void registerUniverseBootsNetworking() {
-    PayloadTypeRegistry.serverboundPlay().register(
-        UniverseBootsDashPayload.ID,
-        UniverseBootsDashPayload.CODEC
-    );
-    ServerPlayNetworking.registerGlobalReceiver(
-        UniverseBootsDashPayload.ID,
-        (payload, context) -> {
-          ServerPlayer player = context.player();
-          int dir = payload.direction();
-
-          context.server().execute(() -> {
-            if (dir < 0 || dir > 3) return;
-            if (!player.isShiftKeyDown()) return;
-            if (!(player.getItemBySlot(EquipmentSlot.FEET).is(UniverseItems.UNIVERSE_BOOTS))) {
-              return;
-            }
-
-            long now = System.currentTimeMillis();
-            long cooldown = cooldowns.getOrDefault(player.getUUID(), 0L);
-            if (now - cooldown < UNIVERSE_BOOTS_COOLDOWN_MS) return;
-            cooldowns.put(player.getUUID(), now);
-
-            Vec3 dashVec = calcDirection(player).scale(UNIVERSE_BOOTS_DASH_DISTANCE);
-            Vec3 target = player.position().add(dashVec);
-
-            ServerLevel world = player.level();
-            world.sendParticles(
-                ParticleTypes.CLOUD,
-                player.getX(), player.getY() + 0.5,
-                player.getZ(), 15,
-                0.3, 0.3,
-                0.3, 0.05
-            );
-
-            player.teleportTo(
-                world,
-                target.x, target.y,
-                target.z, Set.of(),
-                player.getYRot(), player.getXRot(),
-                false
-            );
-
-            world.sendParticles(
-                ParticleTypes.REVERSE_PORTAL,
-                target.x, target.y + 0.5,
-                target.z, 20,
-                0.3, 0.5,
-                0.3, 0.05
-            );
-            world.playSound(
-                null,
-                player.blockPosition(),
-                SoundEvents.ENDERMAN_TELEPORT,
-                SoundSource.PLAYERS,
-                1.0F, 1.0F
-            );
-          });
-        }
     );
   }
 
@@ -299,13 +220,6 @@ public final class NetworkManagerForBlock {
     Component message = Component.translatable(next == 1 ? translation + ".mode_1" : translation + ".mode_0")
         .withStyle(next == 1 ? ChatFormatting.DARK_RED : ChatFormatting.RED);
     player.sendOverlayMessage(message);
-  }
-
-  private static Vec3 calcDirection(
-      ServerPlayer player
-  ) {
-    double rad = Math.toRadians(player.getYRot());
-    return new Vec3(-Math.sin(rad), 0, Math.cos(rad));
   }
 
   private static void handleUniverseConsoleBoundBlockAction(

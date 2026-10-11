@@ -26,7 +26,7 @@ public class UniverseBoots extends Item {
       Properties settings
   ) {
     return CustomItemSetting.applyUniverseDefaults(settings).component(
-        DataComponents.LORE, CustomItemSetting.universeLore("universe_boots", 3)
+        DataComponents.LORE, CustomItemSetting.universeLore("universe_boots", 2)
     );
   }
 

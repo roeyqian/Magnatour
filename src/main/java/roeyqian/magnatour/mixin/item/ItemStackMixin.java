@@ -18,7 +18,9 @@ import net.minecraft.world.item.enchantment.Enchantment;
 // SpongePowered Mixin
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Constant;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyConstant;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
@@ -29,6 +31,15 @@ import roeyqian.magnatour.registry.content.UniverseItems;
 
 @Mixin(value = ItemStack.class, priority = 3600000)
 public class ItemStackMixin {
+
+  /* Inventory stacks must survive saving and loading above the vanilla count limit.
+   */
+  @ModifyConstant(method = "lambda$static$1(Lcom/mojang/serialization/codecs/RecordCodecBuilder$Instance;)Lcom/mojang/datafixers/kinds/App;", constant = @Constant(intValue = 99), remap = false)
+  private static int expandSavedStackCount(
+      int vanillaLimit
+  ) {
+    return 512;
+  }
 
   /* Universe Banquet: Preserve the item when eating or feeding mobs
    */
