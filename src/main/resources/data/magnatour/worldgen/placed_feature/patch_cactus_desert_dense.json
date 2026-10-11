@@ -1,9 +1,9 @@
 {
-  "feature": "minecraft:cactus",
+  "feature": "magnatour:cactus_desert_cactus",
   "placement": [
     {
       "type": "minecraft:count",
-      "count": 32
+      "count": 8
     },
     {
       "type": "minecraft:in_square"
