@@ -44,9 +44,9 @@ import roeyqian.magnatour.registry.content.SupremeBlocks;
 public final class GoldBellTowerPiece extends StructurePiece {
 
   private static final Identifier LOWER_TEMPLATE =
-      Identifier.fromNamespaceAndPath(Magnatour.MOD_ID, "gold_bell_tower_1");
+      Identifier.fromNamespaceAndPath(Magnatour.MOD_ID, "gold_bell_tower/tower_1");
   private static final Identifier UPPER_TEMPLATE =
-      Identifier.fromNamespaceAndPath(Magnatour.MOD_ID, "gold_bell_tower_2");
+      Identifier.fromNamespaceAndPath(Magnatour.MOD_ID, "gold_bell_tower/tower_2");
 
   private final Vec3i lowerSize;
   private final Vec3i upperSize;

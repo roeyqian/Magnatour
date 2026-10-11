@@ -51,9 +51,9 @@ public final class GoldBellTowerStructure extends Structure {
   private static final long CELL_SELECTION_BUCKETS = 3L;
 
   private static final Identifier LOWER_TEMPLATE =
-      Identifier.fromNamespaceAndPath(Magnatour.MOD_ID, "gold_bell_tower_1");
+      Identifier.fromNamespaceAndPath(Magnatour.MOD_ID, "gold_bell_tower/tower_1");
   private static final Identifier UPPER_TEMPLATE =
-      Identifier.fromNamespaceAndPath(Magnatour.MOD_ID, "gold_bell_tower_2");
+      Identifier.fromNamespaceAndPath(Magnatour.MOD_ID, "gold_bell_tower/tower_2");
 
   public GoldBellTowerStructure(
       StructureSettings settings

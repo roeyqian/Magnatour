@@ -47,7 +47,7 @@ final class DiamondCityLayout {
   // A chunk-centered city covers exactly chunks -8 through +8 on both axes.
   private static final int CITY_WIDTH = BORDER * 2 + COLUMNS * PLOT_SIZE + (COLUMNS - 1) * STREET_WIDTH;
 
-  private static final Identifier FOUNTAIN_PLAZA = Identifier.fromNamespaceAndPath(Magnatour.MOD_ID, "diamond_city_fountain_plaza");
+  private static final Identifier FOUNTAIN_PLAZA = Identifier.fromNamespaceAndPath(Magnatour.MOD_ID, "diamond_city/fountain_plaza");
 
   private final Vec3i citySize;
 
@@ -71,9 +71,9 @@ final class DiamondCityLayout {
     for (int type = 0; type < 3; type++) {
       int columns = 1 << type;
       String label = switch (type) {
-        case 0 -> "hall_i";
-        case 1 -> "mansion_ii";
-        default -> "tower_iii";
+        case 0 -> "hall";
+        case 1 -> "mansion";
+        default -> "tower";
       };
       List<Tile> tiles = new ArrayList<>();
       int width = 0;
@@ -85,7 +85,7 @@ final class DiamondCityLayout {
         for (int column = 0; column < columns; column++) {
           String suffix = "_" + (row * columns + column + 1);
           Identifier id = Identifier.fromNamespaceAndPath(
-              Magnatour.MOD_ID, "diamond_city_" + label + suffix
+              Magnatour.MOD_ID, "diamond_city/" + label + suffix
           );
           Optional<StructureTemplate> template = templates.get(id);
           if (template.isEmpty()) return Optional.empty();
@@ -194,7 +194,7 @@ final class DiamondCityLayout {
         if (!new BoundingBox(pos.getX(), pos.getY(), pos.getZ(),
             pos.getX() + 15, origin.getY() + 18, pos.getZ() + 15).intersects(clip)) continue;
         Identifier id = Identifier.fromNamespaceAndPath(
-            Magnatour.MOD_ID, "diamond_city_infrastructure_iv_" + (row * columns + column + 1)
+            Magnatour.MOD_ID, "diamond_city/infrastructure_" + (row * columns + column + 1)
         );
         templates.get(id).ifPresent(template ->
             template.placeInWorld(level, pos, pos, settings, random, 2)
