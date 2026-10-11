@@ -1,3 +1,4 @@
+import groovy.json.JsonGenerator
 import groovy.json.JsonSlurper
 import com.sun.source.tree.ClassTree
 import com.sun.source.tree.IdentifierTree
@@ -1700,6 +1701,65 @@ def collectJavaComments = { String source ->
 		}
 	}
 	comments.sort()
+}
+
+tasks.register("formatJSONLang") {
+	group = "formatting"
+	description = "Groups Magnatour language JSON entries by category with a blank line between categories."
+	def languageFiles = fileTree("src/main/resources/assets/magnatour/lang") {
+		include "*.json"
+	}
+	inputs.files(languageFiles)
+	outputs.upToDateWhen { false }
+
+	doLast {
+		// Category order from example.txt; unlisted categories follow alphabetically.
+		def categoryOrder = [
+				"key", "msg", "gui", "tag", "lore", "dimension", "biome", "group", "tooltip",
+				"item", "block", "entity", "potion", "advancements"
+		]
+		def jsonGenerator = new JsonGenerator.Options().disableUnicodeEscaping().build()
+		def pendingWrites = [:]
+		languageFiles.files.sort { it.name }.each { File languageFile ->
+			String original = languageFile.getText("UTF-8")
+			def translations = new JsonSlurper().parseText(original)
+			if (!(translations instanceof Map) || translations.any { key, value -> !(value instanceof String) }) {
+				throw new GradleException("Expected a JSON object of translation strings in ${languageFile}; no language files were written.")
+			}
+
+			// Scan whole string tokens to preserve key order without matching inside values.
+			def keys = []
+			def stringTokens = original =~ /("(?:\\.|[^"\\])*")(\s*:)?/
+			while (stringTokens.find()) {
+				if (stringTokens.group(2) != null) {
+					keys << new JsonSlurper().parseText(stringTokens.group(1))
+				}
+			}
+			if (keys.size() != translations.size() || keys.toSet() != translations.keySet()) {
+				throw new GradleException("Duplicate or invalid translation keys in ${languageFile}; no language files were written.")
+			}
+
+			def groupedKeys = keys.groupBy { String key -> key.tokenize('.').first() }
+			def categories = categoryOrder.findAll { groupedKeys.containsKey(it) }
+			categories.addAll(groupedKeys.keySet().findAll { !categoryOrder.contains(it) }.sort())
+			String lineSeparator = original.contains("\r\n") ? "\r\n" : "\n"
+			def lines = []
+			int entryIndex = 0
+			categories.eachWithIndex { String category, int categoryIndex ->
+				if (categoryIndex > 0) lines << ""
+				groupedKeys[category].each { String key ->
+					entryIndex++
+					String comma = entryIndex < keys.size() ? "," : ""
+					lines << "  ${jsonGenerator.toJson(key)}: ${jsonGenerator.toJson(translations[key])}${comma}"
+				}
+			}
+			String formatted = (["{"] + lines + ["}"]).join(lineSeparator) + lineSeparator
+			if (formatted != original) pendingWrites[languageFile] = formatted
+		}
+		// Prepare every file successfully before writing any changes.
+		pendingWrites.each { File languageFile, String formatted -> languageFile.write(formatted, "UTF-8") }
+		logger.lifecycle("Formatted ${pendingWrites.size()} language JSON file(s).")
+	}
 }
 
 tasks.register("formatJavaHead") {
