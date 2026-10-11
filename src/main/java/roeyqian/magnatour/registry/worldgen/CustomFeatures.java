@@ -12,6 +12,7 @@ import com.mojang.serialization.MapCodec;
 
 // Magnatour
 import roeyqian.magnatour.Magnatour;
+import roeyqian.magnatour.levelgen.feature.GiantIceSpikeFeature;
 import roeyqian.magnatour.levelgen.tree.OreTreeFeature;
 import roeyqian.magnatour.registry.WorldgenRegHelper;
 
@@ -20,6 +21,13 @@ import roeyqian.magnatour.registry.WorldgenRegHelper;
  * Universe Group: Feature
  */
   public final class CustomFeatures {
+
+  // Supreme Group: Harvest Continent
+  public static final MapCodec<GiantIceSpikeFeature> GIANT_ICE_SPIKE =
+      WorldgenRegHelper.registerFeature(
+          "giant_ice_spike",
+          GiantIceSpikeFeature.CODEC
+      );
 
   // Supreme Group: Ore Continent
   public static final MapCodec<OreTreeFeature> ORE_TREE =

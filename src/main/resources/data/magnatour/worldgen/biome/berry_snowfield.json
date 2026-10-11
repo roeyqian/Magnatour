@@ -15,8 +15,8 @@
         "sound": "minecraft:music.game"
       }
     },
-    "minecraft:visual/fog_color": "#e2f1ff",
-    "minecraft:visual/sky_color": "#a4c5f2",
+    "minecraft:visual/fog_color": "#e4e4e4",
+    "minecraft:visual/sky_color": "#c8c8c8",
     "minecraft:gameplay/natural_mob_spawns": {
       "argument": {
         "spawn_costs": {},
@@ -138,7 +138,9 @@
   "features": [
     [],
     [],
-    [],
+    [
+      "magnatour:berry_snowfield_ice_spikes"
+    ],
     [],
     [],
     [],
