@@ -53,9 +53,9 @@ public final class HarvestContinentTerrain {
 
   private static final int LAKE_CENTER_ISLAND_BASE_HEIGHT = 65 + SURFACE_Y_OFFSET;
   private static final int LAKE_CENTER_ISLAND_MAX_HEIGHT = 70 + SURFACE_Y_OFFSET;
-  private static final int PUMPKIN_GORGE_BASE_HEIGHT = 256 + SURFACE_Y_OFFSET;
-  private static final int PUMPKIN_GORGE_INTERIOR_MIN_HEIGHT = 250 + SURFACE_Y_OFFSET;
-  private static final int PUMPKIN_GORGE_MAX_HEIGHT = 301 + SURFACE_Y_OFFSET;
+  private static final int PUMPKIN_GORGE_BASE_HEIGHT = 150 + SURFACE_Y_OFFSET;
+  private static final int PUMPKIN_GORGE_INTERIOR_MIN_HEIGHT = 144 + SURFACE_Y_OFFSET;
+  private static final int PUMPKIN_GORGE_MAX_HEIGHT = 214 + SURFACE_Y_OFFSET;
   private static final int TREE_GRID_SIZE = 32;
   private static final int WHEAT_BASE_HEIGHT = 128 + SURFACE_Y_OFFSET;
   private static final int WHEAT_INTERIOR_MAX_HEIGHT = 135 + SURFACE_Y_OFFSET;
