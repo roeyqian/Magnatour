@@ -32,9 +32,11 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseFireBlock;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.CampfireBlock;
 import net.minecraft.world.level.block.CandleBlock;
 import net.minecraft.world.level.block.CandleCakeBlock;
+import net.minecraft.world.level.block.TntBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.gameevent.GameEvent;
@@ -45,6 +47,7 @@ import org.jspecify.annotations.NonNull;
 
 // Magnatour
 import roeyqian.magnatour.Magnatour;
+import roeyqian.magnatour.block.supreme.ChunkTntBlock;
 import roeyqian.magnatour.entity.universe.UniverseFireball;
 import roeyqian.magnatour.item.CustomItemSetting;
 import roeyqian.magnatour.item.CustomToolMaterial;
@@ -203,6 +206,21 @@ public class UniverseUltimaSword extends Item {
     Player player = context.getPlayer();
     BlockPos blockPos = context.getClickedPos();
     BlockState blockState = world.getBlockState(blockPos);
+
+    if (blockState.getBlock() instanceof TntBlock
+        || blockState.getBlock() instanceof ChunkTntBlock
+    ) {
+      boolean primed = blockState.getBlock() instanceof ChunkTntBlock
+          ? ChunkTntBlock.prime(world, blockPos, player)
+          : TntBlock.prime(world, blockPos, player, context.getItemInHand());
+      if (primed) {
+        world.setBlock(
+            blockPos, Blocks.AIR.defaultBlockState(),
+            Block.UPDATE_ALL_IMMEDIATE
+        );
+      }
+      return InteractionResult.SUCCESS;
+    }
 
     if (!CampfireBlock.canLight(blockState)
         && !CandleBlock.canLight(blockState)
