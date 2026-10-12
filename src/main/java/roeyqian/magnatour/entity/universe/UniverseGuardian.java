@@ -23,7 +23,6 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -50,8 +49,6 @@ import org.jspecify.annotations.Nullable;
 
 // Magnatour
 import roeyqian.magnatour.entity.EntityLootTableHelper;
-import roeyqian.magnatour.item.universe.UniverseUltimaSword;
-import roeyqian.magnatour.registry.logic.CustomComponents;
 import roeyqian.magnatour.registry.logic.CustomParticles;
 
 public class UniverseGuardian extends TamableAnimal {
@@ -142,18 +139,6 @@ public class UniverseGuardian extends TamableAnimal {
       @NonNull DamageSource source,
       float amount
   ) {
-    if (source.getEntity() instanceof LivingEntity attacker) {
-      ItemStack stack = attacker.getItemInHand(attacker.getUsedItemHand());
-      if (!(attacker instanceof Player)) return false;
-
-      if (stack.getItem() instanceof UniverseUltimaSword
-          && stack.getOrDefault(CustomComponents.UNIVERSE_ULTIMA_SWORD_MODE, 0) == 1) {
-        return super.hurtServer(world, source, amount);
-      }
-    }
-    if (source.is(DamageTypes.GENERIC_KILL)) {
-      return super.hurtServer(world, source, amount);
-    }
     return false;
   }
 
@@ -188,6 +173,7 @@ public class UniverseGuardian extends TamableAnimal {
   @Override
   public void tick() {
     super.tick();
+    if (!this.isAlive()) return;
 
     if (this.tickCount % 40 == 0 && this.getHealth() < this.getMaxHealth())
       this.heal(Integer.MAX_VALUE);

@@ -12,8 +12,11 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 
 // SpongePowered Mixin
@@ -26,8 +29,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 // Magnatour
+import roeyqian.magnatour.item.universe.UniverseUltimaSword;
 import roeyqian.magnatour.mixinhelper.entity.EntityHelperForEquipment;
 import roeyqian.magnatour.mixinhelper.item.ItemHelperForEnchantment;
+import roeyqian.magnatour.registry.logic.CustomComponents;
 
 @Mixin(value = Player.class, priority = 3600000)
 public class PlayerMixin {
@@ -40,6 +45,29 @@ public class PlayerMixin {
       Player player
   ) {
     return player.isSpectator() || EntityHelperForEquipment.canUniverseFlyThroughWalls(player);
+  }
+
+  /* Universe Ultima Sword: Force Normal Death Without Applying Damage
+   */
+  @SuppressWarnings("deprecation")
+  @Redirect(method = "attack", at = @At(value = "INVOKE",
+      target = "Lnet/minecraft/world/entity/Entity;hurtOrSimulate(Lnet/minecraft/world/damagesource/DamageSource;F)Z"))
+  private boolean executeUniverseSwordTarget(
+      Entity target,
+      DamageSource source,
+      float amount
+  ) {
+    Player player = (Player) (Object) this;
+    ItemStack weapon = player.getWeaponItem();
+    if (player.level() instanceof ServerLevel
+        && target instanceof LivingEntity living && living.isAlive()
+        && weapon.getItem() instanceof UniverseUltimaSword sword
+        && weapon.getOrDefault(CustomComponents.UNIVERSE_ULTIMA_SWORD_MODE, 0) == 1) {
+      // Trigger execution even when immunity would prevent a successful hit.
+      sword.hurtEnemy(weapon, living, player);
+      return false;
+    }
+    return target.hurtOrSimulate(source, amount);
   }
 
   /* Universe Armors: Absolute Defense

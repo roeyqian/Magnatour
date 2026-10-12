@@ -16,6 +16,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.EquipmentSlotGroup;
@@ -67,7 +68,7 @@ public class UniverseUltimaSword extends Item {
 
     int mode = stack.getOrDefault(CustomComponents.UNIVERSE_ULTIMA_SWORD_MODE, 0);
     target.igniteForTicks(100);
-    if (mode == 1) execUniverseKill(world, target);
+    if (mode == 1) execUniverseKill(world, target, player);
   }
 
   @Override
@@ -144,8 +145,11 @@ public class UniverseUltimaSword extends Item {
 
   private static void execUniverseKill(
       ServerLevel world,
-      LivingEntity target
+      LivingEntity target,
+      Player player
   ) {
+    if (!target.isAlive()) return;
+
     EntityTypes.LIGHTNING_BOLT.spawn(world, target.blockPosition(), EntitySpawnReason.TRIGGERED);
     world.playSound(
         null,
@@ -153,10 +157,14 @@ public class UniverseUltimaSword extends Item {
         SoundEvents.LIGHTNING_BOLT_THUNDER, SoundSource.WEATHER,
         100.0F, 1.0F
     );
-    target.kill(world);
-    if (target.isAlive()) {
-      target.discard();
-    }
+    // Preserve kill credit, player-dependent loot and the death message without
+    // passing through damage immunity or removing the entity before it can die.
+    DamageSource source = world.damageSources().playerAttack(player);
+    target.setLastHurtByPlayer(player, 100);
+    target.setLastHurtByMob(player);
+    target.getCombatTracker().recordDamage(source, target.getHealth());
+    target.setHealth(0.0F);
+    target.die(source);
   }
 
   private static InteractionResult execFireballMode(
