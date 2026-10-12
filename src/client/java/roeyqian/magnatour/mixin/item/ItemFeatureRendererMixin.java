@@ -7,13 +7,18 @@
  */
 package roeyqian.magnatour.mixin.item;
 
+// Mojang
+import com.mojang.blaze3d.vertex.QuadInstance;
+
 // Fabric
 import net.fabricmc.api.Environment;
 import net.fabricmc.api.EnvType;
 
 // Minecraft
 import net.minecraft.client.renderer.feature.ItemFeatureRenderer;
+import net.minecraft.client.renderer.feature.RenderTypeFeatureRenderer;
 import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 
 // SpongePowered Mixin
 import org.spongepowered.asm.mixin.Mixin;
@@ -24,9 +29,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 // Magnatour
 import roeyqian.magnatour.mixinhelper.glint.RenderHelperForGlint;
+import roeyqian.magnatour.renderer.GlintRenderTypes;
 
 @Environment(EnvType.CLIENT) @Mixin(value = ItemFeatureRenderer.class, priority = 3600000)
-public abstract class ItemFeatureRendererMixin {
+public abstract class ItemFeatureRendererMixin extends RenderTypeFeatureRenderer<ItemFeatureRenderer.Submit> {
 
   @Inject(method = "prepareMainSubmit", at = @At("HEAD"))
   private void magnatour$armGlint(
@@ -41,6 +47,17 @@ public abstract class ItemFeatureRendererMixin {
       ItemFeatureRenderer.Submit submit,
       CallbackInfo ci
   ) {
+    var glintType = ((RenderHelperForGlint.UniverseGlintHolder) (Object) submit).universeGlintType();
+    if (glintType != RenderHelperForGlint.GlintType.NONE) {
+      QuadInstance instance = new QuadInstance();
+      instance.setColor(-1);
+      instance.setLightCoords(0x00F000F0);
+      instance.setOverlayCoords(OverlayTexture.NO_OVERLAY);
+      var glint = getVertexBuilder(GlintRenderTypes.itemArmorGlint(glintType == RenderHelperForGlint.GlintType.SUPREME));
+      for (var quad : submit.quads()) {
+        glint.putBakedQuad(submit.pose(), quad, instance);
+      }
+    }
     RenderHelperForGlint.disarmFoilSubmit();
   }
 

@@ -7,6 +7,9 @@
  */
 package roeyqian.magnatour.mixin.item;
 
+// Java Standard
+import java.util.List;
+
 // Fabric
 import net.fabricmc.api.Environment;
 import net.fabricmc.api.EnvType;
@@ -15,11 +18,13 @@ import net.fabricmc.api.EnvType;
 import net.minecraft.client.renderer.SubmitNodeCollection;
 import net.minecraft.client.renderer.feature.ItemFeatureRenderer;
 import net.minecraft.client.renderer.feature.submit.SubmitNode;
+import net.minecraft.client.resources.model.geometry.ItemQuads;
 
 // SpongePowered Mixin
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
+import org.spongepowered.asm.mixin.injection.ModifyVariable;
 
 // Magnatour
 import roeyqian.magnatour.mixinhelper.glint.RenderHelperForGlint;
@@ -52,6 +57,18 @@ public class SubmitNodeCollectionMixin {
       SubmitNode node
   ) {
     return mark(node);
+  }
+
+  @ModifyVariable(method = "submitItem", at = @At("HEAD"), argsOnly = true)
+  private ItemQuads magnatour$useArmorCutoutPhase(
+      ItemQuads quads
+  ) {
+    if (RenderHelperForGlint.UniverseGlintBridge.pending() == RenderHelperForGlint.GlintType.NONE) {
+      return quads;
+    }
+    // The armor-style base/glint pair needs the solid phase and its depth mask.
+    // Keep atlas alpha cutouts, but render semitransparent pixels as surfaces.
+    return new ItemQuads(quads.all(), quads.all(), List.of());
   }
 
 }
