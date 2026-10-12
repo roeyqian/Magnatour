@@ -23,6 +23,8 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
+import net.minecraft.util.random.WeightedList;
+import net.minecraft.world.Difficulty;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
@@ -42,14 +44,19 @@ import net.minecraft.world.phys.Vec3;
 // Magnatour
 import roeyqian.magnatour.Magnatour;
 import roeyqian.magnatour.levelgen.HarvestContinentChunkGenerator;
+import roeyqian.magnatour.levelgen.terrain.HarvestContinentTerrain;
 import roeyqian.magnatour.registry.worldgen.CustomDimensions;
 
-/** Creature-only adaptation of Minecraft 26.3 NaturalSpawner and SpawnState. */
+/** Natural animal spawning and additional surface monster spawning in the cactus desert. */
 public final class BiomeMobSpawner {
 
+  private static final int DESERT_CHUNK_PASSES = 3;
+  private static final int DESERT_LOCAL_POPULATION_LIMIT = 280;
+  private static final int DESERT_MAX_SPAWN_PER_CYCLE = 40;
   private static final int LOCAL_POPULATION_LIMIT = populationLimit(17 * 17);
   private static final int MAX_SPAWN_PER_CYCLE = 10;
 
+  private static final long DESERT_SPAWN_INTERVAL_TICKS = 30L;
   private static final long SPAWN_INTERVAL_TICKS = 400L;
 
   private static boolean tickEventRegistered;
@@ -62,12 +69,15 @@ public final class BiomeMobSpawner {
     // The completed level tick has the game time used by vanilla's chunk spawner.
     ServerTickEvents.END_LEVEL_TICK.register(level -> {
       if (!level.dimension().equals(CustomDimensions.HARVEST_CONTINENT)
-          || level.getGameTime() % SPAWN_INTERVAL_TICKS != 0L
           || !level.tickRateManager().runsNormally()
           || !level.getGameRules().get(GameRules.SPAWN_MOBS)
           || level.players().isEmpty()) return;
       if (level.getChunkSource().getGenerator() instanceof HarvestContinentChunkGenerator generator) {
-        spawnAnimals(level, generator);
+        if (level.getGameTime() % SPAWN_INTERVAL_TICKS == 0L) spawnAnimals(level, generator);
+        if (level.getGameTime() % DESERT_SPAWN_INTERVAL_TICKS == 0L
+            && level.getDifficulty() != Difficulty.PEACEFUL) {
+          spawnDesertMonsters(level, generator);
+        }
       }
     });
   }
@@ -78,12 +88,46 @@ public final class BiomeMobSpawner {
     return Math.max(0, spawnableChunkCount) / 5;
   }
 
+  private static WeightedList<MobSpawnSettings.SpawnerData> getSpawnList(
+      ServerLevel level,
+      HarvestContinentChunkGenerator generator,
+      MobCategory category,
+      BlockPos pos
+  ) {
+    if (category == MobCategory.CREATURE) {
+      return generator.getHarvestAnimalsAt(level, level.structureManager(), pos);
+    }
+    // Recheck every candidate because group walks can cross a biome boundary.
+    return level.getBiome(pos).is(HarvestContinentTerrain.CACTUS_DESERT)
+        ? generator.getMobsAt(level, level.structureManager(), category, pos) : WeightedList.of();
+  }
+
   private static void spawnAnimals(
       ServerLevel level,
       HarvestContinentChunkGenerator generator
   ) {
     int chunkCount = level.getChunkSource().chunkMap.getDistanceManager().getNaturalSpawnChunkCount();
-    SpawnState state = new SpawnState(level, populationLimit(chunkCount));
+    SpawnState state = new SpawnState(level, populationLimit(chunkCount), MobCategory.CREATURE,
+        LOCAL_POPULATION_LIMIT, MAX_SPAWN_PER_CYCLE);
+    spawnMobs(level, generator, state);
+  }
+
+  private static void spawnDesertMonsters(
+      ServerLevel level,
+      HarvestContinentChunkGenerator generator
+  ) {
+    int chunkCount = level.getChunkSource().chunkMap.getDistanceManager().getNaturalSpawnChunkCount();
+    int limit = (int) ((long) chunkCount * DESERT_LOCAL_POPULATION_LIMIT / (17 * 17));
+    SpawnState state = new SpawnState(level, limit, MobCategory.MONSTER,
+        DESERT_LOCAL_POPULATION_LIMIT, DESERT_MAX_SPAWN_PER_CYCLE);
+    spawnMobs(level, generator, state);
+  }
+
+  private static void spawnMobs(
+      ServerLevel level,
+      HarvestContinentChunkGenerator generator,
+      SpawnState state
+  ) {
     if (!state.canSpawn()) return;
 
     // Use vanilla's spawning chunk collection, including its player and chunk
@@ -98,13 +142,77 @@ public final class BiomeMobSpawner {
       chunks.set(i, chunks.get(j));
       chunks.set(j, swap);
     }
-    for (LevelChunk chunk : chunks) {
-      if (!state.canSpawn()) break;
-      if (!level.getWorldBorder().isWithinBounds(chunk.getPos())
-          || !level.canSpawnEntitiesInChunk(chunk.getPos())
-          || !state.canSpawnLocally(chunk.getPos())) continue;
-      spawnForChunk(level, generator, chunk, state);
+    int passes = state.category == MobCategory.MONSTER ? DESERT_CHUNK_PASSES : 1;
+    for (int pass = 0; pass < passes && state.canSpawn(); pass++) {
+      for (LevelChunk chunk : chunks) {
+        if (!state.canSpawn()) break;
+        if (!level.getWorldBorder().isWithinBounds(chunk.getPos())
+            || !level.canSpawnEntitiesInChunk(chunk.getPos())
+            || !state.canSpawnLocally(chunk.getPos())) continue;
+        spawnForChunk(level, generator, chunk, state);
+      }
     }
+  }
+
+  private static BlockPos getRandomPosWithin(
+      ServerLevel level,
+      LevelChunk chunk,
+      boolean surface
+  ) {
+    RandomSource random = level.getRandom();
+    int x = chunk.getPos().getMinBlockX() + random.nextInt(16);
+    int z = chunk.getPos().getMinBlockZ() + random.nextInt(16);
+    if (surface) return new BlockPos(x, level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, x, z), z);
+    int topY = chunk.getHeight(Heightmap.Types.WORLD_SURFACE, x, z) + 1;
+    return new BlockPos(x, Mth.randomBetweenInclusive(random, level.getMinY(), topY), z);
+  }
+
+  private static boolean isRightDistanceToPlayerAndSpawnPoint(
+      ServerLevel level,
+      LevelChunk chunk,
+      BlockPos pos,
+      double distanceSquared
+  ) {
+    if (distanceSquared <= 24.0D * 24.0D) return false;
+    var respawn = level.getRespawnData();
+    if (respawn.dimension() == level.dimension()
+        && respawn.pos().closerToCenterThan(new Vec3(pos.getX() + 0.5D, pos.getY(), pos.getZ() + 0.5D),
+            24.0D)) return false;
+    ChunkPos candidateChunk = ChunkPos.containing(pos);
+    return Objects.equals(candidateChunk, chunk.getPos()) || level.canSpawnEntitiesInChunk(candidateChunk);
+  }
+
+  private static boolean isValidSpawnPositionForType(
+      ServerLevel level,
+      HarvestContinentChunkGenerator generator,
+      MobCategory category,
+      MobSpawnSettings.SpawnerData spawnData,
+      BlockPos pos,
+      double distanceSquared
+  ) {
+    EntityType<?> type = spawnData.type();
+    int despawnDistance = type.getCategory().getDespawnDistance();
+    return type.getCategory() == category
+        && (type.canSpawnFarFromPlayer() || distanceSquared <= (double) despawnDistance * despawnDistance)
+        && type.canSummon()
+        && getSpawnList(level, generator, category, pos).contains(spawnData)
+        && SpawnPlacements.isSpawnPositionOk(type, level, pos)
+        && SpawnPlacements.checkSpawnRules(type, level, EntitySpawnReason.NATURAL, pos, level.getRandom())
+        && level.noCollision(type.getSpawnAABB(pos.getX() + 0.5D, pos.getY(), pos.getZ() + 0.5D));
+  }
+
+  private static Mob createMob(
+      ServerLevel level,
+      EntityType<?> type
+  ) {
+    try {
+      Entity entity = type.create(level, EntitySpawnReason.NATURAL);
+      if (entity instanceof Mob mob) return mob;
+      Magnatour.LOGGER.warn("Cannot naturally spawn entity of type {}", type);
+    } catch (Exception exception) {
+      Magnatour.LOGGER.warn("Failed to create naturally spawning mob", exception);
+    }
+    return null;
   }
 
   private static void spawnForChunk(
@@ -113,12 +221,14 @@ public final class BiomeMobSpawner {
       LevelChunk chunk,
       SpawnState state
   ) {
-    BlockPos origin = getRandomPosWithin(level, chunk);
+    boolean desert = state.category == MobCategory.MONSTER;
+    BlockPos origin = getRandomPosWithin(level, chunk, desert);
+    if (desert && !level.getBiome(origin).is(HarvestContinentTerrain.CACTUS_DESERT)) return;
     if (origin.getY() < level.getMinY() + 1
         || chunk.getBlockState(origin).isRedstoneConductor(chunk, origin)) return;
 
-    // Vanilla tries up to three groups, walking horizontally at the randomly
-    // selected height. There is no surface scan or player-centered spawn ring.
+    // Animals retain vanilla's fixed-height group walk. Desert monsters follow
+    // the surface height so hills do not waste most additional spawn attempts.
     BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
     RandomSource random = level.getRandom();
     int spawnedInChunk = 0;
@@ -132,7 +242,11 @@ public final class BiomeMobSpawner {
       for (int attempt = 0; attempt < attempts && state.canSpawn(); attempt++) {
         x += random.nextInt(6) - random.nextInt(6);
         z += random.nextInt(6) - random.nextInt(6);
-        pos.set(x, origin.getY(), z);
+        if (desert && (!level.hasChunk(x >> 4, z >> 4)
+            || !level.canSpawnEntitiesInChunk(new ChunkPos(x >> 4, z >> 4)))) continue;
+        int y = desert ? level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, x, z) : origin.getY();
+        pos.set(x, y, z);
+        if (desert && !level.getWorldBorder().isWithinBounds(pos)) continue;
         double spawnX = x + 0.5D;
         double spawnZ = z + 0.5D;
         Player nearest = level.getNearestPlayer(spawnX, pos.getY(), spawnZ, -1.0D, false);
@@ -140,12 +254,12 @@ public final class BiomeMobSpawner {
         double distanceSquared = nearest.distanceToSqr(spawnX, pos.getY(), spawnZ);
         if (!isRightDistanceToPlayerAndSpawnPoint(level, chunk, pos, distanceSquared)) continue;
         if (spawnData == null) {
-          var selected = generator.getHarvestAnimalsAt(level, level.structureManager(), pos).getRandom(random);
+          var selected = getSpawnList(level, generator, state.category, pos).getRandom(random);
           if (selected.isEmpty()) break;
           spawnData = selected.get();
           attempts = spawnData.count().sample(random);
         }
-        if (!isValidSpawnPositionForType(level, generator, spawnData, pos, distanceSquared)
+        if (!isValidSpawnPositionForType(level, generator, state.category, spawnData, pos, distanceSquared)
             || !state.canSpawnAt(spawnData.type(), pos)) continue;
 
         Mob mob = createMob(level, spawnData.type());
@@ -169,69 +283,15 @@ public final class BiomeMobSpawner {
     }
   }
 
-  private static BlockPos getRandomPosWithin(
-      ServerLevel level,
-      LevelChunk chunk
-  ) {
-    RandomSource random = level.getRandom();
-    int x = chunk.getPos().getMinBlockX() + random.nextInt(16);
-    int z = chunk.getPos().getMinBlockZ() + random.nextInt(16);
-    int topY = chunk.getHeight(Heightmap.Types.WORLD_SURFACE, x, z) + 1;
-    return new BlockPos(x, Mth.randomBetweenInclusive(random, level.getMinY(), topY), z);
-  }
-
-  private static boolean isRightDistanceToPlayerAndSpawnPoint(
-      ServerLevel level,
-      LevelChunk chunk,
-      BlockPos pos,
-      double distanceSquared
-  ) {
-    if (distanceSquared <= 24.0D * 24.0D) return false;
-    var respawn = level.getRespawnData();
-    if (respawn.dimension() == level.dimension()
-        && respawn.pos().closerToCenterThan(new Vec3(pos.getX() + 0.5D, pos.getY(), pos.getZ() + 0.5D),
-            24.0D)) return false;
-    ChunkPos candidateChunk = ChunkPos.containing(pos);
-    return Objects.equals(candidateChunk, chunk.getPos()) || level.canSpawnEntitiesInChunk(candidateChunk);
-  }
-
-  private static boolean isValidSpawnPositionForType(
-      ServerLevel level,
-      HarvestContinentChunkGenerator generator,
-      MobSpawnSettings.SpawnerData spawnData,
-      BlockPos pos,
-      double distanceSquared
-  ) {
-    EntityType<?> type = spawnData.type();
-    int despawnDistance = type.getCategory().getDespawnDistance();
-    return type.getCategory() == MobCategory.CREATURE
-        && (type.canSpawnFarFromPlayer() || distanceSquared <= (double) despawnDistance * despawnDistance)
-        && type.canSummon()
-        && generator.getHarvestAnimalsAt(level, level.structureManager(), pos).contains(spawnData)
-        && SpawnPlacements.isSpawnPositionOk(type, level, pos)
-        && SpawnPlacements.checkSpawnRules(type, level, EntitySpawnReason.NATURAL, pos, level.getRandom())
-        && level.noCollision(type.getSpawnAABB(pos.getX() + 0.5D, pos.getY(), pos.getZ() + 0.5D));
-  }
-
-  private static Mob createMob(
-      ServerLevel level,
-      EntityType<?> type
-  ) {
-    try {
-      Entity entity = type.create(level, EntitySpawnReason.NATURAL);
-      if (entity instanceof Mob mob) return mob;
-      Magnatour.LOGGER.warn("Cannot naturally spawn entity of type {}", type);
-    } catch (Exception exception) {
-      Magnatour.LOGGER.warn("Failed to create naturally spawning mob", exception);
-    }
-    return null;
-  }
-
   private static final class SpawnState {
 
+    private final int localPopulationLimit;
+    private final int maxSpawnPerCycle;
     private final int populationLimit;
 
     private final ServerLevel level;
+
+    private final MobCategory category;
 
     private final Map<ServerPlayer, Integer> localCounts = new HashMap<>();
 
@@ -244,10 +304,15 @@ public final class BiomeMobSpawner {
 
     private SpawnState(
         ServerLevel level,
-        int populationLimit
+        int populationLimit,
+        MobCategory category,
+        int localPopulationLimit, int maxSpawnPerCycle
     ) {
       this.level = level;
       this.populationLimit = populationLimit;
+      this.category = category;
+      this.localPopulationLimit = localPopulationLimit;
+      this.maxSpawnPerCycle = maxSpawnPerCycle;
       // Match NaturalSpawner.createState: count managed entities in full chunks,
       // excluding persistence-required mobs, without filtering spawn origin.
       for (Entity entity : level.getAllEntities()) {
@@ -258,9 +323,11 @@ public final class BiomeMobSpawner {
         if (level.getChunkSource().getChunkNow(chunkPos.x(), chunkPos.z()) == null) continue;
         MobSpawnSettings.MobSpawnCost cost = spawnCost(entity.getType(), entity.blockPosition());
         if (cost != null) this.potential.addCharge(entity.blockPosition(), cost.charge());
-        if (entity.getType().getCategory() == MobCategory.CREATURE) {
+        if (entity.getType().getCategory() == category
+            && (category != MobCategory.MONSTER
+                || level.getBiome(entity.blockPosition()).is(HarvestContinentTerrain.CACTUS_DESERT))) {
           this.population++;
-          if (entity instanceof Mob) countLocalCreature(chunkPos);
+          if (entity instanceof Mob) countLocalMob(chunkPos);
         }
       }
     }
@@ -274,14 +341,23 @@ public final class BiomeMobSpawner {
           .getMobSpawnCost(type);
     }
 
-    private void countLocalCreature(
+    private void countLocalMob(
         ChunkPos pos
     ) {
       for (ServerPlayer player : playersNear(pos)) this.localCounts.merge(player, 1, Integer::sum);
     }
 
     private boolean canSpawn() {
-      return this.population < this.populationLimit && this.spawned < MAX_SPAWN_PER_CYCLE;
+      return this.population < this.populationLimit && this.spawned < this.maxSpawnPerCycle;
+    }
+
+    private boolean canSpawnLocally(
+        ChunkPos pos
+    ) {
+      for (ServerPlayer player : playersNear(pos)) {
+        if (this.localCounts.getOrDefault(player, 0) < this.localPopulationLimit) return true;
+      }
+      return false;
     }
 
     private List<ServerPlayer> playersNear(
@@ -296,7 +372,7 @@ public final class BiomeMobSpawner {
     ) {
       this.population++;
       this.spawned++;
-      countLocalCreature(mob.chunkPosition());
+      countLocalMob(mob.chunkPosition());
       MobSpawnSettings.MobSpawnCost cost = spawnCost(mob.getType(), mob.blockPosition());
       if (cost != null) this.potential.addCharge(mob.blockPosition(), cost.charge());
     }
@@ -306,17 +382,9 @@ public final class BiomeMobSpawner {
         BlockPos pos
     ) {
       if (!canSpawn()) return false;
+      if (this.category == MobCategory.MONSTER && !canSpawnLocally(ChunkPos.containing(pos))) return false;
       MobSpawnSettings.MobSpawnCost cost = spawnCost(type, pos);
       return cost == null || this.potential.getPotentialEnergyChange(pos, cost.charge()) <= cost.energyBudget();
-    }
-
-    private boolean canSpawnLocally(
-        ChunkPos pos
-    ) {
-      for (ServerPlayer player : playersNear(pos)) {
-        if (this.localCounts.getOrDefault(player, 0) < LOCAL_POPULATION_LIMIT) return true;
-      }
-      return false;
     }
 
   }
