@@ -180,10 +180,10 @@
   "biome.magnatour.ore_plain": "矿石平原",
   "biome.magnatour.universe_meta_void": "寰宇元界虚空",
 
-  "group.magnatour.supreme_item": "超凡物品类",
-  "group.magnatour.supreme_block": "超凡方块类",
-  "group.magnatour.universe_item": "寰宇物品类",
-  "group.magnatour.universe_block": "寰宇方块类",
+  "group.magnatour.supreme_item": "超凡物品",
+  "group.magnatour.supreme_block": "超凡方块",
+  "group.magnatour.universe_item": "寰宇物品",
+  "group.magnatour.universe_block": "寰宇方块",
 
   "tooltip.magnatour.emperor_armor.attributes": "帝王属性：%s",
   "tooltip.magnatour.emperor_armor.tier.low": "低",
