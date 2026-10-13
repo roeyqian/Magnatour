@@ -47,6 +47,10 @@ public interface CustomToolMaterial {
       Registries.ENCHANTMENT,
       Identifier.fromNamespaceAndPath(Magnatour.MOD_ID, "omniscience")
   );
+  ResourceKey<Enchantment> REVELATION = ResourceKey.create(
+      Registries.ENCHANTMENT,
+      Identifier.fromNamespaceAndPath(Magnatour.MOD_ID, "revelation")
+  );
 
   static Item.Properties applyEternity(
       Item.Properties settings,
@@ -77,6 +81,17 @@ public interface CustomToolMaterial {
     return settings.delayedComponent(DataComponents.ENCHANTMENTS, registries -> {
       ItemEnchantments.Mutable enchantments = new ItemEnchantments.Mutable(ItemEnchantments.EMPTY);
       enchantments.set(registries.lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(OMNISCIENCE), level);
+      return enchantments.toImmutable();
+    });
+  }
+
+  static Item.Properties applyRevelation(
+      Item.Properties settings,
+      int level
+  ) {
+    return settings.delayedComponent(DataComponents.ENCHANTMENTS, registries -> {
+      ItemEnchantments.Mutable enchantments = new ItemEnchantments.Mutable(ItemEnchantments.EMPTY);
+      enchantments.set(registries.lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(REVELATION), level);
       return enchantments.toImmutable();
     });
   }

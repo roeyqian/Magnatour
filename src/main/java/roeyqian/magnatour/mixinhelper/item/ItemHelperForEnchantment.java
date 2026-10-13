@@ -60,6 +60,10 @@ public final class ItemHelperForEnchantment {
       Registries.ITEM,
       Identifier.fromNamespaceAndPath(Magnatour.MOD_ID, "enchantable/omniscience")
   );
+  private static final TagKey<Item> REVELATION_ITEMS = TagKey.create(
+      Registries.ITEM,
+      Identifier.fromNamespaceAndPath(Magnatour.MOD_ID, "enchantable/revelation")
+  );
 
   private ItemHelperForEnchantment() {}
 
@@ -181,12 +185,20 @@ public final class ItemHelperForEnchantment {
         .anyMatch(enchantment -> enchantment.is(CustomToolMaterial.OMNISCIENCE));
   }
 
+  public static boolean hasRevelation(
+      ItemStack stack
+  ) {
+    return EnchantmentHelper.getEnchantmentsForCrafting(stack).keySet().stream()
+        .anyMatch(enchantment -> enchantment.is(CustomToolMaterial.REVELATION));
+  }
+
   public static boolean isDivineEnchantment(
       Holder<Enchantment> enchantment
   ) {
     return enchantment.is(CustomToolMaterial.ETERNITY)
         || enchantment.is(CustomToolMaterial.FINALITY)
-        || enchantment.is(CustomToolMaterial.OMNISCIENCE);
+        || enchantment.is(CustomToolMaterial.OMNISCIENCE)
+        || enchantment.is(CustomToolMaterial.REVELATION);
   }
 
   public static boolean isEmperorTool(
@@ -221,7 +233,8 @@ public final class ItemHelperForEnchantment {
   ) {
     return enchantment.definition().supportedItems().unwrapKey()
         .filter(tag -> tag.equals(ETERNITY_ITEMS)
-            || tag.equals(FINALITY_ITEMS) || tag.equals(OMNISCIENCE_ITEMS)).isPresent();
+            || tag.equals(FINALITY_ITEMS) || tag.equals(OMNISCIENCE_ITEMS)
+            || tag.equals(REVELATION_ITEMS)).isPresent();
   }
 
   public static boolean supportsAxeOrPickaxe(

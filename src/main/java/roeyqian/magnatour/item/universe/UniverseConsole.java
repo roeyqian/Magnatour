@@ -52,6 +52,7 @@ import org.jspecify.annotations.Nullable;
 // Magnatour
 import roeyqian.magnatour.Magnatour;
 import roeyqian.magnatour.item.CustomItemSetting;
+import roeyqian.magnatour.item.CustomToolMaterial;
 import roeyqian.magnatour.menu.universe.UniverseConsoleMenu;
 import roeyqian.magnatour.registry.logic.CustomComponents;
 
@@ -96,7 +97,7 @@ public class UniverseConsole extends Item {
   private static Properties applySettings(
       Properties settings
   ) {
-    return CustomItemSetting.applyUniverseDefaults(settings)
+    return CustomToolMaterial.applyRevelation(CustomItemSetting.applyUniverseDefaults(settings), 10)
         .component(
             DataComponents.LORE,
             CustomItemSetting.universeLore("universe_console")

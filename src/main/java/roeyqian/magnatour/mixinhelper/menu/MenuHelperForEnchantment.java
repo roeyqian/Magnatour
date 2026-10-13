@@ -34,7 +34,8 @@ public final class MenuHelperForEnchantment {
     // Existing divine enchantments may be retained, but never transferred or upgraded.
     if (!ItemHelperForEnchantment.hasEternity(additionStack)
         && !ItemHelperForEnchantment.hasFinality(additionStack)
-        && !ItemHelperForEnchantment.hasOmniscience(additionStack)) {
+        && !ItemHelperForEnchantment.hasOmniscience(additionStack)
+        && !ItemHelperForEnchantment.hasRevelation(additionStack)) {
       if (!ItemHelperForEnchantment.isUniverseEnchantBlocked(baseStack)) {
         return;
       }
