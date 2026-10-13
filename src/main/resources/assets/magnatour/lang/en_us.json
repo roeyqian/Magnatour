@@ -460,5 +460,8 @@
   "advancements.magnatour.universe_teleport_point.title": "Universe Teleport Point",
   "advancements.magnatour.universe_teleport_point.description": "Anchor coordinates beyond dimensions",
   "advancements.magnatour.universe_sapling.title": "Universe Sapling",
-  "advancements.magnatour.universe_sapling.description": "Plant the beginning of the cosmos"
+  "advancements.magnatour.universe_sapling.description": "Plant the beginning of the cosmos",
+
+  "enchantment.magnatour.finality": "Finality",
+  "enchantment.magnatour.omniscience": "Omniscience"
 }

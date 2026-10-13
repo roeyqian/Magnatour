@@ -1,0 +1,93 @@
+{
+  "anvil_cost": 8,
+  "description": {
+    "translate": "enchantment.magnatour.finality",
+    "fallback": "终焉神"
+  },
+  "effects": {
+    "minecraft:attributes": [
+      {
+        "amount": {
+          "type": "minecraft:linear",
+          "base": 100.0,
+          "per_level_above_first": 100.0
+        },
+        "attribute": "minecraft:sweeping_damage_ratio",
+        "id": "magnatour:enchantment.finality.sweeping_edge",
+        "operation": "add_value"
+      },
+      {
+        "amount": {
+          "type": "minecraft:linear",
+          "base": 100.0,
+          "per_level_above_first": 100.0
+        },
+        "attribute": "minecraft:entity_interaction_range",
+        "id": "magnatour:enchantment.finality.entity_interaction_range",
+        "operation": "add_value"
+      }
+    ],
+    "minecraft:armor_effectiveness": [
+      {
+        "effect": {
+          "type": "minecraft:add",
+          "value": {
+            "type": "minecraft:linear",
+            "base": -0.5,
+            "per_level_above_first": -0.5
+          }
+        }
+      }
+    ],
+    "minecraft:damage": [
+      {
+        "effect": {
+          "type": "minecraft:multiply",
+          "factor": {
+            "type": "minecraft:linear",
+            "base": 100.0,
+            "per_level_above_first": 100.0
+          }
+        }
+      }
+    ],
+    "minecraft:post_attack": [
+      {
+        "affected": "victim",
+        "effect": {
+          "type": "minecraft:ignite",
+          "duration": {
+            "type": "minecraft:exponent",
+            "base": 2.0,
+            "power": {
+              "type": "minecraft:linear",
+              "base": 2.0,
+              "per_level_above_first": 1.0
+            }
+          }
+        },
+        "enchanted": "attacker",
+        "requirements": {
+          "type": "minecraft:damage_source_properties",
+          "predicate": {
+            "is_direct": true
+          }
+        }
+      }
+    ]
+  },
+  "max_cost": {
+    "base": 60,
+    "per_level_above_first": 0
+  },
+  "max_level": 10,
+  "min_cost": {
+    "base": 30,
+    "per_level_above_first": 0
+  },
+  "slots": [
+    "mainhand"
+  ],
+  "supported_items": "#magnatour:enchantable/finality",
+  "weight": 1
+}

@@ -34,6 +34,9 @@ public final class EntityHelperForCreature {
     if ("attribute.name.max_health".equals(descriptionId)
         || "attribute.name.attack_damage".equals(descriptionId)
         || "attribute.name.attack_speed".equals(descriptionId)
+        || "attribute.name.sweeping_damage_ratio".equals(descriptionId)
+        || "attribute.name.entity_interaction_range".equals(descriptionId)
+        || "attribute.name.block_interaction_range".equals(descriptionId)
         || "attribute.name.armor".equals(descriptionId)
         || "attribute.name.armor_toughness".equals(descriptionId)) {
       return Integer.MAX_VALUE;

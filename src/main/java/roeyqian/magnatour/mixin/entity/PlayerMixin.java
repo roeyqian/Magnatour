@@ -65,7 +65,8 @@ public class PlayerMixin {
         && weapon.getOrDefault(CustomComponents.UNIVERSE_ULTIMA_SWORD_MODE, 0) == 1) {
       // Trigger execution even when immunity would prevent a successful hit.
       sword.hurtEnemy(weapon, living, player);
-      return false;
+      // Report a successful hit so vanilla can perform the sword's sweep attack.
+      return true;
     }
     return target.hurtOrSimulate(source, amount);
   }

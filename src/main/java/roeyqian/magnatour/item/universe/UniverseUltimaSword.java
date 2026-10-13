@@ -10,7 +10,6 @@ package roeyqian.magnatour.item.universe;
 // Minecraft
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -46,7 +45,6 @@ import net.minecraft.world.phys.Vec3;
 import org.jspecify.annotations.NonNull;
 
 // Magnatour
-import roeyqian.magnatour.Magnatour;
 import roeyqian.magnatour.block.supreme.ChunkTntBlock;
 import roeyqian.magnatour.entity.universe.UniverseFireball;
 import roeyqian.magnatour.item.CustomItemSetting;
@@ -70,7 +68,6 @@ public class UniverseUltimaSword extends Item {
     if (!(player.level() instanceof ServerLevel world)) return;
 
     int mode = stack.getOrDefault(CustomComponents.UNIVERSE_ULTIMA_SWORD_MODE, 0);
-    target.igniteForTicks(100);
     if (mode == 1) execUniverseKill(world, target, player);
   }
 
@@ -103,7 +100,10 @@ public class UniverseUltimaSword extends Item {
   private static Properties applySettings(
       Properties settings
   ) {
-    return CustomItemSetting.applyUniverseDefaults(settings)
+    return CustomToolMaterial
+        .applyFinality(
+            CustomItemSetting.applyUniverseDefaults(settings), 10
+        )
         .component(
             DataComponents.LORE,
             CustomItemSetting.universeLore("universe_ultima_sword")
@@ -123,7 +123,7 @@ public class UniverseUltimaSword extends Item {
                 CustomToolMaterial.UNIVERSE_TOOL.attackDamageBonus() - 1,
                 AttributeModifier.Operation.ADD_VALUE
             ),
-            EquipmentSlotGroup.HAND
+            EquipmentSlotGroup.MAINHAND
         )
         .add(
             Attributes.ATTACK_SPEED,
@@ -132,16 +132,7 @@ public class UniverseUltimaSword extends Item {
                 CustomToolMaterial.UNIVERSE_TOOL.speed() - 4,
                 AttributeModifier.Operation.ADD_VALUE
             ),
-            EquipmentSlotGroup.HAND
-        )
-        .add(
-            Attributes.ENTITY_INTERACTION_RANGE,
-            new AttributeModifier(
-                Identifier.fromNamespaceAndPath(Magnatour.MOD_ID, "universe_entity_range"),
-                1024.0F,
-                AttributeModifier.Operation.ADD_VALUE
-            ),
-            EquipmentSlotGroup.HAND
+            EquipmentSlotGroup.MAINHAND
         )
         .build();
   }

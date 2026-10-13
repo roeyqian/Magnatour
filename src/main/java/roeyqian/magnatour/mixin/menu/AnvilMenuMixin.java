@@ -22,7 +22,7 @@ import roeyqian.magnatour.mixinhelper.menu.MenuHelperForEnchantment;
 @Mixin(value = AnvilMenu.class, priority = 3600000)
 public class AnvilMenuMixin {
 
-  /* Universe Equipment: No anvil enchanting
+  /* Finality: No anvil application; Universe Equipment: Restricted enchanting
    */
   @Inject(method = "createResult", at = @At("HEAD"), cancellable = true)
   private void inCreateResult(

@@ -1,0 +1,65 @@
+{
+  "anvil_cost": 8,
+  "description": {
+    "translate": "enchantment.magnatour.omniscience",
+    "fallback": "万象神"
+  },
+  "effects": {
+    "minecraft:attributes": [
+      {
+        "amount": {
+          "type": "minecraft:linear",
+          "base": 100.0,
+          "per_level_above_first": 100.0
+        },
+        "attribute": "minecraft:block_interaction_range",
+        "id": "magnatour:enchantment.omniscience.block_interaction_range",
+        "operation": "add_value"
+      },
+      {
+        "amount": {
+          "type": "minecraft:linear",
+          "base": 0.1,
+          "per_level_above_first": 0.1
+        },
+        "attribute": "minecraft:submerged_mining_speed",
+        "id": "magnatour:enchantment.omniscience.submerged_mining_speed",
+        "operation": "add_value"
+      }
+    ],
+    "minecraft:equipment_drops": [
+      {
+        "effect": {
+          "type": "minecraft:add",
+          "value": {
+            "type": "minecraft:linear",
+            "base": 0.1,
+            "per_level_above_first": 0.1
+          }
+        },
+        "enchanted": "attacker",
+        "requirements": {
+          "type": "minecraft:entity_properties",
+          "entity": "attacker",
+          "predicate": {
+            "minecraft:entity_type": "minecraft:player"
+          }
+        }
+      }
+    ]
+  },
+  "max_cost": {
+    "base": 60,
+    "per_level_above_first": 0
+  },
+  "max_level": 10,
+  "min_cost": {
+    "base": 30,
+    "per_level_above_first": 0
+  },
+  "slots": [
+    "mainhand"
+  ],
+  "supported_items": "#magnatour:enchantable/omniscience",
+  "weight": 1
+}

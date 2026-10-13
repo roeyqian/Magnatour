@@ -460,5 +460,8 @@
   "advancements.magnatour.universe_teleport_point.title": "寰宇传送点",
   "advancements.magnatour.universe_teleport_point.description": "锚定跨越维度的坐标",
   "advancements.magnatour.universe_sapling.title": "寰宇树苗",
-  "advancements.magnatour.universe_sapling.description": "种下寰宇的起点"
+  "advancements.magnatour.universe_sapling.description": "种下寰宇的起点",
+
+  "enchantment.magnatour.finality": "终焉神",
+  "enchantment.magnatour.omniscience": "万象神"
 }

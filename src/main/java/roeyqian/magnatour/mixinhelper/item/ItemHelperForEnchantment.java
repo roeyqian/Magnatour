@@ -8,12 +8,16 @@
 package roeyqian.magnatour.mixinhelper.item;
 
 // Minecraft
+import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.component.TypedDataComponent;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.ItemTags;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -32,6 +36,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 // Magnatour
+import roeyqian.magnatour.Magnatour;
+import roeyqian.magnatour.item.CustomToolMaterial;
 import roeyqian.magnatour.registry.content.SupremeItems;
 import roeyqian.magnatour.registry.content.UniverseItems;
 
@@ -40,6 +46,16 @@ import roeyqian.magnatour.registry.content.UniverseItems;
 import org.apache.commons.lang3.mutable.MutableFloat;
 
 public final class ItemHelperForEnchantment {
+
+  // This marker tag identifies Finality's dynamically unrestricted item set.
+  private static final TagKey<Item> FINALITY_ITEMS = TagKey.create(
+      Registries.ITEM,
+      Identifier.fromNamespaceAndPath(Magnatour.MOD_ID, "enchantable/finality")
+  );
+  private static final TagKey<Item> OMNISCIENCE_ITEMS = TagKey.create(
+      Registries.ITEM,
+      Identifier.fromNamespaceAndPath(Magnatour.MOD_ID, "enchantable/omniscience")
+  );
 
   private ItemHelperForEnchantment() {}
 
@@ -85,8 +101,16 @@ public final class ItemHelperForEnchantment {
 
   public static void handleEnchant(
       ItemStack stack,
+      Holder<Enchantment> enchantment,
       CallbackInfo ci
   ) {
+    if (isDivineEnchantment(enchantment)) {
+      var componentType = EnchantmentHelper.getComponentType(stack);
+      if (!stack.has(componentType)) {
+        stack.set(componentType, ItemEnchantments.EMPTY);
+      }
+      return;
+    }
     if (isUniverseEnchantBlocked(stack)) {
       ci.cancel();
     }
@@ -125,6 +149,33 @@ public final class ItemHelperForEnchantment {
     return !EnchantmentHelper.getEnchantmentsForCrafting(stack).isEmpty();
   }
 
+  public static boolean hasFinality(
+      ItemStack stack
+  ) {
+    return EnchantmentHelper.getEnchantmentsForCrafting(stack).keySet().stream()
+        .anyMatch(enchantment -> enchantment.is(CustomToolMaterial.FINALITY));
+  }
+
+  public static boolean hasNonDivineEnchantments(
+      ItemStack stack
+  ) {
+    return EnchantmentHelper.getEnchantmentsForCrafting(stack).keySet().stream()
+        .anyMatch(enchantment -> !isDivineEnchantment(enchantment));
+  }
+
+  public static boolean hasOmniscience(
+      ItemStack stack
+  ) {
+    return EnchantmentHelper.getEnchantmentsForCrafting(stack).keySet().stream()
+        .anyMatch(enchantment -> enchantment.is(CustomToolMaterial.OMNISCIENCE));
+  }
+
+  public static boolean isDivineEnchantment(
+      Holder<Enchantment> enchantment
+  ) {
+    return enchantment.is(CustomToolMaterial.FINALITY) || enchantment.is(CustomToolMaterial.OMNISCIENCE);
+  }
+
   public static boolean isEmperorTool(
       ItemStack stack
   ) {
@@ -132,6 +183,13 @@ public final class ItemHelperForEnchantment {
         || stack.is(SupremeItems.EMPEROR_AXE_PICKAXE)
         || stack.is(SupremeItems.EMPEROR_SHOVEL)
         || stack.is(SupremeItems.EMPEROR_HOE);
+  }
+
+  public static boolean isFinality(
+      Enchantment enchantment
+  ) {
+    return enchantment.definition().supportedItems().unwrapKey()
+        .filter(FINALITY_ITEMS::equals).isPresent();
   }
 
   public static boolean isUniverseEnchantBlocked(
@@ -143,6 +201,13 @@ public final class ItemHelperForEnchantment {
         || stack.is(UniverseItems.UNIVERSE_BOOTS)
         || stack.is(UniverseItems.UNIVERSE_ULTIMA_SWORD)
         || stack.is(UniverseItems.UNIVERSE_OMNI_BLADE);
+  }
+
+  public static boolean isUnrestrictedDivineEnchantment(
+      Enchantment enchantment
+  ) {
+    return enchantment.definition().supportedItems().unwrapKey()
+        .filter(tag -> tag.equals(FINALITY_ITEMS) || tag.equals(OMNISCIENCE_ITEMS)).isPresent();
   }
 
   public static boolean supportsAxeOrPickaxe(
@@ -163,7 +228,8 @@ public final class ItemHelperForEnchantment {
         && componentType != DataComponents.STORED_ENCHANTMENTS) {
       return false;
     }
-    return value instanceof ItemEnchantments enchantments && !enchantments.isEmpty();
+    return value instanceof ItemEnchantments enchantments && enchantments.keySet().stream()
+        .anyMatch(enchantment -> !isDivineEnchantment(enchantment));
   }
 
 }

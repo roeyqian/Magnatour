@@ -6,12 +6,317 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "minecraft:golden_apple"
+          "name": "minecraft:golden_apple",
+          "modifier": [
+            {
+              "type": "minecraft:apply_bonus",
+              "enchantment": "magnatour:omniscience",
+              "formula": "minecraft:uniform_bonus_count",
+              "parameters": {
+                "bonusMultiplier": 10
+              },
+              "condition": {
+                "type": "minecraft:match_tool",
+                "predicate": {
+                  "predicates": {
+                    "minecraft:enchantments": [
+                      {
+                        "enchantments": "magnatour:omniscience",
+                        "levels": {
+                          "min": 1,
+                          "max": 10
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          ]
         }
       ],
       "condition": {
-        "type": "minecraft:random_chance",
-        "chance": 0.5
+        "type": "minecraft:any_of",
+        "terms": [
+          {
+            "type": "minecraft:all_of",
+            "terms": [
+              {
+                "type": "minecraft:inverted",
+                "term": {
+                  "type": "minecraft:match_tool",
+                  "predicate": {
+                    "predicates": {
+                      "minecraft:enchantments": [
+                        {
+                          "enchantments": "magnatour:omniscience",
+                          "levels": {
+                            "min": 1,
+                            "max": 10
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              },
+              {
+                "type": "minecraft:random_chance",
+                "chance": 0.5
+              }
+            ]
+          },
+          {
+            "type": "minecraft:all_of",
+            "terms": [
+              {
+                "type": "minecraft:match_tool",
+                "predicate": {
+                  "predicates": {
+                    "minecraft:enchantments": [
+                      {
+                        "enchantments": "magnatour:omniscience",
+                        "levels": {
+                          "min": 1,
+                          "max": 1
+                        }
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "type": "minecraft:random_chance",
+                "chance": 0.6
+              }
+            ]
+          },
+          {
+            "type": "minecraft:all_of",
+            "terms": [
+              {
+                "type": "minecraft:match_tool",
+                "predicate": {
+                  "predicates": {
+                    "minecraft:enchantments": [
+                      {
+                        "enchantments": "magnatour:omniscience",
+                        "levels": {
+                          "min": 2,
+                          "max": 2
+                        }
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "type": "minecraft:random_chance",
+                "chance": 0.7
+              }
+            ]
+          },
+          {
+            "type": "minecraft:all_of",
+            "terms": [
+              {
+                "type": "minecraft:match_tool",
+                "predicate": {
+                  "predicates": {
+                    "minecraft:enchantments": [
+                      {
+                        "enchantments": "magnatour:omniscience",
+                        "levels": {
+                          "min": 3,
+                          "max": 3
+                        }
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "type": "minecraft:random_chance",
+                "chance": 0.8
+              }
+            ]
+          },
+          {
+            "type": "minecraft:all_of",
+            "terms": [
+              {
+                "type": "minecraft:match_tool",
+                "predicate": {
+                  "predicates": {
+                    "minecraft:enchantments": [
+                      {
+                        "enchantments": "magnatour:omniscience",
+                        "levels": {
+                          "min": 4,
+                          "max": 4
+                        }
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "type": "minecraft:random_chance",
+                "chance": 0.9
+              }
+            ]
+          },
+          {
+            "type": "minecraft:all_of",
+            "terms": [
+              {
+                "type": "minecraft:match_tool",
+                "predicate": {
+                  "predicates": {
+                    "minecraft:enchantments": [
+                      {
+                        "enchantments": "magnatour:omniscience",
+                        "levels": {
+                          "min": 5,
+                          "max": 5
+                        }
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "type": "minecraft:random_chance",
+                "chance": 1.0
+              }
+            ]
+          },
+          {
+            "type": "minecraft:all_of",
+            "terms": [
+              {
+                "type": "minecraft:match_tool",
+                "predicate": {
+                  "predicates": {
+                    "minecraft:enchantments": [
+                      {
+                        "enchantments": "magnatour:omniscience",
+                        "levels": {
+                          "min": 6,
+                          "max": 6
+                        }
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "type": "minecraft:random_chance",
+                "chance": 1.0
+              }
+            ]
+          },
+          {
+            "type": "minecraft:all_of",
+            "terms": [
+              {
+                "type": "minecraft:match_tool",
+                "predicate": {
+                  "predicates": {
+                    "minecraft:enchantments": [
+                      {
+                        "enchantments": "magnatour:omniscience",
+                        "levels": {
+                          "min": 7,
+                          "max": 7
+                        }
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "type": "minecraft:random_chance",
+                "chance": 1.0
+              }
+            ]
+          },
+          {
+            "type": "minecraft:all_of",
+            "terms": [
+              {
+                "type": "minecraft:match_tool",
+                "predicate": {
+                  "predicates": {
+                    "minecraft:enchantments": [
+                      {
+                        "enchantments": "magnatour:omniscience",
+                        "levels": {
+                          "min": 8,
+                          "max": 8
+                        }
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "type": "minecraft:random_chance",
+                "chance": 1.0
+              }
+            ]
+          },
+          {
+            "type": "minecraft:all_of",
+            "terms": [
+              {
+                "type": "minecraft:match_tool",
+                "predicate": {
+                  "predicates": {
+                    "minecraft:enchantments": [
+                      {
+                        "enchantments": "magnatour:omniscience",
+                        "levels": {
+                          "min": 9,
+                          "max": 9
+                        }
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "type": "minecraft:random_chance",
+                "chance": 1.0
+              }
+            ]
+          },
+          {
+            "type": "minecraft:all_of",
+            "terms": [
+              {
+                "type": "minecraft:match_tool",
+                "predicate": {
+                  "predicates": {
+                    "minecraft:enchantments": [
+                      {
+                        "enchantments": "magnatour:omniscience",
+                        "levels": {
+                          "min": 10,
+                          "max": 10
+                        }
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "type": "minecraft:random_chance",
+                "chance": 1.0
+              }
+            ]
+          }
+        ]
       }
     },
     {
@@ -19,12 +324,317 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "minecraft:enchanted_golden_apple"
+          "name": "minecraft:enchanted_golden_apple",
+          "modifier": [
+            {
+              "type": "minecraft:apply_bonus",
+              "enchantment": "magnatour:omniscience",
+              "formula": "minecraft:uniform_bonus_count",
+              "parameters": {
+                "bonusMultiplier": 10
+              },
+              "condition": {
+                "type": "minecraft:match_tool",
+                "predicate": {
+                  "predicates": {
+                    "minecraft:enchantments": [
+                      {
+                        "enchantments": "magnatour:omniscience",
+                        "levels": {
+                          "min": 1,
+                          "max": 10
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          ]
         }
       ],
       "condition": {
-        "type": "minecraft:random_chance",
-        "chance": 0.1
+        "type": "minecraft:any_of",
+        "terms": [
+          {
+            "type": "minecraft:all_of",
+            "terms": [
+              {
+                "type": "minecraft:inverted",
+                "term": {
+                  "type": "minecraft:match_tool",
+                  "predicate": {
+                    "predicates": {
+                      "minecraft:enchantments": [
+                        {
+                          "enchantments": "magnatour:omniscience",
+                          "levels": {
+                            "min": 1,
+                            "max": 10
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              },
+              {
+                "type": "minecraft:random_chance",
+                "chance": 0.1
+              }
+            ]
+          },
+          {
+            "type": "minecraft:all_of",
+            "terms": [
+              {
+                "type": "minecraft:match_tool",
+                "predicate": {
+                  "predicates": {
+                    "minecraft:enchantments": [
+                      {
+                        "enchantments": "magnatour:omniscience",
+                        "levels": {
+                          "min": 1,
+                          "max": 1
+                        }
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "type": "minecraft:random_chance",
+                "chance": 0.2
+              }
+            ]
+          },
+          {
+            "type": "minecraft:all_of",
+            "terms": [
+              {
+                "type": "minecraft:match_tool",
+                "predicate": {
+                  "predicates": {
+                    "minecraft:enchantments": [
+                      {
+                        "enchantments": "magnatour:omniscience",
+                        "levels": {
+                          "min": 2,
+                          "max": 2
+                        }
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "type": "minecraft:random_chance",
+                "chance": 0.30000000000000004
+              }
+            ]
+          },
+          {
+            "type": "minecraft:all_of",
+            "terms": [
+              {
+                "type": "minecraft:match_tool",
+                "predicate": {
+                  "predicates": {
+                    "minecraft:enchantments": [
+                      {
+                        "enchantments": "magnatour:omniscience",
+                        "levels": {
+                          "min": 3,
+                          "max": 3
+                        }
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "type": "minecraft:random_chance",
+                "chance": 0.4
+              }
+            ]
+          },
+          {
+            "type": "minecraft:all_of",
+            "terms": [
+              {
+                "type": "minecraft:match_tool",
+                "predicate": {
+                  "predicates": {
+                    "minecraft:enchantments": [
+                      {
+                        "enchantments": "magnatour:omniscience",
+                        "levels": {
+                          "min": 4,
+                          "max": 4
+                        }
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "type": "minecraft:random_chance",
+                "chance": 0.5
+              }
+            ]
+          },
+          {
+            "type": "minecraft:all_of",
+            "terms": [
+              {
+                "type": "minecraft:match_tool",
+                "predicate": {
+                  "predicates": {
+                    "minecraft:enchantments": [
+                      {
+                        "enchantments": "magnatour:omniscience",
+                        "levels": {
+                          "min": 5,
+                          "max": 5
+                        }
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "type": "minecraft:random_chance",
+                "chance": 0.6
+              }
+            ]
+          },
+          {
+            "type": "minecraft:all_of",
+            "terms": [
+              {
+                "type": "minecraft:match_tool",
+                "predicate": {
+                  "predicates": {
+                    "minecraft:enchantments": [
+                      {
+                        "enchantments": "magnatour:omniscience",
+                        "levels": {
+                          "min": 6,
+                          "max": 6
+                        }
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "type": "minecraft:random_chance",
+                "chance": 0.7000000000000001
+              }
+            ]
+          },
+          {
+            "type": "minecraft:all_of",
+            "terms": [
+              {
+                "type": "minecraft:match_tool",
+                "predicate": {
+                  "predicates": {
+                    "minecraft:enchantments": [
+                      {
+                        "enchantments": "magnatour:omniscience",
+                        "levels": {
+                          "min": 7,
+                          "max": 7
+                        }
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "type": "minecraft:random_chance",
+                "chance": 0.8
+              }
+            ]
+          },
+          {
+            "type": "minecraft:all_of",
+            "terms": [
+              {
+                "type": "minecraft:match_tool",
+                "predicate": {
+                  "predicates": {
+                    "minecraft:enchantments": [
+                      {
+                        "enchantments": "magnatour:omniscience",
+                        "levels": {
+                          "min": 8,
+                          "max": 8
+                        }
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "type": "minecraft:random_chance",
+                "chance": 0.9
+              }
+            ]
+          },
+          {
+            "type": "minecraft:all_of",
+            "terms": [
+              {
+                "type": "minecraft:match_tool",
+                "predicate": {
+                  "predicates": {
+                    "minecraft:enchantments": [
+                      {
+                        "enchantments": "magnatour:omniscience",
+                        "levels": {
+                          "min": 9,
+                          "max": 9
+                        }
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "type": "minecraft:random_chance",
+                "chance": 1.0
+              }
+            ]
+          },
+          {
+            "type": "minecraft:all_of",
+            "terms": [
+              {
+                "type": "minecraft:match_tool",
+                "predicate": {
+                  "predicates": {
+                    "minecraft:enchantments": [
+                      {
+                        "enchantments": "magnatour:omniscience",
+                        "levels": {
+                          "min": 10,
+                          "max": 10
+                        }
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "type": "minecraft:random_chance",
+                "chance": 1.0
+              }
+            ]
+          }
+        ]
       }
     },
     {
@@ -32,12 +642,317 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "magnatour:golden_sapling"
+          "name": "magnatour:golden_sapling",
+          "modifier": [
+            {
+              "type": "minecraft:apply_bonus",
+              "enchantment": "magnatour:omniscience",
+              "formula": "minecraft:uniform_bonus_count",
+              "parameters": {
+                "bonusMultiplier": 10
+              },
+              "condition": {
+                "type": "minecraft:match_tool",
+                "predicate": {
+                  "predicates": {
+                    "minecraft:enchantments": [
+                      {
+                        "enchantments": "magnatour:omniscience",
+                        "levels": {
+                          "min": 1,
+                          "max": 10
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          ]
         }
       ],
       "condition": {
-        "type": "minecraft:random_chance",
-        "chance": 0.25
+        "type": "minecraft:any_of",
+        "terms": [
+          {
+            "type": "minecraft:all_of",
+            "terms": [
+              {
+                "type": "minecraft:inverted",
+                "term": {
+                  "type": "minecraft:match_tool",
+                  "predicate": {
+                    "predicates": {
+                      "minecraft:enchantments": [
+                        {
+                          "enchantments": "magnatour:omniscience",
+                          "levels": {
+                            "min": 1,
+                            "max": 10
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              },
+              {
+                "type": "minecraft:random_chance",
+                "chance": 0.25
+              }
+            ]
+          },
+          {
+            "type": "minecraft:all_of",
+            "terms": [
+              {
+                "type": "minecraft:match_tool",
+                "predicate": {
+                  "predicates": {
+                    "minecraft:enchantments": [
+                      {
+                        "enchantments": "magnatour:omniscience",
+                        "levels": {
+                          "min": 1,
+                          "max": 1
+                        }
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "type": "minecraft:random_chance",
+                "chance": 0.35
+              }
+            ]
+          },
+          {
+            "type": "minecraft:all_of",
+            "terms": [
+              {
+                "type": "minecraft:match_tool",
+                "predicate": {
+                  "predicates": {
+                    "minecraft:enchantments": [
+                      {
+                        "enchantments": "magnatour:omniscience",
+                        "levels": {
+                          "min": 2,
+                          "max": 2
+                        }
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "type": "minecraft:random_chance",
+                "chance": 0.45
+              }
+            ]
+          },
+          {
+            "type": "minecraft:all_of",
+            "terms": [
+              {
+                "type": "minecraft:match_tool",
+                "predicate": {
+                  "predicates": {
+                    "minecraft:enchantments": [
+                      {
+                        "enchantments": "magnatour:omniscience",
+                        "levels": {
+                          "min": 3,
+                          "max": 3
+                        }
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "type": "minecraft:random_chance",
+                "chance": 0.55
+              }
+            ]
+          },
+          {
+            "type": "minecraft:all_of",
+            "terms": [
+              {
+                "type": "minecraft:match_tool",
+                "predicate": {
+                  "predicates": {
+                    "minecraft:enchantments": [
+                      {
+                        "enchantments": "magnatour:omniscience",
+                        "levels": {
+                          "min": 4,
+                          "max": 4
+                        }
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "type": "minecraft:random_chance",
+                "chance": 0.65
+              }
+            ]
+          },
+          {
+            "type": "minecraft:all_of",
+            "terms": [
+              {
+                "type": "minecraft:match_tool",
+                "predicate": {
+                  "predicates": {
+                    "minecraft:enchantments": [
+                      {
+                        "enchantments": "magnatour:omniscience",
+                        "levels": {
+                          "min": 5,
+                          "max": 5
+                        }
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "type": "minecraft:random_chance",
+                "chance": 0.75
+              }
+            ]
+          },
+          {
+            "type": "minecraft:all_of",
+            "terms": [
+              {
+                "type": "minecraft:match_tool",
+                "predicate": {
+                  "predicates": {
+                    "minecraft:enchantments": [
+                      {
+                        "enchantments": "magnatour:omniscience",
+                        "levels": {
+                          "min": 6,
+                          "max": 6
+                        }
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "type": "minecraft:random_chance",
+                "chance": 0.8500000000000001
+              }
+            ]
+          },
+          {
+            "type": "minecraft:all_of",
+            "terms": [
+              {
+                "type": "minecraft:match_tool",
+                "predicate": {
+                  "predicates": {
+                    "minecraft:enchantments": [
+                      {
+                        "enchantments": "magnatour:omniscience",
+                        "levels": {
+                          "min": 7,
+                          "max": 7
+                        }
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "type": "minecraft:random_chance",
+                "chance": 0.9500000000000001
+              }
+            ]
+          },
+          {
+            "type": "minecraft:all_of",
+            "terms": [
+              {
+                "type": "minecraft:match_tool",
+                "predicate": {
+                  "predicates": {
+                    "minecraft:enchantments": [
+                      {
+                        "enchantments": "magnatour:omniscience",
+                        "levels": {
+                          "min": 8,
+                          "max": 8
+                        }
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "type": "minecraft:random_chance",
+                "chance": 1.0
+              }
+            ]
+          },
+          {
+            "type": "minecraft:all_of",
+            "terms": [
+              {
+                "type": "minecraft:match_tool",
+                "predicate": {
+                  "predicates": {
+                    "minecraft:enchantments": [
+                      {
+                        "enchantments": "magnatour:omniscience",
+                        "levels": {
+                          "min": 9,
+                          "max": 9
+                        }
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "type": "minecraft:random_chance",
+                "chance": 1.0
+              }
+            ]
+          },
+          {
+            "type": "minecraft:all_of",
+            "terms": [
+              {
+                "type": "minecraft:match_tool",
+                "predicate": {
+                  "predicates": {
+                    "minecraft:enchantments": [
+                      {
+                        "enchantments": "magnatour:omniscience",
+                        "levels": {
+                          "min": 10,
+                          "max": 10
+                        }
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "type": "minecraft:random_chance",
+                "chance": 1.0
+              }
+            ]
+          }
+        ]
       }
     }
   ]

@@ -71,7 +71,7 @@ public class ItemStackMixin {
       int level,
       CallbackInfo ci
   ) {
-    ItemHelperForEnchantment.handleEnchant((ItemStack) (Object) this, ci);
+    ItemHelperForEnchantment.handleEnchant((ItemStack) (Object) this, enchantment, ci);
   }
 
   /* Universe Equipment: Disallow enchantment component writes

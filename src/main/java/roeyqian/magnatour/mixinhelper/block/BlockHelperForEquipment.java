@@ -85,6 +85,11 @@ public final class BlockHelperForEquipment {
       return;
     }
 
+    // Mode 0 uses normal block loot, including Omniscience's Fortune bonuses.
+    if (tool.getOrDefault(CustomComponents.UNIVERSE_OMNI_BLADE_MODE, 0) == 0) {
+      return;
+    }
+
     List<ItemStack> drops = new ArrayList<>();
     drops.add(new ItemStack(state.getBlock().asItem()));
     cir.setReturnValue(drops);

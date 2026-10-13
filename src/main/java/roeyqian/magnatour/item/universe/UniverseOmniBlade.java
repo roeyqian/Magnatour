@@ -103,7 +103,7 @@ public class UniverseOmniBlade extends Item {
   private static Properties applySettings(
       Properties settings
   ) {
-    return CustomItemSetting.applyUniverseDefaults(settings)
+    return CustomToolMaterial.applyOmniscience(CustomItemSetting.applyUniverseDefaults(settings), 10)
         .component(
             DataComponents.LORE,
             CustomItemSetting.universeLore("universe_omni_blade")
@@ -123,7 +123,7 @@ public class UniverseOmniBlade extends Item {
                 CustomToolMaterial.UNIVERSE_TOOL.attackDamageBonus() - 1,
                 AttributeModifier.Operation.ADD_VALUE
             ),
-            EquipmentSlotGroup.HAND
+            EquipmentSlotGroup.MAINHAND
         )
         .add(
             Attributes.ATTACK_SPEED,
@@ -132,16 +132,7 @@ public class UniverseOmniBlade extends Item {
                 CustomToolMaterial.UNIVERSE_TOOL.speed() - 4,
                 AttributeModifier.Operation.ADD_VALUE
             ),
-            EquipmentSlotGroup.HAND
-        )
-        .add(
-            Attributes.BLOCK_INTERACTION_RANGE,
-            new AttributeModifier(
-                Identifier.fromNamespaceAndPath(Magnatour.MOD_ID, "universe_block_range"),
-                1024.0F,
-                AttributeModifier.Operation.ADD_VALUE
-            ),
-            EquipmentSlotGroup.HAND
+            EquipmentSlotGroup.MAINHAND
         )
         .build();
   }

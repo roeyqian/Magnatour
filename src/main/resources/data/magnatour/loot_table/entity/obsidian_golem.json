@@ -6,12 +6,378 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "minecraft:obsidian"
+          "name": "minecraft:obsidian",
+          "modifier": [
+            {
+              "type": "minecraft:enchanted_count_increase",
+              "enchantment": "magnatour:omniscience",
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 0.0,
+                "max": 10.0
+              },
+              "condition": {
+                "type": "minecraft:entity_properties",
+                "entity": "attacker",
+                "predicate": {
+                  "minecraft:equipment": {
+                    "mainhand": {
+                      "predicates": {
+                        "minecraft:enchantments": [
+                          {
+                            "enchantments": "magnatour:omniscience",
+                            "levels": {
+                              "min": 1,
+                              "max": 10
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          ]
         }
       ],
       "condition": {
-        "type": "minecraft:random_chance",
-        "chance": 0.33
+        "type": "minecraft:any_of",
+        "terms": [
+          {
+            "type": "minecraft:all_of",
+            "terms": [
+              {
+                "type": "minecraft:inverted",
+                "term": {
+                  "type": "minecraft:entity_properties",
+                  "entity": "attacker",
+                  "predicate": {
+                    "minecraft:equipment": {
+                      "mainhand": {
+                        "predicates": {
+                          "minecraft:enchantments": [
+                            {
+                              "enchantments": "magnatour:omniscience",
+                              "levels": {
+                                "min": 1,
+                                "max": 10
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "type": "minecraft:random_chance",
+                "chance": 0.33
+              }
+            ]
+          },
+          {
+            "type": "minecraft:all_of",
+            "terms": [
+              {
+                "type": "minecraft:entity_properties",
+                "entity": "attacker",
+                "predicate": {
+                  "minecraft:equipment": {
+                    "mainhand": {
+                      "predicates": {
+                        "minecraft:enchantments": [
+                          {
+                            "enchantments": "magnatour:omniscience",
+                            "levels": {
+                              "min": 1,
+                              "max": 1
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "type": "minecraft:random_chance",
+                "chance": 0.43000000000000005
+              }
+            ]
+          },
+          {
+            "type": "minecraft:all_of",
+            "terms": [
+              {
+                "type": "minecraft:entity_properties",
+                "entity": "attacker",
+                "predicate": {
+                  "minecraft:equipment": {
+                    "mainhand": {
+                      "predicates": {
+                        "minecraft:enchantments": [
+                          {
+                            "enchantments": "magnatour:omniscience",
+                            "levels": {
+                              "min": 2,
+                              "max": 2
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "type": "minecraft:random_chance",
+                "chance": 0.53
+              }
+            ]
+          },
+          {
+            "type": "minecraft:all_of",
+            "terms": [
+              {
+                "type": "minecraft:entity_properties",
+                "entity": "attacker",
+                "predicate": {
+                  "minecraft:equipment": {
+                    "mainhand": {
+                      "predicates": {
+                        "minecraft:enchantments": [
+                          {
+                            "enchantments": "magnatour:omniscience",
+                            "levels": {
+                              "min": 3,
+                              "max": 3
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "type": "minecraft:random_chance",
+                "chance": 0.6300000000000001
+              }
+            ]
+          },
+          {
+            "type": "minecraft:all_of",
+            "terms": [
+              {
+                "type": "minecraft:entity_properties",
+                "entity": "attacker",
+                "predicate": {
+                  "minecraft:equipment": {
+                    "mainhand": {
+                      "predicates": {
+                        "minecraft:enchantments": [
+                          {
+                            "enchantments": "magnatour:omniscience",
+                            "levels": {
+                              "min": 4,
+                              "max": 4
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "type": "minecraft:random_chance",
+                "chance": 0.73
+              }
+            ]
+          },
+          {
+            "type": "minecraft:all_of",
+            "terms": [
+              {
+                "type": "minecraft:entity_properties",
+                "entity": "attacker",
+                "predicate": {
+                  "minecraft:equipment": {
+                    "mainhand": {
+                      "predicates": {
+                        "minecraft:enchantments": [
+                          {
+                            "enchantments": "magnatour:omniscience",
+                            "levels": {
+                              "min": 5,
+                              "max": 5
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "type": "minecraft:random_chance",
+                "chance": 0.8300000000000001
+              }
+            ]
+          },
+          {
+            "type": "minecraft:all_of",
+            "terms": [
+              {
+                "type": "minecraft:entity_properties",
+                "entity": "attacker",
+                "predicate": {
+                  "minecraft:equipment": {
+                    "mainhand": {
+                      "predicates": {
+                        "minecraft:enchantments": [
+                          {
+                            "enchantments": "magnatour:omniscience",
+                            "levels": {
+                              "min": 6,
+                              "max": 6
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "type": "minecraft:random_chance",
+                "chance": 0.9300000000000002
+              }
+            ]
+          },
+          {
+            "type": "minecraft:all_of",
+            "terms": [
+              {
+                "type": "minecraft:entity_properties",
+                "entity": "attacker",
+                "predicate": {
+                  "minecraft:equipment": {
+                    "mainhand": {
+                      "predicates": {
+                        "minecraft:enchantments": [
+                          {
+                            "enchantments": "magnatour:omniscience",
+                            "levels": {
+                              "min": 7,
+                              "max": 7
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "type": "minecraft:random_chance",
+                "chance": 1
+              }
+            ]
+          },
+          {
+            "type": "minecraft:all_of",
+            "terms": [
+              {
+                "type": "minecraft:entity_properties",
+                "entity": "attacker",
+                "predicate": {
+                  "minecraft:equipment": {
+                    "mainhand": {
+                      "predicates": {
+                        "minecraft:enchantments": [
+                          {
+                            "enchantments": "magnatour:omniscience",
+                            "levels": {
+                              "min": 8,
+                              "max": 8
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "type": "minecraft:random_chance",
+                "chance": 1
+              }
+            ]
+          },
+          {
+            "type": "minecraft:all_of",
+            "terms": [
+              {
+                "type": "minecraft:entity_properties",
+                "entity": "attacker",
+                "predicate": {
+                  "minecraft:equipment": {
+                    "mainhand": {
+                      "predicates": {
+                        "minecraft:enchantments": [
+                          {
+                            "enchantments": "magnatour:omniscience",
+                            "levels": {
+                              "min": 9,
+                              "max": 9
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "type": "minecraft:random_chance",
+                "chance": 1
+              }
+            ]
+          },
+          {
+            "type": "minecraft:all_of",
+            "terms": [
+              {
+                "type": "minecraft:entity_properties",
+                "entity": "attacker",
+                "predicate": {
+                  "minecraft:equipment": {
+                    "mainhand": {
+                      "predicates": {
+                        "minecraft:enchantments": [
+                          {
+                            "enchantments": "magnatour:omniscience",
+                            "levels": {
+                              "min": 10,
+                              "max": 10
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "type": "minecraft:random_chance",
+                "chance": 1
+              }
+            ]
+          }
+        ]
       }
     },
     {
@@ -19,12 +385,378 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "minecraft:crying_obsidian"
+          "name": "minecraft:crying_obsidian",
+          "modifier": [
+            {
+              "type": "minecraft:enchanted_count_increase",
+              "enchantment": "magnatour:omniscience",
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 0.0,
+                "max": 10.0
+              },
+              "condition": {
+                "type": "minecraft:entity_properties",
+                "entity": "attacker",
+                "predicate": {
+                  "minecraft:equipment": {
+                    "mainhand": {
+                      "predicates": {
+                        "minecraft:enchantments": [
+                          {
+                            "enchantments": "magnatour:omniscience",
+                            "levels": {
+                              "min": 1,
+                              "max": 10
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          ]
         }
       ],
       "condition": {
-        "type": "minecraft:random_chance",
-        "chance": 0.33
+        "type": "minecraft:any_of",
+        "terms": [
+          {
+            "type": "minecraft:all_of",
+            "terms": [
+              {
+                "type": "minecraft:inverted",
+                "term": {
+                  "type": "minecraft:entity_properties",
+                  "entity": "attacker",
+                  "predicate": {
+                    "minecraft:equipment": {
+                      "mainhand": {
+                        "predicates": {
+                          "minecraft:enchantments": [
+                            {
+                              "enchantments": "magnatour:omniscience",
+                              "levels": {
+                                "min": 1,
+                                "max": 10
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "type": "minecraft:random_chance",
+                "chance": 0.33
+              }
+            ]
+          },
+          {
+            "type": "minecraft:all_of",
+            "terms": [
+              {
+                "type": "minecraft:entity_properties",
+                "entity": "attacker",
+                "predicate": {
+                  "minecraft:equipment": {
+                    "mainhand": {
+                      "predicates": {
+                        "minecraft:enchantments": [
+                          {
+                            "enchantments": "magnatour:omniscience",
+                            "levels": {
+                              "min": 1,
+                              "max": 1
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "type": "minecraft:random_chance",
+                "chance": 0.43000000000000005
+              }
+            ]
+          },
+          {
+            "type": "minecraft:all_of",
+            "terms": [
+              {
+                "type": "minecraft:entity_properties",
+                "entity": "attacker",
+                "predicate": {
+                  "minecraft:equipment": {
+                    "mainhand": {
+                      "predicates": {
+                        "minecraft:enchantments": [
+                          {
+                            "enchantments": "magnatour:omniscience",
+                            "levels": {
+                              "min": 2,
+                              "max": 2
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "type": "minecraft:random_chance",
+                "chance": 0.53
+              }
+            ]
+          },
+          {
+            "type": "minecraft:all_of",
+            "terms": [
+              {
+                "type": "minecraft:entity_properties",
+                "entity": "attacker",
+                "predicate": {
+                  "minecraft:equipment": {
+                    "mainhand": {
+                      "predicates": {
+                        "minecraft:enchantments": [
+                          {
+                            "enchantments": "magnatour:omniscience",
+                            "levels": {
+                              "min": 3,
+                              "max": 3
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "type": "minecraft:random_chance",
+                "chance": 0.6300000000000001
+              }
+            ]
+          },
+          {
+            "type": "minecraft:all_of",
+            "terms": [
+              {
+                "type": "minecraft:entity_properties",
+                "entity": "attacker",
+                "predicate": {
+                  "minecraft:equipment": {
+                    "mainhand": {
+                      "predicates": {
+                        "minecraft:enchantments": [
+                          {
+                            "enchantments": "magnatour:omniscience",
+                            "levels": {
+                              "min": 4,
+                              "max": 4
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "type": "minecraft:random_chance",
+                "chance": 0.73
+              }
+            ]
+          },
+          {
+            "type": "minecraft:all_of",
+            "terms": [
+              {
+                "type": "minecraft:entity_properties",
+                "entity": "attacker",
+                "predicate": {
+                  "minecraft:equipment": {
+                    "mainhand": {
+                      "predicates": {
+                        "minecraft:enchantments": [
+                          {
+                            "enchantments": "magnatour:omniscience",
+                            "levels": {
+                              "min": 5,
+                              "max": 5
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "type": "minecraft:random_chance",
+                "chance": 0.8300000000000001
+              }
+            ]
+          },
+          {
+            "type": "minecraft:all_of",
+            "terms": [
+              {
+                "type": "minecraft:entity_properties",
+                "entity": "attacker",
+                "predicate": {
+                  "minecraft:equipment": {
+                    "mainhand": {
+                      "predicates": {
+                        "minecraft:enchantments": [
+                          {
+                            "enchantments": "magnatour:omniscience",
+                            "levels": {
+                              "min": 6,
+                              "max": 6
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "type": "minecraft:random_chance",
+                "chance": 0.9300000000000002
+              }
+            ]
+          },
+          {
+            "type": "minecraft:all_of",
+            "terms": [
+              {
+                "type": "minecraft:entity_properties",
+                "entity": "attacker",
+                "predicate": {
+                  "minecraft:equipment": {
+                    "mainhand": {
+                      "predicates": {
+                        "minecraft:enchantments": [
+                          {
+                            "enchantments": "magnatour:omniscience",
+                            "levels": {
+                              "min": 7,
+                              "max": 7
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "type": "minecraft:random_chance",
+                "chance": 1
+              }
+            ]
+          },
+          {
+            "type": "minecraft:all_of",
+            "terms": [
+              {
+                "type": "minecraft:entity_properties",
+                "entity": "attacker",
+                "predicate": {
+                  "minecraft:equipment": {
+                    "mainhand": {
+                      "predicates": {
+                        "minecraft:enchantments": [
+                          {
+                            "enchantments": "magnatour:omniscience",
+                            "levels": {
+                              "min": 8,
+                              "max": 8
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "type": "minecraft:random_chance",
+                "chance": 1
+              }
+            ]
+          },
+          {
+            "type": "minecraft:all_of",
+            "terms": [
+              {
+                "type": "minecraft:entity_properties",
+                "entity": "attacker",
+                "predicate": {
+                  "minecraft:equipment": {
+                    "mainhand": {
+                      "predicates": {
+                        "minecraft:enchantments": [
+                          {
+                            "enchantments": "magnatour:omniscience",
+                            "levels": {
+                              "min": 9,
+                              "max": 9
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "type": "minecraft:random_chance",
+                "chance": 1
+              }
+            ]
+          },
+          {
+            "type": "minecraft:all_of",
+            "terms": [
+              {
+                "type": "minecraft:entity_properties",
+                "entity": "attacker",
+                "predicate": {
+                  "minecraft:equipment": {
+                    "mainhand": {
+                      "predicates": {
+                        "minecraft:enchantments": [
+                          {
+                            "enchantments": "magnatour:omniscience",
+                            "levels": {
+                              "min": 10,
+                              "max": 10
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "type": "minecraft:random_chance",
+                "chance": 1
+              }
+            ]
+          }
+        ]
       }
     }
   ]

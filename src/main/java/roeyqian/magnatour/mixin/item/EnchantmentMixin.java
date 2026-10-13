@@ -8,9 +8,12 @@
 package roeyqian.magnatour.mixin.item;
 
 // Minecraft
+import net.minecraft.core.HolderSet;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
 
@@ -32,6 +35,25 @@ import org.apache.commons.lang3.mutable.MutableFloat;
 @Mixin(value = Enchantment.class, priority = 3600000)
 public abstract class EnchantmentMixin {
 
+  @Inject(method = "canEnchant", at = @At("RETURN"), cancellable = true)
+  private void inCanEnchant(
+      ItemStack stack,
+      CallbackInfoReturnable<Boolean> cir
+  ) {
+    if (ItemHelperForEnchantment.isUnrestrictedDivineEnchantment((Enchantment) (Object) this)) {
+      cir.setReturnValue(!stack.isEmpty());
+    }
+  }
+
+  @Inject(method = "getSupportedItems", at = @At("RETURN"), cancellable = true)
+  private void inGetSupportedItems(
+      CallbackInfoReturnable<HolderSet<Item>> cir
+  ) {
+    if (ItemHelperForEnchantment.isUnrestrictedDivineEnchantment((Enchantment) (Object) this)) {
+      cir.setReturnValue(HolderSet.direct(BuiltInRegistries.ITEM.listElements().toList()));
+    }
+  }
+
   @Inject(method = "isPrimaryItem", at = @At("RETURN"), cancellable = true)
   private void inIsPrimaryItem(
       ItemStack stack,
@@ -51,6 +73,10 @@ public abstract class EnchantmentMixin {
       ItemStack stack,
       CallbackInfoReturnable<Boolean> cir
   ) {
+    if (ItemHelperForEnchantment.isUnrestrictedDivineEnchantment((Enchantment) (Object) this)) {
+      cir.setReturnValue(!stack.isEmpty());
+      return;
+    }
     if (cir.getReturnValue() || !stack.is(SupremeItems.EMPEROR_AXE_PICKAXE)) return;
     Enchantment enchantment = (Enchantment) (Object) this;
     if (ItemHelperForEnchantment.supportsAxeOrPickaxe(enchantment.getSupportedItems())) {

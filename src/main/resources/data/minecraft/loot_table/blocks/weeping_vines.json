@@ -1,0 +1,406 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "entries": [
+        {
+          "type": "minecraft:alternatives",
+          "children": [
+            {
+              "type": "minecraft:item",
+              "condition": {
+                "type": "minecraft:any_of",
+                "terms": [
+                  "minecraft:tool/can_shear",
+                  "minecraft:tool/can_silk_touch"
+                ]
+              },
+              "name": "minecraft:weeping_vines"
+            },
+            {
+              "type": "minecraft:item",
+              "condition": {
+                "type": "minecraft:any_of",
+                "terms": [
+                  {
+                    "type": "minecraft:all_of",
+                    "terms": [
+                      {
+                        "type": "minecraft:inverted",
+                        "term": {
+                          "type": "minecraft:match_tool",
+                          "predicate": {
+                            "predicates": {
+                              "minecraft:enchantments": [
+                                {
+                                  "enchantments": "magnatour:omniscience",
+                                  "levels": {
+                                    "min": 1,
+                                    "max": 10
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        }
+                      },
+                      {
+                        "type": "minecraft:table_bonus",
+                        "chances": [
+                          0.33,
+                          0.55,
+                          0.77,
+                          1.0
+                        ],
+                        "enchantment": "minecraft:fortune"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "minecraft:all_of",
+                    "terms": [
+                      {
+                        "type": "minecraft:match_tool",
+                        "predicate": {
+                          "predicates": {
+                            "minecraft:enchantments": [
+                              {
+                                "enchantments": "magnatour:omniscience",
+                                "levels": {
+                                  "min": 1,
+                                  "max": 1
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      },
+                      {
+                        "type": "minecraft:table_bonus",
+                        "chances": [
+                          0.43000000000000005,
+                          0.65,
+                          0.87,
+                          1.0
+                        ],
+                        "enchantment": "minecraft:fortune"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "minecraft:all_of",
+                    "terms": [
+                      {
+                        "type": "minecraft:match_tool",
+                        "predicate": {
+                          "predicates": {
+                            "minecraft:enchantments": [
+                              {
+                                "enchantments": "magnatour:omniscience",
+                                "levels": {
+                                  "min": 2,
+                                  "max": 2
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      },
+                      {
+                        "type": "minecraft:table_bonus",
+                        "chances": [
+                          0.53,
+                          0.75,
+                          0.97,
+                          1.0
+                        ],
+                        "enchantment": "minecraft:fortune"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "minecraft:all_of",
+                    "terms": [
+                      {
+                        "type": "minecraft:match_tool",
+                        "predicate": {
+                          "predicates": {
+                            "minecraft:enchantments": [
+                              {
+                                "enchantments": "magnatour:omniscience",
+                                "levels": {
+                                  "min": 3,
+                                  "max": 3
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      },
+                      {
+                        "type": "minecraft:table_bonus",
+                        "chances": [
+                          0.6300000000000001,
+                          0.8500000000000001,
+                          1.0,
+                          1.0
+                        ],
+                        "enchantment": "minecraft:fortune"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "minecraft:all_of",
+                    "terms": [
+                      {
+                        "type": "minecraft:match_tool",
+                        "predicate": {
+                          "predicates": {
+                            "minecraft:enchantments": [
+                              {
+                                "enchantments": "magnatour:omniscience",
+                                "levels": {
+                                  "min": 4,
+                                  "max": 4
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      },
+                      {
+                        "type": "minecraft:table_bonus",
+                        "chances": [
+                          0.73,
+                          0.9500000000000001,
+                          1.0,
+                          1.0
+                        ],
+                        "enchantment": "minecraft:fortune"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "minecraft:all_of",
+                    "terms": [
+                      {
+                        "type": "minecraft:match_tool",
+                        "predicate": {
+                          "predicates": {
+                            "minecraft:enchantments": [
+                              {
+                                "enchantments": "magnatour:omniscience",
+                                "levels": {
+                                  "min": 5,
+                                  "max": 5
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      },
+                      {
+                        "type": "minecraft:table_bonus",
+                        "chances": [
+                          0.8300000000000001,
+                          1.0,
+                          1.0,
+                          1.0
+                        ],
+                        "enchantment": "minecraft:fortune"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "minecraft:all_of",
+                    "terms": [
+                      {
+                        "type": "minecraft:match_tool",
+                        "predicate": {
+                          "predicates": {
+                            "minecraft:enchantments": [
+                              {
+                                "enchantments": "magnatour:omniscience",
+                                "levels": {
+                                  "min": 6,
+                                  "max": 6
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      },
+                      {
+                        "type": "minecraft:table_bonus",
+                        "chances": [
+                          0.9300000000000002,
+                          1.0,
+                          1.0,
+                          1.0
+                        ],
+                        "enchantment": "minecraft:fortune"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "minecraft:all_of",
+                    "terms": [
+                      {
+                        "type": "minecraft:match_tool",
+                        "predicate": {
+                          "predicates": {
+                            "minecraft:enchantments": [
+                              {
+                                "enchantments": "magnatour:omniscience",
+                                "levels": {
+                                  "min": 7,
+                                  "max": 7
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      },
+                      {
+                        "type": "minecraft:table_bonus",
+                        "chances": [
+                          1.0,
+                          1.0,
+                          1.0,
+                          1.0
+                        ],
+                        "enchantment": "minecraft:fortune"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "minecraft:all_of",
+                    "terms": [
+                      {
+                        "type": "minecraft:match_tool",
+                        "predicate": {
+                          "predicates": {
+                            "minecraft:enchantments": [
+                              {
+                                "enchantments": "magnatour:omniscience",
+                                "levels": {
+                                  "min": 8,
+                                  "max": 8
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      },
+                      {
+                        "type": "minecraft:table_bonus",
+                        "chances": [
+                          1.0,
+                          1.0,
+                          1.0,
+                          1.0
+                        ],
+                        "enchantment": "minecraft:fortune"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "minecraft:all_of",
+                    "terms": [
+                      {
+                        "type": "minecraft:match_tool",
+                        "predicate": {
+                          "predicates": {
+                            "minecraft:enchantments": [
+                              {
+                                "enchantments": "magnatour:omniscience",
+                                "levels": {
+                                  "min": 9,
+                                  "max": 9
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      },
+                      {
+                        "type": "minecraft:table_bonus",
+                        "chances": [
+                          1.0,
+                          1.0,
+                          1.0,
+                          1.0
+                        ],
+                        "enchantment": "minecraft:fortune"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "minecraft:all_of",
+                    "terms": [
+                      {
+                        "type": "minecraft:match_tool",
+                        "predicate": {
+                          "predicates": {
+                            "minecraft:enchantments": [
+                              {
+                                "enchantments": "magnatour:omniscience",
+                                "levels": {
+                                  "min": 10,
+                                  "max": 10
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      },
+                      {
+                        "type": "minecraft:table_bonus",
+                        "chances": [
+                          1.0,
+                          1.0,
+                          1.0,
+                          1.0
+                        ],
+                        "enchantment": "minecraft:fortune"
+                      }
+                    ]
+                  }
+                ]
+              },
+              "name": "minecraft:weeping_vines",
+              "modifier": [
+                {
+                  "type": "minecraft:apply_bonus",
+                  "enchantment": "magnatour:omniscience",
+                  "formula": "minecraft:uniform_bonus_count",
+                  "parameters": {
+                    "bonusMultiplier": 10
+                  },
+                  "condition": {
+                    "type": "minecraft:match_tool",
+                    "predicate": {
+                      "predicates": {
+                        "minecraft:enchantments": [
+                          {
+                            "enchantments": "magnatour:omniscience",
+                            "levels": {
+                              "min": 1,
+                              "max": 10
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "rolls": 1
+    }
+  ],
+  "random_sequence": "minecraft:blocks/weeping_vines"
+}

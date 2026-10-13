@@ -31,12 +31,16 @@ public final class MenuHelperForEnchantment {
     ItemStack baseStack = combinerAccessor.getInputSlots().getItem(0);
     ItemStack additionStack = combinerAccessor.getInputSlots().getItem(1);
 
-    if (!ItemHelperForEnchantment.isUniverseEnchantBlocked(baseStack)) {
-      return;
-    }
-    if (!ItemHelperForEnchantment.hasAnyEnchantments(baseStack)
-        && !ItemHelperForEnchantment.hasAnyEnchantments(additionStack)) {
-      return;
+    // Existing divine enchantments may be retained, but never transferred or upgraded.
+    if (!ItemHelperForEnchantment.hasFinality(additionStack)
+        && !ItemHelperForEnchantment.hasOmniscience(additionStack)) {
+      if (!ItemHelperForEnchantment.isUniverseEnchantBlocked(baseStack)) {
+        return;
+      }
+      if (!ItemHelperForEnchantment.hasNonDivineEnchantments(baseStack)
+          && !ItemHelperForEnchantment.hasNonDivineEnchantments(additionStack)) {
+        return;
+      }
     }
 
     combinerAccessor.getResultSlots().setItem(0, ItemStack.EMPTY);

@@ -1,0 +1,47 @@
+{
+  "type": "minecraft:entity",
+  "pools": [
+    {
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:light_gray_wool",
+          "modifier": [
+            {
+              "type": "minecraft:enchanted_count_increase",
+              "enchantment": "magnatour:omniscience",
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 0.0,
+                "max": 10.0
+              },
+              "condition": {
+                "type": "minecraft:entity_properties",
+                "entity": "attacker",
+                "predicate": {
+                  "minecraft:equipment": {
+                    "mainhand": {
+                      "predicates": {
+                        "minecraft:enchantments": [
+                          {
+                            "enchantments": "magnatour:omniscience",
+                            "levels": {
+                              "min": 1,
+                              "max": 10
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "rolls": 1
+    }
+  ],
+  "random_sequence": "minecraft:entities/sheep/light_gray"
+}
