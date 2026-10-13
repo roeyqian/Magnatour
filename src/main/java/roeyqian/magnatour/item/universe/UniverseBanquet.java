@@ -101,7 +101,7 @@ public class UniverseBanquet extends Item {
         .food(new FoodProperties(RESTORATION_AMOUNT, RESTORATION_AMOUNT, true))
         .component(
             DataComponents.LORE,
-            CustomItemSetting.universeLore("universe_banquet", 2)
+            CustomItemSetting.universeLore("universe_banquet")
         );
   }
 

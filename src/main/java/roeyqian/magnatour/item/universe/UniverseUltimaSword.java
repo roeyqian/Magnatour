@@ -106,7 +106,7 @@ public class UniverseUltimaSword extends Item {
     return CustomItemSetting.applyUniverseDefaults(settings)
         .component(
             DataComponents.LORE,
-            CustomItemSetting.universeLore("universe_ultima_sword", 3)
+            CustomItemSetting.universeLore("universe_ultima_sword")
         )
         .component(
             DataComponents.ATTRIBUTE_MODIFIERS,

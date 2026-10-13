@@ -50,7 +50,7 @@ public class UniverseChestplate extends Item {
       Properties settings
   ) {
     return CustomItemSetting.applyUniverseDefaults(settings).component(
-        DataComponents.LORE, CustomItemSetting.universeLore("universe_chestplate", 3)
+        DataComponents.LORE, CustomItemSetting.universeLore("universe_chestplate")
     );
   }
 

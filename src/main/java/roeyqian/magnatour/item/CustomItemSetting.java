@@ -8,7 +8,6 @@
 package roeyqian.magnatour.item;
 
 // Java Standard
-import java.util.ArrayList;
 import java.util.List;
 
 // Minecraft
@@ -70,40 +69,20 @@ public interface CustomItemSetting {
         );
   }
 
-  static ItemLore itemLore(
-      String itemId,
-      int lineCount
+  static ItemLore supremeLore(
+      String itemId
   ) {
-    List<Component> lines = new ArrayList<>();
-    lines.add(
-        Component.translatable("lore.magnatour." + itemId + ".0")
-            .withStyle(ChatFormatting.DARK_GREEN)
-    );
-    for (int i = 1; i <= lineCount; i++) {
-      lines.add(
-          Component.translatable("lore.magnatour." + itemId + "." + i)
-              .withStyle(ChatFormatting.GREEN)
-      );
-    }
-    return new ItemLore(lines);
+    return new ItemLore(List.of(
+        Component.translatable("lore.magnatour." + itemId).withStyle(ChatFormatting.DARK_GREEN)
+    ));
   }
 
   static ItemLore universeLore(
-      String itemId,
-      int lineCount
+      String itemId
   ) {
-    List<Component> lines = new ArrayList<>();
-    lines.add(
-        Component.translatable("lore.magnatour." + itemId + ".0")
-            .withStyle(ChatFormatting.DARK_RED)
-    );
-    for (int i = 1; i <= lineCount; i++) {
-      lines.add(
-          Component.translatable("lore.magnatour." + itemId + "." + i)
-              .withStyle(ChatFormatting.RED)
-      );
-    }
-    return new ItemLore(lines);
+    return new ItemLore(List.of(
+        Component.translatable("lore.magnatour." + itemId).withStyle(ChatFormatting.DARK_RED)
+    ));
   }
 
 }

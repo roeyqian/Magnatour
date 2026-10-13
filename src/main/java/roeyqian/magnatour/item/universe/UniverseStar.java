@@ -45,7 +45,7 @@ public class UniverseStar extends Item {
     return CustomItemSetting.applyUniverseDefaults(settings)
         .component(
             DataComponents.LORE,
-            CustomItemSetting.universeLore("universe_star", 2)
+            CustomItemSetting.universeLore("universe_star")
         );
   }
 

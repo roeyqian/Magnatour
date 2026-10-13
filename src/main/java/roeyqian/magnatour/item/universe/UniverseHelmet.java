@@ -63,7 +63,7 @@ public class UniverseHelmet extends Item {
       Properties settings
   ) {
     return CustomItemSetting.applyUniverseDefaults(settings).component(
-        DataComponents.LORE, CustomItemSetting.universeLore("universe_helmet", 3)
+        DataComponents.LORE, CustomItemSetting.universeLore("universe_helmet")
     );
   }
 

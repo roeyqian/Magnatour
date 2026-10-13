@@ -99,7 +99,7 @@ public class UniverseConsole extends Item {
     return CustomItemSetting.applyUniverseDefaults(settings)
         .component(
             DataComponents.LORE,
-            CustomItemSetting.universeLore("universe_console", 3)
+            CustomItemSetting.universeLore("universe_console")
         )
         .component(
             DataComponents.ATTRIBUTE_MODIFIERS,

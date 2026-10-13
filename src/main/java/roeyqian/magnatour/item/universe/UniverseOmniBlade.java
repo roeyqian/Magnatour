@@ -106,7 +106,7 @@ public class UniverseOmniBlade extends Item {
     return CustomItemSetting.applyUniverseDefaults(settings)
         .component(
             DataComponents.LORE,
-            CustomItemSetting.universeLore("universe_omni_blade", 3)
+            CustomItemSetting.universeLore("universe_omni_blade")
         )
         .component(
             DataComponents.ATTRIBUTE_MODIFIERS,

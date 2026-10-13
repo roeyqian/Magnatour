@@ -67,7 +67,7 @@ public class UniverseLeggings extends Item {
       Properties settings
   ) {
     return CustomItemSetting.applyUniverseDefaults(settings).component(
-        DataComponents.LORE, CustomItemSetting.universeLore("universe_leggings", 3)
+        DataComponents.LORE, CustomItemSetting.universeLore("universe_leggings")
     );
   }
 

@@ -52,7 +52,7 @@ public class UniverseStick extends Item {
     return CustomItemSetting.applyUniverseDefaults(settings)
         .component(
             DataComponents.LORE,
-            CustomItemSetting.universeLore("universe_stick", 2)
+            CustomItemSetting.universeLore("universe_stick")
         );
   }
 

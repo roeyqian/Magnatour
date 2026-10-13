@@ -66,7 +66,7 @@ public class StarAtlas extends Item {
       Properties settings
   ) {
     super(CustomItemSetting.applySupremeDefaults(settings)
-        .component(DataComponents.LORE, CustomItemSetting.itemLore("star_atlas", 2)));
+        .component(DataComponents.LORE, CustomItemSetting.supremeLore("star_atlas")));
   }
 
   /** Use natural colors for specified biomes and stable pseudorandom colors for unspecified ones. */

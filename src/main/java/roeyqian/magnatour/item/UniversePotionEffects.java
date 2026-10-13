@@ -38,7 +38,7 @@ public final class UniversePotionEffects {
   ) {
     CustomItemSetting.applyUniverseDefaults(settings)
         .component(DataComponents.POTION_CONTENTS, contents())
-        .component(DataComponents.LORE, CustomItemSetting.universeLore("universe_potion", 1));
+        .component(DataComponents.LORE, CustomItemSetting.universeLore("universe_potion"));
     if (drinkable) {
       settings.component(DataComponents.CONSUMABLE, Consumables.DEFAULT_DRINK)
           .usingConvertsTo(Items.GLASS_BOTTLE);

@@ -128,7 +128,7 @@ public class MirrorMobile extends Item {
       Properties settings
   ) {
     return CustomItemSetting.applySupremeDefaults(settings)
-        .component(DataComponents.LORE, CustomItemSetting.itemLore("mirror_mobile", 1))
+        .component(DataComponents.LORE, CustomItemSetting.supremeLore("mirror_mobile"))
         .component(CustomComponents.MIRROR_MOBILE_MODE, 0)
         .component(CustomComponents.MIRROR_MOBILE_BLOCK_ID, "");
   }

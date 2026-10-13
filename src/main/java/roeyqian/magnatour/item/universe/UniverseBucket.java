@@ -129,7 +129,7 @@ public class UniverseBucket extends Item {
     return CustomItemSetting.applyUniverseDefaults(settings)
         .component(
             DataComponents.LORE,
-            CustomItemSetting.universeLore("universe_bucket", 2)
+            CustomItemSetting.universeLore("universe_bucket")
         )
         .component(
             DataComponents.CONSUMABLE,
