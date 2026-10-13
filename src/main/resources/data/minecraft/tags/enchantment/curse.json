@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
+    "magnatour:eternity",
     "magnatour:finality",
     "magnatour:omniscience"
   ]

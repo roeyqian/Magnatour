@@ -110,26 +110,7 @@ public class UniverseConsole extends Item {
   }
 
   private static ItemAttributeModifiers createAttributes() {
-    return ItemAttributeModifiers.builder()
-        .add(
-            Attributes.ENTITY_INTERACTION_RANGE,
-            new AttributeModifier(
-                Identifier.fromNamespaceAndPath(Magnatour.MOD_ID, "universe_entity_range"),
-                1024.0F,
-                AttributeModifier.Operation.ADD_VALUE
-            ),
-            EquipmentSlotGroup.ANY
-        )
-        .add(
-            Attributes.BLOCK_INTERACTION_RANGE,
-            new AttributeModifier(
-                Identifier.fromNamespaceAndPath(Magnatour.MOD_ID, "universe_block_range"),
-                1024.0F,
-                AttributeModifier.Operation.ADD_VALUE
-            ),
-            EquipmentSlotGroup.ANY
-        )
-        .build();
+    return ItemAttributeModifiers.builder().build();
   }
 
   private InteractionResult execWorkingManager(

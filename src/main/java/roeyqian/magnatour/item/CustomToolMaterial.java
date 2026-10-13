@@ -35,6 +35,10 @@ public interface CustomToolMaterial {
       createRepairItemsTag("universe_star")
   );
 
+  ResourceKey<Enchantment> ETERNITY = ResourceKey.create(
+      Registries.ENCHANTMENT,
+      Identifier.fromNamespaceAndPath(Magnatour.MOD_ID, "eternity")
+  );
   ResourceKey<Enchantment> FINALITY = ResourceKey.create(
       Registries.ENCHANTMENT,
       Identifier.fromNamespaceAndPath(Magnatour.MOD_ID, "finality")
@@ -43,6 +47,17 @@ public interface CustomToolMaterial {
       Registries.ENCHANTMENT,
       Identifier.fromNamespaceAndPath(Magnatour.MOD_ID, "omniscience")
   );
+
+  static Item.Properties applyEternity(
+      Item.Properties settings,
+      int level
+  ) {
+    return settings.delayedComponent(DataComponents.ENCHANTMENTS, registries -> {
+      ItemEnchantments.Mutable enchantments = new ItemEnchantments.Mutable(ItemEnchantments.EMPTY);
+      enchantments.set(registries.lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(ETERNITY), level);
+      return enchantments.toImmutable();
+    });
+  }
 
   static Item.Properties applyFinality(
       Item.Properties settings,

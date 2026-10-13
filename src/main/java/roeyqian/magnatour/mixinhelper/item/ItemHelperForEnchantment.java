@@ -47,7 +47,11 @@ import org.apache.commons.lang3.mutable.MutableFloat;
 
 public final class ItemHelperForEnchantment {
 
-  // This marker tag identifies Finality's dynamically unrestricted item set.
+  // These marker tags identify the dynamically unrestricted divine item sets.
+  private static final TagKey<Item> ETERNITY_ITEMS = TagKey.create(
+      Registries.ITEM,
+      Identifier.fromNamespaceAndPath(Magnatour.MOD_ID, "enchantable/eternity")
+  );
   private static final TagKey<Item> FINALITY_ITEMS = TagKey.create(
       Registries.ITEM,
       Identifier.fromNamespaceAndPath(Magnatour.MOD_ID, "enchantable/finality")
@@ -149,6 +153,13 @@ public final class ItemHelperForEnchantment {
     return !EnchantmentHelper.getEnchantmentsForCrafting(stack).isEmpty();
   }
 
+  public static boolean hasEternity(
+      ItemStack stack
+  ) {
+    return EnchantmentHelper.getEnchantmentsForCrafting(stack).keySet().stream()
+        .anyMatch(enchantment -> enchantment.is(CustomToolMaterial.ETERNITY));
+  }
+
   public static boolean hasFinality(
       ItemStack stack
   ) {
@@ -173,7 +184,9 @@ public final class ItemHelperForEnchantment {
   public static boolean isDivineEnchantment(
       Holder<Enchantment> enchantment
   ) {
-    return enchantment.is(CustomToolMaterial.FINALITY) || enchantment.is(CustomToolMaterial.OMNISCIENCE);
+    return enchantment.is(CustomToolMaterial.ETERNITY)
+        || enchantment.is(CustomToolMaterial.FINALITY)
+        || enchantment.is(CustomToolMaterial.OMNISCIENCE);
   }
 
   public static boolean isEmperorTool(
@@ -207,7 +220,8 @@ public final class ItemHelperForEnchantment {
       Enchantment enchantment
   ) {
     return enchantment.definition().supportedItems().unwrapKey()
-        .filter(tag -> tag.equals(FINALITY_ITEMS) || tag.equals(OMNISCIENCE_ITEMS)).isPresent();
+        .filter(tag -> tag.equals(ETERNITY_ITEMS)
+            || tag.equals(FINALITY_ITEMS) || tag.equals(OMNISCIENCE_ITEMS)).isPresent();
   }
 
   public static boolean supportsAxeOrPickaxe(

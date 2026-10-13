@@ -32,7 +32,8 @@ public final class MenuHelperForEnchantment {
     ItemStack additionStack = combinerAccessor.getInputSlots().getItem(1);
 
     // Existing divine enchantments may be retained, but never transferred or upgraded.
-    if (!ItemHelperForEnchantment.hasFinality(additionStack)
+    if (!ItemHelperForEnchantment.hasEternity(additionStack)
+        && !ItemHelperForEnchantment.hasFinality(additionStack)
         && !ItemHelperForEnchantment.hasOmniscience(additionStack)) {
       if (!ItemHelperForEnchantment.isUniverseEnchantBlocked(baseStack)) {
         return;

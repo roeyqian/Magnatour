@@ -25,6 +25,7 @@ import org.jspecify.annotations.Nullable;
 
 // Magnatour
 import roeyqian.magnatour.item.CustomItemSetting;
+import roeyqian.magnatour.item.CustomToolMaterial;
 
 public class UniverseHelmet extends Item {
 
@@ -62,7 +63,7 @@ public class UniverseHelmet extends Item {
   private static Properties applySettings(
       Properties settings
   ) {
-    return CustomItemSetting.applyUniverseDefaults(settings).component(
+    return CustomToolMaterial.applyEternity(CustomItemSetting.applyUniverseDefaults(settings), 10).component(
         DataComponents.LORE, CustomItemSetting.universeLore("universe_helmet")
     );
   }
