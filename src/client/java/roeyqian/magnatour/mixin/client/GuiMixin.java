@@ -42,7 +42,7 @@ public class GuiMixin {
     ClientHelperForEquipment.handleAfterSetScreen(this.minecraft, newScreen);
   }
 
-  /* Universe Console: Save mouse cursor position before the Universe Console Screen is closed.
+  /* Universe Command Star: Save mouse cursor position before the Universe Command Star Screen is closed.
    */
   @Inject(method = "setScreen", at = @At("HEAD"))
   private void onSetScreen(

@@ -29,7 +29,7 @@ public abstract class LivingEntityMixin {
   @Unique
   private int flightTicks = 0;
 
-  /* Universe Chestplate & Universe Leggings: Fast-Flying
+  /* Universe Void Chestplate & Universe Void Leggings: Fast-Flying
    */
   @Inject(method = "baseTick", at = @At("TAIL"))
   private void inBaseTick(
@@ -57,13 +57,13 @@ public abstract class LivingEntityMixin {
     );
   }
 
-  /* Universe Leggings: Smooth Movement
+  /* Universe Void Leggings: Smooth Movement
    */
   @Inject(method = "tick", at = @At("HEAD"))
   private void inTick(
       CallbackInfo ci
   ) {
-    EntityHelperForEquipment.handleUniverseLeggingsStepping((LivingEntity) (Object) this);
+    EntityHelperForEquipment.handleUniverseVoidLeggingsStepping((LivingEntity) (Object) this);
   }
 
 }

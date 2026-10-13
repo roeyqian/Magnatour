@@ -32,7 +32,7 @@ public interface CustomToolMaterial {
   ToolMaterial UNIVERSE_TOOL = new ToolMaterial(
       BlockTags.INCORRECT_FOR_NETHERITE_TOOL,
       3600000, 1000, 1000, 3600000,
-      createRepairItemsTag("universe_star")
+      createRepairItemsTag("universe_core")
   );
 
   ResourceKey<Enchantment> ETERNITY = ResourceKey.create(

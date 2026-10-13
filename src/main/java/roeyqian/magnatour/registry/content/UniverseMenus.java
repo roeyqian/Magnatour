@@ -13,7 +13,7 @@ import net.minecraft.world.inventory.MenuType;
 // Magnatour
 import roeyqian.magnatour.Magnatour;
 import roeyqian.magnatour.menu.universe.UniverseAnnihilatorMenu;
-import roeyqian.magnatour.menu.universe.UniverseConsoleMenu;
+import roeyqian.magnatour.menu.universe.UniverseCommandStarMenu;
 import roeyqian.magnatour.menu.universe.UniverseLibraryMenu;
 import roeyqian.magnatour.menu.universe.UniverseRefineryMenu;
 import roeyqian.magnatour.menu.universe.UniverseTeleportPointMenu;
@@ -52,11 +52,11 @@ public final class UniverseMenus {
       MenuRegHelper.register("universe_workstation", UniverseWorkstationMenu::new);
 
   // Item Menus
-  public static final MenuType<UniverseConsoleMenu> UNIVERSE_CONSOLE_HANDLER =
+  public static final MenuType<UniverseCommandStarMenu> UNIVERSE_COMMAND_STAR_HANDLER =
       MenuRegHelper.registerExtended(
-          "universe_console",
-          (syncId, _, boundBlocks) -> new UniverseConsoleMenu(syncId, boundBlocks),
-          roeyqian.magnatour.item.universe.UniverseConsole.BoundBlockList.PACKET_CODEC
+          "universe_command_star",
+          (syncId, _, boundBlocks) -> new UniverseCommandStarMenu(syncId, boundBlocks),
+          roeyqian.magnatour.item.universe.UniverseCommandStar.BoundBlockList.PACKET_CODEC
       );
 
   private UniverseMenus() {}

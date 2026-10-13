@@ -42,7 +42,7 @@ import org.lwjgl.sdl.SDLMouse;
 // Magnatour
 import roeyqian.magnatour.item.universe.UniverseBucket;
 import roeyqian.magnatour.level.network.UniverseBucketPickupPayload;
-import roeyqian.magnatour.screen.universe.UniverseConsoleScreen;
+import roeyqian.magnatour.screen.universe.UniverseCommandStarScreen;
 
 @Environment(EnvType.CLIENT)
 public final class ClientHelperForEquipment {
@@ -73,7 +73,7 @@ public final class ClientHelperForEquipment {
       MouseHandler mouseHandler,
       Screen currentScreen, Screen newScreen
   ) {
-    if (newScreen != null || !(currentScreen instanceof UniverseConsoleScreen)) return;
+    if (newScreen != null || !(currentScreen instanceof UniverseCommandStarScreen)) return;
 
     synchronized (SAVED_MOUSE_POSITIONS) {
       SAVED_MOUSE_POSITIONS.put(client, new MouseRestoreState(mouseHandler.xpos(), mouseHandler.ypos()));

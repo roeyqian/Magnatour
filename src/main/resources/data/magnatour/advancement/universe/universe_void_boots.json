@@ -1,0 +1,33 @@
+{
+  "parent": "magnatour:universe/universe_core",
+  "criteria": {
+    "universe_void_boots": {
+      "conditions": {
+        "items": [
+          {
+            "items": "magnatour:universe_void_boots"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.magnatour.universe_void_boots.description"
+    },
+    "frame": "challenge",
+    "icon": {
+      "id": "magnatour:universe_void_boots"
+    },
+    "title": {
+      "translate": "advancements.magnatour.universe_void_boots.title"
+    }
+  },
+  "requirements": [
+    [
+      "universe_void_boots"
+    ]
+  ],
+  "sends_telemetry_event": false
+}

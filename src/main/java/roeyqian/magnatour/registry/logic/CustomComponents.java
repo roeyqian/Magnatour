@@ -19,7 +19,7 @@ import net.minecraft.network.codec.ByteBufCodecs;
 
 // Magnatour
 import roeyqian.magnatour.Magnatour;
-import roeyqian.magnatour.item.universe.UniverseConsole;
+import roeyqian.magnatour.item.universe.UniverseCommandStar;
 import roeyqian.magnatour.item.universe.UniverseLibraryContents;
 import roeyqian.magnatour.registry.LogicRegHelper;
 
@@ -66,8 +66,8 @@ public final class CustomComponents {
           .persistent(Codec.INT)
           .networkSynchronized(ByteBufCodecs.VAR_INT)
   );
-  public static final DataComponentType<Integer> UNIVERSE_CONSOLE_MODE = register(
-      "universe_console_mode",
+  public static final DataComponentType<Integer> UNIVERSE_COMMAND_STAR_MODE = register(
+      "universe_command_star_mode",
       builder -> builder
           .persistent(Codec.INT)
           .networkSynchronized(ByteBufCodecs.VAR_INT)
@@ -86,11 +86,11 @@ public final class CustomComponents {
           .networkSynchronized(ByteBufCodecs.VAR_INT)
   );
 
-  public static final DataComponentType<UniverseConsole.BoundBlockList> UNIVERSE_CONSOLE_BOUND_LIST = register(
-      "universe_console_bound_list",
+  public static final DataComponentType<UniverseCommandStar.BoundBlockList> UNIVERSE_COMMAND_STAR_BOUND_LIST = register(
+      "universe_command_star_bound_list",
       builder -> builder
-          .persistent(UniverseConsole.BoundBlockList.CODEC)
-          .networkSynchronized(UniverseConsole.BoundBlockList.PACKET_CODEC)
+          .persistent(UniverseCommandStar.BoundBlockList.CODEC)
+          .networkSynchronized(UniverseCommandStar.BoundBlockList.PACKET_CODEC)
   );
 
   private CustomComponents() {}

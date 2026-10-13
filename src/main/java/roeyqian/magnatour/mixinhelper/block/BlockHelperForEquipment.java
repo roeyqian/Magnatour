@@ -45,7 +45,7 @@ public final class BlockHelperForEquipment {
     }
 
     ItemStack boots = player.getItemBySlot(EquipmentSlot.FEET);
-    if (boots.is(UniverseItems.UNIVERSE_BOOTS)) {
+    if (boots.is(UniverseItems.UNIVERSE_VOID_BOOTS)) {
       cir.setReturnValue(true);
     }
   }

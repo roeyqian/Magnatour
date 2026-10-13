@@ -30,7 +30,7 @@ import roeyqian.magnatour.screen.supreme.SupremeCraftableScreen;
 import roeyqian.magnatour.screen.supreme.SupremeFurnaceScreen;
 import roeyqian.magnatour.screen.supreme.SupremeReserverScreen;
 import roeyqian.magnatour.screen.universe.UniverseAnnihilatorScreen;
-import roeyqian.magnatour.screen.universe.UniverseConsoleScreen;
+import roeyqian.magnatour.screen.universe.UniverseCommandStarScreen;
 import roeyqian.magnatour.screen.universe.UniverseLibraryScreen;
 import roeyqian.magnatour.screen.universe.UniverseRefineryScreen;
 import roeyqian.magnatour.screen.universe.UniverseTeleportPointScreen;
@@ -51,7 +51,7 @@ public final class RegScreens {
     MenuScreens.register(SupremeMenus.REDSTONE_TRIGGER_HANDLER, RedstoneTriggerScreen::new);
     MenuScreens.register(SupremeMenus.ITEM_HUB_HANDLER, ItemHubScreen::new);
 
-    MenuScreens.register(UniverseMenus.UNIVERSE_CONSOLE_HANDLER, UniverseConsoleScreen::new);
+    MenuScreens.register(UniverseMenus.UNIVERSE_COMMAND_STAR_HANDLER, UniverseCommandStarScreen::new);
     MenuScreens.register(UniverseMenus.UNIVERSE_WORKSTATION_HANDLER, UniverseWorkstationScreen::new);
     MenuScreens.register(UniverseMenus.UNIVERSE_REFINERY_HANDLER, UniverseRefineryScreen::new);
     MenuScreens.register(UniverseMenus.UNIVERSE_LIBRARY_HANDLER, UniverseLibraryScreen::new);

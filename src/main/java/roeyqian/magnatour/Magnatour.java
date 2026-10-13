@@ -221,7 +221,7 @@ public class Magnatour implements ModInitializer {
         BuiltInRegistries.CREATIVE_MODE_TAB, UNIVERSE_ITEM_KEY, FabricCreativeModeTab
             .builder()
             .title(Component.translatable("group.magnatour.universe_item"))
-            .icon(() -> new ItemStack(UniverseItems.UNIVERSE_STAR))
+            .icon(() -> new ItemStack(UniverseItems.UNIVERSE_CORE))
             .displayItems((_, entries) -> {
               entries.accept(UniverseItems.UNIVERSE_GEMRED);
               entries.accept(UniverseItems.UNIVERSE_GEMBLUE);
@@ -232,15 +232,15 @@ public class Magnatour implements ModInitializer {
               entries.accept(UniverseItems.UNIVERSE_LIGHT);
               entries.accept(UniverseItems.UNIVERSE_DARK);
               entries.accept(UniverseItems.UNIVERSE_PRIMARY_FRAGMENT);
-              entries.accept(UniverseItems.UNIVERSE_STAR);
+              entries.accept(UniverseItems.UNIVERSE_CORE);
               entries.accept(UniverseItems.UNIVERSE_STICK);
               entries.accept(UniverseItems.UNIVERSE_ULTIMA_SWORD);
               entries.accept(UniverseItems.UNIVERSE_OMNI_BLADE);
-              entries.accept(UniverseItems.UNIVERSE_CONSOLE);
-              entries.accept(UniverseItems.UNIVERSE_HELMET);
-              entries.accept(UniverseItems.UNIVERSE_CHESTPLATE);
-              entries.accept(UniverseItems.UNIVERSE_LEGGINGS);
-              entries.accept(UniverseItems.UNIVERSE_BOOTS);
+              entries.accept(UniverseItems.UNIVERSE_COMMAND_STAR);
+              entries.accept(UniverseItems.UNIVERSE_VOID_HELMET);
+              entries.accept(UniverseItems.UNIVERSE_VOID_CHESTPLATE);
+              entries.accept(UniverseItems.UNIVERSE_VOID_LEGGINGS);
+              entries.accept(UniverseItems.UNIVERSE_VOID_BOOTS);
               entries.accept(UniverseItems.UNIVERSE_BUCKET);
               entries.accept(UniverseItems.UNIVERSE_BANQUET);
               entries.accept(UniverseItems.UNIVERSE_POTION);

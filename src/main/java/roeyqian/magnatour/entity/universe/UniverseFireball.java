@@ -39,7 +39,7 @@ public class UniverseFireball extends LargeFireball {
       int explosionPower
   ) {
     super(world, owner, velocity, explosionPower);
-    this.setItem(UniverseItems.UNIVERSE_STAR.getDefaultInstance());
+    this.setItem(UniverseItems.UNIVERSE_CORE.getDefaultInstance());
     this.power = explosionPower;
   }
 

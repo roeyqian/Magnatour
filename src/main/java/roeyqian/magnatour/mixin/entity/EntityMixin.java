@@ -26,7 +26,7 @@ import roeyqian.magnatour.mixinhelper.entity.EntityHelperForEquipment;
 @Mixin(value = Entity.class, priority = 3600000)
 public abstract class EntityMixin {
 
-  /* Universe Boots: Walking on lava
+  /* Universe Void Boots: Walking on lava
    */
   @Inject(method = "isInLava", at = @At("HEAD"), cancellable = true)
   private void inIsInLava(
@@ -35,7 +35,7 @@ public abstract class EntityMixin {
     EntityHelperForEquipment.handleEntityIsInLava((Entity) (Object) this, cir);
   }
 
-  /* Universe Boots: Walking on water
+  /* Universe Void Boots: Walking on water
    */
   @Inject(method = "isInWater", at = @At("HEAD"), cancellable = true)
   private void inIsInWater(
@@ -53,11 +53,11 @@ public abstract class EntityMixin {
       CallbackInfo ci
   ) {
     if ((Object) this instanceof Player player) {
-      EntityHelperForEquipment.handleUniverseBootsFlightCollision(player);
+      EntityHelperForEquipment.handleUniverseVoidBootsFlightCollision(player);
     }
   }
 
-  /* Universe Boots: Fluid Walking on Water and Lava
+  /* Universe Void Boots: Fluid Walking on Water and Lava
    */
   @Inject(method = "tick", at = @At("HEAD"))
   private void inTick(

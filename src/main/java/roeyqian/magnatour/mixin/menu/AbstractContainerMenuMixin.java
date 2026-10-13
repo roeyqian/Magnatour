@@ -75,7 +75,7 @@ public class AbstractContainerMenuMixin {
     return UniverseInventoryHelper.getStackLimit(player, stack);
   }
 
-  /* Universe Console: Clear Remote Access State
+  /* Universe Command Star: Clear Remote Access State
    */
   @Inject(method = "removed", at = @At("TAIL"))
   private void inRemoved(

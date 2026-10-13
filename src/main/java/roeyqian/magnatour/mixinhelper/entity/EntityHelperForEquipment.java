@@ -43,12 +43,12 @@ public final class EntityHelperForEquipment {
 
   private EntityHelperForEquipment() {}
 
-  public static boolean canUniverseFlyThroughWalls(
+  public static boolean canUniverseVoidFlyThroughWalls(
       Player player
   ) {
     return player.getAbilities().flying
-        && player.getItemBySlot(EquipmentSlot.CHEST).is(UniverseItems.UNIVERSE_CHESTPLATE)
-        && player.getItemBySlot(EquipmentSlot.FEET).is(UniverseItems.UNIVERSE_BOOTS);
+        && player.getItemBySlot(EquipmentSlot.CHEST).is(UniverseItems.UNIVERSE_VOID_CHESTPLATE)
+        && player.getItemBySlot(EquipmentSlot.FEET).is(UniverseItems.UNIVERSE_VOID_BOOTS);
   }
 
   public static void handleDefaultFlight(
@@ -70,7 +70,7 @@ public final class EntityHelperForEquipment {
       CallbackInfoReturnable<Boolean> cir
   ) {
     if (entity instanceof Player player) {
-      handleUniverseBootsFluidContact(player, cir);
+      handleUniverseVoidBootsFluidContact(player, cir);
     }
   }
 
@@ -79,7 +79,7 @@ public final class EntityHelperForEquipment {
       CallbackInfoReturnable<Boolean> cir
   ) {
     if (entity instanceof Player player) {
-      handleUniverseBootsFluidContact(player, cir);
+      handleUniverseVoidBootsFluidContact(player, cir);
     }
   }
 
@@ -87,7 +87,7 @@ public final class EntityHelperForEquipment {
       Entity entity
   ) {
     if (entity instanceof Player player) {
-      handleUniverseBootsFluidWalking(player);
+      handleUniverseVoidBootsFluidWalking(player);
     }
   }
 
@@ -99,8 +99,8 @@ public final class EntityHelperForEquipment {
       return flightTicks;
     }
 
-    if (player.getItemBySlot(EquipmentSlot.CHEST).is(UniverseItems.UNIVERSE_CHESTPLATE)) {
-      return handleUniverseFlight(player, flightTicks);
+    if (player.getItemBySlot(EquipmentSlot.CHEST).is(UniverseItems.UNIVERSE_VOID_CHESTPLATE)) {
+      return handleUniverseVoidFlight(player, flightTicks);
     }
 
     if (player.getAbilities().getFlyingSpeed() != DEFAULT_FLYING_SPEED) {
@@ -123,7 +123,7 @@ public final class EntityHelperForEquipment {
       Player player,
       CallbackInfo ci
   ) {
-    if (player.getItemBySlot(EquipmentSlot.CHEST).is(UniverseItems.UNIVERSE_CHESTPLATE)) {
+    if (player.getItemBySlot(EquipmentSlot.CHEST).is(UniverseItems.UNIVERSE_VOID_CHESTPLATE)) {
       ci.cancel();
     }
   }
@@ -151,7 +151,7 @@ public final class EntityHelperForEquipment {
       Player player,
       Vec3 movementInput
   ) {
-    if (!player.getItemBySlot(EquipmentSlot.LEGS).is(UniverseItems.UNIVERSE_LEGGINGS)) return;
+    if (!player.getItemBySlot(EquipmentSlot.LEGS).is(UniverseItems.UNIVERSE_VOID_LEGGINGS)) return;
     if (player.getAbilities().flying || movementInput.lengthSqr() <= 0) return;
 
     if (player.isInWater()) {
@@ -164,7 +164,24 @@ public final class EntityHelperForEquipment {
     }
   }
 
-  public static void handleUniverseArmorDefense(
+  public static void handleUniverseHitEffect(
+      LivingEntity target,
+      boolean damaged,
+      DamageSource source
+  ) {
+    if (!damaged) return;
+    if (!(source.getEntity() instanceof Player player)) return;
+
+    ItemStack weaponStack = player.getMainHandItem();
+    if (!weaponStack.is(UniverseItems.UNIVERSE_ULTIMA_SWORD)) return;
+
+    if (weaponStack.getOrDefault(CustomComponents.UNIVERSE_ULTIMA_SWORD_MODE, 0) == 1) {
+      target.hurtTime = 0;
+      target.setInvulnerableTime(0);
+    }
+  }
+
+  public static void handleUniverseVoidArmorDefense(
       Player player,
       CallbackInfoReturnable<Boolean> cir
   ) {
@@ -174,10 +191,10 @@ public final class EntityHelperForEquipment {
       if (!slot.isArmor() || armorStack.isEmpty()) {
         continue;
       }
-      if (armorStack.is(UniverseItems.UNIVERSE_CHESTPLATE)
-          || armorStack.is(UniverseItems.UNIVERSE_HELMET)
-          || armorStack.is(UniverseItems.UNIVERSE_LEGGINGS)
-          || armorStack.is(UniverseItems.UNIVERSE_BOOTS)) {
+      if (armorStack.is(UniverseItems.UNIVERSE_VOID_CHESTPLATE)
+          || armorStack.is(UniverseItems.UNIVERSE_VOID_HELMET)
+          || armorStack.is(UniverseItems.UNIVERSE_VOID_LEGGINGS)
+          || armorStack.is(UniverseItems.UNIVERSE_VOID_BOOTS)) {
         count++;
       }
     }
@@ -187,22 +204,22 @@ public final class EntityHelperForEquipment {
     }
   }
 
-  public static void handleUniverseBootsFlightCollision(
+  public static void handleUniverseVoidBootsFlightCollision(
       Player player
   ) {
-    player.noPhysics = player.isSpectator() || canUniverseFlyThroughWalls(player);
+    player.noPhysics = player.isSpectator() || canUniverseVoidFlyThroughWalls(player);
     if (player.noPhysics) {
       player.setOnGround(false);
       player.resetFallDistance();
     }
   }
 
-  public static void handleUniverseBootsFluidContact(
+  public static void handleUniverseVoidBootsFluidContact(
       Player player,
       CallbackInfoReturnable<Boolean> cir
   ) {
     ItemStack boots = player.getItemBySlot(EquipmentSlot.FEET);
-    if (!boots.is(UniverseItems.UNIVERSE_BOOTS)) return;
+    if (!boots.is(UniverseItems.UNIVERSE_VOID_BOOTS)) return;
     if (player.isShiftKeyDown()) return;
 
     Level level = player.level();
@@ -215,11 +232,11 @@ public final class EntityHelperForEquipment {
     cir.setReturnValue(false);
   }
 
-  public static void handleUniverseBootsFluidWalking(
+  public static void handleUniverseVoidBootsFluidWalking(
       Player player
   ) {
     ItemStack boots = player.getItemBySlot(EquipmentSlot.FEET);
-    if (!boots.is(UniverseItems.UNIVERSE_BOOTS)) return;
+    if (!boots.is(UniverseItems.UNIVERSE_VOID_BOOTS)) return;
     if (player.isShiftKeyDown()) return;
     if (player.getAbilities().flying || player.isSpectator()) return;
 
@@ -252,18 +269,18 @@ public final class EntityHelperForEquipment {
     }
   }
 
-  public static void handleUniverseChestplateImmunity(
+  public static void handleUniverseVoidChestplateImmunity(
       Player player,
       DamageSource source,
       CallbackInfoReturnable<Boolean> cir
   ) {
-    if (player.getItemBySlot(EquipmentSlot.CHEST).is(UniverseItems.UNIVERSE_CHESTPLATE)
+    if (player.getItemBySlot(EquipmentSlot.CHEST).is(UniverseItems.UNIVERSE_VOID_CHESTPLATE)
         && (source.is(DamageTypeTags.IS_FIRE) || source.is(DamageTypeTags.IS_FREEZING))) {
       cir.setReturnValue(true);
     }
   }
 
-  public static int handleUniverseFlight(
+  public static int handleUniverseVoidFlight(
       Player player,
       int flightTicks
   ) {
@@ -274,7 +291,7 @@ public final class EntityHelperForEquipment {
 
     float baseSpeed = player.isSprinting() ? 0.2F : 0.08F;
     float targetSpeed = baseSpeed;
-    boolean allowSpeedUp = player.getItemBySlot(EquipmentSlot.LEGS).is(UniverseItems.UNIVERSE_LEGGINGS);
+    boolean allowSpeedUp = player.getItemBySlot(EquipmentSlot.LEGS).is(UniverseItems.UNIVERSE_VOID_LEGGINGS);
 
     if (allowSpeedUp && player.getAbilities().flying && player.isSprinting()) {
       flightTicks++;
@@ -304,24 +321,7 @@ public final class EntityHelperForEquipment {
     return flightTicks;
   }
 
-  public static void handleUniverseHitEffect(
-      LivingEntity target,
-      boolean damaged,
-      DamageSource source
-  ) {
-    if (!damaged) return;
-    if (!(source.getEntity() instanceof Player player)) return;
-
-    ItemStack weaponStack = player.getMainHandItem();
-    if (!weaponStack.is(UniverseItems.UNIVERSE_ULTIMA_SWORD)) return;
-
-    if (weaponStack.getOrDefault(CustomComponents.UNIVERSE_ULTIMA_SWORD_MODE, 0) == 1) {
-      target.hurtTime = 0;
-      target.setInvulnerableTime(0);
-    }
-  }
-
-  public static void handleUniverseLeggingsStepping(
+  public static void handleUniverseVoidLeggingsStepping(
       LivingEntity living
   ) {
     if (!(living instanceof Player player)) return;
@@ -331,13 +331,13 @@ public final class EntityHelperForEquipment {
     AttributeInstance stepAttr = player.getAttribute(Attributes.STEP_HEIGHT);
     AttributeInstance jumpAttr = player.getAttribute(Attributes.JUMP_STRENGTH);
     Identifier stepId = Identifier.fromNamespaceAndPath(
-        Magnatour.MOD_ID, "universe_leggings_step_height"
+        Magnatour.MOD_ID, "universe_void_leggings_step_height"
     );
     Identifier jumpId = Identifier.fromNamespaceAndPath(
-        Magnatour.MOD_ID, "universe_leggings_jump_boost"
+        Magnatour.MOD_ID, "universe_void_leggings_jump_boost"
     );
 
-    if (legStack.is(UniverseItems.UNIVERSE_LEGGINGS)) {
+    if (legStack.is(UniverseItems.UNIVERSE_VOID_LEGGINGS)) {
       if (stepAttr != null && !stepAttr.hasModifier(stepId)) {
         stepAttr.addTransientModifier(
             new AttributeModifier(stepId, 0.5, AttributeModifier.Operation.ADD_VALUE)

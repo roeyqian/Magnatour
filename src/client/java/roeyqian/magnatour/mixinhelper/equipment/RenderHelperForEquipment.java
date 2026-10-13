@@ -28,12 +28,12 @@ public final class RenderHelperForEquipment {
 
   private RenderHelperForEquipment() {}
 
-  public static void handleUniverseHelmetVision(
+  public static void handleUniverseVoidHelmetVision(
       Camera camera,
       CallbackInfoReturnable<FogData> cir
   ) {
     LocalPlayer player = Minecraft.getInstance().player;
-    if (player == null || !player.getItemBySlot(EquipmentSlot.HEAD).is(UniverseItems.UNIVERSE_HELMET))
+    if (player == null || !player.getItemBySlot(EquipmentSlot.HEAD).is(UniverseItems.UNIVERSE_VOID_HELMET))
       return;
 
     FogType type = camera.getFluidInCamera();

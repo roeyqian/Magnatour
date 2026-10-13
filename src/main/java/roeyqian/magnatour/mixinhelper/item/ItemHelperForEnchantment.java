@@ -220,10 +220,10 @@ public final class ItemHelperForEnchantment {
   public static boolean isUniverseEnchantBlocked(
       ItemStack stack
   ) {
-    return stack.is(UniverseItems.UNIVERSE_HELMET)
-        || stack.is(UniverseItems.UNIVERSE_CHESTPLATE)
-        || stack.is(UniverseItems.UNIVERSE_LEGGINGS)
-        || stack.is(UniverseItems.UNIVERSE_BOOTS)
+    return stack.is(UniverseItems.UNIVERSE_VOID_HELMET)
+        || stack.is(UniverseItems.UNIVERSE_VOID_CHESTPLATE)
+        || stack.is(UniverseItems.UNIVERSE_VOID_LEGGINGS)
+        || stack.is(UniverseItems.UNIVERSE_VOID_BOOTS)
         || stack.is(UniverseItems.UNIVERSE_ULTIMA_SWORD)
         || stack.is(UniverseItems.UNIVERSE_OMNI_BLADE);
   }

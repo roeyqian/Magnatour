@@ -29,7 +29,7 @@ import roeyqian.magnatour.Magnatour;
 
 public interface CustomArmorMaterial extends ArmorMaterials {
 
-  int universe = 1000;
+  int universeVoid = 1000;
 
   ArmorMaterial SUPREME_BOOTS_ARMOR = makeSupremeArmor(
       ArmorType.BOOTS, 2, 1.0F, 0.15F
@@ -43,20 +43,20 @@ public interface CustomArmorMaterial extends ArmorMaterials {
   ArmorMaterial SUPREME_LEGGINGS_ARMOR = makeSupremeArmor(
       ArmorType.LEGGINGS, 6, 5.0F, 0.15F
   );
-  ArmorMaterial UNIVERSE_ARMOR = new ArmorMaterial(
-      universe,
-      makeDefense(universe, universe, universe, universe, universe),
-      universe,
+  ArmorMaterial UNIVERSE_VOID_ARMOR = new ArmorMaterial(
+      universeVoid,
+      makeDefense(universeVoid, universeVoid, universeVoid, universeVoid, universeVoid),
+      universeVoid,
       SoundEvents.ARMOR_EQUIP_NETHERITE,
-      universe,
-      (universe * 0.1F),
+      universeVoid,
+      (universeVoid * 0.1F),
       TagKey.create(
           Registries.ITEM,
-          Identifier.fromNamespaceAndPath(Magnatour.MOD_ID, "universe_star")
+          Identifier.fromNamespaceAndPath(Magnatour.MOD_ID, "universe_core")
       ),
       ResourceKey.create(
           EquipmentAssets.ROOT_ID,
-          Identifier.fromNamespaceAndPath(Magnatour.MOD_ID, "universe")
+          Identifier.fromNamespaceAndPath(Magnatour.MOD_ID, "universe_void")
       )
   );
 

@@ -48,7 +48,7 @@ public final class UniverseCookingBookComponent extends RecipeBookComponent<Univ
       new RecipeBookComponent.TabInfo(Items.STONE, RecipeBookCategories.FURNACE_BLOCKS),
       new RecipeBookComponent.TabInfo(Items.LAVA_BUCKET, Items.EMERALD, RecipeBookCategories.FURNACE_MISC),
       new RecipeBookComponent.TabInfo(SupremeItems.SUPREME_CORE, CustomRecipes.SUPREME_COOKING),
-      new RecipeBookComponent.TabInfo(UniverseItems.UNIVERSE_STAR, CustomRecipes.UNIVERSE_COOKING)
+      new RecipeBookComponent.TabInfo(UniverseItems.UNIVERSE_CORE, CustomRecipes.UNIVERSE_COOKING)
   );
 
   private static final WidgetSprites FILTER_BUTTON_TEXTURES = new WidgetSprites(

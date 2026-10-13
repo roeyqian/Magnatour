@@ -43,9 +43,9 @@ import roeyqian.magnatour.mixinhelper.glint.RenderHelperForGlint;
 @Environment(EnvType.CLIENT) @Mixin(value = EquipmentLayerRenderer.class, priority = 3600000)
 public class EquipmentLayerRendererMixin {
 
-  private static final int UNIVERSE_ARMOR_FRAMES = 32;
+  private static final int UNIVERSE_VOID_ARMOR_FRAMES = 32;
 
-  @Unique private boolean magnatour$animateUniverseHumanoid;
+  @Unique private boolean magnatour$animateUniverseVoidHumanoid;
 
   @Shadow @Final private EquipmentAssetManager equipmentAssets;
 
@@ -102,14 +102,14 @@ public class EquipmentLayerRendererMixin {
       ),
       index = 7
   )
-  private UvMapping magnatour$animateUniverseArmor(
+  private UvMapping magnatour$animateUniverseVoidArmor(
       UvMapping original
   ) {
-    if (!magnatour$animateUniverseHumanoid) {
+    if (!magnatour$animateUniverseVoidHumanoid) {
       return original;
     }
 
-    int frame = (int) Math.floorMod(System.currentTimeMillis() / 50L, UNIVERSE_ARMOR_FRAMES);
+    int frame = (int) Math.floorMod(System.currentTimeMillis() / 50L, UNIVERSE_VOID_ARMOR_FRAMES);
     return new UvMapping() {
       @Override
       public float getU(float u) {
@@ -118,7 +118,7 @@ public class EquipmentLayerRendererMixin {
 
       @Override
       public float getV(float v) {
-        return (frame + v) / UNIVERSE_ARMOR_FRAMES;
+        return (frame + v) / UNIVERSE_VOID_ARMOR_FRAMES;
       }
     };
   }
@@ -131,7 +131,7 @@ public class EquipmentLayerRendererMixin {
           "ILnet/minecraft/resources/Identifier;II)V",
       at = @At("HEAD")
   )
-  private <S> void magnatour$selectUniverseArmorAnimation(
+  private <S> void magnatour$selectUniverseVoidArmorAnimation(
       EquipmentClientInfo.LayerType layerType,
       ResourceKey<EquipmentAsset> equipmentAssetId,
       Model<? super S> model,
@@ -144,8 +144,8 @@ public class EquipmentLayerRendererMixin {
       int layerColor, int outlineColor,
       CallbackInfo ci
   ) {
-    magnatour$animateUniverseHumanoid = layerType == EquipmentClientInfo.LayerType.HUMANOID
-        && equipmentAssetId.equals(CustomArmorMaterial.UNIVERSE_ARMOR.assetId());
+    magnatour$animateUniverseVoidHumanoid = layerType == EquipmentClientInfo.LayerType.HUMANOID
+        && equipmentAssetId.equals(CustomArmorMaterial.UNIVERSE_VOID_ARMOR.assetId());
   }
 
 }

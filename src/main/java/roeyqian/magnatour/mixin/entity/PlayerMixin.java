@@ -42,14 +42,14 @@ import com.llamalad7.mixinextras.sugar.Local;
 @Mixin(value = Player.class, priority = 3600000)
 public class PlayerMixin {
 
-  /* Universe Chestplate & Boots: Flight Through Walls
+  /* Universe Void Chestplate & Universe Void Boots: Flight Through Walls
    */
   @Redirect(method = "tick", at = @At(value = "INVOKE",
       target = "Lnet/minecraft/world/entity/player/Player;isSpectator()Z", ordinal = 0))
-  private boolean allowUniverseFlightThroughWalls(
+  private boolean allowUniverseVoidFlightThroughWalls(
       Player player
   ) {
-    return player.isSpectator() || EntityHelperForEquipment.canUniverseFlyThroughWalls(player);
+    return player.isSpectator() || EntityHelperForEquipment.canUniverseVoidFlyThroughWalls(player);
   }
 
   /* Universe Ultima Sword: Force Normal Death Without Applying Damage
@@ -79,7 +79,7 @@ public class PlayerMixin {
     return original.call(target, source, amount);
   }
 
-  /* Universe Armors: Absolute Defense
+  /* Universe Void Armors: Absolute Defense
    */
   @Inject(method = "hurtServer", at = @At("HEAD"), cancellable = true)
   private void inHurtServer(
@@ -89,10 +89,10 @@ public class PlayerMixin {
       CallbackInfoReturnable<Boolean> cir
   ) {
     Player player = (Player) (Object) this;
-    EntityHelperForEquipment.handleUniverseArmorDefense(player, cir);
+    EntityHelperForEquipment.handleUniverseVoidArmorDefense(player, cir);
   }
 
-  /* Universe Chestplate: Fire and Freezing Immunity
+  /* Universe Void Chestplate: Fire and Freezing Immunity
    */
   @Inject(method = "isInvulnerableTo", at = @At("HEAD"), cancellable = true)
   private void inIsInvulnerableTo(
@@ -100,10 +100,10 @@ public class PlayerMixin {
       DamageSource source,
       CallbackInfoReturnable<Boolean> cir
   ) {
-    EntityHelperForEquipment.handleUniverseChestplateImmunity((Player) (Object) this, source, cir);
+    EntityHelperForEquipment.handleUniverseVoidChestplateImmunity((Player) (Object) this, source, cir);
   }
 
-  /* Universe Console: Remote Accessibility
+  /* Universe Command Star: Remote Accessibility
    */
   @Inject(method = "isWithinBlockInteractionRange", at = @At("HEAD"), cancellable = true)
   private void inIsWithinBlockInteractionRange(
@@ -114,7 +114,7 @@ public class PlayerMixin {
     EntityHelperForEquipment.handleRemoteBlockAccess((Player) (Object) this, cir);
   }
 
-  /* Universe Chestplate: Fire Immunity Optimization
+  /* Universe Void Chestplate: Fire Immunity Optimization
    */
   @Inject(method = "setRemainingFireTicks", at = @At("HEAD"), cancellable = true)
   private void inSetRemainingFireTicks(
@@ -124,7 +124,7 @@ public class PlayerMixin {
     EntityHelperForEquipment.handleSetRemainingFireTicks((Player) (Object) this, ci);
   }
 
-  /* Universe Chestplate & Leggings: Smooth Movement (when flying or swimming)
+  /* Universe Void Chestplate & Universe Void Leggings: Smooth Movement (when flying or swimming)
    */
   @Inject(method = "travel", at = @At("TAIL"))
   private void inTravel(

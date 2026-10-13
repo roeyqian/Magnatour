@@ -17,12 +17,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 // Magnatour
 import roeyqian.magnatour.item.RemoteAccessManager;
-import roeyqian.magnatour.item.universe.UniverseBoots;
-import roeyqian.magnatour.item.universe.UniverseChestplate;
-import roeyqian.magnatour.item.universe.UniverseHelmet;
-import roeyqian.magnatour.item.universe.UniverseLeggings;
 import roeyqian.magnatour.item.universe.UniverseOmniBlade;
 import roeyqian.magnatour.item.universe.UniverseUltimaSword;
+import roeyqian.magnatour.item.universe.UniverseVoidBoots;
+import roeyqian.magnatour.item.universe.UniverseVoidChestplate;
+import roeyqian.magnatour.item.universe.UniverseVoidHelmet;
+import roeyqian.magnatour.item.universe.UniverseVoidLeggings;
 
 public final class MenuHelperForEquipment {
 
@@ -40,10 +40,10 @@ public final class MenuHelperForEquipment {
   ) {
     ItemStack itemStack = inventory.getItem(0);
 
-    if (itemStack.getItem() instanceof UniverseHelmet
-        || itemStack.getItem() instanceof UniverseChestplate
-        || itemStack.getItem() instanceof UniverseLeggings
-        || itemStack.getItem() instanceof UniverseBoots
+    if (itemStack.getItem() instanceof UniverseVoidHelmet
+        || itemStack.getItem() instanceof UniverseVoidChestplate
+        || itemStack.getItem() instanceof UniverseVoidLeggings
+        || itemStack.getItem() instanceof UniverseVoidBoots
         || itemStack.getItem() instanceof UniverseUltimaSword
         || itemStack.getItem() instanceof UniverseOmniBlade) {
       ci.cancel();

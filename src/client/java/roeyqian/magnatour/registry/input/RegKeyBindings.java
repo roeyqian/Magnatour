@@ -26,7 +26,7 @@ import net.minecraft.world.item.Item;
 import roeyqian.magnatour.Magnatour;
 import roeyqian.magnatour.item.supreme.MirrorMobile;
 import roeyqian.magnatour.item.universe.UniverseBucket;
-import roeyqian.magnatour.item.universe.UniverseConsole;
+import roeyqian.magnatour.item.universe.UniverseCommandStar;
 import roeyqian.magnatour.item.universe.UniverseOmniBlade;
 import roeyqian.magnatour.item.universe.UniverseUltimaSword;
 import roeyqian.magnatour.level.network.DurableItemModePayload;
@@ -57,7 +57,7 @@ import roeyqian.magnatour.level.network.DurableItemModePayload;
         if (item instanceof MirrorMobile ||
             item instanceof UniverseUltimaSword ||
             item instanceof UniverseOmniBlade ||
-            item instanceof UniverseConsole ||
+            item instanceof UniverseCommandStar ||
             item instanceof UniverseBucket) {
           ClientPlayNetworking.send(new DurableItemModePayload());
         }

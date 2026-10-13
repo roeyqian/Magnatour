@@ -23,7 +23,7 @@ import roeyqian.magnatour.mixinhelper.block.BlockHelperForEquipment;
 @Mixin(value = PowderSnowBlock.class, priority = 3600000)
 public class PowderSnowBlockMixin {
 
-  /* Universe Boots: Walking on Powder Snow
+  /* Universe Void Boots: Walking on Powder Snow
    */
   @Inject(method = "canEntityWalkOnPowderSnow", at = @At("HEAD"), cancellable = true)
   private static void inCanEntityWalkOnPowderSnow(

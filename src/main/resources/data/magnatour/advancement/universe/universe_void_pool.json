@@ -1,5 +1,5 @@
 {
-  "parent": "magnatour:universe/universe_star",
+  "parent": "magnatour:universe/universe_core",
   "criteria": {
     "universe_void_pool": {
       "conditions": {

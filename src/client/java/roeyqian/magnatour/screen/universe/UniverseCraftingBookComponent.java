@@ -51,7 +51,7 @@ public final class UniverseCraftingBookComponent extends RecipeBookComponent<Uni
       new RecipeBookComponent.TabInfo(Items.LAVA_BUCKET, Items.APPLE, RecipeBookCategories.CRAFTING_MISC),
       new RecipeBookComponent.TabInfo(Items.REDSTONE, RecipeBookCategories.CRAFTING_REDSTONE),
       new RecipeBookComponent.TabInfo(SupremeItems.SUPREME_CORE, CustomRecipes.SUPREME_CRAFTING),
-      new RecipeBookComponent.TabInfo(UniverseItems.UNIVERSE_STAR, CustomRecipes.UNIVERSE_CRAFTING)
+      new RecipeBookComponent.TabInfo(UniverseItems.UNIVERSE_CORE, CustomRecipes.UNIVERSE_CRAFTING)
   );
 
   private static final WidgetSprites FILTER_BUTTON_TEXTURES = new WidgetSprites(

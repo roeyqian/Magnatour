@@ -33,13 +33,13 @@ import net.minecraft.world.phys.Vec3;
 import roeyqian.magnatour.item.RemoteAccessManager;
 import roeyqian.magnatour.item.supreme.MirrorMobile;
 import roeyqian.magnatour.item.universe.UniverseBucket;
-import roeyqian.magnatour.item.universe.UniverseConsole;
+import roeyqian.magnatour.item.universe.UniverseCommandStar;
 import roeyqian.magnatour.item.universe.UniverseOmniBlade;
 import roeyqian.magnatour.item.universe.UniverseUltimaSword;
 import roeyqian.magnatour.level.network.DurableItemModePayload;
 import roeyqian.magnatour.level.network.UniverseBucketPickupPayload;
-import roeyqian.magnatour.level.network.UniverseConsoleBoundBlockPayload;
-import roeyqian.magnatour.menu.universe.UniverseConsoleMenu;
+import roeyqian.magnatour.level.network.UniverseCommandStarBoundBlockPayload;
+import roeyqian.magnatour.menu.universe.UniverseCommandStarMenu;
 import roeyqian.magnatour.mixinhelper.server.ServerHelperForEquipment;
 import roeyqian.magnatour.registry.logic.CustomComponents;
 
@@ -72,9 +72,9 @@ public final class NetworkManagerForBlock {
                 player, stack,
                 CustomComponents.UNIVERSE_OMNI_BLADE_MODE, "msg.magnatour.universe_omni_blade"
             );
-            case UniverseConsole _ -> execTogglingMode(
+            case UniverseCommandStar _ -> execTogglingMode(
                 player, stack,
-                CustomComponents.UNIVERSE_CONSOLE_MODE, "msg.magnatour.universe_console"
+                CustomComponents.UNIVERSE_COMMAND_STAR_MODE, "msg.magnatour.universe_command_star"
             );
             case UniverseBucket _ -> execTogglingMode(
                 player, stack,
@@ -97,22 +97,22 @@ public final class NetworkManagerForBlock {
     );
   }
 
-  public static void registerUniverseConsoleBoundBlockNetworking() {
+  public static void registerUniverseCommandStarBoundBlockNetworking() {
     RemoteAccessManager.REMOTE_ACCESS_TICKET = RemoteAccessManager.register();
     PayloadTypeRegistry.serverboundPlay().register(
-        UniverseConsoleBoundBlockPayload.ID,
-        UniverseConsoleBoundBlockPayload.CODEC
+        UniverseCommandStarBoundBlockPayload.ID,
+        UniverseCommandStarBoundBlockPayload.CODEC
     );
     ServerPlayNetworking.registerGlobalReceiver(
-        UniverseConsoleBoundBlockPayload.ID,
+        UniverseCommandStarBoundBlockPayload.ID,
         (payload, context) -> context.server().execute(
-            () -> handleUniverseConsoleBoundBlockAction(payload, context)
+            () -> handleUniverseCommandStarBoundBlockAction(payload, context)
         )
     );
   }
 
   private static void execBlockOpen(
-      UniverseConsoleBoundBlockPayload payload,
+      UniverseCommandStarBoundBlockPayload payload,
       ServerPlayNetworking.Context context
   ) {
     ServerPlayer player = context.player();
@@ -120,7 +120,7 @@ public final class NetworkManagerForBlock {
 
     if (targetWorld == null) {
       player.sendOverlayMessage(
-          Component.translatable("msg.magnatour.universe_console.unknown_world")
+          Component.translatable("msg.magnatour.universe_command_star.unknown_world")
               .withStyle(ChatFormatting.YELLOW)
       );
       return;
@@ -137,7 +137,7 @@ public final class NetworkManagerForBlock {
     if (state.isAir()) {
       RemoteAccessManager.forceEndRemoteAccess(player);
       player.sendOverlayMessage(
-          Component.translatable("msg.magnatour.universe_console.no_target")
+          Component.translatable("msg.magnatour.universe_command_star.no_target")
               .withStyle(ChatFormatting.YELLOW)
       );
       return;
@@ -160,7 +160,7 @@ public final class NetworkManagerForBlock {
         } else {
           RemoteAccessManager.forceEndRemoteAccess(player);
           player.sendOverlayMessage(
-              Component.translatable("msg.magnatour.universe_console.unable_open")
+              Component.translatable("msg.magnatour.universe_command_star.unable_open")
                   .withStyle(ChatFormatting.YELLOW)
           );
           return;
@@ -175,34 +175,34 @@ public final class NetworkManagerForBlock {
     } catch (Exception e) {
       RemoteAccessManager.forceEndRemoteAccess(player);
       player.sendOverlayMessage(
-          Component.translatable("msg.magnatour.universe_console.error")
+          Component.translatable("msg.magnatour.universe_command_star.error")
               .withStyle(ChatFormatting.YELLOW)
       );
     }
   }
 
   private static void execBlockRemove(
-      UniverseConsoleBoundBlockPayload payload,
+      UniverseCommandStarBoundBlockPayload payload,
       ServerPlayNetworking.Context context
   ) {
     ServerPlayer player = context.player();
-    if (!(player.containerMenu instanceof UniverseConsoleMenu menu)) return;
+    if (!(player.containerMenu instanceof UniverseCommandStarMenu menu)) return;
 
-    ItemStack consoleStack = player.getItemInHand(menu.getConsoleHand());
+    ItemStack commandStarStack = player.getItemInHand(menu.getCommandStarHand());
 
-    if (!(consoleStack.getItem() instanceof UniverseConsole)) return;
+    if (!(commandStarStack.getItem() instanceof UniverseCommandStar)) return;
 
-    UniverseConsole.BoundBlockList currentList = consoleStack.getOrDefault(
-        CustomComponents.UNIVERSE_CONSOLE_BOUND_LIST,
-        UniverseConsole.BoundBlockList.EMPTY
+    UniverseCommandStar.BoundBlockList currentList = commandStarStack.getOrDefault(
+        CustomComponents.UNIVERSE_COMMAND_STAR_BOUND_LIST,
+        UniverseCommandStar.BoundBlockList.EMPTY
     );
-    UniverseConsole.BoundBlockList newList = currentList.withRemoved(
+    UniverseCommandStar.BoundBlockList newList = currentList.withRemoved(
         payload.pos(), payload.dimension()
     );
 
-    consoleStack.set(CustomComponents.UNIVERSE_CONSOLE_BOUND_LIST, newList);
+    commandStarStack.set(CustomComponents.UNIVERSE_COMMAND_STAR_BOUND_LIST, newList);
     player.sendOverlayMessage(
-        Component.translatable("msg.magnatour.universe_console.remove")
+        Component.translatable("msg.magnatour.universe_command_star.remove")
             .withStyle(ChatFormatting.GREEN)
     );
   }
@@ -222,8 +222,8 @@ public final class NetworkManagerForBlock {
     player.sendOverlayMessage(message);
   }
 
-  private static void handleUniverseConsoleBoundBlockAction(
-      UniverseConsoleBoundBlockPayload payload,
+  private static void handleUniverseCommandStarBoundBlockAction(
+      UniverseCommandStarBoundBlockPayload payload,
       ServerPlayNetworking.Context context
   ) {
     switch (payload.act()) {

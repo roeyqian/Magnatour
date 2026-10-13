@@ -19,19 +19,19 @@ import roeyqian.magnatour.item.CustomArmorMaterial;
 import roeyqian.magnatour.item.CustomItemSetting;
 import roeyqian.magnatour.item.CustomToolMaterial;
 import roeyqian.magnatour.item.universe.UniverseBanquet;
-import roeyqian.magnatour.item.universe.UniverseBoots;
 import roeyqian.magnatour.item.universe.UniverseBucket;
-import roeyqian.magnatour.item.universe.UniverseChestplate;
-import roeyqian.magnatour.item.universe.UniverseConsole;
-import roeyqian.magnatour.item.universe.UniverseHelmet;
-import roeyqian.magnatour.item.universe.UniverseLeggings;
+import roeyqian.magnatour.item.universe.UniverseCommandStar;
+import roeyqian.magnatour.item.universe.UniverseCore;
 import roeyqian.magnatour.item.universe.UniverseLingeringPotion;
 import roeyqian.magnatour.item.universe.UniverseOmniBlade;
 import roeyqian.magnatour.item.universe.UniversePotion;
 import roeyqian.magnatour.item.universe.UniverseSplashPotion;
-import roeyqian.magnatour.item.universe.UniverseStar;
 import roeyqian.magnatour.item.universe.UniverseStick;
 import roeyqian.magnatour.item.universe.UniverseUltimaSword;
+import roeyqian.magnatour.item.universe.UniverseVoidBoots;
+import roeyqian.magnatour.item.universe.UniverseVoidChestplate;
+import roeyqian.magnatour.item.universe.UniverseVoidHelmet;
+import roeyqian.magnatour.item.universe.UniverseVoidLeggings;
 import roeyqian.magnatour.registry.ItemRegHelper;
 
 /*
@@ -49,9 +49,9 @@ public final class UniverseItems {
       "universe_bucket",
       UniverseBucket::new, new Item.Properties()
   );
-  public static final Item UNIVERSE_CONSOLE = ItemRegHelper.registerDurableItem(
-      "universe_console",
-      UniverseConsole::new, new Item.Properties()
+  public static final Item UNIVERSE_COMMAND_STAR = ItemRegHelper.registerDurableItem(
+      "universe_command_star",
+      UniverseCommandStar::new, new Item.Properties()
   );
   public static final Item UNIVERSE_OMNI_BLADE = ItemRegHelper.registerDurableItem(
       "universe_omni_blade",
@@ -75,25 +75,25 @@ public final class UniverseItems {
   );
 
   // Armor
-  public static final Item UNIVERSE_BOOTS = ItemRegHelper.registerDurableItem(
-      "universe_boots",
-      UniverseBoots::new, new Item.Properties()
-          .humanoidArmor(CustomArmorMaterial.UNIVERSE_ARMOR, ArmorType.BOOTS)
+  public static final Item UNIVERSE_VOID_BOOTS = ItemRegHelper.registerDurableItem(
+      "universe_void_boots",
+      UniverseVoidBoots::new, new Item.Properties()
+          .humanoidArmor(CustomArmorMaterial.UNIVERSE_VOID_ARMOR, ArmorType.BOOTS)
   );
-  public static final Item UNIVERSE_CHESTPLATE = ItemRegHelper.registerDurableItem(
-      "universe_chestplate",
-      UniverseChestplate::new, new Item.Properties()
-          .humanoidArmor(CustomArmorMaterial.UNIVERSE_ARMOR, ArmorType.CHESTPLATE)
+  public static final Item UNIVERSE_VOID_CHESTPLATE = ItemRegHelper.registerDurableItem(
+      "universe_void_chestplate",
+      UniverseVoidChestplate::new, new Item.Properties()
+          .humanoidArmor(CustomArmorMaterial.UNIVERSE_VOID_ARMOR, ArmorType.CHESTPLATE)
   );
-  public static final Item UNIVERSE_HELMET = ItemRegHelper.registerDurableItem(
-      "universe_helmet",
-      UniverseHelmet::new, new Item.Properties()
-          .humanoidArmor(CustomArmorMaterial.UNIVERSE_ARMOR, ArmorType.HELMET)
+  public static final Item UNIVERSE_VOID_HELMET = ItemRegHelper.registerDurableItem(
+      "universe_void_helmet",
+      UniverseVoidHelmet::new, new Item.Properties()
+          .humanoidArmor(CustomArmorMaterial.UNIVERSE_VOID_ARMOR, ArmorType.HELMET)
   );
-  public static final Item UNIVERSE_LEGGINGS = ItemRegHelper.registerDurableItem(
-      "universe_leggings",
-      UniverseLeggings::new, new Item.Properties()
-          .humanoidArmor(CustomArmorMaterial.UNIVERSE_ARMOR, ArmorType.LEGGINGS)
+  public static final Item UNIVERSE_VOID_LEGGINGS = ItemRegHelper.registerDurableItem(
+      "universe_void_leggings",
+      UniverseVoidLeggings::new, new Item.Properties()
+          .humanoidArmor(CustomArmorMaterial.UNIVERSE_VOID_ARMOR, ArmorType.LEGGINGS)
   );
 
   // Material
@@ -133,9 +133,9 @@ public final class UniverseItems {
       "universe_primary_fragment", 64, Item::new,
       new Item.Properties().rarity(Rarity.EPIC)
   );
-  public static final Item UNIVERSE_STAR = ItemRegHelper.registerConsumableItem(
-      "universe_star", 64,
-      UniverseStar::new, new Item.Properties()
+  public static final Item UNIVERSE_CORE = ItemRegHelper.registerConsumableItem(
+      "universe_core", 64,
+      UniverseCore::new, new Item.Properties()
   );
 
   // Tonic
@@ -174,7 +174,7 @@ public final class UniverseItems {
     ItemRegHelper.registerFuel(universeFuelTime, UNIVERSE_GEMGREEN);
     ItemRegHelper.registerFuel(universeFuelTime, UNIVERSE_GEMBLACK);
     ItemRegHelper.registerFuel(universeFuelTime, UNIVERSE_GEMWHITE);
-    ItemRegHelper.registerFuel(universeFuelTime, UNIVERSE_STAR);
+    ItemRegHelper.registerFuel(universeFuelTime, UNIVERSE_CORE);
 
     Magnatour.LOGGER.info("[Server] Initializing 'UniverseItems'");
   }

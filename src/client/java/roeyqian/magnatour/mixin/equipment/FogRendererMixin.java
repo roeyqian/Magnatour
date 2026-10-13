@@ -26,7 +26,7 @@ import roeyqian.magnatour.mixinhelper.equipment.RenderHelperForEquipment;
 @Mixin(value = FogRenderer.class, priority = 3600000)
 public class FogRendererMixin {
 
-  /* Universe Helmet: Better Vision in Fluid
+  /* Universe Void Helmet: Better Vision in Fluid
    */
   @Inject(method = "setupFog", at = @At("RETURN"))
   private void inSetupFog(
@@ -37,7 +37,7 @@ public class FogRendererMixin {
       ClientLevel level,
       CallbackInfoReturnable<FogData> cir
   ) {
-    RenderHelperForEquipment.handleUniverseHelmetVision(camera, cir);
+    RenderHelperForEquipment.handleUniverseVoidHelmetVision(camera, cir);
   }
 
 }
