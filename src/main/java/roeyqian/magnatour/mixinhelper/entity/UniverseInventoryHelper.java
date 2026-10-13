@@ -55,6 +55,7 @@ public final class UniverseInventoryHelper {
       Player player,
       ItemStack stack
   ) {
+    if (stack.getMaxStackSize() <= 1) return stack.getMaxStackSize();
     int limit = getArmorStackLimit(player);
     return limit == 0 ? stack.getMaxStackSize() : limit;
   }

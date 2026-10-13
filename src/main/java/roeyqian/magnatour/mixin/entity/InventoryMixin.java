@@ -44,14 +44,16 @@ public abstract class InventoryMixin implements Container {
   private boolean allowArmorStacking(
       ItemStack stack
   ) {
-    return UniverseInventoryHelper.getArmorStackLimit(this.player) > 0 || stack.isStackable();
+    return stack.isStackable()
+        || (stack.getMaxStackSize() > 1 && UniverseInventoryHelper.getArmorStackLimit(this.player) > 0);
   }
 
   @Redirect(method = "add(ILnet/minecraft/world/item/ItemStack;)Z", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;isDamaged()Z"))
   private boolean allowDamagedArmorStacking(
       ItemStack stack
   ) {
-    return UniverseInventoryHelper.getArmorStackLimit(this.player) == 0 && stack.isDamaged();
+    return stack.isDamaged()
+        && (stack.getMaxStackSize() <= 1 || UniverseInventoryHelper.getArmorStackLimit(this.player) == 0);
   }
 
   @Redirect(method = "placeItemBackInInventory(Lnet/minecraft/world/item/ItemStack;ZLnet/minecraft/util/Prediction;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;getMaxStackSize()I"))

@@ -34,7 +34,7 @@ public class AbstractContainerMenuMixin {
       ItemStack stack
   ) {
     // The caller clamps this creative-only amount to each destination slot's limit.
-    return Math.max(512, stack.getMaxStackSize());
+    return stack.getMaxStackSize() <= 1 ? stack.getMaxStackSize() : Math.max(512, stack.getMaxStackSize());
   }
 
   @Redirect(method = "canItemQuickReplace", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;getMaxStackSize()I"))
@@ -51,7 +51,8 @@ public class AbstractContainerMenuMixin {
   private boolean allowPlayerQuickMoveStacking(
       ItemStack stack
   ) {
-    return stack.isStackable() || UniverseInventoryHelper.hasArmor((AbstractContainerMenu) (Object) this);
+    return stack.isStackable()
+        || (stack.getMaxStackSize() > 1 && UniverseInventoryHelper.hasArmor((AbstractContainerMenu) (Object) this));
   }
 
   @Inject(method = "clicked", at = @At("TAIL"))

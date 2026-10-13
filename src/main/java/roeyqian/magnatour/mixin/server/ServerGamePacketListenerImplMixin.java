@@ -28,7 +28,7 @@ public class ServerGamePacketListenerImplMixin {
     int slot = packet.slotNum();
     // Creative inventory edits arrive as multiple packets. Accept the previous
     // armor limit until END_SERVER_TICK enforces the final equipment state.
-    if (slot >= 9 && slot <= 45) return Math.max(512, stack.getMaxStackSize());
+    if (slot >= 9 && slot <= 45 && stack.getMaxStackSize() > 1) return Math.max(512, stack.getMaxStackSize());
     return stack.getMaxStackSize();
   }
 
