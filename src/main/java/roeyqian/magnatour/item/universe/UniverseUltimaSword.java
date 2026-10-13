@@ -7,6 +7,10 @@
  */
 package roeyqian.magnatour.item.universe;
 
+// Java Standard
+import java.util.ArrayList;
+import java.util.List;
+
 // Minecraft
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
@@ -16,6 +20,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.EquipmentSlotGroup;
@@ -57,6 +62,32 @@ public class UniverseUltimaSword extends Item {
       Properties settings
   ) {
     super(applySettings(settings));
+  }
+
+  public void executeUniverseAttack(
+      ServerLevel world,
+      LivingEntity target,
+      Player player,
+      boolean critical
+  ) {
+    if (!target.isAlive()) return;
+    if (!critical || target instanceof Player) {
+      execUniverseKill(world, target, player);
+      return;
+    }
+
+    // Snapshot loaded targets before lightning, deaths and drops mutate the world.
+    List<LivingEntity> targets = new ArrayList<>();
+    targets.add(target);
+    for (Entity entity : world.getAllEntities()) {
+      if (entity != target && entity instanceof LivingEntity living
+          && living.isAlive() && living.getType() == target.getType()) {
+        targets.add(living);
+      }
+    }
+    for (LivingEntity living : targets) {
+      execUniverseKill(world, living, player);
+    }
   }
 
   @Override

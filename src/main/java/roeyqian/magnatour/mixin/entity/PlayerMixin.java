@@ -34,6 +34,11 @@ import roeyqian.magnatour.mixinhelper.entity.EntityHelperForEquipment;
 import roeyqian.magnatour.mixinhelper.item.ItemHelperForEnchantment;
 import roeyqian.magnatour.registry.logic.CustomComponents;
 
+// Other
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import com.llamalad7.mixinextras.sugar.Local;
+
 @Mixin(value = Player.class, priority = 3600000)
 public class PlayerMixin {
 
@@ -50,25 +55,28 @@ public class PlayerMixin {
   /* Universe Ultima Sword: Force Normal Death Without Applying Damage
    */
   @SuppressWarnings("deprecation")
-  @Redirect(method = "attack", at = @At(value = "INVOKE",
+  @WrapOperation(method = "attack", at = @At(value = "INVOKE",
       target = "Lnet/minecraft/world/entity/Entity;hurtOrSimulate(Lnet/minecraft/world/damagesource/DamageSource;F)Z"))
   private boolean executeUniverseSwordTarget(
       Entity target,
       DamageSource source,
-      float amount
+      float amount,
+      Operation<Boolean> original,
+      @Local(ordinal = 2) boolean critical
   ) {
     Player player = (Player) (Object) this;
     ItemStack weapon = player.getWeaponItem();
-    if (player.level() instanceof ServerLevel
+    if (player.level() instanceof ServerLevel world
         && target instanceof LivingEntity living && living.isAlive()
         && weapon.getItem() instanceof UniverseUltimaSword sword
         && weapon.getOrDefault(CustomComponents.UNIVERSE_ULTIMA_SWORD_MODE, 0) == 1) {
       // Trigger execution even when immunity would prevent a successful hit.
-      sword.hurtEnemy(weapon, living, player);
+      // Use vanilla's already-computed critical flag, before any death effects.
+      sword.executeUniverseAttack(world, living, player, critical);
       // Report a successful hit so vanilla can perform the sword's sweep attack.
       return true;
     }
-    return target.hurtOrSimulate(source, amount);
+    return original.call(target, source, amount);
   }
 
   /* Universe Armors: Absolute Defense
