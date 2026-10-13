@@ -1,19 +1,6 @@
 {
   "model": {
-    "type": "minecraft:select",
-    "property": "minecraft:display_context",
-    "cases": [
-      {
-        "when": "gui",
-        "model": {
-          "type": "minecraft:model",
-          "model": "magnatour:item/item_hub_inventory"
-        }
-      }
-    ],
-    "fallback": {
-      "type": "minecraft:model",
-      "model": "magnatour:item/item_hub"
-    }
+    "type": "minecraft:model",
+    "model": "magnatour:item/item_hub"
   }
 }
