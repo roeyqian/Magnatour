@@ -48,6 +48,9 @@ public final class TownOfFortuneStructure extends Structure {
 
   private static final int MAX_DEPTH = 24;
 
+  private static final JigsawStructure.MaxDistance MAX_DISTANCE =
+      new JigsawStructure.MaxDistance(116);
+
   private static final ResourceKey<StructureTemplatePool> START_POOL =
       ResourceKey.create(
           Registries.TEMPLATE_POOL,
@@ -56,9 +59,6 @@ public final class TownOfFortuneStructure extends Structure {
               "town_of_fortune/plains/town_centers"
           )
       );
-
-  private static final JigsawStructure.MaxDistance MAX_DISTANCE =
-      new JigsawStructure.MaxDistance(116);
 
   public TownOfFortuneStructure(
       StructureSettings settings

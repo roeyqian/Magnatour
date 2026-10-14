@@ -78,9 +78,9 @@ public class SupremeShapelessCraftingRecipe implements CraftingRecipe {
 
   final String recipeGroup;
 
-  final CraftingBookCategory recipeCategory;
-
   final ItemStackTemplate resultStack;
+
+  final CraftingBookCategory recipeCategory;
 
   final List<Ingredient> ingredients;
 

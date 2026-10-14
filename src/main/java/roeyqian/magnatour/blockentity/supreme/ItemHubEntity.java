@@ -75,10 +75,10 @@ public class ItemHubEntity extends RandomizableContainerBlockEntity implements H
   private static final String LEGACY_FILTER_ITEM_ID_KEY = "FilterItemId";
   private static final String TRANSFER_COOLDOWN_KEY = "TransferCooldown";
 
+  private static final int[][] CACHED_SLOTS = new int[54][];
+
   private static final Component DEFAULT_NAME =
       Component.translatable("block.magnatour.item_hub");
-
-  private static final int[][] CACHED_SLOTS = new int[54][];
 
   private long tickedGameTime;
 
@@ -86,9 +86,9 @@ public class ItemHubEntity extends RandomizableContainerBlockEntity implements H
 
   private List<String> anchoredItemIds = List.of();
 
-  private NonNullList<ItemStack> items = NonNullList.withSize(HOPPER_CONTAINER_SIZE, ItemStack.EMPTY);
-
   private Set<Item> anchoredItems = Set.of();
+
+  private NonNullList<ItemStack> items = NonNullList.withSize(HOPPER_CONTAINER_SIZE, ItemStack.EMPTY);
 
   public ItemHubEntity(
       BlockPos pos,

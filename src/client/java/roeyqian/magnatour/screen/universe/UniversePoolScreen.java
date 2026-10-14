@@ -25,7 +25,7 @@ import roeyqian.magnatour.menu.universe.UniversePoolMenu;
 public class UniversePoolScreen extends AbstractContainerScreen<UniversePoolMenu> {
 
   private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(
-      Magnatour.MOD_ID, "textures/gui/container/universe_pool.png"
+      Magnatour.MOD_ID, "textures/gui/general/universe_pool.png"
   );
 
   public UniversePoolScreen(

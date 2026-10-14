@@ -65,16 +65,16 @@ public class UniverseDotScreen extends AbstractContainerScreen<UniverseDotMenu> 
   private static final int SCROLLBAR_HEIGHT = VISIBLE_ROWS * ROW_HEIGHT;
 
   private static final Identifier BUTTON_DELETE = Identifier.fromNamespaceAndPath(
-      Magnatour.MOD_ID, "textures/gui/teleport/button_delete.png"
+      Magnatour.MOD_ID, "textures/gui/universe_dot/button_delete.png"
   );
   private static final Identifier BUTTON_DELETE_HIGHLIGHTED = Identifier.fromNamespaceAndPath(
-      Magnatour.MOD_ID, "textures/gui/teleport/button_delete_highlighted.png"
+      Magnatour.MOD_ID, "textures/gui/universe_dot/button_delete_highlighted.png"
   );
   private static final Identifier BUTTON_HIGHLIGHTED = Identifier.fromNamespaceAndPath(
-      Magnatour.MOD_ID, "textures/gui/teleport/button_highlighted.png"
+      Magnatour.MOD_ID, "textures/gui/universe_dot/button_highlighted.png"
   );
   private static final Identifier BUTTON_NORMAL = Identifier.fromNamespaceAndPath(
-      Magnatour.MOD_ID, "textures/gui/teleport/button.png"
+      Magnatour.MOD_ID, "textures/gui/universe_dot/button.png"
   );
   private static final Identifier SCROLLER = Identifier.withDefaultNamespace(
       "container/creative_inventory/scroller"
@@ -83,7 +83,7 @@ public class UniverseDotScreen extends AbstractContainerScreen<UniverseDotMenu> 
       "container/creative_inventory/scroller_disabled"
   );
   private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(
-      Magnatour.MOD_ID, "textures/gui/teleport/window.png"
+      Magnatour.MOD_ID, "textures/gui/universe_dot/window.png"
   );
 
   private final List<UniverseDotEntity.Destination> destinations = new ArrayList<>();

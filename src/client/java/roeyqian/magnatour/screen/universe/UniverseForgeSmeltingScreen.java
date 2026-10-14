@@ -38,7 +38,7 @@ public class UniverseForgeSmeltingScreen extends AbstractRecipeBookScreen<Univer
       "container/furnace/lit_progress"
   );
   private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(
-      "magnatour", "textures/gui/container/universe_forge_smelting.png"
+      "magnatour", "textures/gui/universe_forge/universe_forge_smelting.png"
   );
 
   private final UniverseForgeSmeltingComponent cookingBook;

@@ -42,7 +42,7 @@ public class ItemHubAnchorsScreen extends Screen {
   private static final int WINDOW_WIDTH = 256;
 
   private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(
-      "magnatour", "textures/gui/container/item_hub_anchors.png"
+      "magnatour", "textures/gui/item_hub/item_hub_anchors.png"
   );
 
   private final ItemHubScreen parent;
@@ -64,9 +64,9 @@ public class ItemHubAnchorsScreen extends Screen {
 
   private String pendingItemId = "";
 
-  private Component status = Component.empty();
-
   private List<String> anchors = List.of();
+
+  private Component status = Component.empty();
 
   public ItemHubAnchorsScreen(
       ItemHubScreen parent,

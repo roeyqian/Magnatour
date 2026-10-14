@@ -49,9 +49,9 @@ final class DiamondCityLayout {
 
   private static final Identifier FOUNTAIN_PLAZA = Identifier.fromNamespaceAndPath(Magnatour.MOD_ID, "diamond_city/fountain_plaza");
 
-  private final Vec3i citySize;
-
   private final List<Building> buildings;
+
+  private final Vec3i citySize;
 
   private DiamondCityLayout(
       Vec3i citySize,

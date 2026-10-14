@@ -28,7 +28,7 @@ import roeyqian.magnatour.menu.supreme.ItemHubMenu;
 public class ItemHubScreen extends AbstractContainerScreen<ItemHubMenu> {
 
   private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(
-      "magnatour", "textures/gui/container/item_hub.png"
+      "magnatour", "textures/gui/item_hub/item_hub.png"
   );
 
   private ItemHubAnchorsScreen anchorsScreen;

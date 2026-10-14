@@ -88,12 +88,12 @@ public final class VirtualBlockLightManager {
 
   private static final ChunkPos[] UNIVERSE_CHUNK_OFFSETS = createUniverseChunkOffsets();
 
-  private static final Map<BlockGetter, WorldSources> LIGHT_SOURCES = new WeakHashMap<>();
-
   private static final TicketType UNIVERSE_TICKET = new TicketType(
       TicketType.NO_TIMEOUT,
       TicketType.FLAG_PERSIST | TicketType.FLAG_LOADING | TicketType.FLAG_SIMULATION | TicketType.FLAG_KEEP_DIMENSION_ACTIVE
   );
+
+  private static final Map<BlockGetter, WorldSources> LIGHT_SOURCES = new WeakHashMap<>();
 
   private VirtualBlockLightManager() {}
 
@@ -741,9 +741,9 @@ public final class VirtualBlockLightManager {
 
     private final int size;
 
-    private final SourceKey key;
-
     private final long[] offsets;
+
+    private final SourceKey key;
 
     private final BitSet applied = new BitSet();
 
@@ -869,13 +869,13 @@ public final class VirtualBlockLightManager {
       boolean active
   ) implements CustomPacketPayload {
 
+    public static final Type<UniverseLightPayload> ID = new Type<>(
+        Identifier.fromNamespaceAndPath("magnatour", "universe_light_state"));
+
     public static final StreamCodec<RegistryFriendlyByteBuf, UniverseLightPayload> CODEC = StreamCodec.composite(
         ResourceKey.streamCodec(Registries.DIMENSION), UniverseLightPayload::dimension,
         BlockPos.STREAM_CODEC, UniverseLightPayload::pos,
         ByteBufCodecs.BOOL, UniverseLightPayload::active, UniverseLightPayload::new);
-
-    public static final Type<UniverseLightPayload> ID = new Type<>(
-        Identifier.fromNamespaceAndPath("magnatour", "universe_light_state"));
 
     @Override @NonNull
     public Type<? extends CustomPacketPayload> type() { return ID; }
@@ -891,30 +891,30 @@ public final class VirtualBlockLightManager {
 
     private final int[] rebuildCounts = new int[LIGHT_LEVEL + 1];
 
+    private final ArrayDeque<Source> pending = new ArrayDeque<>();
+
+    private final Map<SourceKey, Source> origins = new HashMap<>();
+
+    private final ArrayDeque<RestoreSection> restoring = new ArrayDeque<>();
+
+    private final ArrayDeque<UniverseOperation> universeOperations = new ArrayDeque<>();
+
     private final LinkedHashSet<Long> universeRefresh = new LinkedHashSet<>();
 
     private final LongOpenHashSet knownSections = new LongOpenHashSet();
     private final LongOpenHashSet restoreKeys = new LongOpenHashSet();
 
-    private final ArrayDeque<RestoreSection> restoring = new ArrayDeque<>();
-
-    private final ArrayDeque<Source> pending = new ArrayDeque<>();
-
-    private final ArrayDeque<UniverseOperation> universeOperations = new ArrayDeque<>();
-
-    private final Map<SourceKey, Source> origins = new HashMap<>();
-
     private final Map<Long, SectionSources> sections = new ConcurrentHashMap<>();
 
-    private final Map<Long, Boolean> universeRequested = new HashMap<>();
-
     private final Map<Long, Long> universeBuilds = new HashMap<>();
+
+    private final Long2IntOpenHashMap changed = new Long2IntOpenHashMap();
+
+    private final Map<Long, Boolean> universeRequested = new HashMap<>();
 
     private final Map<ChunkPos, Integer> universeCoverage = new ConcurrentHashMap<>();
 
     private final Map<ChunkPos, Set<Long>> universeChunks = new HashMap<>();
-
-    private final Long2IntOpenHashMap changed = new Long2IntOpenHashMap();
 
     private boolean restoreFirst;
 

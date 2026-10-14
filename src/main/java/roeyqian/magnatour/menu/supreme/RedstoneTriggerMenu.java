@@ -39,11 +39,11 @@ public class RedstoneTriggerMenu extends AbstractContainerMenu {
 
   private final int intervalTicks;
 
+  private final BlockPos blockPos;
+
   private final ResourceKey<Level> dimension;
 
   private final RedstoneTriggerEntity.TriggerMode mode;
-
-  private final BlockPos blockPos;
 
   public RedstoneTriggerMenu(
       int syncId,

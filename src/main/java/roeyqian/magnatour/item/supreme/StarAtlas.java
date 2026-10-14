@@ -463,13 +463,13 @@ public class StarAtlas extends Item {
 
       private final int quartY;
 
-      private final Registry<Biome> registry;
-
       private final ServerLevel level;
 
       private final ServerPlayer player;
 
       private final BiomeResolver resolver;
+
+      private final Registry<Biome> registry;
 
       private final Set<ChunkPos> sent = new HashSet<>();
 

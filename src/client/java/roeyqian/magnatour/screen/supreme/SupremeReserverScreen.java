@@ -26,7 +26,7 @@ import roeyqian.magnatour.menu.supreme.SupremeReserverMenu;
 public class SupremeReserverScreen extends AbstractContainerScreen<SupremeReserverMenu> {
 
   private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(
-      Magnatour.MOD_ID, "textures/gui/container/supreme_reserver.png"
+      Magnatour.MOD_ID, "textures/gui/general/supreme_reserver.png"
   );
 
   private Button nextButton;

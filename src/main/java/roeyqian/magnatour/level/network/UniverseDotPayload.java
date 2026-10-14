@@ -29,6 +29,10 @@ public record UniverseDotPayload(
     UniverseDotEntity.Destination destination
 ) implements CustomPacketPayload {
 
+  public static final Type<UniverseDotPayload> ID = new Type<>(
+      Identifier.fromNamespaceAndPath(Magnatour.MOD_ID, "universe_dot")
+  );
+
   public static final StreamCodec<RegistryFriendlyByteBuf, UniverseDotPayload> CODEC =
       StreamCodec.composite(
           ByteBufCodecs.idMapper(id -> Action.values()[id], Action::ordinal),
@@ -41,10 +45,6 @@ public record UniverseDotPayload(
           UniverseDotPayload::destination,
           UniverseDotPayload::new
       );
-
-  public static final Type<UniverseDotPayload> ID = new Type<>(
-      Identifier.fromNamespaceAndPath(Magnatour.MOD_ID, "universe_dot")
-  );
 
   @Override @NonNull
   public Type<? extends CustomPacketPayload> type() {

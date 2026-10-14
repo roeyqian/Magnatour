@@ -199,13 +199,13 @@ public class UniverseCommandStar extends Item {
       List<BoundBlocks> blocks
   ) {
 
+    public static final BoundBlockList EMPTY = new BoundBlockList(List.of());
+
     public static final Codec<BoundBlockList> CODEC =
         BoundBlocks.CODEC.listOf().xmap(BoundBlockList::new, BoundBlockList::blocks);
 
     public static final StreamCodec<RegistryFriendlyByteBuf, BoundBlockList> PACKET_CODEC =
         BoundBlocks.PACKET_CODEC.apply(ByteBufCodecs.list()).map(BoundBlockList::new, BoundBlockList::blocks);
-
-    public static final BoundBlockList EMPTY = new BoundBlockList(List.of());
 
     public BoundBlockList withAdded(
         BoundBlocks block

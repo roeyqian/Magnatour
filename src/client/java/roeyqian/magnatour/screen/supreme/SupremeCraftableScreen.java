@@ -29,7 +29,7 @@ public class SupremeCraftableScreen extends AbstractRecipeBookScreen<SupremeCraf
   private static final int BACKGROUND_WIDTH = 176;
 
   private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(
-      "magnatour", "textures/gui/container/supreme_craftable.png"
+      "magnatour", "textures/gui/general/supreme_craftable.png"
   );
 
   private final SupremeCraftingBookComponent craftingBook;

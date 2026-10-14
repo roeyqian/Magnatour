@@ -57,7 +57,7 @@ public class UniverseLibraryScreen extends AbstractContainerScreen<UniverseLibra
       "container/creative_inventory/scroller"
   );
   private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(
-      Magnatour.MOD_ID, "textures/gui/container/universe_library.png"
+      Magnatour.MOD_ID, "textures/gui/general/universe_library.png"
   );
 
   private boolean extractingStorageSlot;

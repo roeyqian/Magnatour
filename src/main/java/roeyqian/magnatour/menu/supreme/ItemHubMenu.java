@@ -39,11 +39,11 @@ import roeyqian.magnatour.registry.content.SupremeMenus;
 
 public class ItemHubMenu extends AbstractContainerMenu {
 
-  private final ResourceKey<Level> dimension;
-
   private final BlockPos blockPos;
 
   private final Container hopper;
+
+  private final ResourceKey<Level> dimension;
 
   private final int[] syncedAnchoredItems = new int[ItemHubEntity.MAX_ANCHORED_ITEMS];
 

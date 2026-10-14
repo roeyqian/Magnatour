@@ -31,10 +31,10 @@ public abstract class EatGrassGoalMixin {
   private int eatAnimationTick;
 
   @Shadow @Final
-  private Level level;
+  private Mob mob;
 
   @Shadow @Final
-  private Mob mob;
+  private Level level;
 
   /* Ever-Water Farmland: Enable Eating on Custom Farmland
    */

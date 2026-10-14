@@ -25,13 +25,13 @@ import roeyqian.magnatour.menu.supreme.SupremeChestMenu;
 public class SupremeChestScreen extends AbstractContainerScreen<SupremeChestMenu> {
 
   private static final Identifier DOUBLE_TEXTURE = Identifier.fromNamespaceAndPath(
-      Magnatour.MOD_ID, "textures/gui/container/supreme_chest_double.png"
+      Magnatour.MOD_ID, "textures/gui/supreme_chest/supreme_chest_double.png"
   );
   private static final Identifier SINGLE_TEXTURE = Identifier.fromNamespaceAndPath(
-      Magnatour.MOD_ID, "textures/gui/container/supreme_chest_single.png"
+      Magnatour.MOD_ID, "textures/gui/supreme_chest/supreme_chest_single.png"
   );
   private static final Identifier TRIPLE_TEXTURE = Identifier.fromNamespaceAndPath(
-      Magnatour.MOD_ID, "textures/gui/container/supreme_chest_triple.png"
+      Magnatour.MOD_ID, "textures/gui/supreme_chest/supreme_chest_triple.png"
   );
 
   private final int rows;

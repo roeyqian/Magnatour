@@ -62,9 +62,9 @@ public final class CustomGolem<T extends AbstractGolem & NeutralMob> {
 
   private static final UniformInt PERSISTENT_ANGER_TIME = TimeUtil.rangeOfSeconds(20, 39);
 
-  private final EntityDataAccessor<Byte> dataFlagsId;
-
   private final T owner;
+
+  private final EntityDataAccessor<Byte> dataFlagsId;
 
   private int attackAnimationTick;
   private int offerFlowerTick;

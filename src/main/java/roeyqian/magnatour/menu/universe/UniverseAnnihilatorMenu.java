@@ -36,9 +36,9 @@ public final class UniverseAnnihilatorMenu extends AbstractContainerMenu {
   public static final int IMAGE_OFF = Integer.MAX_VALUE - 2;
   public static final int IMAGE_ON = Integer.MAX_VALUE - 3;
 
-  private final ContainerData progress;
-
   private final OpeningData data;
+
+  private final ContainerData progress;
 
   private boolean rejected;
 

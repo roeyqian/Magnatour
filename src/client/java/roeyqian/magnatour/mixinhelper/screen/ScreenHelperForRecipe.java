@@ -57,7 +57,7 @@ public final class ScreenHelperForRecipe {
 
     context.blit(
         RenderPipelines.GUI_TEXTURED,
-        Identifier.fromNamespaceAndPath(Magnatour.MOD_ID, "textures/gui/recipe_book.png"),
+        Identifier.fromNamespaceAndPath(Magnatour.MOD_ID, "textures/gui/general/recipe_book.png"),
         posX, posY,
         1.0F, 1.0F,
         textureWidth, textureHeight,

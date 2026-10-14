@@ -28,7 +28,7 @@ public final class UniverseAnnihilatorScreen extends AbstractContainerScreen<Uni
   private static final int WARNING_COLOR = 0xFFAA0000;
 
   private static final Identifier BACKGROUND = Identifier.fromNamespaceAndPath(
-      Magnatour.MOD_ID, "textures/gui/container/universe_annihilator.png"
+      Magnatour.MOD_ID, "textures/gui/general/universe_annihilator.png"
   );
 
   private boolean showingProgress;

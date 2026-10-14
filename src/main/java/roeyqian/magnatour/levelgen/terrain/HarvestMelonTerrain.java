@@ -28,16 +28,16 @@ public final class HarvestMelonTerrain {
   private static final int Y_STEP = 8;
   private static final int Y_NODES = (MAX_Y - MIN_Y) / Y_STEP + 1;
 
+  // A worker owns its noise generators and bounded tile cache: no shared mutable
+  // interpolation cursor, cross-world cache reuse, or generation-order dependency.
+  private static final ThreadLocal<Context> CONTEXT = new ThreadLocal<>();
+
   private static final CubicSpline<Coordinate> FACTOR = TerrainProvider.overworldFactor(
       Coordinate.CONTINENTS, Coordinate.EROSION, Coordinate.RIDGES, Coordinate.FOLDED_RIDGES, false);
   private static final CubicSpline<Coordinate> JAGGEDNESS = TerrainProvider.overworldJaggedness(
       Coordinate.CONTINENTS, Coordinate.EROSION, Coordinate.RIDGES, Coordinate.FOLDED_RIDGES, false);
   private static final CubicSpline<Coordinate> OFFSET = TerrainProvider.overworldOffset(
       Coordinate.CONTINENTS, Coordinate.EROSION, Coordinate.FOLDED_RIDGES, false);
-
-  // A worker owns its noise generators and bounded tile cache: no shared mutable
-  // interpolation cursor, cross-world cache reuse, or generation-order dependency.
-  private static final ThreadLocal<Context> CONTEXT = new ThreadLocal<>();
 
   private HarvestMelonTerrain() {}
 

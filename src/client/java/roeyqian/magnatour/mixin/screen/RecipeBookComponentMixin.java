@@ -57,14 +57,14 @@ public class RecipeBookComponentMixin {
   @Shadow
   private float time;
 
-  @Shadow @Final
-  private List<RecipeBookTabButton> tabButtons;
-
   @Shadow
   private EditBox searchBox;
 
   @Shadow @Final
   private RecipeBookPage recipeBookPage;
+
+  @Shadow @Final
+  private List<RecipeBookTabButton> tabButtons;
 
   /* Supreme & Universe Crafting Recipe: Custom Recipe Book Render State
    */

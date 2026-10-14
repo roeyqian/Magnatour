@@ -76,11 +76,11 @@ public class SupremeShapedCraftingRecipe implements CraftingRecipe {
 
   final String recipeGroup;
 
-  final CraftingBookCategory recipeCategory;
+  final SupremeCraftingPattern rawContents;
 
   final ItemStackTemplate resultStack;
 
-  final SupremeCraftingPattern rawContents;
+  final CraftingBookCategory recipeCategory;
 
   public SupremeShapedCraftingRecipe(
       String group,

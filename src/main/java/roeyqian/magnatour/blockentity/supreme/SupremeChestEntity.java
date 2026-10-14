@@ -58,9 +58,6 @@ public class SupremeChestEntity extends BlockEntity implements CustomContainer {
   private static final Component DEFAULT_NAME =
       Component.translatable("block.magnatour.supreme_chest");
 
-  private final NonNullList<ItemStack> inventory =
-      NonNullList.withSize(SLOT_COUNT, ItemStack.EMPTY);
-
   private final ChestLidController lidAnimator = new ChestLidController();
 
   private final ContainerOpenersCounter openersCounter = new ContainerOpenersCounter() {
@@ -107,6 +104,9 @@ public class SupremeChestEntity extends BlockEntity implements CustomContainer {
     }
 
   };
+
+  private final NonNullList<ItemStack> inventory =
+      NonNullList.withSize(SLOT_COUNT, ItemStack.EMPTY);
 
   private long groupOrigin = NO_GROUP_ORIGIN;
 

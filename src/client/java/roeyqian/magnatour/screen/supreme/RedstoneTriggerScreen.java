@@ -36,20 +36,20 @@ public class RedstoneTriggerScreen extends AbstractContainerScreen<RedstoneTrigg
   private static final int TEXT_COLOR = -12566464;
 
   private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(
-      Magnatour.MOD_ID, "textures/gui/container/redstone_trigger.png"
+      Magnatour.MOD_ID, "textures/gui/general/redstone_trigger.png"
   );
 
   private boolean enabled;
 
   private int intervalTicks;
 
-  private RedstoneTriggerEntity.TriggerMode mode;
-
   private Button applyButton;
   private Button modeButton;
   private Button powerButton;
 
   private EditBox intervalField;
+
+  private RedstoneTriggerEntity.TriggerMode mode;
 
   private String errorText = "";
 

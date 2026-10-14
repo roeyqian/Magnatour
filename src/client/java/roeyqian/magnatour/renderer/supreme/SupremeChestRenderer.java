@@ -72,9 +72,9 @@ public final class SupremeChestRenderer implements BlockEntityRenderer<SupremeCh
 
   private final ChestModel tripleMiddleModel;
 
-  private final MultiblockChestResources<ChestModel> models;
-
   private final SpriteGetter sprites;
+
+  private final MultiblockChestResources<ChestModel> models;
 
   public SupremeChestRenderer(
       BlockEntityRendererProvider.Context ctx

@@ -30,6 +30,10 @@ public record UniverseCommandStarBoundBlockPayload(
     ResourceKey<Level> dimension
 ) implements CustomPacketPayload {
 
+  public static final Type<UniverseCommandStarBoundBlockPayload> ID = new Type<>(
+      Identifier.fromNamespaceAndPath(Magnatour.MOD_ID, "bound_block_action")
+  );
+
   public static final StreamCodec<RegistryFriendlyByteBuf, UniverseCommandStarBoundBlockPayload> CODEC =
       StreamCodec.composite(
           ByteBufCodecs.idMapper(id -> Action.values()[id], Action::ordinal),
@@ -40,10 +44,6 @@ public record UniverseCommandStarBoundBlockPayload(
           UniverseCommandStarBoundBlockPayload::dimension,
           UniverseCommandStarBoundBlockPayload::new
       );
-
-  public static final Type<UniverseCommandStarBoundBlockPayload> ID = new Type<>(
-      Identifier.fromNamespaceAndPath(Magnatour.MOD_ID, "bound_block_action")
-  );
 
   @Override @NonNull
   public Type<? extends CustomPacketPayload> type() {

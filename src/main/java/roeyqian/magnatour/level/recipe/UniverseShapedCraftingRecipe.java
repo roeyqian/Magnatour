@@ -76,11 +76,11 @@ public class UniverseShapedCraftingRecipe implements CraftingRecipe {
 
   final String recipeGroup;
 
-  final CraftingBookCategory recipeCategory;
+  final UniverseCraftingPattern rawContents;
 
   final ItemStackTemplate resultStack;
 
-  final UniverseCraftingPattern rawContents;
+  final CraftingBookCategory recipeCategory;
 
   public UniverseShapedCraftingRecipe(
       String group,

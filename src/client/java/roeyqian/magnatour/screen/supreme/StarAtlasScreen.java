@@ -304,9 +304,9 @@ public class StarAtlasScreen extends Screen {
 
     private static AtlasMap active;
 
-    private final Registry<Biome> biomes;
-
     private final ClientLevel level;
+
+    private final Registry<Biome> biomes;
 
     private final Map<Long, int[]> visible = new HashMap<>();
 

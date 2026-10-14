@@ -293,11 +293,11 @@ public final class BiomeMobSpawner {
 
     private final MobCategory category;
 
+    private final PotentialCalculator potential = new PotentialCalculator();
+
     private final Map<ServerPlayer, Integer> localCounts = new HashMap<>();
 
     private final Map<ChunkPos, List<ServerPlayer>> playersNearChunk = new HashMap<>();
-
-    private final PotentialCalculator potential = new PotentialCalculator();
 
     private int population;
     private int spawned;

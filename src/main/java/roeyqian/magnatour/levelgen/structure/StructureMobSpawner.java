@@ -100,9 +100,6 @@ public final class StructureMobSpawner {
   private static final double TOWN_OF_FORTUNE_COUNT_HORIZONTAL_PADDING = 8.0D;
   private static final double TOWN_OF_FORTUNE_COUNT_VERTICAL_PADDING = 16.0D;
 
-  private static final Map<StructureInstanceKey, SpawnState> SPAWN_STATES =
-      new HashMap<>();
-
   private static final StructureSpawnProfile DIAMOND_CITY_PROFILE =
       new StructureSpawnProfile(
           "diamond_city",
@@ -151,6 +148,9 @@ public final class StructureMobSpawner {
           StructureMobSpawner::countTownOfFortuneMobs,
           StructureMobSpawner::spawnTownOfFortuneMobs
       );
+
+  private static final Map<StructureInstanceKey, SpawnState> SPAWN_STATES =
+      new HashMap<>();
 
   private static final Predicate<BlockState> DIAMOND_CITY_INTERIOR_FLOOR =
       floorState -> floorState.is(Blocks.OBSIDIAN);
@@ -1162,13 +1162,13 @@ public final class StructureMobSpawner {
 
     private final BoundingBox structureBox;
 
+    private final Set<Long> scannedChunks = new HashSet<>();
+
     private final List<Long> chunkScanOrder = new ArrayList<>();
 
     private final List<BlockPos> fallback = new ArrayList<>();
     private final List<BlockPos> openAir = new ArrayList<>();
     private final List<BlockPos> underCoverInterior = new ArrayList<>();
-
-    private final Set<Long> scannedChunks = new HashSet<>();
 
     private DiamondCitySpawnSites(
         BoundingBox structureBox

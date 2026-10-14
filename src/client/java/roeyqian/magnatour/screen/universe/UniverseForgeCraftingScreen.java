@@ -32,7 +32,7 @@ public class UniverseForgeCraftingScreen extends AbstractRecipeBookScreen<Univer
   private static final int BACKGROUND_WIDTH = 176;
 
   private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(
-      "magnatour", "textures/gui/container/universe_forge_crafting.png"
+      "magnatour", "textures/gui/universe_forge/universe_forge_crafting.png"
   );
 
   private final UniverseForgeCraftingComponent craftingBook;

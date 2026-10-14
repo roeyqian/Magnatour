@@ -55,10 +55,10 @@ public class SupremeReserverMenu extends AbstractContainerMenu {
   public static final int OUTPUT_END = 10;
   public static final int OUTPUT_START = 1;
 
-  private final Player player;
-
   private final SimpleContainer inputInventory;
   private final SimpleContainer outputInventory;
+
+  private final Player player;
 
   private final ContainerData propertyDelegate;
 
