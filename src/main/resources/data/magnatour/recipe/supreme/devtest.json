@@ -1,0 +1,12 @@
+{
+  "type": "magnatour:supreme_crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "minecraft:diamond",
+    "minecraft:stick"
+  ],
+  "result": {
+    "id": "minecraft:emerald",
+    "count": 2
+  }
+}

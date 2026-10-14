@@ -35,8 +35,10 @@ import roeyqian.magnatour.block.CustomPortalVertex;
 import roeyqian.magnatour.block.SummonStructureHelper;
 import roeyqian.magnatour.block.supreme.ChunkTntBlock;
 import roeyqian.magnatour.level.recipe.CraftingResultHelper;
-import roeyqian.magnatour.level.recipe.SupremeCraftingRecipe;
-import roeyqian.magnatour.level.recipe.UniverseCraftingRecipe;
+import roeyqian.magnatour.level.recipe.SupremeShapedCraftingRecipe;
+import roeyqian.magnatour.level.recipe.SupremeShapelessCraftingRecipe;
+import roeyqian.magnatour.level.recipe.UniverseShapedCraftingRecipe;
+import roeyqian.magnatour.level.recipe.UniverseShapelessCraftingRecipe;
 import roeyqian.magnatour.registry.logic.CustomRecipes;
 import roeyqian.magnatour.registry.worldgen.CustomDimensions;
 
@@ -123,7 +125,7 @@ public final class BlockHelperForFunction {
       Iterable<T> slots,
       PlaceRecipeHelper.Output<T> filler
   ) {
-    if (recipe instanceof SupremeCraftingRecipe supremeRecipe) {
+    if (recipe instanceof SupremeShapedCraftingRecipe supremeRecipe) {
       PlaceRecipeHelper.placeRecipe(
           width, height,
           supremeRecipe.getWidth(), supremeRecipe.getHeight(),
@@ -132,7 +134,7 @@ public final class BlockHelperForFunction {
       return true;
     }
 
-    if (recipe instanceof UniverseCraftingRecipe universeRecipe) {
+    if (recipe instanceof UniverseShapedCraftingRecipe universeRecipe) {
       PlaceRecipeHelper.placeRecipe(
           width, height,
           universeRecipe.getWidth(), universeRecipe.getHeight(),
@@ -177,10 +179,17 @@ public final class BlockHelperForFunction {
   private static int getBaseResultCount(
       CraftingRecipe recipe
   ) {
-    if (recipe instanceof SupremeCraftingRecipe supremeRecipe) {
+    if (recipe instanceof SupremeShapedCraftingRecipe supremeRecipe) {
       return supremeRecipe.getBaseResultCount();
     }
-    if (recipe instanceof UniverseCraftingRecipe universeRecipe) {
+    if (recipe instanceof UniverseShapedCraftingRecipe universeRecipe) {
+      return universeRecipe.getBaseResultCount();
+    }
+
+    if (recipe instanceof SupremeShapelessCraftingRecipe supremeRecipe) {
+      return supremeRecipe.getBaseResultCount();
+    }
+    if (recipe instanceof UniverseShapelessCraftingRecipe universeRecipe) {
       return universeRecipe.getBaseResultCount();
     }
 

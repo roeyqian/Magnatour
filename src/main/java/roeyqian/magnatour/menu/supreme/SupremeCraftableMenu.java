@@ -9,6 +9,7 @@ package roeyqian.magnatour.menu.supreme;
 
 // Java Standard
 import java.util.List;
+import java.util.Optional;
 
 // Minecraft
 import net.minecraft.server.level.ServerLevel;
@@ -85,18 +86,14 @@ public class SupremeCraftableMenu extends AbstractCraftingMenu implements Custom
   }
 
   @Override
-  public ItemStack findCustomRecipeResult(
+  public Optional<RecipeHolder<CraftingRecipe>> findCustomRecipe(
       CraftingInput input,
       ServerLevel world
   ) {
-    var supremeMatch = world
-        .recipeAccess()
-        .getSynchronizedRecipes()
-        .getFirstMatch(CustomRecipes.SUPREME_CRAFTING_TYPE, input, world);
+    var recipeManager = world.recipeAccess().getSynchronizedRecipes();
+    var supremeMatch = recipeManager.getFirstMatch(CustomRecipes.SUPREME_CRAFTING_TYPE, input, world);
 
-    return supremeMatch.map(
-        craftingRecipeRecipeHolder -> craftingRecipeRecipeHolder.value().assemble(input)
-    ).orElse(ItemStack.EMPTY);
+    return supremeMatch;
   }
 
   @Override

@@ -17,6 +17,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 // Minecraft
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
@@ -29,7 +30,7 @@ import net.minecraft.world.item.crafting.RecipeBookCategory;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.display.RecipeDisplay;
-import net.minecraft.world.item.crafting.display.ShapedCraftingRecipeDisplay;
+import net.minecraft.world.item.crafting.display.ShapelessCraftingRecipeDisplay;
 import net.minecraft.world.item.crafting.display.SlotDisplay;
 import net.minecraft.world.level.Level;
 
@@ -37,12 +38,12 @@ import net.minecraft.world.level.Level;
 import org.jspecify.annotations.NonNull;
 
 // Magnatour
-import roeyqian.magnatour.registry.content.UniverseBlocks;
+import roeyqian.magnatour.registry.content.SupremeBlocks;
 import roeyqian.magnatour.registry.logic.CustomRecipes;
 
-public class UniverseCraftingRecipe implements CraftingRecipe {
+public class SupremeShapelessCraftingRecipe implements CraftingRecipe {
 
-  public static final MapCodec<UniverseCraftingRecipe> CODEC = RecordCodecBuilder.mapCodec(
+  public static final MapCodec<SupremeShapelessCraftingRecipe> CODEC = RecordCodecBuilder.mapCodec(
       instance -> instance.group(
           Codec.STRING
               .optionalFieldOf("group", "")
@@ -53,8 +54,9 @@ public class UniverseCraftingRecipe implements CraftingRecipe {
               .orElse(CraftingBookCategory.MISC)
               .forGetter(recipe -> recipe.recipeCategory),
 
-          UniverseCraftingPattern.MAP_CODEC
-              .forGetter(recipe -> recipe.rawContents),
+          Ingredient.CODEC.listOf(1, 16)
+              .fieldOf("ingredients")
+              .forGetter(recipe -> recipe.ingredients),
 
           ItemStackTemplate.CODEC
               .fieldOf("result")
@@ -63,13 +65,13 @@ public class UniverseCraftingRecipe implements CraftingRecipe {
           Codec.BOOL
               .optionalFieldOf("show_notification", true)
               .forGetter(recipe -> recipe.notification)
-      ).apply(instance, UniverseCraftingRecipe::new)
+      ).apply(instance, SupremeShapelessCraftingRecipe::new)
   );
 
-  public static final StreamCodec<RegistryFriendlyByteBuf, UniverseCraftingRecipe> PACKET_CODEC =
-      StreamCodec.of(UniverseCraftingRecipe::write, UniverseCraftingRecipe::read);
+  public static final StreamCodec<RegistryFriendlyByteBuf, SupremeShapelessCraftingRecipe> PACKET_CODEC =
+      StreamCodec.of(SupremeShapelessCraftingRecipe::write, SupremeShapelessCraftingRecipe::read);
 
-  public static final RecipeSerializer<UniverseCraftingRecipe> SERIALIZER =
+  public static final RecipeSerializer<SupremeShapelessCraftingRecipe> SERIALIZER =
       new RecipeSerializer<>(CODEC, PACKET_CODEC);
 
   final boolean notification;
@@ -80,18 +82,22 @@ public class UniverseCraftingRecipe implements CraftingRecipe {
 
   final ItemStackTemplate resultStack;
 
-  final UniverseCraftingPattern rawContents;
+  final List<Ingredient> ingredients;
 
-  public UniverseCraftingRecipe(
+  public SupremeShapelessCraftingRecipe(
       String group,
       CraftingBookCategory category,
-      UniverseCraftingPattern raw,
+      List<Ingredient> ingredients,
       ItemStackTemplate result,
       boolean showNotification
   ) {
+    if (ingredients.isEmpty() || ingredients.size() > 16) {
+      throw new IllegalArgumentException("Supreme shapeless recipes require between 1 and 16 ingredients");
+    }
+
     this.recipeGroup = group;
     this.recipeCategory = category;
-    this.rawContents = raw;
+    this.ingredients = List.copyOf(ingredients);
     this.resultStack = result;
     this.notification = showNotification;
   }
@@ -110,22 +116,17 @@ public class UniverseCraftingRecipe implements CraftingRecipe {
 
   @Override @NonNull
   public List<RecipeDisplay> display() {
-    List<SlotDisplay> ingredientDisplays = this.rawContents.ingredients().stream()
-        .map((ingredient) -> ingredient
-            .map(Ingredient::display)
-            .orElse(SlotDisplay.Empty.INSTANCE)
-        )
+    List<SlotDisplay> ingredientDisplays = this.ingredients.stream()
+        .map(Ingredient::display)
         .toList();
 
     SlotDisplay resultDisplay = new SlotDisplay.ItemStackSlotDisplay(this.resultStack);
     SlotDisplay craftingStationDisplay = new SlotDisplay.ItemSlotDisplay(
-        UniverseBlocks.UNIVERSE_WORKSTATION.asItem()
+        SupremeBlocks.SUPREME_CRAFTABLE.asItem()
     );
 
     return List.of(
-        new ShapedCraftingRecipeDisplay(
-            getWidth(),
-            getHeight(),
+        new ShapelessCraftingRecipeDisplay(
             ingredientDisplays,
             resultDisplay,
             craftingStationDisplay
@@ -137,27 +138,19 @@ public class UniverseCraftingRecipe implements CraftingRecipe {
     return this.resultStack.count();
   }
 
-  public int getHeight() {
-    return this.rawContents.height();
-  }
-
   @Override @NonNull
-  public RecipeSerializer<UniverseCraftingRecipe> getSerializer() {
+  public RecipeSerializer<SupremeShapelessCraftingRecipe> getSerializer() {
     return SERIALIZER;
   }
 
   @Override @NonNull
   public RecipeType<CraftingRecipe> getType() {
-    return CustomRecipes.UNIVERSE_CRAFTING_TYPE;
-  }
-
-  public int getWidth() {
-    return this.rawContents.width();
+    return CustomRecipes.SUPREME_CRAFTING_TYPE;
   }
 
   @Override @NonNull
   public String group() {
-    return "";
+    return this.recipeGroup;
   }
 
   @Override
@@ -165,17 +158,18 @@ public class UniverseCraftingRecipe implements CraftingRecipe {
       @NonNull CraftingInput input,
       @NonNull Level world
   ) {
-    return this.rawContents.matches(input);
+    return input.ingredientCount() == this.ingredients.size()
+        && input.stackedContents().canCraft(this, null);
   }
 
   @Override @NonNull
   public PlacementInfo placementInfo() {
-    return PlacementInfo.createFromOptionals(this.rawContents.ingredients());
+    return PlacementInfo.create(this.ingredients);
   }
 
   @Override @NonNull
   public RecipeBookCategory recipeBookCategory() {
-    return CustomRecipes.UNIVERSE_CRAFTING;
+    return CustomRecipes.SUPREME_CRAFTING;
   }
 
   @Override
@@ -183,25 +177,29 @@ public class UniverseCraftingRecipe implements CraftingRecipe {
     return this.notification;
   }
 
-  private static UniverseCraftingRecipe read(
+  private static SupremeShapelessCraftingRecipe read(
       RegistryFriendlyByteBuf buf
   ) {
     String group = buf.readUtf();
     CraftingBookCategory category = CraftingBookCategory.STREAM_CODEC.decode(buf);
-    UniverseCraftingPattern raw = UniverseCraftingPattern.STREAM_CODEC.decode(buf);
+    List<Ingredient> ingredients = Ingredient.CONTENTS_STREAM_CODEC
+        .apply(ByteBufCodecs.list(16))
+        .decode(buf);
     ItemStackTemplate result = ItemStackTemplate.STREAM_CODEC.decode(buf);
     boolean showNotification = buf.readBoolean();
 
-    return new UniverseCraftingRecipe(group, category, raw, result, showNotification);
+    return new SupremeShapelessCraftingRecipe(group, category, ingredients, result, showNotification);
   }
 
   private static void write(
       RegistryFriendlyByteBuf buf,
-      UniverseCraftingRecipe recipe
+      SupremeShapelessCraftingRecipe recipe
   ) {
     buf.writeUtf(recipe.recipeGroup);
     CraftingBookCategory.STREAM_CODEC.encode(buf, recipe.recipeCategory);
-    UniverseCraftingPattern.STREAM_CODEC.encode(buf, recipe.rawContents);
+    Ingredient.CONTENTS_STREAM_CODEC
+        .apply(ByteBufCodecs.list(16))
+        .encode(buf, recipe.ingredients);
 
     ItemStackTemplate.STREAM_CODEC.encode(buf, recipe.resultStack);
     buf.writeBoolean(recipe.notification);

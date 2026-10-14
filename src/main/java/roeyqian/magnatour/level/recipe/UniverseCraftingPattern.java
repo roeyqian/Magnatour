@@ -156,6 +156,22 @@ public final class UniverseCraftingPattern {
   private static DataResult<UniverseCraftingPattern> decode(
       Data data
   ) {
+    if (data.pattern().isEmpty() || data.pattern().size() > 5) {
+      return DataResult.error(() -> "Universe crafting pattern must have between 1 and 5 rows");
+    }
+    int sourceWidth = data.pattern().getFirst().length();
+    if (sourceWidth < 1 || sourceWidth > 5) {
+      return DataResult.error(() -> "Universe crafting pattern rows must have between 1 and 5 columns");
+    }
+    for (String row : data.pattern()) {
+      if (row.length() != sourceWidth) {
+        return DataResult.error(() -> "Recipe pattern rows must be the same width");
+      }
+    }
+    if (data.key().containsKey(' ')) {
+      return DataResult.error(() -> "Recipe key cannot define the reserved space symbol");
+    }
+
     List<String> rows = trim(data.pattern());
     if (rows.isEmpty()) return DataResult.error(() -> "Recipe pattern cannot be empty");
 

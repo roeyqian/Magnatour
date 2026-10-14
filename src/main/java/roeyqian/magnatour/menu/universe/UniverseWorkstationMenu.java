@@ -9,6 +9,7 @@ package roeyqian.magnatour.menu.universe;
 
 // Java Standard
 import java.util.List;
+import java.util.Optional;
 
 // Minecraft
 import net.minecraft.server.level.ServerLevel;
@@ -85,25 +86,15 @@ public class UniverseWorkstationMenu extends AbstractCraftingMenu implements Cus
   }
 
   @Override
-  public ItemStack findCustomRecipeResult(
+  public Optional<RecipeHolder<CraftingRecipe>> findCustomRecipe(
       CraftingInput input,
       ServerLevel world
   ) {
-    var supremeMatch = world
-        .recipeAccess()
-        .getSynchronizedRecipes()
-        .getFirstMatch(CustomRecipes.SUPREME_CRAFTING_TYPE, input, world);
-    var universeMatch = world
-        .recipeAccess()
-        .getSynchronizedRecipes()
-        .getFirstMatch(CustomRecipes.UNIVERSE_CRAFTING_TYPE, input, world);
+    var recipeManager = world.recipeAccess().getSynchronizedRecipes();
+    var supremeMatch = recipeManager.getFirstMatch(CustomRecipes.SUPREME_CRAFTING_TYPE, input, world);
 
-    return supremeMatch.map(
-        (craftingRecipeRecipeHolder) -> craftingRecipeRecipeHolder.value().assemble(input)
-    ).orElseGet(
-        () -> universeMatch.map(
-            (craftingRecipeRecipeHolder) -> craftingRecipeRecipeHolder.value().assemble(input)
-        ).orElse(ItemStack.EMPTY)
+    return supremeMatch.or(
+        () -> recipeManager.getFirstMatch(CustomRecipes.UNIVERSE_CRAFTING_TYPE, input, world)
     );
   }
 

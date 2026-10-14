@@ -1,7 +1,6 @@
 {
-  "type": "magnatour:supreme_crafting",
+  "type": "magnatour:supreme_crafting_shaped",
   "category": "building",
-  "group": "supreme:items",
   "pattern": [
     "B B",
     "AAA",

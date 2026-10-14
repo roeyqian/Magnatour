@@ -1,7 +1,6 @@
 {
-  "type": "magnatour:universe_crafting",
+  "type": "magnatour:universe_crafting_shaped",
   "category": "equipment",
-  "group": "magnatour:items",
   "pattern": [
     "A A",
     "A A"

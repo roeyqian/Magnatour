@@ -16,9 +16,11 @@ import net.minecraft.world.item.crafting.RecipeType;
 // Magnatour
 import roeyqian.magnatour.Magnatour;
 import roeyqian.magnatour.level.recipe.SupremeCookingRecipe;
-import roeyqian.magnatour.level.recipe.SupremeCraftingRecipe;
+import roeyqian.magnatour.level.recipe.SupremeShapedCraftingRecipe;
+import roeyqian.magnatour.level.recipe.SupremeShapelessCraftingRecipe;
 import roeyqian.magnatour.level.recipe.UniverseCookingRecipe;
-import roeyqian.magnatour.level.recipe.UniverseCraftingRecipe;
+import roeyqian.magnatour.level.recipe.UniverseShapedCraftingRecipe;
+import roeyqian.magnatour.level.recipe.UniverseShapelessCraftingRecipe;
 import roeyqian.magnatour.registry.LogicRegHelper;
 
 /*
@@ -56,16 +58,24 @@ public final class CustomRecipes {
       LogicRegHelper.registerRecipeSerializer("supreme_cooking", SupremeCookingRecipe.SERIALIZER);
 
   @SuppressWarnings("unused") // loaded for registry side effect
-  public static final RecipeSerializer<SupremeCraftingRecipe> SUPREME_CRAFTING_SERIALIZER =
-      LogicRegHelper.registerRecipeSerializer("supreme_crafting", SupremeCraftingRecipe.SERIALIZER);
+  public static final RecipeSerializer<SupremeShapedCraftingRecipe> SUPREME_SHAPED_CRAFTING_SERIALIZER =
+      LogicRegHelper.registerRecipeSerializer("supreme_crafting_shaped", SupremeShapedCraftingRecipe.SERIALIZER);
+
+  @SuppressWarnings("unused") // loaded for registry side effect
+  public static final RecipeSerializer<SupremeShapelessCraftingRecipe> SUPREME_SHAPELESS_CRAFTING_SERIALIZER =
+      LogicRegHelper.registerRecipeSerializer("supreme_crafting_shapeless", SupremeShapelessCraftingRecipe.SERIALIZER);
 
   @SuppressWarnings("unused") // loaded for registry side effect
   public static final RecipeSerializer<UniverseCookingRecipe> UNIVERSE_COOKING_SERIALIZER =
       LogicRegHelper.registerRecipeSerializer("universe_cooking", UniverseCookingRecipe.SERIALIZER);
 
   @SuppressWarnings("unused") // loaded for registry side effect
-  public static final RecipeSerializer<UniverseCraftingRecipe> UNIVERSE_CRAFTING_SERIALIZER =
-      LogicRegHelper.registerRecipeSerializer("universe_crafting", UniverseCraftingRecipe.SERIALIZER);
+  public static final RecipeSerializer<UniverseShapedCraftingRecipe> UNIVERSE_SHAPED_CRAFTING_SERIALIZER =
+      LogicRegHelper.registerRecipeSerializer("universe_crafting_shaped", UniverseShapedCraftingRecipe.SERIALIZER);
+
+  @SuppressWarnings("unused") // loaded for registry side effect
+  public static final RecipeSerializer<UniverseShapelessCraftingRecipe> UNIVERSE_SHAPELESS_CRAFTING_SERIALIZER =
+      LogicRegHelper.registerRecipeSerializer("universe_crafting_shapeless", UniverseShapelessCraftingRecipe.SERIALIZER);
 
   private CustomRecipes() {}
 

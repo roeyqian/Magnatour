@@ -51,7 +51,7 @@ public interface CustomCraftingBlock {
 
   int getInventoryEnd();
 
-  ItemStack findCustomRecipeResult(
+  Optional<RecipeHolder<CraftingRecipe>> findCustomRecipe(
       CraftingInput input,
       ServerLevel world
   );
@@ -111,8 +111,13 @@ public interface CustomCraftingBlock {
     Optional<RecipeHolder<CraftingRecipe>> optional = world
         .getServer()
         .getRecipeManager()
-        .getRecipeFor(RecipeType.CRAFTING, craftingRecipeInput, world, recipe);
+        .getRecipeFor(
+            RecipeType.CRAFTING, craftingRecipeInput, world,
+            recipe != null && recipe.value().getType() == RecipeType.CRAFTING ? recipe : null
+        )
+        .or(() -> findCustomRecipe(craftingRecipeInput, world));
 
+    resultInv.setRecipeUsed(null);
     if (optional.isPresent()) {
       RecipeHolder<CraftingRecipe> recipeEntry = optional.get();
       CraftingRecipe craftingRecipe = recipeEntry.value();
@@ -122,8 +127,6 @@ public interface CustomCraftingBlock {
         if (itemStack2.isItemEnabled(world.enabledFeatures())) itemStack = itemStack2;
       }
     }
-
-    if (itemStack.isEmpty()) itemStack = findCustomRecipeResult(craftingRecipeInput, world);
 
     resultInv.setItem(0, itemStack);
     handler.setRemoteSlot(0, itemStack);
