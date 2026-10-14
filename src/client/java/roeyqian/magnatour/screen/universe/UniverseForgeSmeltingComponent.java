@@ -36,7 +36,7 @@ import roeyqian.magnatour.registry.content.SupremeItems;
 import roeyqian.magnatour.registry.content.UniverseItems;
 import roeyqian.magnatour.registry.logic.CustomRecipes;
 
-public final class UniverseSmeltingBookComponent extends RecipeBookComponent<UniverseForgeSmeltingMenu> {
+public final class UniverseForgeSmeltingComponent extends RecipeBookComponent<UniverseForgeSmeltingMenu> {
 
   private static final Component TOGGLE_COOKABLE_TEXT = Component.translatable(
       "gui.recipebook.toggleRecipes.smeltable"
@@ -58,7 +58,7 @@ public final class UniverseSmeltingBookComponent extends RecipeBookComponent<Uni
       Identifier.withDefaultNamespace("recipe_book/furnace_filter_disabled_highlighted")
   );
 
-  public UniverseSmeltingBookComponent(
+  public UniverseForgeSmeltingComponent(
       UniverseForgeSmeltingMenu handler
   ) {
     super(handler, TABS);

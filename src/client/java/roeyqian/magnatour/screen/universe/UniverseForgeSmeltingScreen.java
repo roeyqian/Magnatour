@@ -41,7 +41,7 @@ public class UniverseForgeSmeltingScreen extends AbstractRecipeBookScreen<Univer
       "magnatour", "textures/gui/container/universe_forge_smelting.png"
   );
 
-  private final UniverseSmeltingBookComponent cookingBook;
+  private final UniverseForgeSmeltingComponent cookingBook;
 
   private Button switchButton;
 
@@ -50,12 +50,12 @@ public class UniverseForgeSmeltingScreen extends AbstractRecipeBookScreen<Univer
       Inventory inventory,
       Component title
   ) {
-    this(handler, new UniverseSmeltingBookComponent(handler), inventory, title);
+    this(handler, new UniverseForgeSmeltingComponent(handler), inventory, title);
   }
 
   private UniverseForgeSmeltingScreen(
       UniverseForgeSmeltingMenu handler,
-      UniverseSmeltingBookComponent cookingBook,
+      UniverseForgeSmeltingComponent cookingBook,
       Inventory inventory,
       Component title
   ) {
@@ -74,7 +74,7 @@ public class UniverseForgeSmeltingScreen extends AbstractRecipeBookScreen<Univer
   ) {
     super.extractBackground(graphics, mouseX, mouseY, delta);
     this.switchButton.setPosition(this.leftPos + 151, this.topPos + 4);
-    this.switchButton.visible = this.width >= UniverseCraftingBookComponent.MIN_SIDE_BY_SIDE_WIDTH
+    this.switchButton.visible = this.width >= UniverseForgeCraftingComponent.MIN_SIDE_BY_SIDE_WIDTH
         || !this.cookingBook.isVisible();
     if (!this.switchButton.visible) return;
     int x = this.leftPos;

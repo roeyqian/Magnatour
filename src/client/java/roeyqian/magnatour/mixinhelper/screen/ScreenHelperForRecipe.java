@@ -25,8 +25,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 // Magnatour
 import roeyqian.magnatour.Magnatour;
-import roeyqian.magnatour.screen.universe.UniverseCraftingBookComponent;
-import roeyqian.magnatour.screen.universe.UniverseSmeltingBookComponent;
+import roeyqian.magnatour.screen.universe.UniverseForgeCraftingComponent;
+import roeyqian.magnatour.screen.universe.UniverseForgeSmeltingComponent;
 
 public final class ScreenHelperForRecipe {
 
@@ -47,13 +47,13 @@ public final class ScreenHelperForRecipe {
       CallbackInfo ci
   ) {
     if (!visible) return;
-    if (!(recipeBookComponent instanceof UniverseCraftingBookComponent)
-        && !(recipeBookComponent instanceof UniverseSmeltingBookComponent)) return;
+    if (!(recipeBookComponent instanceof UniverseForgeCraftingComponent)
+        && !(recipeBookComponent instanceof UniverseForgeSmeltingComponent)) return;
 
     int textureWidth = 147;
     int textureHeight = 194;
     int posX = (width - textureWidth) / 2 - xOffset;
-    int posY = (height - textureHeight) / 2 + 14 - UniverseCraftingBookComponent.VERTICAL_OFFSET;
+    int posY = (height - textureHeight) / 2 + 14 - UniverseForgeCraftingComponent.VERTICAL_OFFSET;
 
     context.blit(
         RenderPipelines.GUI_TEXTURED,

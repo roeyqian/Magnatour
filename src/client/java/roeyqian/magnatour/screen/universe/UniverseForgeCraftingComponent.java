@@ -36,7 +36,7 @@ import roeyqian.magnatour.registry.content.UniverseItems;
 import roeyqian.magnatour.registry.logic.CustomRecipes;
 import roeyqian.magnatour.screen.CustomRecipeDisplay;
 
-public final class UniverseCraftingBookComponent extends RecipeBookComponent<UniverseForgeCraftingMenu> {
+public final class UniverseForgeCraftingComponent extends RecipeBookComponent<UniverseForgeCraftingMenu> {
 
   public static final int MIN_SIDE_BY_SIDE_WIDTH = 379;
   public static final int VERTICAL_OFFSET = 18;
@@ -61,7 +61,7 @@ public final class UniverseCraftingBookComponent extends RecipeBookComponent<Uni
       Identifier.withDefaultNamespace("recipe_book/filter_disabled_highlighted")
   );
 
-  public UniverseCraftingBookComponent(
+  public UniverseForgeCraftingComponent(
       UniverseForgeCraftingMenu screenHandler
   ) {
     super(screenHandler, TABS);

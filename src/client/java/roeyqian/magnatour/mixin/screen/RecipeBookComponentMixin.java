@@ -32,8 +32,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 // Magnatour
 import roeyqian.magnatour.mixinhelper.screen.ScreenHelperForRecipe;
 import roeyqian.magnatour.screen.supreme.SupremeCraftingBookComponent;
-import roeyqian.magnatour.screen.universe.UniverseCraftingBookComponent;
-import roeyqian.magnatour.screen.universe.UniverseSmeltingBookComponent;
+import roeyqian.magnatour.screen.universe.UniverseForgeCraftingComponent;
+import roeyqian.magnatour.screen.universe.UniverseForgeSmeltingComponent;
 
 @Mixin(value = RecipeBookComponent.class, priority = 3600000)
 public class RecipeBookComponentMixin {
@@ -75,7 +75,7 @@ public class RecipeBookComponentMixin {
       float delta,
       CallbackInfo ci
   ) {
-    if ((Object) this instanceof UniverseCraftingBookComponent && this.visible && !this.minecraft.hasControlDown()) {
+    if ((Object) this instanceof UniverseForgeCraftingComponent && this.visible && !this.minecraft.hasControlDown()) {
       this.time += delta;
     }
 
@@ -101,9 +101,9 @@ public class RecipeBookComponentMixin {
     if ((Object) this instanceof SupremeCraftingBookComponent) {
       return original + 2 * SupremeCraftingBookComponent.VERTICAL_OFFSET;
     }
-    return (Object) this instanceof UniverseCraftingBookComponent
-        || (Object) this instanceof UniverseSmeltingBookComponent
-        ? original + 2 * UniverseCraftingBookComponent.VERTICAL_OFFSET : original;
+    return (Object) this instanceof UniverseForgeCraftingComponent
+        || (Object) this instanceof UniverseForgeSmeltingComponent
+        ? original + 2 * UniverseForgeCraftingComponent.VERTICAL_OFFSET : original;
   }
 
 }

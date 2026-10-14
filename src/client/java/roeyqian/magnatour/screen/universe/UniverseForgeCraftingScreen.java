@@ -35,7 +35,7 @@ public class UniverseForgeCraftingScreen extends AbstractRecipeBookScreen<Univer
       "magnatour", "textures/gui/container/universe_forge_crafting.png"
   );
 
-  private final UniverseCraftingBookComponent craftingBook;
+  private final UniverseForgeCraftingComponent craftingBook;
 
   private Button switchButton;
 
@@ -44,12 +44,12 @@ public class UniverseForgeCraftingScreen extends AbstractRecipeBookScreen<Univer
       Inventory inventory,
       Component title
   ) {
-    this(handler, new UniverseCraftingBookComponent(handler), inventory, title);
+    this(handler, new UniverseForgeCraftingComponent(handler), inventory, title);
   }
 
   private UniverseForgeCraftingScreen(
       UniverseForgeCraftingMenu handler,
-      UniverseCraftingBookComponent craftingBook,
+      UniverseForgeCraftingComponent craftingBook,
       Inventory inventory,
       Component title
   ) {
@@ -68,9 +68,9 @@ public class UniverseForgeCraftingScreen extends AbstractRecipeBookScreen<Univer
   ) {
     super.extractBackground(graphics, mouseX, mouseY, delta);
     this.switchButton.setPosition(this.leftPos + 151, this.topPos + 4);
-    this.switchButton.visible = this.width >= UniverseCraftingBookComponent.MIN_SIDE_BY_SIDE_WIDTH
+    this.switchButton.visible = this.width >= UniverseForgeCraftingComponent.MIN_SIDE_BY_SIDE_WIDTH
         || !this.craftingBook.isVisible();
-    if (this.width < UniverseCraftingBookComponent.MIN_SIDE_BY_SIDE_WIDTH && this.craftingBook.isVisible()) return;
+    if (this.width < UniverseForgeCraftingComponent.MIN_SIDE_BY_SIDE_WIDTH && this.craftingBook.isVisible()) return;
     int xo = this.leftPos;
     int yo = this.topPos;
     graphics.blit(
