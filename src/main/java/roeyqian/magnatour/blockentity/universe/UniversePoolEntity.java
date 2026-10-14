@@ -32,7 +32,7 @@ import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 // Magnatour
-import roeyqian.magnatour.block.CustomContainer;
+import roeyqian.magnatour.blockentity.CustomContainer;
 import roeyqian.magnatour.menu.universe.UniversePoolMenu;
 import roeyqian.magnatour.registry.content.UniverseBlockEntities;
 

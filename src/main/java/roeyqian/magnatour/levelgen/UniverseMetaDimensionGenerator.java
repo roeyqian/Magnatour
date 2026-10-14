@@ -15,7 +15,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 
 // Magnatour
-import roeyqian.magnatour.level.UniverseMetaGenerationSavedData;
+import roeyqian.magnatour.level.data.UniverseMetaGenerationSavedData;
 import roeyqian.magnatour.registry.content.UniverseBlocks;
 import roeyqian.magnatour.registry.worldgen.CustomDimensions;
 

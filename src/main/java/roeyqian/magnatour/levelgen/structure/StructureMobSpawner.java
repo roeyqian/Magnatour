@@ -51,14 +51,11 @@ import net.minecraft.world.level.levelgen.structure.StructureStart;
 import net.minecraft.world.level.levelgen.structure.StructureType;
 import net.minecraft.world.phys.AABB;
 
-// JSpecify
-import org.jspecify.annotations.Nullable;
-
 // Magnatour
 import roeyqian.magnatour.Magnatour;
 import roeyqian.magnatour.entity.supreme.BellRinger;
 import roeyqian.magnatour.entity.supreme.BellSoul;
-import roeyqian.magnatour.level.GoldBellTowerSpawnSavedData;
+import roeyqian.magnatour.level.data.GoldBellTowerSpawnSavedData;
 import roeyqian.magnatour.registry.content.SupremeEntities;
 import roeyqian.magnatour.registry.worldgen.CustomDimensions;
 import roeyqian.magnatour.registry.worldgen.CustomStructures;

@@ -35,7 +35,7 @@ import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 // Magnatour
-import roeyqian.magnatour.level.PortalLinkSavedData;
+import roeyqian.magnatour.level.data.PortalLinkSavedData;
 
 public interface CustomPortalHorizon {
 

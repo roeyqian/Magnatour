@@ -40,7 +40,7 @@ import org.slf4j.LoggerFactory;
 
 // Magnatour
 import roeyqian.magnatour.block.VirtualBlockLightManager;
-import roeyqian.magnatour.level.UniverseAnnihilation;
+import roeyqian.magnatour.entity.universe.UniverseAnnihilation;
 import roeyqian.magnatour.mixinhelper.entity.UniverseInventoryHelper;
 import roeyqian.magnatour.registry.content.SupremeBlockEntities;
 import roeyqian.magnatour.registry.content.SupremeBlocks;

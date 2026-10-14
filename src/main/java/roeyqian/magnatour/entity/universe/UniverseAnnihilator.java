@@ -30,7 +30,6 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.Level;
 
 // Magnatour
-import roeyqian.magnatour.level.UniverseAnnihilation;
 import roeyqian.magnatour.menu.universe.UniverseAnnihilatorMenu;
 
 public final class UniverseAnnihilator extends PathfinderMob {

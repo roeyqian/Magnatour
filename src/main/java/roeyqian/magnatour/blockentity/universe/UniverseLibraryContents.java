@@ -5,7 +5,7 @@
  * This file is part of Magnatour.
  * Full license text available in the LICENSE file in the project root.
  */
-package roeyqian.magnatour.item.universe;
+package roeyqian.magnatour.blockentity.universe;
 
 // Java Standard
 import java.math.BigDecimal;
@@ -33,9 +33,6 @@ import net.minecraft.world.item.component.TooltipProvider;
 
 // JSpecify
 import org.jspecify.annotations.NonNull;
-
-// Magnatour
-import roeyqian.magnatour.blockentity.universe.UniverseLibraryEntity;
 
 public record UniverseLibraryContents(
     List<StoredSlot> slots

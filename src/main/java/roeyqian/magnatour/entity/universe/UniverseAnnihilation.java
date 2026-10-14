@@ -5,7 +5,7 @@
  * This file is part of Magnatour.
  * Full license text available in the LICENSE file in the project root.
  */
-package roeyqian.magnatour.level;
+package roeyqian.magnatour.entity.universe;
 
 // Java Standard
 import java.io.IOException;
@@ -55,7 +55,6 @@ import net.minecraft.world.phys.Vec3;
 
 // Magnatour
 import roeyqian.magnatour.Magnatour;
-import roeyqian.magnatour.entity.universe.UniverseAnnihilator;
 import roeyqian.magnatour.mixin.server.UniverseAnnihilationServerAccessor;
 import roeyqian.magnatour.registry.worldgen.CustomDimensions;
 

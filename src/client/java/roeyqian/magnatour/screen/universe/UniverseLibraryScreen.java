@@ -37,7 +37,7 @@ import org.jspecify.annotations.NonNull;
 
 // Magnatour
 import roeyqian.magnatour.Magnatour;
-import roeyqian.magnatour.item.universe.UniverseLibraryContents;
+import roeyqian.magnatour.blockentity.universe.UniverseLibraryContents;
 import roeyqian.magnatour.menu.universe.UniverseLibraryMenu;
 
 public class UniverseLibraryScreen extends AbstractContainerScreen<UniverseLibraryMenu> {

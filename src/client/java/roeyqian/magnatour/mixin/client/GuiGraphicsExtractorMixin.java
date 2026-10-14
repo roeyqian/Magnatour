@@ -22,7 +22,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 // Magnatour
-import roeyqian.magnatour.item.universe.UniverseLibraryContents;
+import roeyqian.magnatour.blockentity.universe.UniverseLibraryContents;
 import roeyqian.magnatour.screen.universe.UniverseLibraryScreen;
 
 @Mixin(GuiGraphicsExtractor.class)

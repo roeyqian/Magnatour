@@ -28,7 +28,7 @@ import net.minecraft.world.phys.Vec3;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 // Magnatour
-import roeyqian.magnatour.level.PortalLinkSavedData;
+import roeyqian.magnatour.level.data.PortalLinkSavedData;
 import roeyqian.magnatour.registry.worldgen.CustomDimensions;
 
 /** Links Nether portals made in Universe Meta with their generated Nether-side portal. */

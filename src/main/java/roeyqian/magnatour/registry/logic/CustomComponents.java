@@ -19,8 +19,8 @@ import net.minecraft.network.codec.ByteBufCodecs;
 
 // Magnatour
 import roeyqian.magnatour.Magnatour;
+import roeyqian.magnatour.blockentity.universe.UniverseLibraryContents;
 import roeyqian.magnatour.item.universe.UniverseCommandStar;
-import roeyqian.magnatour.item.universe.UniverseLibraryContents;
 import roeyqian.magnatour.registry.LogicRegHelper;
 
 /*

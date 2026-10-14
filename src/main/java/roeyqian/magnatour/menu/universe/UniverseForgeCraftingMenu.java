@@ -30,8 +30,8 @@ import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 // Magnatour
-import roeyqian.magnatour.block.CustomCraftingBlock;
 import roeyqian.magnatour.blockentity.universe.UniverseForgeEntity;
+import roeyqian.magnatour.menu.CustomCraftingBlock;
 import roeyqian.magnatour.mixin.menu.AbstractCraftingMenuAccessor;
 import roeyqian.magnatour.registry.content.UniverseBlocks;
 import roeyqian.magnatour.registry.content.UniverseMenus;

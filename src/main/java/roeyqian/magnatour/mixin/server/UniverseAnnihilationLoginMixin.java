@@ -20,7 +20,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 // Magnatour
-import roeyqian.magnatour.level.UniverseAnnihilation;
+import roeyqian.magnatour.entity.universe.UniverseAnnihilation;
 
 @Mixin(PlayerList.class)
 public abstract class UniverseAnnihilationLoginMixin {

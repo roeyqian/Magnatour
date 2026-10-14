@@ -19,7 +19,7 @@ import net.minecraft.world.entity.player.Inventory;
 
 // Magnatour
 import roeyqian.magnatour.Magnatour;
-import roeyqian.magnatour.level.UniverseAnnihilation;
+import roeyqian.magnatour.entity.universe.UniverseAnnihilation;
 import roeyqian.magnatour.menu.universe.UniverseAnnihilatorMenu;
 
 public final class UniverseAnnihilatorScreen extends AbstractContainerScreen<UniverseAnnihilatorMenu> {

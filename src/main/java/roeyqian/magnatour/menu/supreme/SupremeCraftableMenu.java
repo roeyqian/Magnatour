@@ -29,7 +29,7 @@ import net.minecraft.world.item.crafting.RecipeHolder;
 import org.jspecify.annotations.NonNull;
 
 // Magnatour
-import roeyqian.magnatour.block.CustomCraftingBlock;
+import roeyqian.magnatour.menu.CustomCraftingBlock;
 import roeyqian.magnatour.registry.content.SupremeBlocks;
 import roeyqian.magnatour.registry.content.SupremeMenus;
 import roeyqian.magnatour.registry.logic.CustomRecipes;

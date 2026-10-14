@@ -5,7 +5,7 @@
  * This file is part of Magnatour.
  * Full license text available in the LICENSE file in the project root.
  */
-package roeyqian.magnatour.level;
+package roeyqian.magnatour.level.data;
 
 // Mojang
 import com.mojang.datafixers.util.Either;

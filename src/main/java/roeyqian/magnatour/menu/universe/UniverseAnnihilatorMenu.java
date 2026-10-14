@@ -25,8 +25,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
 // Magnatour
+import roeyqian.magnatour.entity.universe.UniverseAnnihilation;
 import roeyqian.magnatour.entity.universe.UniverseAnnihilator;
-import roeyqian.magnatour.level.UniverseAnnihilation;
 import roeyqian.magnatour.registry.content.UniverseMenus;
 
 public final class UniverseAnnihilatorMenu extends AbstractContainerMenu {
