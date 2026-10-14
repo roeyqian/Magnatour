@@ -22,6 +22,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 // Magnatour
 import roeyqian.magnatour.mixinhelper.client.ClientHelperForEquipment;
+import roeyqian.magnatour.mixinhelper.client.WorkstationScreenTransition;
 
 @Mixin(value = Gui.class, priority = 3600000)
 public class GuiMixin {
@@ -40,6 +41,7 @@ public class GuiMixin {
       CallbackInfo ci
   ) {
     ClientHelperForEquipment.handleAfterSetScreen(this.minecraft, newScreen);
+    WorkstationScreenTransition.afterSetScreen(this.minecraft, newScreen);
   }
 
   /* Universe Command Star: Save mouse cursor position before the Universe Command Star Screen is closed.
@@ -49,6 +51,7 @@ public class GuiMixin {
       Screen newScreen,
       CallbackInfo ci
   ) {
+    WorkstationScreenTransition.beforeSetScreen(this.minecraft, this.screen, newScreen);
     ClientHelperForEquipment.handleBeforeSetScreen(
         this.minecraft,
         this.minecraft.mouseHandler,

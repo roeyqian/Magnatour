@@ -27,6 +27,7 @@ import roeyqian.magnatour.blockentity.universe.UniverseLibraryEntity;
 import roeyqian.magnatour.blockentity.universe.UniverseRefineryEntity;
 import roeyqian.magnatour.blockentity.universe.UniverseTeleportPointEntity;
 import roeyqian.magnatour.blockentity.universe.UniverseVoidPoolEntity;
+import roeyqian.magnatour.blockentity.universe.UniverseWorkstationEntity;
 
 /*
  * Universe Group: Work, Store
@@ -34,6 +35,12 @@ import roeyqian.magnatour.blockentity.universe.UniverseVoidPoolEntity;
 public final class UniverseBlockEntities {
 
   // Work
+  public static final BlockEntityType<UniverseWorkstationEntity> UNIVERSE_WORKSTATION_ENTITY = register(
+      "universe_workstation_entity",
+      UniverseWorkstationEntity::new,
+      UniverseBlocks.UNIVERSE_WORKSTATION
+  );
+
   public static final BlockEntityType<UniverseBlockEntity> UNIVERSE_BLOCK_ENTITY = register(
       "universe_block_entity",
       UniverseBlockEntity::new,

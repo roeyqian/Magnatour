@@ -11,6 +11,7 @@
     "block.BlockStateBaseMixin",
     "block.AbstractFurnaceBlockEntityAccessor",
     "menu.AnvilMenuAccessor",
+    "menu.AbstractCraftingMenuAccessor",
     "block.BaseFireBlockMixin",
     "block.BellBlockMixin",
     "block.FireBlockMixin",

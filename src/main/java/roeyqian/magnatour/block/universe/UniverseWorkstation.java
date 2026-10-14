@@ -10,18 +10,21 @@ package roeyqian.magnatour.block.universe;
 // Minecraft
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
-import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.phys.BlockHitResult;
 
@@ -30,9 +33,13 @@ import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 // Magnatour
-import roeyqian.magnatour.menu.universe.UniverseWorkstationMenu;
+import roeyqian.magnatour.blockentity.universe.UniverseWorkstationEntity;
+import roeyqian.magnatour.registry.content.UniverseBlockEntities;
 
-public class UniverseWorkstation extends Block {
+public class UniverseWorkstation extends BaseEntityBlock {
+
+  public static final BooleanProperty LIT = BlockStateProperties.LIT;
+  public static final BooleanProperty SMELTING = BooleanProperty.create("smelting");
 
   public static final EnumProperty<Direction> FACING = BlockStateProperties.HORIZONTAL_FACING;
 
@@ -40,7 +47,10 @@ public class UniverseWorkstation extends Block {
       Properties settings
   ) {
     super(settings);
-    this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH));
+    this.registerDefaultState(this.stateDefinition.any()
+        .setValue(FACING, Direction.NORTH)
+        .setValue(LIT, false)
+        .setValue(SMELTING, false));
   }
 
   @Nullable @Override
@@ -50,11 +60,35 @@ public class UniverseWorkstation extends Block {
     return this.defaultBlockState().setValue(FACING, context.getHorizontalDirection().getOpposite());
   }
 
+  @Override @Nullable
+  public <T extends BlockEntity> BlockEntityTicker<T> getTicker(
+      @NonNull Level world,
+      @NonNull BlockState state,
+      @NonNull BlockEntityType<T> type
+  ) {
+    return world.isClientSide() ? null : createTickerHelper(
+        type, UniverseBlockEntities.UNIVERSE_WORKSTATION_ENTITY,
+        (level, pos, tickState, entity) -> {
+          if (level instanceof ServerLevel serverLevel) {
+            UniverseWorkstationEntity.tick(serverLevel, pos, tickState, entity);
+          }
+        }
+    );
+  }
+
+  @Override @NonNull
+  public BlockEntity newBlockEntity(
+      @NonNull BlockPos pos,
+      @NonNull BlockState state
+  ) {
+    return new UniverseWorkstationEntity(pos, state);
+  }
+
   @Override
   protected void createBlockStateDefinition(
       StateDefinition.@NonNull Builder<Block, BlockState> builder
   ) {
-    builder.add(FACING);
+    builder.add(FACING, LIT, SMELTING);
   }
 
   @Nullable @Override
@@ -63,14 +97,7 @@ public class UniverseWorkstation extends Block {
       @NonNull Level world,
       @NonNull BlockPos pos
   ) {
-    return new SimpleMenuProvider(
-        (syncId, inventory, _) -> new UniverseWorkstationMenu(
-            syncId,
-            inventory,
-            ContainerLevelAccess.create(world, pos)
-        ),
-        Component.translatable("container.crafting")
-    );
+    return world.getBlockEntity(pos) instanceof UniverseWorkstationEntity entity ? entity : null;
   }
 
   @Override @NonNull

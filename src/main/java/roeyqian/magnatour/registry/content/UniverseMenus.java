@@ -18,7 +18,8 @@ import roeyqian.magnatour.menu.universe.UniverseLibraryMenu;
 import roeyqian.magnatour.menu.universe.UniverseRefineryMenu;
 import roeyqian.magnatour.menu.universe.UniverseTeleportPointMenu;
 import roeyqian.magnatour.menu.universe.UniverseVoidPoolMenu;
-import roeyqian.magnatour.menu.universe.UniverseWorkstationMenu;
+import roeyqian.magnatour.menu.universe.UniverseWorkstationCraftingMenu;
+import roeyqian.magnatour.menu.universe.UniverseWorkstationSmeltingMenu;
 import roeyqian.magnatour.registry.MenuRegHelper;
 
 /*
@@ -48,8 +49,11 @@ public final class UniverseMenus {
   public static final MenuType<UniverseVoidPoolMenu> UNIVERSE_VOID_POOL_HANDLER =
       MenuRegHelper.register("universe_void_pool", UniverseVoidPoolMenu::new);
 
-  public static final MenuType<UniverseWorkstationMenu> UNIVERSE_WORKSTATION_HANDLER =
-      MenuRegHelper.register("universe_workstation", UniverseWorkstationMenu::new);
+  public static final MenuType<UniverseWorkstationCraftingMenu> UNIVERSE_WORKSTATION_HANDLER =
+      MenuRegHelper.register("universe_workstation", UniverseWorkstationCraftingMenu::new);
+
+  public static final MenuType<UniverseWorkstationSmeltingMenu> UNIVERSE_WORKSTATION_SMELTING_HANDLER =
+      MenuRegHelper.register("universe_workstation_smelting", UniverseWorkstationSmeltingMenu::new);
 
   // Item Menus
   public static final MenuType<UniverseCommandStarMenu> UNIVERSE_COMMAND_STAR_HANDLER =

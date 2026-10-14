@@ -27,14 +27,17 @@ import net.minecraft.world.item.crafting.RecipeHolder;
 
 // JSpecify
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 // Magnatour
 import roeyqian.magnatour.block.CustomCraftingBlock;
+import roeyqian.magnatour.blockentity.universe.UniverseWorkstationEntity;
+import roeyqian.magnatour.mixin.menu.AbstractCraftingMenuAccessor;
 import roeyqian.magnatour.registry.content.UniverseBlocks;
 import roeyqian.magnatour.registry.content.UniverseMenus;
 import roeyqian.magnatour.registry.logic.CustomRecipes;
 
-public class UniverseWorkstationMenu extends AbstractCraftingMenu implements CustomCraftingBlock {
+public class UniverseWorkstationCraftingMenu extends AbstractCraftingMenu implements CustomCraftingBlock {
 
   public static final int RESULT_ID = 0;
 
@@ -49,27 +52,43 @@ public class UniverseWorkstationMenu extends AbstractCraftingMenu implements Cus
 
   private final ContainerLevelAccess context;
 
+  private final @Nullable UniverseWorkstationEntity workstation;
+
   private boolean filling;
 
-  public UniverseWorkstationMenu(
+  public UniverseWorkstationCraftingMenu(
       int syncId,
       Inventory playerInventory
   ) {
-    this(syncId, playerInventory, ContainerLevelAccess.NULL);
+    this(syncId, playerInventory, ContainerLevelAccess.NULL, null);
   }
 
-  public UniverseWorkstationMenu(
+  public UniverseWorkstationCraftingMenu(
       int syncId,
       Inventory playerInventory,
       ContainerLevelAccess context
   ) {
+    this(syncId, playerInventory, context, null);
+  }
+
+  public UniverseWorkstationCraftingMenu(
+      int syncId,
+      Inventory playerInventory,
+      ContainerLevelAccess context,
+      @Nullable UniverseWorkstationEntity workstation
+  ) {
     super(UniverseMenus.UNIVERSE_WORKSTATION_HANDLER, syncId, 5, 5);
     this.context = context;
     this.player = playerInventory.player;
+    this.workstation = workstation;
+    if (workstation != null) {
+      ((AbstractCraftingMenuAccessor) this).magnatour$setCraftSlots(workstation.getCraftingInventory());
+    }
 
     this.addResultSlot(this.player, 149, 54);
     this.addCraftingGridSlots(30, 17);
     this.addStandardInventorySlots(playerInventory, 8, 120);
+    this.slotsChanged(this.craftSlots);
   }
 
   @Override
@@ -83,6 +102,15 @@ public class UniverseWorkstationMenu extends AbstractCraftingMenu implements Cus
       @NonNull Slot slot
   ) {
     return slot.container != this.resultSlots && super.canTakeItemForPickAll(stack, slot);
+  }
+
+  @Override
+  public boolean clickMenuButton(
+      @NonNull Player player,
+      int id
+  ) {
+    return id == 0 && this.workstation != null && this.stillValid(player)
+        && this.workstation.switchMenu(player, true);
   }
 
   @Override
@@ -169,6 +197,12 @@ public class UniverseWorkstationMenu extends AbstractCraftingMenu implements Cus
     return this.slots;
   }
 
+  public boolean isFor(
+      UniverseWorkstationEntity entity
+  ) {
+    return this.workstation == entity;
+  }
+
   @Override
   public boolean noInsertItem(
       ItemStack stack,
@@ -191,7 +225,7 @@ public class UniverseWorkstationMenu extends AbstractCraftingMenu implements Cus
       @NonNull Player player
   ) {
     super.removed(player);
-    this.context.execute((_, _) -> this.clearContainer(player, this.craftSlots));
+    this.resultSlots.clearContent();
   }
 
   @Override

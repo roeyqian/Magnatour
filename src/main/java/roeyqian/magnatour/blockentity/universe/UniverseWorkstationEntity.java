@@ -1,0 +1,360 @@
+/*
+ * SPDX-License-Identifier: GPL-3.0-only
+ * Copyright (C) 2026 Roey Qian
+ *
+ * This file is part of Magnatour.
+ * Full license text available in the LICENSE file in the project root.
+ */
+package roeyqian.magnatour.blockentity.universe;
+
+// Minecraft
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.NonNullList;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.ContainerHelper;
+import net.minecraft.world.Containers;
+import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.entity.ExperienceOrb;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ContainerLevelAccess;
+import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.AbstractCookingRecipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.RecipeManager;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.crafting.SingleRecipeInput;
+import net.minecraft.world.level.block.AbstractFurnaceBlock;
+import net.minecraft.world.level.block.entity.AbstractFurnaceBlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.world.phys.Vec3;
+
+// JSpecify
+import org.jspecify.annotations.NonNull;
+
+// Magnatour
+import roeyqian.magnatour.block.universe.UniverseWorkstation;
+import roeyqian.magnatour.level.recipe.SupremeCookingRecipe;
+import roeyqian.magnatour.level.recipe.UniverseCookingRecipe;
+import roeyqian.magnatour.menu.universe.UniverseWorkstationCraftingMenu;
+import roeyqian.magnatour.menu.universe.UniverseWorkstationSmeltingMenu;
+import roeyqian.magnatour.mixin.block.AbstractFurnaceBlockEntityAccessor;
+import roeyqian.magnatour.registry.content.UniverseBlockEntities;
+import roeyqian.magnatour.registry.logic.CustomRecipes;
+
+public class UniverseWorkstationEntity extends AbstractFurnaceBlockEntity {
+
+  private static final int EXPERIENCE_PER_ITEM = 1_000;
+  private static final int MIN_FUEL_DURATION = 1_000_000;
+
+  private final RecipeManager.CachedCheck<SingleRecipeInput, SupremeCookingRecipe> supremeMatchGetter;
+
+  private final RecipeManager.CachedCheck<SingleRecipeInput, UniverseCookingRecipe> universeMatchGetter;
+
+  private final CraftingInventory craftingInventory = new CraftingInventory();
+
+  public UniverseWorkstationEntity(
+      BlockPos pos,
+      BlockState state
+  ) {
+    super(UniverseBlockEntities.UNIVERSE_WORKSTATION_ENTITY, pos, state, RecipeType.SMELTING);
+    this.supremeMatchGetter = RecipeManager.createCheck(CustomRecipes.SUPREME_COOKING_TYPE);
+    this.universeMatchGetter = RecipeManager.createCheck(CustomRecipes.UNIVERSE_COOKING_TYPE);
+  }
+
+  public static void tick(
+      ServerLevel world,
+      BlockPos pos,
+      BlockState state,
+      UniverseWorkstationEntity blockEntity
+  ) {
+    AbstractFurnaceBlockEntityAccessor accessor = (AbstractFurnaceBlockEntityAccessor) blockEntity;
+
+    boolean wasLit = accessor.getLitTimeRemaining() > 0;
+    boolean changed = false;
+    int processedItems = 0;
+
+    if (accessor.getLitTimeRemaining() > 0) {
+      accessor.setLitTimeRemaining(accessor.getLitTimeRemaining() - 1);
+    }
+
+    ItemStack fuelStack = blockEntity.items.get(1);
+    ItemStack inputStack = blockEntity.items.get(0);
+    boolean hasInput = !inputStack.isEmpty();
+    boolean hasFuel = !fuelStack.isEmpty();
+
+    if (accessor.getLitTimeRemaining() > 0 || (hasFuel && hasInput)) {
+      SingleRecipeInput recipeInput = new SingleRecipeInput(inputStack);
+      RecipeHolder<? extends AbstractCookingRecipe> recipe = blockEntity.findRecipe(recipeInput, world);
+
+      int maxCount = blockEntity.getMaxStackSize();
+
+      boolean thisAcceptable = canBurn(
+          recipe,
+          recipeInput,
+          blockEntity.items,
+          maxCount
+      );
+      if (accessor.getLitTimeRemaining() <= 0 && thisAcceptable) {
+        int fuelTime = blockEntity.getBurnDuration(world, fuelStack);
+        accessor.setLitTimeRemaining(fuelTime);
+        accessor.setLitTotalTime(fuelTime);
+
+        if (accessor.getLitTimeRemaining() > 0) {
+          changed = true;
+          if (hasFuel) {
+            Item fuelItem = fuelStack.getItem();
+            fuelStack.shrink(1);
+            if (fuelStack.isEmpty()) {
+              if (fuelItem.getCraftingRemainder() != null) {
+                blockEntity.items.set(1, fuelItem.getCraftingRemainder().create());
+              }
+            }
+          }
+        }
+      }
+
+      if (accessor.getLitTimeRemaining() > 0) {
+        while (true) {
+          inputStack = blockEntity.items.getFirst();
+          if (inputStack.isEmpty()) break;
+
+          recipeInput = new SingleRecipeInput(inputStack);
+          recipe = blockEntity.findRecipe(recipeInput, world);
+
+          thisAcceptable = canBurn(
+              recipe,
+              recipeInput,
+              blockEntity.items,
+              maxCount
+          );
+          if (recipe != null && thisAcceptable) {
+            if (burn(
+                recipe,
+                recipeInput,
+                blockEntity.items,
+                maxCount
+            )) {
+              blockEntity.setRecipeUsed(recipe);
+              changed = true;
+              processedItems++;
+            }
+          } else {
+            break;
+          }
+        }
+
+        accessor.setCookingTimeSpent(0);
+        accessor.setCookingTotalTime(1);
+      }
+    } else if (accessor.getLitTimeRemaining() <= 0 && accessor.getCookingTimeSpent() > 0) {
+      accessor.setCookingTimeSpent(0);
+    }
+
+    if (processedItems > 0) {
+      ExperienceOrb.award(
+          world,
+          Vec3.atCenterOf(pos),
+          processedItems * EXPERIENCE_PER_ITEM
+      );
+    }
+
+    boolean isLit = accessor.getLitTimeRemaining() > 0;
+    if (wasLit != isLit) {
+      changed = true;
+      state = state.setValue(AbstractFurnaceBlock.LIT, isLit);
+      world.setBlock(pos, state, 3);
+    }
+
+    if (changed) {
+      setChanged(world, pos, state);
+    }
+  }
+
+  public CraftingContainer getCraftingInventory() {
+    return this.craftingInventory;
+  }
+
+  @Override
+  public void preRemoveSideEffects(
+      @NonNull BlockPos pos,
+      @NonNull BlockState state
+  ) {
+    super.preRemoveSideEffects(pos, state);
+    if (this.level != null && !this.level.isClientSide()) {
+      Containers.dropContents(this.level, pos, this.craftingInventory);
+      this.craftingInventory.clearContent();
+    }
+  }
+
+  public boolean switchMenu(
+      Player player,
+      boolean smelting
+  ) {
+    if (this.level == null || this.level.isClientSide() || !this.stillValid(player) || !this.canOpen(player)) {
+      return false;
+    }
+    BlockState previousState = this.getBlockState();
+    BlockState nextState = previousState.setValue(UniverseWorkstation.SMELTING, smelting);
+    if (nextState != previousState && !this.level.setBlock(this.worldPosition, nextState, 3)) return false;
+
+    boolean opened = player.openMenu(this).isPresent();
+    if (!opened && nextState != previousState) {
+      this.level.setBlock(this.worldPosition, previousState, 3);
+    }
+    return opened;
+  }
+
+  @Override @NonNull
+  protected AbstractContainerMenu createMenu(
+      int syncId,
+      @NonNull Inventory inventory
+  ) {
+    if (this.getBlockState().getValue(UniverseWorkstation.SMELTING)) {
+      return new UniverseWorkstationSmeltingMenu(syncId, inventory, this, this.dataAccess);
+    }
+    return new UniverseWorkstationCraftingMenu(
+        syncId, inventory, ContainerLevelAccess.create(this.level, this.worldPosition), this
+    );
+  }
+
+  @Override
+  protected int getBurnDuration(
+      @NonNull ServerLevel world,
+      @NonNull ItemStack stack
+  ) {
+    int baseFuelTime = super.getBurnDuration(world, stack);
+    return Math.max(baseFuelTime, MIN_FUEL_DURATION);
+  }
+
+  @Override @NonNull
+  protected Component getDefaultName() {
+    return Component.translatable(this.getBlockState().getValue(UniverseWorkstation.SMELTING)
+        ? "container.furnace" : "container.crafting");
+  }
+
+  @Override
+  protected void loadAdditional(
+      @NonNull ValueInput input
+  ) {
+    super.loadAdditional(input);
+    this.craftingInventory.items.clear();
+    ContainerHelper.loadAllItems(input.childOrEmpty("CraftingInventory"), this.craftingInventory.items);
+  }
+
+  @Override
+  protected void saveAdditional(
+      @NonNull ValueOutput output
+  ) {
+    super.saveAdditional(output);
+    ContainerHelper.saveAllItems(output.child("CraftingInventory"), this.craftingInventory.items);
+  }
+
+  private static boolean canBurn(
+      RecipeHolder<? extends AbstractCookingRecipe> recipe,
+      SingleRecipeInput input,
+      NonNullList<ItemStack> inventory,
+      int maxCount
+  ) {
+    if (inventory.getFirst().isEmpty() || recipe == null) {
+      return false;
+    }
+
+    ItemStack result = recipe.value().assemble(input);
+    if (result.isEmpty()) {
+      return false;
+    }
+
+    ItemStack outputStack = inventory.get(2);
+    if (outputStack.isEmpty()) {
+      return true;
+    }
+    if (!ItemStack.isSameItemSameComponents(outputStack, result)) {
+      return false;
+    }
+    if (outputStack.getCount() < maxCount
+        && outputStack.getCount() < outputStack.getMaxStackSize()
+    ) return true;
+
+    return outputStack.getCount() < result.getMaxStackSize();
+  }
+
+  private static boolean burn(
+      RecipeHolder<? extends AbstractCookingRecipe> recipe,
+      SingleRecipeInput input,
+      NonNullList<ItemStack> inventory,
+      int maxCount
+  ) {
+    if (recipe == null || !canBurn(recipe, input, inventory, maxCount)) {
+      return false;
+    }
+
+    ItemStack inputStack = inventory.get(0);
+    ItemStack result = recipe.value().assemble(input);
+    ItemStack outputStack = inventory.get(2);
+
+    if (outputStack.isEmpty()) {
+      inventory.set(2, result.copy());
+    } else if (ItemStack.isSameItemSameComponents(outputStack, result)) {
+      outputStack.grow(1);
+    }
+
+    inputStack.shrink(1);
+    return true;
+  }
+
+  private RecipeHolder<? extends AbstractCookingRecipe> findRecipe(
+      SingleRecipeInput input,
+      ServerLevel world
+  ) {
+    var supremeRecipe = this.supremeMatchGetter.getRecipeFor(input, world);
+    if (supremeRecipe.isPresent()) return supremeRecipe.get();
+
+    var universeRecipe = this.universeMatchGetter.getRecipeFor(input, world);
+    if (universeRecipe.isPresent()) return universeRecipe.get();
+
+    var vanillaRecipe = ((AbstractFurnaceBlockEntityAccessor) this)
+        .getMatchGetter()
+        .getRecipeFor(input, world);
+    return vanillaRecipe.orElse(null);
+  }
+
+  private final class CraftingInventory extends SimpleContainer implements CraftingContainer {
+
+    private CraftingInventory() {
+      super(25);
+    }
+
+    @Override
+    public int getHeight() {
+      return 5;
+    }
+
+    @Override
+    public int getWidth() {
+      return 5;
+    }
+
+    @Override
+    public void setChanged() {
+      super.setChanged();
+      UniverseWorkstationEntity.this.setChanged();
+      if (level == null || level.isClientSide()) return;
+      // Every viewer uses the same grid; refresh all results when its contents change.
+      for (Player player : level.players()) {
+        if (player.containerMenu instanceof UniverseWorkstationCraftingMenu menu
+            && menu.isFor(UniverseWorkstationEntity.this)) {
+          menu.slotsChanged(this);
+        }
+      }
+    }
+
+  }
+
+}

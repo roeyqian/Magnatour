@@ -33,6 +33,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import roeyqian.magnatour.mixinhelper.screen.ScreenHelperForRecipe;
 import roeyqian.magnatour.screen.supreme.SupremeCraftingBookComponent;
 import roeyqian.magnatour.screen.universe.UniverseCraftingBookComponent;
+import roeyqian.magnatour.screen.universe.UniverseSmeltingBookComponent;
 
 @Mixin(value = RecipeBookComponent.class, priority = 3600000)
 public class RecipeBookComponentMixin {
@@ -101,6 +102,7 @@ public class RecipeBookComponentMixin {
       return original + 2 * SupremeCraftingBookComponent.VERTICAL_OFFSET;
     }
     return (Object) this instanceof UniverseCraftingBookComponent
+        || (Object) this instanceof UniverseSmeltingBookComponent
         ? original + 2 * UniverseCraftingBookComponent.VERTICAL_OFFSET : original;
   }
 

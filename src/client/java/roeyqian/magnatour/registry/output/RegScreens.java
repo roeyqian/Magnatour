@@ -35,7 +35,8 @@ import roeyqian.magnatour.screen.universe.UniverseLibraryScreen;
 import roeyqian.magnatour.screen.universe.UniverseRefineryScreen;
 import roeyqian.magnatour.screen.universe.UniverseTeleportPointScreen;
 import roeyqian.magnatour.screen.universe.UniverseVoidPoolScreen;
-import roeyqian.magnatour.screen.universe.UniverseWorkstationScreen;
+import roeyqian.magnatour.screen.universe.UniverseWorkstationCraftingScreen;
+import roeyqian.magnatour.screen.universe.UniverseWorkstationSmeltingScreen;
 
 @Environment(EnvType.CLIENT)
 public final class RegScreens {
@@ -52,7 +53,8 @@ public final class RegScreens {
     MenuScreens.register(SupremeMenus.ITEM_HUB_HANDLER, ItemHubScreen::new);
 
     MenuScreens.register(UniverseMenus.UNIVERSE_COMMAND_STAR_HANDLER, UniverseCommandStarScreen::new);
-    MenuScreens.register(UniverseMenus.UNIVERSE_WORKSTATION_HANDLER, UniverseWorkstationScreen::new);
+    MenuScreens.register(UniverseMenus.UNIVERSE_WORKSTATION_HANDLER, UniverseWorkstationCraftingScreen::new);
+    MenuScreens.register(UniverseMenus.UNIVERSE_WORKSTATION_SMELTING_HANDLER, UniverseWorkstationSmeltingScreen::new);
     MenuScreens.register(UniverseMenus.UNIVERSE_REFINERY_HANDLER, UniverseRefineryScreen::new);
     MenuScreens.register(UniverseMenus.UNIVERSE_LIBRARY_HANDLER, UniverseLibraryScreen::new);
     MenuScreens.register(UniverseMenus.UNIVERSE_VOID_POOL_HANDLER, UniverseVoidPoolScreen::new);

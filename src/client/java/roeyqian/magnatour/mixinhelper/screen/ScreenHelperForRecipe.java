@@ -26,6 +26,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 // Magnatour
 import roeyqian.magnatour.Magnatour;
 import roeyqian.magnatour.screen.universe.UniverseCraftingBookComponent;
+import roeyqian.magnatour.screen.universe.UniverseSmeltingBookComponent;
 
 public final class ScreenHelperForRecipe {
 
@@ -45,7 +46,9 @@ public final class ScreenHelperForRecipe {
       float delta,
       CallbackInfo ci
   ) {
-    if (!(recipeBookComponent instanceof UniverseCraftingBookComponent) || !visible) return;
+    if (!visible) return;
+    if (!(recipeBookComponent instanceof UniverseCraftingBookComponent)
+        && !(recipeBookComponent instanceof UniverseSmeltingBookComponent)) return;
 
     int textureWidth = 147;
     int textureHeight = 194;

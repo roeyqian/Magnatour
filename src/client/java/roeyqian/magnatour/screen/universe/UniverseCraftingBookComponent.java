@@ -29,14 +29,14 @@ import net.minecraft.world.item.crafting.display.RecipeDisplay;
 import org.jspecify.annotations.NonNull;
 
 // Magnatour
-import roeyqian.magnatour.menu.universe.UniverseWorkstationMenu;
+import roeyqian.magnatour.menu.universe.UniverseWorkstationCraftingMenu;
 import roeyqian.magnatour.mixin.screen.GhostSlotsInvoker;
 import roeyqian.magnatour.registry.content.SupremeItems;
 import roeyqian.magnatour.registry.content.UniverseItems;
 import roeyqian.magnatour.registry.logic.CustomRecipes;
 import roeyqian.magnatour.screen.CustomRecipeDisplay;
 
-public final class UniverseCraftingBookComponent extends RecipeBookComponent<UniverseWorkstationMenu> {
+public final class UniverseCraftingBookComponent extends RecipeBookComponent<UniverseWorkstationCraftingMenu> {
 
   public static final int MIN_SIDE_BY_SIDE_WIDTH = 379;
   public static final int VERTICAL_OFFSET = 18;
@@ -62,7 +62,7 @@ public final class UniverseCraftingBookComponent extends RecipeBookComponent<Uni
   );
 
   public UniverseCraftingBookComponent(
-      UniverseWorkstationMenu screenHandler
+      UniverseWorkstationCraftingMenu screenHandler
   ) {
     super(screenHandler, TABS);
   }
