@@ -288,11 +288,11 @@ public class Magnatour implements ModInitializer {
               entries.accept(Blocks.JIGSAW);
               entries.accept(Blocks.BARRIER);
               entries.accept(UniverseBlocks.UNIVERSE_BLOCK);
-              entries.accept(UniverseBlocks.UNIVERSE_WORKSTATION);
+              entries.accept(UniverseBlocks.UNIVERSE_FORGE);
               entries.accept(UniverseBlocks.UNIVERSE_REFINERY);
-              entries.accept(UniverseBlocks.UNIVERSE_VOID_POOL);
+              entries.accept(UniverseBlocks.UNIVERSE_POOL);
               entries.accept(UniverseBlocks.UNIVERSE_LIBRARY);
-              entries.accept(UniverseBlocks.UNIVERSE_TELEPORT_POINT);
+              entries.accept(UniverseBlocks.UNIVERSE_DOT);
             })
             .build()
     );

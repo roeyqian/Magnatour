@@ -23,11 +23,11 @@ import net.minecraft.world.level.block.entity.BlockEntityTypes;
 // Magnatour
 import roeyqian.magnatour.Magnatour;
 import roeyqian.magnatour.blockentity.universe.UniverseBlockEntity;
+import roeyqian.magnatour.blockentity.universe.UniverseDotEntity;
+import roeyqian.magnatour.blockentity.universe.UniverseForgeEntity;
 import roeyqian.magnatour.blockentity.universe.UniverseLibraryEntity;
+import roeyqian.magnatour.blockentity.universe.UniversePoolEntity;
 import roeyqian.magnatour.blockentity.universe.UniverseRefineryEntity;
-import roeyqian.magnatour.blockentity.universe.UniverseTeleportPointEntity;
-import roeyqian.magnatour.blockentity.universe.UniverseVoidPoolEntity;
-import roeyqian.magnatour.blockentity.universe.UniverseWorkstationEntity;
 
 /*
  * Universe Group: Work, Store
@@ -35,10 +35,10 @@ import roeyqian.magnatour.blockentity.universe.UniverseWorkstationEntity;
 public final class UniverseBlockEntities {
 
   // Work
-  public static final BlockEntityType<UniverseWorkstationEntity> UNIVERSE_WORKSTATION_ENTITY = register(
-      "universe_workstation_entity",
-      UniverseWorkstationEntity::new,
-      UniverseBlocks.UNIVERSE_WORKSTATION
+  public static final BlockEntityType<UniverseForgeEntity> UNIVERSE_FORGE_ENTITY = register(
+      "universe_forge_entity",
+      UniverseForgeEntity::new,
+      UniverseBlocks.UNIVERSE_FORGE
   );
 
   public static final BlockEntityType<UniverseBlockEntity> UNIVERSE_BLOCK_ENTITY = register(
@@ -60,16 +60,16 @@ public final class UniverseBlockEntities {
       UniverseBlocks.UNIVERSE_REFINERY
   );
 
-  public static final BlockEntityType<UniverseVoidPoolEntity> UNIVERSE_VOID_POOL_ENTITY = register(
-      "universe_void_pool_entity",
-      UniverseVoidPoolEntity::new,
-      UniverseBlocks.UNIVERSE_VOID_POOL
+  public static final BlockEntityType<UniversePoolEntity> UNIVERSE_POOL_ENTITY = register(
+      "universe_pool_entity",
+      UniversePoolEntity::new,
+      UniverseBlocks.UNIVERSE_POOL
   );
 
-  public static final BlockEntityType<UniverseTeleportPointEntity> UNIVERSE_TELEPORT_POINT_ENTITY = register(
-      "universe_teleport_point_entity",
-      UniverseTeleportPointEntity::new,
-      UniverseBlocks.UNIVERSE_TELEPORT_POINT
+  public static final BlockEntityType<UniverseDotEntity> UNIVERSE_DOT_ENTITY = register(
+      "universe_dot_entity",
+      UniverseDotEntity::new,
+      UniverseBlocks.UNIVERSE_DOT
   );
 
   private UniverseBlockEntities() {}

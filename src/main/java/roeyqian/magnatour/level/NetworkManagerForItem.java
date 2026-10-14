@@ -21,13 +21,13 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 // Magnatour
 import roeyqian.magnatour.blockentity.supreme.ItemHubEntity;
 import roeyqian.magnatour.blockentity.supreme.RedstoneTriggerEntity;
-import roeyqian.magnatour.blockentity.universe.UniverseTeleportPointEntity;
+import roeyqian.magnatour.blockentity.universe.UniverseDotEntity;
 import roeyqian.magnatour.level.network.ItemHubPayload;
 import roeyqian.magnatour.level.network.RedstoneTriggerPayload;
-import roeyqian.magnatour.level.network.UniverseTeleportPointPayload;
+import roeyqian.magnatour.level.network.UniverseDotPayload;
 import roeyqian.magnatour.menu.supreme.ItemHubMenu;
 import roeyqian.magnatour.menu.supreme.RedstoneTriggerMenu;
-import roeyqian.magnatour.menu.universe.UniverseTeleportPointMenu;
+import roeyqian.magnatour.menu.universe.UniverseDotMenu;
 
 public final class NetworkManagerForItem {
 
@@ -59,15 +59,15 @@ public final class NetworkManagerForItem {
     );
   }
 
-  public static void registerUniverseTeleportPointNetworking() {
+  public static void registerUniverseDotNetworking() {
     PayloadTypeRegistry.serverboundPlay().register(
-        UniverseTeleportPointPayload.ID,
-        UniverseTeleportPointPayload.CODEC
+        UniverseDotPayload.ID,
+        UniverseDotPayload.CODEC
     );
     ServerPlayNetworking.registerGlobalReceiver(
-        UniverseTeleportPointPayload.ID,
+        UniverseDotPayload.ID,
         (payload, context) -> context.server().execute(
-            () -> handleUniverseTeleportPoint(payload, context.player())
+            () -> handleUniverseDot(payload, context.player())
         )
     );
   }
@@ -117,11 +117,11 @@ public final class NetworkManagerForItem {
     );
   }
 
-  private static void handleUniverseTeleportPoint(
-      UniverseTeleportPointPayload payload,
+  private static void handleUniverseDot(
+      UniverseDotPayload payload,
       ServerPlayer player
   ) {
-    if (!(player.containerMenu instanceof UniverseTeleportPointMenu menu)) return;
+    if (!(player.containerMenu instanceof UniverseDotMenu menu)) return;
     if (!menu.getBlockPos().equals(payload.blockPos())) return;
     player.level();
 
@@ -129,26 +129,26 @@ public final class NetworkManagerForItem {
     if (targetLevel == null) return;
 
     BlockEntity blockEntity = targetLevel.getBlockEntity(menu.getBlockPos());
-    if (!(blockEntity instanceof UniverseTeleportPointEntity teleportPoint)) return;
+    if (!(blockEntity instanceof UniverseDotEntity dot)) return;
 
     switch (payload.action()) {
       case ADD -> {
-        boolean added = teleportPoint.addDestination(payload.destination());
+        boolean added = dot.addDestination(payload.destination());
         player.closeContainer();
         player.sendOverlayMessage(
             Component.translatable(
                 added
-                    ? "msg.magnatour.universe_teleport_point.added"
-                    : "msg.magnatour.universe_teleport_point.full"
+                    ? "msg.magnatour.universe_dot.added"
+                    : "msg.magnatour.universe_dot.full"
             ).withStyle(added ? ChatFormatting.GREEN : ChatFormatting.YELLOW)
         );
       }
-      case DELETE -> teleportPoint.deleteDestination(payload.index());
+      case DELETE -> dot.deleteDestination(payload.index());
       case TELEPORT -> {
-        boolean teleported = teleportPoint.teleport(player, payload.index());
+        boolean teleported = dot.teleport(player, payload.index());
         if (!teleported) {
           player.sendOverlayMessage(
-              Component.translatable("msg.magnatour.universe_teleport_point.invalid")
+              Component.translatable("msg.magnatour.universe_dot.invalid")
                   .withStyle(ChatFormatting.RED)
           );
         }

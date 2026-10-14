@@ -42,13 +42,13 @@ import net.minecraft.world.level.storage.loot.LootTable;
 // Magnatour
 import roeyqian.magnatour.Magnatour;
 import roeyqian.magnatour.block.universe.UniverseBlock;
+import roeyqian.magnatour.block.universe.UniverseDot;
+import roeyqian.magnatour.block.universe.UniverseForge;
 import roeyqian.magnatour.block.universe.UniverseLeavesBlock;
 import roeyqian.magnatour.block.universe.UniverseLibrary;
 import roeyqian.magnatour.block.universe.UniverseMetaPortal;
+import roeyqian.magnatour.block.universe.UniversePool;
 import roeyqian.magnatour.block.universe.UniverseRefinery;
-import roeyqian.magnatour.block.universe.UniverseTeleportPoint;
-import roeyqian.magnatour.block.universe.UniverseVoidPool;
-import roeyqian.magnatour.block.universe.UniverseWorkstation;
 import roeyqian.magnatour.levelgen.tree.SaplingGenerators;
 import roeyqian.magnatour.registry.BlockRegHelper;
 
@@ -65,9 +65,9 @@ public final class UniverseBlocks {
       "universe_library", universe,
       UniverseLibrary::new, BlockBehaviour.Properties.of(), BlockItem::new
   );
-  public static final Block UNIVERSE_WORKSTATION = BlockRegHelper.registerBase(
-      "universe_workstation", universe,
-      UniverseWorkstation::new, BlockBehaviour.Properties.of()
+  public static final Block UNIVERSE_FORGE = BlockRegHelper.registerBase(
+      "universe_forge", universe,
+      UniverseForge::new, BlockBehaviour.Properties.of()
   );
 
   // Active Blocks - Stateful
@@ -75,13 +75,13 @@ public final class UniverseBlocks {
       "universe_refinery", universe,
       UniverseRefinery::new, BlockBehaviour.Properties.of()
   );
-  public static final Block UNIVERSE_TELEPORT_POINT = BlockRegHelper.registerBase(
-      "universe_teleport_point", universe,
-      UniverseTeleportPoint::new, BlockBehaviour.Properties.of()
+  public static final Block UNIVERSE_DOT = BlockRegHelper.registerBase(
+      "universe_dot", universe,
+      UniverseDot::new, BlockBehaviour.Properties.of()
   );
-  public static final Block UNIVERSE_VOID_POOL = BlockRegHelper.registerBase(
-      "universe_void_pool", universe,
-      UniverseVoidPool::new, BlockBehaviour.Properties.of()
+  public static final Block UNIVERSE_POOL = BlockRegHelper.registerBase(
+      "universe_pool", universe,
+      UniversePool::new, BlockBehaviour.Properties.of()
   );
 
   // Insert Blocks - Plant

@@ -1,0 +1,33 @@
+{
+  "parent": "magnatour:universe/universe_core",
+  "criteria": {
+    "universe_dot": {
+      "conditions": {
+        "items": [
+          {
+            "items": "magnatour:universe_dot"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.magnatour.universe_dot.description"
+    },
+    "frame": "challenge",
+    "icon": {
+      "id": "magnatour:universe_dot"
+    },
+    "title": {
+      "translate": "advancements.magnatour.universe_dot.title"
+    }
+  },
+  "requirements": [
+    [
+      "universe_dot"
+    ]
+  ],
+  "sends_telemetry_event": false
+}

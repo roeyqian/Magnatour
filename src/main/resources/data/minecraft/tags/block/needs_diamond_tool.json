@@ -42,9 +42,9 @@
     "magnatour:redstone_trigger",
     "magnatour:item_hub",
     "magnatour:universe_refinery",
-    "magnatour:universe_void_pool",
+    "magnatour:universe_pool",
     "magnatour:universe_library",
-    "magnatour:universe_teleport_point",
-    "magnatour:universe_workstation"
+    "magnatour:universe_dot",
+    "magnatour:universe_forge"
   ]
 }

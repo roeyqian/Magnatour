@@ -24,7 +24,7 @@ public final class CustomNetworks {
     NetworkManagerForBlock.registerUniverseCommandStarBoundBlockNetworking();
 
     NetworkManagerForItem.registerItemHubNetworking();
-    NetworkManagerForItem.registerUniverseTeleportPointNetworking();
+    NetworkManagerForItem.registerUniverseDotNetworking();
     NetworkManagerForItem.registerRedstoneTriggerNetworking();
 
     Magnatour.LOGGER.info("[Server] Initializing 'CustomNetworks'");

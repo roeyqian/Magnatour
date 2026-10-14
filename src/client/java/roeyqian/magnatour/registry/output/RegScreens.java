@@ -31,12 +31,12 @@ import roeyqian.magnatour.screen.supreme.SupremeFurnaceScreen;
 import roeyqian.magnatour.screen.supreme.SupremeReserverScreen;
 import roeyqian.magnatour.screen.universe.UniverseAnnihilatorScreen;
 import roeyqian.magnatour.screen.universe.UniverseCommandStarScreen;
+import roeyqian.magnatour.screen.universe.UniverseDotScreen;
+import roeyqian.magnatour.screen.universe.UniverseForgeCraftingScreen;
+import roeyqian.magnatour.screen.universe.UniverseForgeSmeltingScreen;
 import roeyqian.magnatour.screen.universe.UniverseLibraryScreen;
+import roeyqian.magnatour.screen.universe.UniversePoolScreen;
 import roeyqian.magnatour.screen.universe.UniverseRefineryScreen;
-import roeyqian.magnatour.screen.universe.UniverseTeleportPointScreen;
-import roeyqian.magnatour.screen.universe.UniverseVoidPoolScreen;
-import roeyqian.magnatour.screen.universe.UniverseWorkstationCraftingScreen;
-import roeyqian.magnatour.screen.universe.UniverseWorkstationSmeltingScreen;
 
 @Environment(EnvType.CLIENT)
 public final class RegScreens {
@@ -53,12 +53,12 @@ public final class RegScreens {
     MenuScreens.register(SupremeMenus.ITEM_HUB_HANDLER, ItemHubScreen::new);
 
     MenuScreens.register(UniverseMenus.UNIVERSE_COMMAND_STAR_HANDLER, UniverseCommandStarScreen::new);
-    MenuScreens.register(UniverseMenus.UNIVERSE_WORKSTATION_HANDLER, UniverseWorkstationCraftingScreen::new);
-    MenuScreens.register(UniverseMenus.UNIVERSE_WORKSTATION_SMELTING_HANDLER, UniverseWorkstationSmeltingScreen::new);
+    MenuScreens.register(UniverseMenus.UNIVERSE_FORGE_HANDLER, UniverseForgeCraftingScreen::new);
+    MenuScreens.register(UniverseMenus.UNIVERSE_FORGE_SMELTING_HANDLER, UniverseForgeSmeltingScreen::new);
     MenuScreens.register(UniverseMenus.UNIVERSE_REFINERY_HANDLER, UniverseRefineryScreen::new);
     MenuScreens.register(UniverseMenus.UNIVERSE_LIBRARY_HANDLER, UniverseLibraryScreen::new);
-    MenuScreens.register(UniverseMenus.UNIVERSE_VOID_POOL_HANDLER, UniverseVoidPoolScreen::new);
-    MenuScreens.register(UniverseMenus.UNIVERSE_TELEPORT_POINT_HANDLER, UniverseTeleportPointScreen::new);
+    MenuScreens.register(UniverseMenus.UNIVERSE_POOL_HANDLER, UniversePoolScreen::new);
+    MenuScreens.register(UniverseMenus.UNIVERSE_DOT_HANDLER, UniverseDotScreen::new);
 
     BlockEntityRenderers.register(UniverseBlockEntities.UNIVERSE_LIBRARY_ENTITY, UniverseLibraryRenderer::new);
     BlockEntityRenderers.register(SupremeBlockEntities.SUPREME_CHEST_ENTITY, SupremeChestRenderer::new);

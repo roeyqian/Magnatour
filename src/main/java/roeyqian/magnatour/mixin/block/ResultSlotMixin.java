@@ -68,7 +68,7 @@ public abstract class ResultSlotMixin extends Slot {
     );
   }
 
-  /* Universe Workstation & Supreme Craftable: Item Deduction
+  /* Universe Forge & Supreme Craftable: Item Deduction
    */
   @Inject(method = "onTake", at = @At("HEAD"), cancellable = true)
   private void inOnTake(

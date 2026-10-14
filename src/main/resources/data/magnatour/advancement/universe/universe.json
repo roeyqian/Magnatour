@@ -1,10 +1,10 @@
 {
   "criteria": {
-    "universe_workstation": {
+    "universe_forge": {
       "conditions": {
         "items": [
           {
-            "items": "magnatour:universe_workstation"
+            "items": "magnatour:universe_forge"
           }
         ]
       },
@@ -19,7 +19,7 @@
     },
     "frame": "challenge",
     "icon": {
-      "id": "magnatour:universe_workstation"
+      "id": "magnatour:universe_forge"
     },
     "show_toast": true,
     "title": {
@@ -28,7 +28,7 @@
   },
   "requirements": [
     [
-      "universe_workstation"
+      "universe_forge"
     ]
   ],
   "sends_telemetry_event": false

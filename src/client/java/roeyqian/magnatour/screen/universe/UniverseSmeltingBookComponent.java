@@ -30,13 +30,13 @@ import net.minecraft.world.item.crafting.display.RecipeDisplay;
 import org.jspecify.annotations.NonNull;
 
 // Magnatour
-import roeyqian.magnatour.menu.universe.UniverseWorkstationSmeltingMenu;
+import roeyqian.magnatour.menu.universe.UniverseForgeSmeltingMenu;
 import roeyqian.magnatour.mixin.screen.GhostSlotsInvoker;
 import roeyqian.magnatour.registry.content.SupremeItems;
 import roeyqian.magnatour.registry.content.UniverseItems;
 import roeyqian.magnatour.registry.logic.CustomRecipes;
 
-public final class UniverseSmeltingBookComponent extends RecipeBookComponent<UniverseWorkstationSmeltingMenu> {
+public final class UniverseSmeltingBookComponent extends RecipeBookComponent<UniverseForgeSmeltingMenu> {
 
   private static final Component TOGGLE_COOKABLE_TEXT = Component.translatable(
       "gui.recipebook.toggleRecipes.smeltable"
@@ -59,7 +59,7 @@ public final class UniverseSmeltingBookComponent extends RecipeBookComponent<Uni
   );
 
   public UniverseSmeltingBookComponent(
-      UniverseWorkstationSmeltingMenu handler
+      UniverseForgeSmeltingMenu handler
   ) {
     super(handler, TABS);
   }

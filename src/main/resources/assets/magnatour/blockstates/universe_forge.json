@@ -1,0 +1,8 @@
+{
+  "variants": {
+    "facing=north": { "model": "magnatour:block/universe_forge" },
+    "facing=south": { "model": "magnatour:block/universe_forge", "y": 180 },
+    "facing=west":  { "model": "magnatour:block/universe_forge", "y": 270 },
+    "facing=east":  { "model": "magnatour:block/universe_forge", "y": 90 }
+  }
+}

@@ -122,7 +122,7 @@ public class UniverseShapelessCraftingRecipe implements CraftingRecipe {
 
     SlotDisplay resultDisplay = new SlotDisplay.ItemStackSlotDisplay(this.resultStack);
     SlotDisplay craftingStationDisplay = new SlotDisplay.ItemSlotDisplay(
-        UniverseBlocks.UNIVERSE_WORKSTATION.asItem()
+        UniverseBlocks.UNIVERSE_FORGE.asItem()
     );
 
     return List.of(

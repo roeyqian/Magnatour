@@ -28,7 +28,7 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.Ingredient;
 
-/** A shaped recipe pattern sized for the Universe Workstation's 5x5 grid. */
+/** A shaped recipe pattern sized for the Universe Forge's 5x5 grid. */
 public final class UniverseCraftingPattern {
 
   public static final StreamCodec<RegistryFriendlyByteBuf, UniverseCraftingPattern> STREAM_CODEC =

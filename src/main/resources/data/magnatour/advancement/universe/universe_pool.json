@@ -1,0 +1,33 @@
+{
+  "parent": "magnatour:universe/universe_core",
+  "criteria": {
+    "universe_pool": {
+      "conditions": {
+        "items": [
+          {
+            "items": "magnatour:universe_pool"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.magnatour.universe_pool.description"
+    },
+    "frame": "challenge",
+    "icon": {
+      "id": "magnatour:universe_pool"
+    },
+    "title": {
+      "translate": "advancements.magnatour.universe_pool.title"
+    }
+  },
+  "requirements": [
+    [
+      "universe_pool"
+    ]
+  ],
+  "sends_telemetry_event": false
+}

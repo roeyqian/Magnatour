@@ -101,7 +101,7 @@ public final class WorldHelperForBossFight {
   ) {
     Player player = dragon.getLastHurtByPlayer();
     if (player != null && hasAllUniverseGems(player)) {
-      return UniverseBlocks.UNIVERSE_WORKSTATION;
+      return UniverseBlocks.UNIVERSE_FORGE;
     }
 
     return SupremeBlocks.SUPREME_CRAFTABLE;

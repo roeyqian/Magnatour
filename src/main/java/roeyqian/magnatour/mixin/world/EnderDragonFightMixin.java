@@ -38,7 +38,7 @@ public abstract class EnderDragonFightMixin {
   @Shadow
   private ServerLevel level;
 
-  /* Ender Dragon: Spawn the post-first-kill workstation reward near the podium
+  /* Ender Dragon: Spawn the post-first-kill forge reward near the podium
    */
   @Inject(method = "setDragonKilled", at = @At("HEAD"))
   private void inSetDragonKilledHead(
@@ -53,7 +53,7 @@ public abstract class EnderDragonFightMixin {
     );
   }
 
-  /* Ender Dragon: Spawn the post-first-kill workstation reward near the podium
+  /* Ender Dragon: Spawn the post-first-kill forge reward near the podium
    */
   @Inject(method = "setDragonKilled", at = @At("TAIL"))
   private void inSetDragonKilledTail(

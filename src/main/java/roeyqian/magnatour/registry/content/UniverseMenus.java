@@ -14,12 +14,12 @@ import net.minecraft.world.inventory.MenuType;
 import roeyqian.magnatour.Magnatour;
 import roeyqian.magnatour.menu.universe.UniverseAnnihilatorMenu;
 import roeyqian.magnatour.menu.universe.UniverseCommandStarMenu;
+import roeyqian.magnatour.menu.universe.UniverseDotMenu;
+import roeyqian.magnatour.menu.universe.UniverseForgeCraftingMenu;
+import roeyqian.magnatour.menu.universe.UniverseForgeSmeltingMenu;
 import roeyqian.magnatour.menu.universe.UniverseLibraryMenu;
+import roeyqian.magnatour.menu.universe.UniversePoolMenu;
 import roeyqian.magnatour.menu.universe.UniverseRefineryMenu;
-import roeyqian.magnatour.menu.universe.UniverseTeleportPointMenu;
-import roeyqian.magnatour.menu.universe.UniverseVoidPoolMenu;
-import roeyqian.magnatour.menu.universe.UniverseWorkstationCraftingMenu;
-import roeyqian.magnatour.menu.universe.UniverseWorkstationSmeltingMenu;
 import roeyqian.magnatour.registry.MenuRegHelper;
 
 /*
@@ -36,24 +36,24 @@ public final class UniverseMenus {
   public static final MenuType<UniverseLibraryMenu> UNIVERSE_LIBRARY_HANDLER =
       MenuRegHelper.register("universe_library", UniverseLibraryMenu::new);
 
-  public static final MenuType<UniverseTeleportPointMenu> UNIVERSE_TELEPORT_POINT_HANDLER =
+  public static final MenuType<UniverseDotMenu> UNIVERSE_DOT_HANDLER =
       MenuRegHelper.registerExtended(
-          "universe_teleport_point",
-          (syncId, playerInventory, data) -> new UniverseTeleportPointMenu(syncId, data),
-          UniverseTeleportPointMenu.OpeningData.PACKET_CODEC
+          "universe_dot",
+          (syncId, playerInventory, data) -> new UniverseDotMenu(syncId, data),
+          UniverseDotMenu.OpeningData.PACKET_CODEC
       );
 
   public static final MenuType<UniverseRefineryMenu> UNIVERSE_REFINERY_HANDLER =
       MenuRegHelper.register("universe_refinery", UniverseRefineryMenu::new);
 
-  public static final MenuType<UniverseVoidPoolMenu> UNIVERSE_VOID_POOL_HANDLER =
-      MenuRegHelper.register("universe_void_pool", UniverseVoidPoolMenu::new);
+  public static final MenuType<UniversePoolMenu> UNIVERSE_POOL_HANDLER =
+      MenuRegHelper.register("universe_pool", UniversePoolMenu::new);
 
-  public static final MenuType<UniverseWorkstationCraftingMenu> UNIVERSE_WORKSTATION_HANDLER =
-      MenuRegHelper.register("universe_workstation", UniverseWorkstationCraftingMenu::new);
+  public static final MenuType<UniverseForgeCraftingMenu> UNIVERSE_FORGE_HANDLER =
+      MenuRegHelper.register("universe_forge", UniverseForgeCraftingMenu::new);
 
-  public static final MenuType<UniverseWorkstationSmeltingMenu> UNIVERSE_WORKSTATION_SMELTING_HANDLER =
-      MenuRegHelper.register("universe_workstation_smelting", UniverseWorkstationSmeltingMenu::new);
+  public static final MenuType<UniverseForgeSmeltingMenu> UNIVERSE_FORGE_SMELTING_HANDLER =
+      MenuRegHelper.register("universe_forge_smelting", UniverseForgeSmeltingMenu::new);
 
   // Item Menus
   public static final MenuType<UniverseCommandStarMenu> UNIVERSE_COMMAND_STAR_HANDLER =
