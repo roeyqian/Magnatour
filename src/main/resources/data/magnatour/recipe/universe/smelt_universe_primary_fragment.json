@@ -1,5 +1,5 @@
 {
-  "type": "magnatour:universe_cooking",
+  "type": "magnatour:universe_smelting",
   "category": "misc",
   "cookingtime": 1000000,
   "experience": 200000,

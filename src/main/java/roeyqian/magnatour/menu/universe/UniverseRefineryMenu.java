@@ -91,15 +91,6 @@ public class UniverseRefineryMenu extends AbstractFurnaceMenu {
     );
   }
 
-  public float getCookProgress() {
-    int cookingTimer = this.propertyDelegate.get(2);
-    int cookingTotalTime = this.propertyDelegate.get(3);
-    if (cookingTotalTime == 0) {
-      return 0.0F;
-    }
-    return (float) cookingTimer / (float) cookingTotalTime;
-  }
-
   public float getFuelProgress() {
     int litTime = this.propertyDelegate.get(0);
     int litDuration = this.propertyDelegate.get(1);
@@ -107,6 +98,15 @@ public class UniverseRefineryMenu extends AbstractFurnaceMenu {
       return 0.0F;
     }
     return (float) litTime / (float) litDuration;
+  }
+
+  public float getSmeltingProgress() {
+    int smeltingTimer = this.propertyDelegate.get(2);
+    int smeltingTotalTime = this.propertyDelegate.get(3);
+    if (smeltingTotalTime == 0) {
+      return 0.0F;
+    }
+    return (float) smeltingTimer / (float) smeltingTotalTime;
   }
 
   public boolean isBurning() {
@@ -130,12 +130,12 @@ public class UniverseRefineryMenu extends AbstractFurnaceMenu {
       SingleRecipeInput input = new SingleRecipeInput(itemStack);
       var recipes = serverWorld.recipeAccess().getSynchronizedRecipes();
 
-      if (recipes.getFirstMatch(CustomRecipes.SUPREME_COOKING_TYPE, input, serverWorld).isPresent()) {
+      if (recipes.getFirstMatch(CustomRecipes.SUPREME_SMELTING_TYPE, input, serverWorld).isPresent()) {
         return true;
       }
 
       return recipes
-          .getFirstMatch(CustomRecipes.UNIVERSE_COOKING_TYPE, input, serverWorld)
+          .getFirstMatch(CustomRecipes.UNIVERSE_SMELTING_TYPE, input, serverWorld)
           .isPresent();
     } else {
       return false;

@@ -24,38 +24,38 @@ import org.jspecify.annotations.NonNull;
 import roeyqian.magnatour.registry.content.UniverseBlocks;
 import roeyqian.magnatour.registry.logic.CustomRecipes;
 
-public class UniverseCookingRecipe extends AbstractCookingRecipe {
+public class UniverseSmeltingRecipe extends AbstractCookingRecipe {
 
-  public static final RecipeSerializer<UniverseCookingRecipe> SERIALIZER =
+  public static final RecipeSerializer<UniverseSmeltingRecipe> SERIALIZER =
       new RecipeSerializer<>(
-          AbstractCookingRecipe.cookingMapCodec(UniverseCookingRecipe::new),
-          AbstractCookingRecipe.cookingStreamCodec(UniverseCookingRecipe::new)
+          AbstractCookingRecipe.cookingMapCodec(UniverseSmeltingRecipe::new),
+          AbstractCookingRecipe.cookingStreamCodec(UniverseSmeltingRecipe::new)
       );
 
-  public UniverseCookingRecipe(
+  public UniverseSmeltingRecipe(
       Recipe.CommonInfo commonInfo,
       AbstractCookingRecipe.CookingBookInfo bookInfo,
       Ingredient ingredient,
       ItemStackTemplate result,
       float experience,
-      int cookingTime
+      int smeltingTime
   ) {
-    super(commonInfo, bookInfo, ingredient, result, experience, cookingTime);
+    super(commonInfo, bookInfo, ingredient, result, experience, smeltingTime);
   }
 
   @Override @NonNull
-  public RecipeSerializer<UniverseCookingRecipe> getSerializer() {
+  public RecipeSerializer<UniverseSmeltingRecipe> getSerializer() {
     return SERIALIZER;
   }
 
   @Override @NonNull
-  public RecipeType<? extends UniverseCookingRecipe> getType() {
-    return CustomRecipes.UNIVERSE_COOKING_TYPE;
+  public RecipeType<? extends UniverseSmeltingRecipe> getType() {
+    return CustomRecipes.UNIVERSE_SMELTING_TYPE;
   }
 
   @Override @NonNull
   public RecipeBookCategory recipeBookCategory() {
-    return CustomRecipes.UNIVERSE_COOKING;
+    return CustomRecipes.UNIVERSE_SMELTING;
   }
 
   @Override @NonNull

@@ -39,7 +39,7 @@ public class SupremeFurnaceScreen extends AbstractRecipeBookScreen<SupremeFurnac
       Inventory inventory,
       Component title
   ) {
-    super(handler, new SupremeCookingBookComponent(handler), inventory, title);
+    super(handler, new SupremeSmeltingBookComponent(handler), inventory, title);
   }
 
   @Override
@@ -72,14 +72,14 @@ public class SupremeFurnaceScreen extends AbstractRecipeBookScreen<SupremeFurnac
       );
     }
 
-    int cookProgress = (int) (this.menu.getCookProgress() * 24.0F);
+    int smeltingProgress = (int) (this.menu.getSmeltingProgress() * 24.0F);
     graphics.blitSprite(
         RenderPipelines.GUI_TEXTURED,
         BURN_PROGRESS_TEXTURE,
         24, 16,
         0, 0,
         x + 79, y + 34,
-        cookProgress + 1, 16
+        smeltingProgress + 1, 16
     );
   }
 

@@ -41,7 +41,7 @@ public class UniverseForgeSmeltingScreen extends AbstractRecipeBookScreen<Univer
       "magnatour", "textures/gui/universe_forge/universe_forge_smelting.png"
   );
 
-  private final UniverseForgeSmeltingComponent cookingBook;
+  private final UniverseForgeSmeltingComponent smeltingBook;
 
   private Button switchButton;
 
@@ -55,12 +55,12 @@ public class UniverseForgeSmeltingScreen extends AbstractRecipeBookScreen<Univer
 
   private UniverseForgeSmeltingScreen(
       UniverseForgeSmeltingMenu handler,
-      UniverseForgeSmeltingComponent cookingBook,
+      UniverseForgeSmeltingComponent smeltingBook,
       Inventory inventory,
       Component title
   ) {
-    super(handler, cookingBook, inventory, title);
-    this.cookingBook = cookingBook;
+    super(handler, smeltingBook, inventory, title);
+    this.smeltingBook = smeltingBook;
     AbstractContainerScreenAccessor accessor = (AbstractContainerScreenAccessor) this;
     accessor.magnatour$setImageWidth(BACKGROUND_WIDTH);
     accessor.magnatour$setImageHeight(BACKGROUND_HEIGHT);
@@ -75,7 +75,7 @@ public class UniverseForgeSmeltingScreen extends AbstractRecipeBookScreen<Univer
     super.extractBackground(graphics, mouseX, mouseY, delta);
     this.switchButton.setPosition(this.leftPos + 151, this.topPos + 4);
     this.switchButton.visible = this.width >= UniverseForgeCraftingComponent.MIN_SIDE_BY_SIDE_WIDTH
-        || !this.cookingBook.isVisible();
+        || !this.smeltingBook.isVisible();
     if (!this.switchButton.visible) return;
     int x = this.leftPos;
     int y = this.topPos;
@@ -100,14 +100,14 @@ public class UniverseForgeSmeltingScreen extends AbstractRecipeBookScreen<Univer
       );
     }
 
-    int cookProgress = (int) (this.menu.getCookProgress() * 24.0F);
+    int smeltingProgress = (int) (this.menu.getSmeltingProgress() * 24.0F);
     graphics.blitSprite(
         RenderPipelines.GUI_TEXTURED,
         BURN_PROGRESS_TEXTURE,
         24, 16,
         0, 0,
         x + 79, y + 53,
-        cookProgress + 1, 16
+        smeltingProgress + 1, 16
     );
   }
 

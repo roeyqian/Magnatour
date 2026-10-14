@@ -35,9 +35,9 @@ import roeyqian.magnatour.mixin.screen.GhostSlotsInvoker;
 import roeyqian.magnatour.registry.content.SupremeItems;
 import roeyqian.magnatour.registry.logic.CustomRecipes;
 
-public final class SupremeCookingBookComponent extends RecipeBookComponent<SupremeFurnaceMenu> {
+public final class SupremeSmeltingBookComponent extends RecipeBookComponent<SupremeFurnaceMenu> {
 
-  private static final Component TOGGLE_COOKABLE_TEXT = Component.translatable(
+  private static final Component TOGGLE_SMELTABLE_TEXT = Component.translatable(
       "gui.recipebook.toggleRecipes.smeltable"
   );
 
@@ -53,10 +53,10 @@ public final class SupremeCookingBookComponent extends RecipeBookComponent<Supre
       new RecipeBookComponent.TabInfo(Items.PORKCHOP, RecipeBookCategories.FURNACE_FOOD),
       new RecipeBookComponent.TabInfo(Items.STONE, RecipeBookCategories.FURNACE_BLOCKS),
       new RecipeBookComponent.TabInfo(Items.LAVA_BUCKET, Items.EMERALD, RecipeBookCategories.FURNACE_MISC),
-      new RecipeBookComponent.TabInfo(SupremeItems.SUPREME_CORE, CustomRecipes.SUPREME_COOKING)
+      new RecipeBookComponent.TabInfo(SupremeItems.SUPREME_CORE, CustomRecipes.SUPREME_SMELTING)
   );
 
-  public SupremeCookingBookComponent(
+  public SupremeSmeltingBookComponent(
       SupremeFurnaceMenu handler
   ) {
     super(handler, TABS);
@@ -91,7 +91,7 @@ public final class SupremeCookingBookComponent extends RecipeBookComponent<Supre
 
   @Override @NonNull
   protected Component getRecipeFilterName() {
-    return TOGGLE_COOKABLE_TEXT;
+    return TOGGLE_SMELTABLE_TEXT;
   }
 
   @Override

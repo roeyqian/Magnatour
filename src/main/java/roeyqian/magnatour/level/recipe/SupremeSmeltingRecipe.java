@@ -24,38 +24,38 @@ import org.jspecify.annotations.NonNull;
 import roeyqian.magnatour.registry.content.SupremeBlocks;
 import roeyqian.magnatour.registry.logic.CustomRecipes;
 
-public class SupremeCookingRecipe extends AbstractCookingRecipe {
+public class SupremeSmeltingRecipe extends AbstractCookingRecipe {
 
-  public static final RecipeSerializer<SupremeCookingRecipe> SERIALIZER =
+  public static final RecipeSerializer<SupremeSmeltingRecipe> SERIALIZER =
       new RecipeSerializer<>(
-          AbstractCookingRecipe.cookingMapCodec(SupremeCookingRecipe::new),
-          AbstractCookingRecipe.cookingStreamCodec(SupremeCookingRecipe::new)
+          AbstractCookingRecipe.cookingMapCodec(SupremeSmeltingRecipe::new),
+          AbstractCookingRecipe.cookingStreamCodec(SupremeSmeltingRecipe::new)
       );
 
-  public SupremeCookingRecipe(
+  public SupremeSmeltingRecipe(
       Recipe.CommonInfo commonInfo,
       AbstractCookingRecipe.CookingBookInfo bookInfo,
       Ingredient ingredient,
       ItemStackTemplate result,
       float experience,
-      int cookingTime
+      int smeltingTime
   ) {
-    super(commonInfo, bookInfo, ingredient, result, experience, cookingTime);
+    super(commonInfo, bookInfo, ingredient, result, experience, smeltingTime);
   }
 
   @Override @NonNull
-  public RecipeSerializer<SupremeCookingRecipe> getSerializer() {
+  public RecipeSerializer<SupremeSmeltingRecipe> getSerializer() {
     return SERIALIZER;
   }
 
   @Override @NonNull
-  public RecipeType<? extends SupremeCookingRecipe> getType() {
-    return CustomRecipes.SUPREME_COOKING_TYPE;
+  public RecipeType<? extends SupremeSmeltingRecipe> getType() {
+    return CustomRecipes.SUPREME_SMELTING_TYPE;
   }
 
   @Override @NonNull
   public RecipeBookCategory recipeBookCategory() {
-    return CustomRecipes.SUPREME_COOKING;
+    return CustomRecipes.SUPREME_SMELTING;
   }
 
   @Override @NonNull

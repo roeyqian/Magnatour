@@ -15,29 +15,29 @@ import net.minecraft.world.item.crafting.RecipeType;
 
 // Magnatour
 import roeyqian.magnatour.Magnatour;
-import roeyqian.magnatour.level.recipe.SupremeCookingRecipe;
 import roeyqian.magnatour.level.recipe.SupremeShapedCraftingRecipe;
 import roeyqian.magnatour.level.recipe.SupremeShapelessCraftingRecipe;
-import roeyqian.magnatour.level.recipe.UniverseCookingRecipe;
+import roeyqian.magnatour.level.recipe.SupremeSmeltingRecipe;
 import roeyqian.magnatour.level.recipe.UniverseShapedCraftingRecipe;
 import roeyqian.magnatour.level.recipe.UniverseShapelessCraftingRecipe;
+import roeyqian.magnatour.level.recipe.UniverseSmeltingRecipe;
 import roeyqian.magnatour.registry.LogicRegHelper;
 
 /*
- * Supreme Group: Crafting, Cooking
- * Universe Group: Crafting, Cooking
+ * Supreme Group: Crafting, Smelting
+ * Universe Group: Crafting, Smelting
  */
 public final class CustomRecipes {
 
-  // Supreme Group: Cooking
-  public static final RecipeBookCategory SUPREME_COOKING =
-      LogicRegHelper.registerRecipeBookCategory("supreme_cooking");
+  // Supreme Group: Smelting
+  public static final RecipeBookCategory SUPREME_SMELTING =
+      LogicRegHelper.registerRecipeBookCategory("supreme_smelting");
   // Supreme Group: Crafting
   public static final RecipeBookCategory SUPREME_CRAFTING =
       LogicRegHelper.registerRecipeBookCategory("supreme_crafting");
-  // Universe Group: Cooking
-  public static final RecipeBookCategory UNIVERSE_COOKING =
-      LogicRegHelper.registerRecipeBookCategory("universe_cooking");
+  // Universe Group: Smelting
+  public static final RecipeBookCategory UNIVERSE_SMELTING =
+      LogicRegHelper.registerRecipeBookCategory("universe_smelting");
   // Universe Group: Crafting
   public static final RecipeBookCategory UNIVERSE_CRAFTING =
       LogicRegHelper.registerRecipeBookCategory("universe_crafting");
@@ -47,15 +47,15 @@ public final class CustomRecipes {
   public static final RecipeType<CraftingRecipe> UNIVERSE_CRAFTING_TYPE =
       LogicRegHelper.registerRecipeType("universe_crafting");
 
-  public static final RecipeType<SupremeCookingRecipe> SUPREME_COOKING_TYPE =
-      LogicRegHelper.registerRecipeType("supreme_cooking");
+  public static final RecipeType<SupremeSmeltingRecipe> SUPREME_SMELTING_TYPE =
+      LogicRegHelper.registerRecipeType("supreme_smelting");
 
-  public static final RecipeType<UniverseCookingRecipe> UNIVERSE_COOKING_TYPE =
-      LogicRegHelper.registerRecipeType("universe_cooking");
+  public static final RecipeType<UniverseSmeltingRecipe> UNIVERSE_SMELTING_TYPE =
+      LogicRegHelper.registerRecipeType("universe_smelting");
 
   @SuppressWarnings("unused") // loaded for registry side effect
-  public static final RecipeSerializer<SupremeCookingRecipe> SUPREME_COOKING_SERIALIZER =
-      LogicRegHelper.registerRecipeSerializer("supreme_cooking", SupremeCookingRecipe.SERIALIZER);
+  public static final RecipeSerializer<SupremeSmeltingRecipe> SUPREME_SMELTING_SERIALIZER =
+      LogicRegHelper.registerRecipeSerializer("supreme_smelting", SupremeSmeltingRecipe.SERIALIZER);
 
   @SuppressWarnings("unused") // loaded for registry side effect
   public static final RecipeSerializer<SupremeShapedCraftingRecipe> SUPREME_SHAPED_CRAFTING_SERIALIZER =
@@ -66,8 +66,8 @@ public final class CustomRecipes {
       LogicRegHelper.registerRecipeSerializer("supreme_crafting_shapeless", SupremeShapelessCraftingRecipe.SERIALIZER);
 
   @SuppressWarnings("unused") // loaded for registry side effect
-  public static final RecipeSerializer<UniverseCookingRecipe> UNIVERSE_COOKING_SERIALIZER =
-      LogicRegHelper.registerRecipeSerializer("universe_cooking", UniverseCookingRecipe.SERIALIZER);
+  public static final RecipeSerializer<UniverseSmeltingRecipe> UNIVERSE_SMELTING_SERIALIZER =
+      LogicRegHelper.registerRecipeSerializer("universe_smelting", UniverseSmeltingRecipe.SERIALIZER);
 
   @SuppressWarnings("unused") // loaded for registry side effect
   public static final RecipeSerializer<UniverseShapedCraftingRecipe> UNIVERSE_SHAPED_CRAFTING_SERIALIZER =

@@ -40,8 +40,8 @@ import org.jspecify.annotations.NonNull;
 
 // Magnatour
 import roeyqian.magnatour.block.universe.UniverseForge;
-import roeyqian.magnatour.level.recipe.SupremeCookingRecipe;
-import roeyqian.magnatour.level.recipe.UniverseCookingRecipe;
+import roeyqian.magnatour.level.recipe.SupremeSmeltingRecipe;
+import roeyqian.magnatour.level.recipe.UniverseSmeltingRecipe;
 import roeyqian.magnatour.menu.universe.UniverseForgeCraftingMenu;
 import roeyqian.magnatour.menu.universe.UniverseForgeSmeltingMenu;
 import roeyqian.magnatour.mixin.block.AbstractFurnaceBlockEntityAccessor;
@@ -53,9 +53,9 @@ public class UniverseForgeEntity extends AbstractFurnaceBlockEntity {
   private static final int EXPERIENCE_PER_ITEM = 1_000;
   private static final int MIN_FUEL_DURATION = 1_000_000;
 
-  private final RecipeManager.CachedCheck<SingleRecipeInput, SupremeCookingRecipe> supremeMatchGetter;
+  private final RecipeManager.CachedCheck<SingleRecipeInput, SupremeSmeltingRecipe> supremeMatchGetter;
 
-  private final RecipeManager.CachedCheck<SingleRecipeInput, UniverseCookingRecipe> universeMatchGetter;
+  private final RecipeManager.CachedCheck<SingleRecipeInput, UniverseSmeltingRecipe> universeMatchGetter;
 
   private final CraftingInventory craftingInventory = new CraftingInventory();
 
@@ -64,8 +64,8 @@ public class UniverseForgeEntity extends AbstractFurnaceBlockEntity {
       BlockState state
   ) {
     super(UniverseBlockEntities.UNIVERSE_FORGE_ENTITY, pos, state, RecipeType.SMELTING);
-    this.supremeMatchGetter = RecipeManager.createCheck(CustomRecipes.SUPREME_COOKING_TYPE);
-    this.universeMatchGetter = RecipeManager.createCheck(CustomRecipes.UNIVERSE_COOKING_TYPE);
+    this.supremeMatchGetter = RecipeManager.createCheck(CustomRecipes.SUPREME_SMELTING_TYPE);
+    this.universeMatchGetter = RecipeManager.createCheck(CustomRecipes.UNIVERSE_SMELTING_TYPE);
   }
 
   public static void tick(

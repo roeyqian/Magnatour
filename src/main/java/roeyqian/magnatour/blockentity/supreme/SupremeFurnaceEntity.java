@@ -31,7 +31,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.jspecify.annotations.NonNull;
 
 // Magnatour
-import roeyqian.magnatour.level.recipe.SupremeCookingRecipe;
+import roeyqian.magnatour.level.recipe.SupremeSmeltingRecipe;
 import roeyqian.magnatour.menu.supreme.SupremeFurnaceMenu;
 import roeyqian.magnatour.mixin.block.AbstractFurnaceBlockEntityAccessor;
 import roeyqian.magnatour.registry.content.SupremeBlockEntities;
@@ -41,14 +41,14 @@ public class SupremeFurnaceEntity extends AbstractFurnaceBlockEntity {
 
   private static final int FUEL_EFFICIENCY_MULTIPLIER = 16;
 
-  private final RecipeManager.CachedCheck<SingleRecipeInput, SupremeCookingRecipe> supremeMatchGetter;
+  private final RecipeManager.CachedCheck<SingleRecipeInput, SupremeSmeltingRecipe> supremeMatchGetter;
 
   public SupremeFurnaceEntity(
       BlockPos pos,
       BlockState state
   ) {
     super(SupremeBlockEntities.SUPREME_FURNACE_ENTITY, pos, state, RecipeType.SMELTING);
-    this.supremeMatchGetter = RecipeManager.createCheck(CustomRecipes.SUPREME_COOKING_TYPE);
+    this.supremeMatchGetter = RecipeManager.createCheck(CustomRecipes.SUPREME_SMELTING_TYPE);
   }
 
   public static void tick(
@@ -79,9 +79,9 @@ public class SupremeFurnaceEntity extends AbstractFurnaceBlockEntity {
       recipe = blockEntity.findRecipe(recipeInput, world);
     }
 
-    boolean canCook = canBurn(recipe, recipeInput, blockEntity.items, maxCount);
+    boolean canSmelt = canBurn(recipe, recipeInput, blockEntity.items, maxCount);
 
-    if (accessor.getLitTimeRemaining() <= 0 && canCook && hasFuel) {
+    if (accessor.getLitTimeRemaining() <= 0 && canSmelt && hasFuel) {
         int fuelTime = blockEntity.getBurnDuration(world, fuelStack);
       accessor.setLitTimeRemaining(fuelTime);
       accessor.setLitTotalTime(fuelTime);
@@ -96,16 +96,16 @@ public class SupremeFurnaceEntity extends AbstractFurnaceBlockEntity {
       }
     }
 
-    if (accessor.getLitTimeRemaining() > 0 && canCook && recipe != null) {
-      int halfCookingTime = getSupremeCookingTime(recipe);
+    if (accessor.getLitTimeRemaining() > 0 && canSmelt && recipe != null) {
+      int smeltingTime = getSupremeSmeltingTime(recipe);
       if (accessor.getCookingTimeSpent() == 0 || accessor.getCookingTimeSpent() >= accessor.getCookingTotalTime()) {
-        accessor.setCookingTotalTime(halfCookingTime);
+        accessor.setCookingTotalTime(smeltingTime);
       }
 
       accessor.setCookingTimeSpent(accessor.getCookingTimeSpent() + 1);
       if (accessor.getCookingTimeSpent() >= accessor.getCookingTotalTime()) {
         accessor.setCookingTimeSpent(0);
-        accessor.setCookingTotalTime(halfCookingTime);
+        accessor.setCookingTotalTime(smeltingTime);
         if (burn(recipe, recipeInput, blockEntity.items, maxCount)) {
           blockEntity.setRecipeUsed(recipe);
           changed = true;
@@ -117,7 +117,7 @@ public class SupremeFurnaceEntity extends AbstractFurnaceBlockEntity {
           0,
           accessor.getCookingTotalTime()
       ));
-    } else if (!canCook && accessor.getCookingTimeSpent() != 0) {
+    } else if (!canSmelt && accessor.getCookingTimeSpent() != 0) {
       accessor.setCookingTimeSpent(0);
     }
 
@@ -202,7 +202,7 @@ public class SupremeFurnaceEntity extends AbstractFurnaceBlockEntity {
     return outputStack.getCount() < result.getMaxStackSize();
   }
 
-  private static int getSupremeCookingTime(
+  private static int getSupremeSmeltingTime(
       RecipeHolder<? extends AbstractCookingRecipe> recipe
   ) {
     return Math.max(1, recipe.value().cookingTime() / 20);

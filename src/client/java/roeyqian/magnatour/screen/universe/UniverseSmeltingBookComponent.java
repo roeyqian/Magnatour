@@ -36,9 +36,9 @@ import roeyqian.magnatour.registry.content.SupremeItems;
 import roeyqian.magnatour.registry.content.UniverseItems;
 import roeyqian.magnatour.registry.logic.CustomRecipes;
 
-public final class UniverseCookingBookComponent extends RecipeBookComponent<UniverseRefineryMenu> {
+public final class UniverseSmeltingBookComponent extends RecipeBookComponent<UniverseRefineryMenu> {
 
-  private static final Component TOGGLE_COOKABLE_TEXT = Component.translatable(
+  private static final Component TOGGLE_SMELTABLE_TEXT = Component.translatable(
       "gui.recipebook.toggleRecipes.smeltable"
   );
 
@@ -54,11 +54,11 @@ public final class UniverseCookingBookComponent extends RecipeBookComponent<Univ
       new RecipeBookComponent.TabInfo(Items.PORKCHOP, RecipeBookCategories.FURNACE_FOOD),
       new RecipeBookComponent.TabInfo(Items.STONE, RecipeBookCategories.FURNACE_BLOCKS),
       new RecipeBookComponent.TabInfo(Items.LAVA_BUCKET, Items.EMERALD, RecipeBookCategories.FURNACE_MISC),
-      new RecipeBookComponent.TabInfo(SupremeItems.SUPREME_CORE, CustomRecipes.SUPREME_COOKING),
-      new RecipeBookComponent.TabInfo(UniverseItems.UNIVERSE_CORE, CustomRecipes.UNIVERSE_COOKING)
+      new RecipeBookComponent.TabInfo(SupremeItems.SUPREME_CORE, CustomRecipes.SUPREME_SMELTING),
+      new RecipeBookComponent.TabInfo(UniverseItems.UNIVERSE_CORE, CustomRecipes.UNIVERSE_SMELTING)
   );
 
-  public UniverseCookingBookComponent(
+  public UniverseSmeltingBookComponent(
       UniverseRefineryMenu handler
   ) {
     super(handler, TABS);
@@ -93,7 +93,7 @@ public final class UniverseCookingBookComponent extends RecipeBookComponent<Univ
 
   @Override @NonNull
   protected Component getRecipeFilterName() {
-    return TOGGLE_COOKABLE_TEXT;
+    return TOGGLE_SMELTABLE_TEXT;
   }
 
   @Override
