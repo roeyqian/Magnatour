@@ -1,9 +1,38 @@
-#
-# https://help.github.com/articles/dealing-with-line-endings/
-#
-# Linux start script should use lf
+# Normalize detected text files to LF, including in the working tree.
+# Explicit binary rules below prevent text conversion of game assets.
+* text=auto eol=lf
+
+# Source code and build configuration.
+*.java          text eol=lf
+*.gradle        text eol=lf
+*.properties    text eol=lf
+*.json          text eol=lf
+*.mcmeta        text eol=lf
+*.yml           text eol=lf
+*.yaml          text eol=lf
+*.xml           text eol=lf
+*.md            text eol=lf
+/.gitattributes text eol=lf
+/.gitignore     text eol=lf
+/.editorconfig  text eol=lf
+/LICENSE        text eol=lf
+
+# Launchers: Unix shells require LF; Windows batch files use CRLF.
 /gradlew        text eol=lf
-
-# These are Windows script files and should use crlf
+*.sh            text eol=lf
 *.bat           text eol=crlf
+*.cmd           text eol=crlf
 
+# Minecraft structures, textures, audio, and compiled archives.
+# The binary macro disables text conversion, text diffs, and text merges.
+*.nbt           binary
+*.png           binary
+*.jpg           binary
+*.jpeg          binary
+*.gif           binary
+*.ico           binary
+*.ogg           binary
+*.wav           binary
+*.jar           binary
+*.class         binary
+*.zip           binary
