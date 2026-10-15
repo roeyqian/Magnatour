@@ -1,9 +1,9 @@
 {
   "type": "magnatour:universe_crafting_shaped",
-  "category": "building",
+  "category": "equipment",
   "pattern": [
-    "AAA",
-    "AAA",
+    "A A",
+    "A A",
     "AAA"
   ],
   "key": {
@@ -11,7 +11,7 @@
   },
   "result": {
     "count": 1,
-    "id": "magnatour:universe_block"
+    "id": "magnatour:universe_bucket"
   },
   "show_notification": true
 }

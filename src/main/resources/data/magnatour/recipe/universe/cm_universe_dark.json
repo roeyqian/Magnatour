@@ -1,0 +1,13 @@
+{
+  "type": "magnatour:universe_crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "magnatour:universe_gemblue",
+    "magnatour:universe_gemgreen",
+    "magnatour:universe_gemblack"
+  ],
+  "result": {
+    "id": "magnatour:universe_dark",
+    "count": 1
+  }
+}

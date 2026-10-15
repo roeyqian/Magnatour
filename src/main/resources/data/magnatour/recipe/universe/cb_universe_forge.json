@@ -3,17 +3,16 @@
   "category": "building",
   "pattern": [
     "ABA",
-    "BCB",
+    "BAB",
     "ABA"
   ],
   "key": {
-    "A": "magnatour:universe_primary_block",
-    "B": "minecraft:redstone_block",
-    "C": "magnatour:universe_block"
+    "A": "magnatour:universe_core",
+    "B": "magnatour:universe_stick"
   },
   "result": {
     "count": 1,
-    "id": "minecraft:command_block"
+    "id": "magnatour:universe_forge"
   },
   "show_notification": true
 }

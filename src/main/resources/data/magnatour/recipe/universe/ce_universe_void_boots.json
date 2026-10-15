@@ -2,16 +2,18 @@
   "type": "magnatour:universe_crafting_shaped",
   "category": "equipment",
   "pattern": [
-    "A A",
-    "AAA",
-    "AAA"
+    "BBBBB",
+    "BABAB",
+    "BABAB",
+    "BBBBB"
   ],
   "key": {
-    "A": "magnatour:universe_core"
+    "A": "magnatour:universe_core",
+    "B": "minecraft:barrier"
   },
   "result": {
     "count": 1,
-    "id": "magnatour:universe_void_chestplate"
+    "id": "magnatour:universe_void_boots"
   },
   "show_notification": true
 }

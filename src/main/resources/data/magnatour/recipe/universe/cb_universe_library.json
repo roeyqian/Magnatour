@@ -1,19 +1,19 @@
 {
   "type": "magnatour:universe_crafting_shaped",
-  "category": "misc",
+  "category": "building",
   "pattern": [
-    "A",
-    "B",
-    "C"
+    "BAAB",
+    "A  A",
+    "A  A",
+    "BAAB"
   ],
   "key": {
     "A": "magnatour:universe_core",
-    "B": "minecraft:blaze_rod",
-    "C": "minecraft:breeze_rod"
+    "B": "magnatour:universe_stick"
   },
   "result": {
-    "id": "magnatour:universe_stick",
-    "count": 1
+    "count": 1,
+    "id": "magnatour:universe_library"
   },
   "show_notification": true
 }

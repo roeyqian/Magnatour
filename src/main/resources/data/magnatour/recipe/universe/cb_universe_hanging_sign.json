@@ -11,7 +11,7 @@
       "magnatour:stripped_universe_log",
       "magnatour:stripped_universe_wood"
     ],
-    "B": "minecraft:iron_chain"
+    "B": "magnatour:universe_stick"
   },
   "result": {
     "count": 6,

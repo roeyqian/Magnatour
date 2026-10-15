@@ -1,0 +1,11 @@
+{
+  "type": "magnatour:universe_crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "magnatour:universe_block"
+  ],
+  "result": {
+    "id": "magnatour:universe_core",
+    "count": 25
+  }
+}

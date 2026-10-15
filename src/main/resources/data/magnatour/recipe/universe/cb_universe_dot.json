@@ -2,14 +2,17 @@
   "type": "magnatour:universe_crafting_shaped",
   "category": "building",
   "pattern": [
-    "ABA",
-    "BCB",
-    "ABA"
+    "AAAAA",
+    "ADCDA",
+    "ACBCA",
+    "ADCDA",
+    "AAAAA"
   ],
   "key": {
-    "A": "minecraft:jigsaw",
-    "B": "minecraft:structure_block",
-    "C": "magnatour:universe_block"
+    "A": "magnatour:universe_stick",
+    "B": "magnatour:universe_block",
+    "C": "minecraft:structure_block",
+    "D": "minecraft:jigsaw"
   },
   "result": {
     "count": 1,

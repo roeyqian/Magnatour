@@ -2,16 +2,18 @@
   "type": "magnatour:universe_crafting_shaped",
   "category": "building",
   "pattern": [
-    "AAA",
-    "BBB"
+    "AAAAA",
+    "AAAAA",
+    "AAAAA",
+    "AAAAA",
+    "AAAAA"
   ],
   "key": {
-    "A": "magnatour:universe_core",
-    "B": "magnatour:universe_stick"
+    "A": "magnatour:universe_core"
   },
   "result": {
     "count": 1,
-    "id": "magnatour:universe_library"
+    "id": "magnatour:universe_block"
   },
   "show_notification": true
 }

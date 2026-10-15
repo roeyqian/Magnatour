@@ -1,18 +1,21 @@
 {
   "type": "magnatour:universe_crafting_shaped",
-  "category": "equipment",
+  "category": "building",
   "pattern": [
     "AAA",
     "ABA",
-    " B "
+    " B ",
+    " B ",
+    " C "
   ],
   "key": {
     "A": "magnatour:universe_core",
-    "B": "magnatour:universe_stick"
+    "B": "magnatour:universe_stick",
+    "C": "magnatour:universe_block"
   },
   "result": {
     "count": 1,
-    "id": "magnatour:universe_ultima_sword"
+    "id": "magnatour:universe_sapling"
   },
   "show_notification": true
 }

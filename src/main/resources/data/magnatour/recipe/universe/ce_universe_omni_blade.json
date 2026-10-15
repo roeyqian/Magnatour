@@ -2,17 +2,19 @@
   "type": "magnatour:universe_crafting_shaped",
   "category": "equipment",
   "pattern": [
-    "AAA",
-    "ABA",
-    "AAA"
+    "AAAAA",
+    "AB   ",
+    "AB   ",
+    " B   ",
+    " B   "
   ],
   "key": {
-    "A": "magnatour:universe_stick",
-    "B": "minecraft:command_block"
+    "A": "magnatour:universe_core",
+    "B": "magnatour:universe_stick"
   },
   "result": {
     "count": 1,
-    "id": "magnatour:universe_command_star"
+    "id": "magnatour:universe_omni_blade"
   },
   "show_notification": true
 }

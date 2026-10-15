@@ -2,15 +2,15 @@
   "type": "magnatour:universe_crafting_shaped",
   "category": "misc",
   "pattern": [
-    " A ",
-    "AAA",
-    " A "
+    "A",
+    "A",
+    "A"
   ],
   "key": {
-    "A": "magnatour:universe_primary_block"
+    "A": "magnatour:universe_core"
   },
   "result": {
-    "id": "magnatour:universe_core",
+    "id": "magnatour:universe_stick",
     "count": 1
   },
   "show_notification": true

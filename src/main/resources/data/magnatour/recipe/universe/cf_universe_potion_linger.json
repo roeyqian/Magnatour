@@ -1,13 +1,15 @@
 {
   "type": "magnatour:universe_crafting_shaped",
-  "category": "misc",
+  "category": "food",
   "pattern": [
-    " A ",
-    "ABA",
-    " A "
+    "  B  ",
+    " BAB ",
+    "BAAAB",
+    " BAB ",
+    "  B  "
   ],
   "key": {
-    "A": "minecraft:lingering_potion",
+    "A": "magnatour:strange_lingering_potion",
     "B": "magnatour:universe_core"
   },
   "result": {

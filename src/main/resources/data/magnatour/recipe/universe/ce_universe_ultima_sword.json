@@ -2,9 +2,11 @@
   "type": "magnatour:universe_crafting_shaped",
   "category": "equipment",
   "pattern": [
-    "AAA",
-    "AB ",
-    " B "
+    "  A  ",
+    " AAA ",
+    " AAA ",
+    "  B  ",
+    "  B  "
   ],
   "key": {
     "A": "magnatour:universe_core",
@@ -12,7 +14,7 @@
   },
   "result": {
     "count": 1,
-    "id": "magnatour:universe_omni_blade"
+    "id": "magnatour:universe_ultima_sword"
   },
   "show_notification": true
 }

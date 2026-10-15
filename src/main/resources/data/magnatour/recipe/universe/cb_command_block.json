@@ -2,18 +2,20 @@
   "type": "magnatour:universe_crafting_shaped",
   "category": "building",
   "pattern": [
-    "ABA",
-    "BCB",
-    "ABA"
+    "A   A",
+    "  B  ",
+    " BCB ",
+    "  B  ",
+    "A   A"
   ],
   "key": {
-    "A": "minecraft:bedrock",
-    "B": "minecraft:grass_block",
+    "A": "minecraft:redstone",
+    "B": "magnatour:universe_primary_block",
     "C": "magnatour:universe_block"
   },
   "result": {
     "count": 1,
-    "id": "minecraft:barrier"
+    "id": "minecraft:command_block"
   },
   "show_notification": true
 }
