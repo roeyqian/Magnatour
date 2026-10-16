@@ -22,11 +22,11 @@ import java.util.List;
 import java.util.concurrent.locks.LockSupport;
 
 /** Bounded-memory file work; never accesses world or entity objects on the IO worker. */
-public final class AnnihilationFileJob {
+public final class UniverseAnnihilationFile {
 
   private static final List<String> OVERWORLD_DIRECTORIES = List.of("region", "entities", "poi");
 
-  private AnnihilationFileJob() {}
+  private UniverseAnnihilationFile() {}
 
   public static void complete(
       Path backup, Path journal

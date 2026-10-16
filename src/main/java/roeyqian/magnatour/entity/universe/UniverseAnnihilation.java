@@ -68,8 +68,8 @@ public final class UniverseAnnihilation {
   private static final Path LEGACY_BACKUPS = Path.of("C:/Users/RoeyQ/.Config/.backup/magnatour-annihilation")
       .toAbsolutePath().normalize();
 
-  private static final AnnihilationFileJob.Budget IO_BUDGET =
-      AnnihilationFileJob.Budget.adaptiveBackup(8_000_000L);
+  private static final UniverseAnnihilationFile.Budget IO_BUDGET =
+      UniverseAnnihilationFile.Budget.adaptiveBackup(8_000_000L);
 
   private static final List<BlockPos> REFUGE_POSITIONS = List.of(
       new BlockPos(100, 0, 100), new BlockPos(-100, 0, 100),
@@ -277,7 +277,7 @@ public final class UniverseAnnihilation {
       if (task.stage == REOPENING) {
         try {
           if (!task.overworldReopened) reopen(server, task);
-          AnnihilationFileJob.complete(task.backup, task.journal);
+          UniverseAnnihilationFile.complete(task.backup, task.journal);
           task.update(COMPLETE, 10000);
           state.locks.remove(task.dimension, task);
           Magnatour.LOGGER.info("Annihilation complete; dimension: {}; image created: {}; task files: {}",
@@ -320,7 +320,7 @@ public final class UniverseAnnihilation {
           ((MinecraftServerAccessor) server).magnatour$getLevels().remove(task.dimension);
           try {
             Path root = server.getWorldPath(LevelResource.ROOT).toAbsolutePath().normalize();
-            AnnihilationFileJob.detachOverworld(checkedTarget(root, Level.OVERWORLD), task.target, task.backup);
+            UniverseAnnihilationFile.detachOverworld(checkedTarget(root, Level.OVERWORLD), task.target, task.backup);
           } finally {
             // Even a failed move must leave a live Overworld for ticking and shutdown.
             reopen(server, task);
@@ -329,7 +329,7 @@ public final class UniverseAnnihilation {
         }
         task.update(QUEUED, 100);
         state.worker.execute(() -> {
-          try { AnnihilationFileJob.run(task.target, task.backup, task::update, IO_BUDGET, task.createImage); }
+          try { UniverseAnnihilationFile.run(task.target, task.backup, task::update, IO_BUDGET, task.createImage); }
           catch (IOException | RuntimeException exception) { fail(task, exception); }
         });
       } catch (IOException | RuntimeException exception) { fail(task, exception); }
@@ -379,7 +379,7 @@ public final class UniverseAnnihilation {
   ) throws IOException {
     if (Files.isSymbolicLink(journal)) throw new IOException("Symbolic link journal");
     var lines = Files.readAllLines(journal);
-    boolean createImage = AnnihilationFileJob.readCreateImage(lines);
+    boolean createImage = UniverseAnnihilationFile.readCreateImage(lines);
     var dimension = ResourceKey.create(Registries.DIMENSION, Identifier.parse(lines.get(0)));
     Path target = checkedTarget(root, dimension);
     Path backup = Path.of(lines.get(1)).toAbsolutePath().normalize();
@@ -399,11 +399,11 @@ public final class UniverseAnnihilation {
       String owner = journal.getFileName().toString().replace(".pending", "");
       UUID.fromString(owner);
       Path staging = overworldStaging(root, owner);
-      AnnihilationFileJob.detachOverworld(target, staging, backup);
+      UniverseAnnihilationFile.detachOverworld(target, staging, backup);
       target = staging;
     }
-    AnnihilationFileJob.run(target, backup, (phase, percent) -> {}, IO_BUDGET, createImage);
-    AnnihilationFileJob.complete(backup, journal);
+    UniverseAnnihilationFile.run(target, backup, (phase, percent) -> {}, IO_BUDGET, createImage);
+    UniverseAnnihilationFile.complete(backup, journal);
   }
 
   private static Path checkedTarget(

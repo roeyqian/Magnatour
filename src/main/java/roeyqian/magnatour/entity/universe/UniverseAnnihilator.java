@@ -32,7 +32,7 @@ import net.minecraft.world.level.Level;
 // Magnatour
 import roeyqian.magnatour.inventory.universe.UniverseAnnihilatorMenu;
 
-public final class UniverseAnnihilator extends PathfinderMob {
+public class UniverseAnnihilator extends PathfinderMob {
 
   public UniverseAnnihilator(
       EntityType<? extends PathfinderMob> type,
