@@ -21,7 +21,7 @@ import org.jspecify.annotations.NonNull;
 
 // Magnatour
 import roeyqian.magnatour.menu.supreme.SupremeCraftableMenu;
-import roeyqian.magnatour.mixin.screen.AbstractContainerScreenAccessor;
+import roeyqian.magnatour.mixin.gui.AbstractContainerScreenAccessor;
 
 public class SupremeCraftableScreen extends AbstractRecipeBookScreen<SupremeCraftableMenu> {
 

@@ -30,7 +30,7 @@ import org.jspecify.annotations.NonNull;
 
 // Magnatour
 import roeyqian.magnatour.menu.universe.UniverseForgeCraftingMenu;
-import roeyqian.magnatour.mixin.screen.GhostSlotsInvoker;
+import roeyqian.magnatour.mixin.gui.GhostSlotsInvoker;
 import roeyqian.magnatour.registry.logic.MagnaRecipes;
 import roeyqian.magnatour.registry.stuff.MagnaItems;
 import roeyqian.magnatour.screen.CustomRecipeDisplay;

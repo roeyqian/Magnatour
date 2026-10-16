@@ -55,7 +55,7 @@ import net.minecraft.world.phys.Vec3;
 
 // Magnatour
 import roeyqian.magnatour.Magnatour;
-import roeyqian.magnatour.mixin.server.UniverseAnnihilationServerAccessor;
+import roeyqian.magnatour.mixin.server.MinecraftServerAccessor;
 import roeyqian.magnatour.registry.world.MagnaDimensions;
 
 public final class UniverseAnnihilation {
@@ -299,7 +299,7 @@ public final class UniverseAnnihilation {
           task.closingLevel = level;
           // The Overworld must remain available to server services until it can be replaced in this tick.
           if (!task.dimension.equals(Level.OVERWORLD)) {
-            ((UniverseAnnihilationServerAccessor) server).magnatour$getLevels().remove(task.dimension);
+            ((MinecraftServerAccessor) server).magnatour$getLevels().remove(task.dimension);
           }
           level.getChunkSource().deactivateTicketsOnClosing();
           if (!task.dimension.equals(Level.OVERWORLD)) ServerLevelEvents.UNLOAD.invoker().onLevelUnload(server, level);
@@ -317,7 +317,7 @@ public final class UniverseAnnihilation {
         level.close();
         task.closingLevel = null;
         if (task.dimension.equals(Level.OVERWORLD)) {
-          ((UniverseAnnihilationServerAccessor) server).magnatour$getLevels().remove(task.dimension);
+          ((MinecraftServerAccessor) server).magnatour$getLevels().remove(task.dimension);
           try {
             Path root = server.getWorldPath(LevelResource.ROOT).toAbsolutePath().normalize();
             AnnihilationFileJob.detachOverworld(checkedTarget(root, Level.OVERWORLD), task.target, task.backup);
@@ -497,7 +497,7 @@ public final class UniverseAnnihilation {
   ) throws IOException {
     ResourceKey<Level> dimension = task.dimension;
     if (server.getLevel(dimension) != null) throw new IOException("Dimension already loaded");
-    var access = (UniverseAnnihilationServerAccessor) server;
+    var access = (MinecraftServerAccessor) server;
     boolean overworld = dimension.equals(Level.OVERWORLD);
     ServerLevel level = new ServerLevel(server, access.magnatour$getExecutor(), access.magnatour$getStorage(),
         overworld ? server.getWorldData().overworldData()

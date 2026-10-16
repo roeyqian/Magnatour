@@ -19,7 +19,7 @@ import net.minecraft.world.item.crafting.display.ShapedCraftingRecipeDisplay;
 import net.minecraft.world.item.crafting.display.ShapelessCraftingRecipeDisplay;
 
 // Magnatour
-import roeyqian.magnatour.mixin.screen.GhostSlotsInvoker;
+import roeyqian.magnatour.mixin.gui.GhostSlotsInvoker;
 
 public interface CustomRecipeDisplay {
 

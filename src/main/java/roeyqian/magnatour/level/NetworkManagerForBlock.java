@@ -40,7 +40,7 @@ import roeyqian.magnatour.level.network.DurableItemModePayload;
 import roeyqian.magnatour.level.network.UniverseBucketPickupPayload;
 import roeyqian.magnatour.level.network.UniverseCommandStarBoundBlockPayload;
 import roeyqian.magnatour.menu.universe.UniverseCommandStarMenu;
-import roeyqian.magnatour.mixinhelper.server.ServerHelperForEquipment;
+import roeyqian.magnatour.mixinhelper.universe.UniverseBucketMain;
 import roeyqian.magnatour.registry.logic.MagnaComponents;
 
 public final class NetworkManagerForBlock {
@@ -93,7 +93,7 @@ public final class NetworkManagerForBlock {
     );
     ServerPlayNetworking.registerGlobalReceiver(
         UniverseBucketPickupPayload.ID,
-        (_, context) -> context.server().execute(() -> ServerHelperForEquipment.handleBucketPickup(context.player()))
+        (_, context) -> context.server().execute(() -> UniverseBucketMain.handleBucketPickup(context.player()))
     );
   }
 

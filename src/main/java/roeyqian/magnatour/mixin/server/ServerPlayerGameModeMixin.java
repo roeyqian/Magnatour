@@ -24,7 +24,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 // Magnatour
-import roeyqian.magnatour.mixinhelper.server.ServerHelperForEquipment;
+import roeyqian.magnatour.mixinhelper.universe.UniverseOmniBladeMain;
 
 @Mixin(value = ServerPlayerGameMode.class, priority = 3600000)
 public class ServerPlayerGameModeMixin {
@@ -45,7 +45,7 @@ public class ServerPlayerGameModeMixin {
       int worldHeight, int sequence,
       CallbackInfo ci
   ) {
-    ServerHelperForEquipment.handleBlockBreakAction(
+    UniverseOmniBladeMain.handleBlockBreakAction(
         this.level, this.player,
         pos, action, direction, ci
     );

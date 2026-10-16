@@ -23,8 +23,8 @@ import org.jspecify.annotations.NonNull;
 
 // Magnatour
 import roeyqian.magnatour.menu.universe.UniverseForgeSmeltingMenu;
-import roeyqian.magnatour.mixin.screen.AbstractContainerScreenAccessor;
-import roeyqian.magnatour.mixinhelper.client.ForgeScreenTransition;
+import roeyqian.magnatour.mixin.gui.AbstractContainerScreenAccessor;
+import roeyqian.magnatour.mixinhelper.universe.UniverseForgeClient;
 
 public class UniverseForgeSmeltingScreen extends AbstractRecipeBookScreen<UniverseForgeSmeltingMenu> {
 
@@ -123,7 +123,7 @@ public class UniverseForgeSmeltingScreen extends AbstractRecipeBookScreen<Univer
     this.inventoryLabelY = 108;
     this.switchButton = this.addRenderableWidget(Button.builder(Component.literal("⇄"), button -> {
       if (this.minecraft.gameMode != null) {
-        ForgeScreenTransition.begin(this.minecraft, false);
+        UniverseForgeClient.begin(this.minecraft, false);
         this.minecraft.gameMode.handleInventoryButtonClick(this.menu.containerId, 0);
       }
     }).bounds(this.leftPos + 151, this.topPos + 4, 20, 12)

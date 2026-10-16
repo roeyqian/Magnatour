@@ -22,7 +22,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 // Magnatour
-import roeyqian.magnatour.mixinhelper.world.WorldHelperForBlock;
+import roeyqian.magnatour.mixinhelper.universe.UniverseLightMain;
 
 @Mixin(value = BlockLightEngine.class, priority = 3600000)
 public abstract class BlockLightEngineMixin {
@@ -38,7 +38,7 @@ public abstract class BlockLightEngineMixin {
       BlockState state,
       CallbackInfoReturnable<Integer> cir
   ) {
-    WorldHelperForBlock.handleVirtualBlockLight(this.magnatour$chunkSource, pos, state, cir);
+    UniverseLightMain.handleVirtualBlockLight(this.magnatour$chunkSource, pos, state, cir);
   }
 
   /* Virtual Block Light: Chunk Source Capture

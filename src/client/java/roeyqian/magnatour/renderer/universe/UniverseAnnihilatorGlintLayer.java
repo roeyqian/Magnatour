@@ -23,7 +23,7 @@ import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 
 // Magnatour
-import roeyqian.magnatour.renderer.GlintRenderTypes;
+import roeyqian.magnatour.mixinhelper.base.GlintClient.RenderTypes;
 
 @Environment(EnvType.CLIENT)
 public final class UniverseAnnihilatorGlintLayer extends RenderLayer<HumanoidRenderState, HumanoidModel<HumanoidRenderState>> {
@@ -45,7 +45,7 @@ public final class UniverseAnnihilatorGlintLayer extends RenderLayer<HumanoidRen
     if (state.isInvisible) return;
     // The base model must populate depth before this EQUAL-depth overlay is drawn.
     collector.order(1).submitModel(
-        getParentModel(), state, poseStack, GlintRenderTypes.UNIVERSE_GUARDIAN_GLINT,
+        getParentModel(), state, poseStack, RenderTypes.UNIVERSE_GUARDIAN_GLINT,
         lightCoords, OverlayTexture.NO_OVERLAY, -1, null, state.outlineColor
     );
   }

@@ -41,7 +41,7 @@ import org.slf4j.LoggerFactory;
 // Magnatour
 import roeyqian.magnatour.block.VirtualBlockLightManager;
 import roeyqian.magnatour.entity.universe.UniverseAnnihilation;
-import roeyqian.magnatour.mixinhelper.entity.UniverseInventoryHelper;
+import roeyqian.magnatour.mixinhelper.universe.UniverseVoidArmorMain;
 import roeyqian.magnatour.registry.logic.MagnaComponents;
 import roeyqian.magnatour.registry.logic.MagnaNetworks;
 import roeyqian.magnatour.registry.logic.MagnaParticles;
@@ -80,7 +80,7 @@ public class Magnatour implements ModInitializer {
   public void onInitialize() {
     ServerTickEvents.END_SERVER_TICK.register(server -> {
       for (var player : server.getPlayerList().getPlayers()) {
-        UniverseInventoryHelper.dropExcess(player);
+        UniverseVoidArmorMain.dropExcess(player);
       }
     });
     ServerTickEvents.END_SERVER_TICK.register(UniverseAnnihilation::tick);

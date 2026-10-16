@@ -1,0 +1,40 @@
+/*
+ * SPDX-License-Identifier: GPL-3.0-only
+ * Copyright (C) 2026 Roey Qian
+ *
+ * This file is part of Magnatour.
+ * Full license text available in the LICENSE file in the project root.
+ */
+package roeyqian.magnatour.mixin.world;
+
+// Minecraft
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.block.FireBlock;
+import net.minecraft.world.level.block.state.BlockState;
+
+// SpongePowered Mixin
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+// Magnatour
+import roeyqian.magnatour.mixinhelper.supreme.ChunkTNTMain;
+
+@Mixin(value = FireBlock.class, priority = 3600000)
+public class FireBlockMixin {
+
+  @Inject(method = "tick", at = @At("HEAD"))
+  private void beforeTick(
+      BlockState state,
+      ServerLevel level,
+      BlockPos pos,
+      RandomSource random,
+      CallbackInfo ci
+  ) {
+    ChunkTNTMain.handleFireTick(level, pos);
+  }
+
+}

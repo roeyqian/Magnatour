@@ -3,31 +3,31 @@
   "package": "roeyqian.magnatour.mixin",
   "compatibilityLevel": "JAVA_25",
   "mixins": [
-    "client.GuiMixin",
-    "client.GuiGraphicsExtractorMixin",
-    "client.SkyRendererMixin",
-    "item.CuboidItemModelWrapperMixin",
-    "item.ItemFeatureRendererMixin",
-    "item.ItemStackRenderStateAccessor",
-    "item.ItemSubmitGlintMixin",
-    "item.LayerRenderStateGlintMixin",
-    "item.LayerRenderStateSubmitMixin",
-    "item.RenderTypeInvoker",
-    "item.SubmitNodeCollectionMixin",
-    "equipment.EquipmentLayerRendererMixin",
-    "equipment.FogRendererMixin",
-    "portal.LocalPlayerMixin",
-    "screen.AbstractContainerScreenAccessor",
-    "screen.AbstractContainerScreenMixin",
-    "screen.GhostSlotsInvoker",
-    "screen.RecipeBookComponentMixin",
-    "client.ClientPacketListenerMixin",
-    "client.MinecraftMixin"
+    "gui.GuiMixin",
+    "gui.GuiGraphicsExtractorMixin",
+    "renderer.SkyRendererMixin",
+    "renderer.CuboidItemModelWrapperMixin",
+    "renderer.ItemFeatureRendererMixin",
+    "renderer.ItemStackRenderStateAccessor",
+    "renderer.ItemSubmitGlintMixin",
+    "renderer.LayerRenderStateGlintMixin",
+    "renderer.LayerRenderStateSubmitMixin",
+    "renderer.RenderTypeInvoker",
+    "renderer.SubmitNodeCollectionMixin",
+    "renderer.EquipmentLayerRendererMixin",
+    "renderer.FogRendererMixin",
+    "player.LocalPlayerMixin",
+    "gui.AbstractContainerScreenAccessor",
+    "gui.AbstractContainerScreenMixin",
+    "gui.GhostSlotsInvoker",
+    "gui.RecipeBookComponentMixin",
+    "multiplayer.ClientPacketListenerMixin",
+    "base.MinecraftMixin"
   ],
   "injectors": {
     "defaultRequire": 1
   },
   "client": [
-    "entity.LivingEntityClientMixin"
+    "base.LivingEntityClientMixin"
   ]
 }

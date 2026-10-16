@@ -32,7 +32,7 @@ import org.jspecify.annotations.Nullable;
 // Magnatour
 import roeyqian.magnatour.blockentity.universe.UniverseForgeEntity;
 import roeyqian.magnatour.menu.CustomCraftingBlock;
-import roeyqian.magnatour.mixin.menu.AbstractCraftingMenuAccessor;
+import roeyqian.magnatour.mixin.world.AbstractCraftingMenuAccessor;
 import roeyqian.magnatour.registry.logic.MagnaRecipes;
 import roeyqian.magnatour.registry.stuff.MagnaBlocks;
 import roeyqian.magnatour.registry.stuff.MagnaMenus;

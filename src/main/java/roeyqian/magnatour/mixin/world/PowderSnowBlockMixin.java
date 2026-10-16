@@ -1,0 +1,36 @@
+/*
+ * SPDX-License-Identifier: GPL-3.0-only
+ * Copyright (C) 2026 Roey Qian
+ *
+ * This file is part of Magnatour.
+ * Full license text available in the LICENSE file in the project root.
+ */
+package roeyqian.magnatour.mixin.world;
+
+// Minecraft
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.block.PowderSnowBlock;
+
+// SpongePowered Mixin
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
+// Magnatour
+import roeyqian.magnatour.mixinhelper.universe.UniverseVoidArmorMain;
+
+@Mixin(value = PowderSnowBlock.class, priority = 3600000)
+public class PowderSnowBlockMixin {
+
+  /* Universe Void Boots: Walking on Powder Snow
+   */
+  @Inject(method = "canEntityWalkOnPowderSnow", at = @At("HEAD"), cancellable = true)
+  private static void inCanEntityWalkOnPowderSnow(
+      Entity entity,
+      CallbackInfoReturnable<Boolean> cir
+  ) {
+    UniverseVoidArmorMain.handleCanEntityWalkOnPowderSnow(entity, cir);
+  }
+
+}

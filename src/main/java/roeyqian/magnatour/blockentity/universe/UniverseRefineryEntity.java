@@ -35,7 +35,7 @@ import org.jspecify.annotations.NonNull;
 import roeyqian.magnatour.level.recipe.SupremeSmeltingRecipe;
 import roeyqian.magnatour.level.recipe.UniverseSmeltingRecipe;
 import roeyqian.magnatour.menu.universe.UniverseRefineryMenu;
-import roeyqian.magnatour.mixin.block.AbstractFurnaceBlockEntityAccessor;
+import roeyqian.magnatour.mixin.world.AbstractFurnaceBlockEntityAccessor;
 import roeyqian.magnatour.registry.logic.MagnaRecipes;
 import roeyqian.magnatour.registry.stuff.MagnaBlockEntities;
 
