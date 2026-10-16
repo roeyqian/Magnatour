@@ -74,8 +74,8 @@ import org.jspecify.annotations.Nullable;
 
 // Magnatour
 import roeyqian.magnatour.blockentity.supreme.SupremeChestEntity;
-import roeyqian.magnatour.menu.supreme.SupremeChestContainer;
-import roeyqian.magnatour.menu.supreme.SupremeChestMenu;
+import roeyqian.magnatour.inventory.supreme.SupremeChestContainer;
+import roeyqian.magnatour.inventory.supreme.SupremeChestMenu;
 import roeyqian.magnatour.registry.stuff.MagnaBlockEntities;
 
 public class SupremeChest extends BaseEntityBlock

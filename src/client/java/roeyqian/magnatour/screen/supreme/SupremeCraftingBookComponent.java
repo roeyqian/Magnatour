@@ -29,11 +29,11 @@ import net.minecraft.world.item.crafting.display.RecipeDisplay;
 import org.jspecify.annotations.NonNull;
 
 // Magnatour
-import roeyqian.magnatour.menu.supreme.SupremeCraftableMenu;
+import roeyqian.magnatour.inventory.supreme.SupremeCraftableMenu;
 import roeyqian.magnatour.mixin.gui.GhostSlotsInvoker;
 import roeyqian.magnatour.registry.logic.MagnaRecipes;
 import roeyqian.magnatour.registry.stuff.MagnaItems;
-import roeyqian.magnatour.screen.CustomRecipeDisplay;
+import roeyqian.magnatour.screen.MagnaRecipeDisplay;
 
 public final class SupremeCraftingBookComponent extends RecipeBookComponent<SupremeCraftableMenu> {
 
@@ -75,7 +75,7 @@ public final class SupremeCraftingBookComponent extends RecipeBookComponent<Supr
 
     invoker.invokeSetResult(this.menu.getResultSlot(), context, display.result());
 
-    CustomRecipeDisplay.displayRecipe(
+    MagnaRecipeDisplay.displayRecipe(
         display, context, invoker,
         this.menu.getInputGridSlots(),
         this.menu.getGridWidth(),
@@ -110,7 +110,7 @@ public final class SupremeCraftingBookComponent extends RecipeBookComponent<Supr
     int height = this.menu.getGridHeight();
     recipeCollection.selectRecipes(
         stackedContents,
-        display -> CustomRecipeDisplay.canDisplay(display, width, height)
+        display -> MagnaRecipeDisplay.canDisplay(display, width, height)
     );
   }
 

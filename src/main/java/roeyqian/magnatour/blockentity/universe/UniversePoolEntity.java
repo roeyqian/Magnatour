@@ -33,7 +33,7 @@ import org.jspecify.annotations.Nullable;
 
 // Magnatour
 import roeyqian.magnatour.blockentity.CustomContainer;
-import roeyqian.magnatour.menu.universe.UniversePoolMenu;
+import roeyqian.magnatour.inventory.universe.UniversePoolMenu;
 import roeyqian.magnatour.registry.stuff.MagnaBlockEntities;
 
 public class UniversePoolEntity extends BlockEntity

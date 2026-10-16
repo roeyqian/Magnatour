@@ -22,7 +22,7 @@ import net.minecraft.world.entity.player.Inventory;
 import org.jspecify.annotations.NonNull;
 
 // Magnatour
-import roeyqian.magnatour.menu.universe.UniverseForgeCraftingMenu;
+import roeyqian.magnatour.inventory.universe.UniverseForgeCraftingMenu;
 import roeyqian.magnatour.mixin.gui.AbstractContainerScreenAccessor;
 import roeyqian.magnatour.mixinhelper.universe.UniverseForgeClient;
 

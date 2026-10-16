@@ -20,7 +20,7 @@ import net.minecraft.world.entity.player.Inventory;
 import org.jspecify.annotations.NonNull;
 
 // Magnatour
-import roeyqian.magnatour.menu.universe.UniverseRefineryMenu;
+import roeyqian.magnatour.inventory.universe.UniverseRefineryMenu;
 
 public class UniverseRefineryScreen extends AbstractRecipeBookScreen<UniverseRefineryMenu> {
 

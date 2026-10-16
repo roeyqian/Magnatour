@@ -36,7 +36,7 @@ import net.minecraft.world.level.storage.ValueOutput;
 import org.jspecify.annotations.NonNull;
 
 // Magnatour
-import roeyqian.magnatour.menu.universe.UniverseLibraryMenu;
+import roeyqian.magnatour.inventory.universe.UniverseLibraryMenu;
 import roeyqian.magnatour.registry.logic.MagnaComponents;
 import roeyqian.magnatour.registry.stuff.MagnaBlockEntities;
 

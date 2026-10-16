@@ -31,8 +31,8 @@ import org.jspecify.annotations.NonNull;
 
 // Magnatour
 import roeyqian.magnatour.blockentity.supreme.ItemHubEntity;
+import roeyqian.magnatour.inventory.supreme.ItemHubMenu;
 import roeyqian.magnatour.level.network.ItemHubPayload;
-import roeyqian.magnatour.menu.supreme.ItemHubMenu;
 
 /** A modal screen rendered by its parent without closing the container menu. */
 public class ItemHubAnchorsScreen extends Screen {

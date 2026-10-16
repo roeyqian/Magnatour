@@ -34,8 +34,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.jspecify.annotations.NonNull;
 
 // Magnatour
+import roeyqian.magnatour.inventory.supreme.MirrorMobileMenuAccess;
 import roeyqian.magnatour.item.CustomItemSetting;
-import roeyqian.magnatour.menu.supreme.MirrorMobileMenuAccess;
 import roeyqian.magnatour.registry.logic.MagnaComponents;
 
 public class MirrorMobile extends Item {

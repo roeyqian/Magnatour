@@ -21,7 +21,7 @@ import org.jspecify.annotations.NonNull;
 
 // Magnatour
 import roeyqian.magnatour.Magnatour;
-import roeyqian.magnatour.menu.supreme.SupremeReserverMenu;
+import roeyqian.magnatour.inventory.supreme.SupremeReserverMenu;
 
 public class SupremeReserverScreen extends AbstractContainerScreen<SupremeReserverMenu> {
 

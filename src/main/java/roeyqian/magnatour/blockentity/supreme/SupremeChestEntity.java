@@ -45,8 +45,8 @@ import org.jspecify.annotations.NonNull;
 // Magnatour
 import roeyqian.magnatour.block.supreme.SupremeChest;
 import roeyqian.magnatour.blockentity.CustomContainer;
-import roeyqian.magnatour.menu.supreme.SupremeChestContainer;
-import roeyqian.magnatour.menu.supreme.SupremeChestMenu;
+import roeyqian.magnatour.inventory.supreme.SupremeChestContainer;
+import roeyqian.magnatour.inventory.supreme.SupremeChestMenu;
 import roeyqian.magnatour.registry.stuff.MagnaBlockEntities;
 
 public class SupremeChestEntity extends BlockEntity implements CustomContainer {

@@ -41,7 +41,7 @@ import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 // Magnatour
-import roeyqian.magnatour.menu.universe.UniverseDotMenu;
+import roeyqian.magnatour.inventory.universe.UniverseDotMenu;
 import roeyqian.magnatour.registry.stuff.MagnaBlockEntities;
 
 public class UniverseDotEntity extends BlockEntity implements MenuProvider {

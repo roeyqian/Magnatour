@@ -30,7 +30,7 @@ import org.jspecify.annotations.Nullable;
 
 // Magnatour
 import roeyqian.magnatour.blockentity.universe.UniverseDotEntity;
-import roeyqian.magnatour.menu.universe.UniverseDotMenu;
+import roeyqian.magnatour.inventory.universe.UniverseDotMenu;
 
 public class UniverseDot extends BaseEntityBlock {
 

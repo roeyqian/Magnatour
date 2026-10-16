@@ -20,7 +20,7 @@ import net.minecraft.world.entity.player.Inventory;
 import org.jspecify.annotations.NonNull;
 
 // Magnatour
-import roeyqian.magnatour.menu.supreme.SupremeCraftableMenu;
+import roeyqian.magnatour.inventory.supreme.SupremeCraftableMenu;
 import roeyqian.magnatour.mixin.gui.AbstractContainerScreenAccessor;
 
 public class SupremeCraftableScreen extends AbstractRecipeBookScreen<SupremeCraftableMenu> {

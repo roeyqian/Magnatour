@@ -59,7 +59,7 @@ import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 // Magnatour
-import roeyqian.magnatour.menu.supreme.ItemHubMenu;
+import roeyqian.magnatour.inventory.supreme.ItemHubMenu;
 import roeyqian.magnatour.registry.stuff.MagnaBlockEntities;
 
 public class ItemHubEntity extends RandomizableContainerBlockEntity implements Hopper {

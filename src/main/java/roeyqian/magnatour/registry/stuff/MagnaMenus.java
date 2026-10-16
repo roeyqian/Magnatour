@@ -12,20 +12,20 @@ import net.minecraft.world.inventory.MenuType;
 
 // Magnatour
 import roeyqian.magnatour.Magnatour;
-import roeyqian.magnatour.menu.supreme.ItemHubMenu;
-import roeyqian.magnatour.menu.supreme.RedstoneTriggerMenu;
-import roeyqian.magnatour.menu.supreme.SupremeChestMenu;
-import roeyqian.magnatour.menu.supreme.SupremeCraftableMenu;
-import roeyqian.magnatour.menu.supreme.SupremeFurnaceMenu;
-import roeyqian.magnatour.menu.supreme.SupremeReserverMenu;
-import roeyqian.magnatour.menu.universe.UniverseAnnihilatorMenu;
-import roeyqian.magnatour.menu.universe.UniverseCommandStarMenu;
-import roeyqian.magnatour.menu.universe.UniverseDotMenu;
-import roeyqian.magnatour.menu.universe.UniverseForgeCraftingMenu;
-import roeyqian.magnatour.menu.universe.UniverseForgeSmeltingMenu;
-import roeyqian.magnatour.menu.universe.UniverseLibraryMenu;
-import roeyqian.magnatour.menu.universe.UniversePoolMenu;
-import roeyqian.magnatour.menu.universe.UniverseRefineryMenu;
+import roeyqian.magnatour.inventory.supreme.ItemHubMenu;
+import roeyqian.magnatour.inventory.supreme.RedstoneTriggerMenu;
+import roeyqian.magnatour.inventory.supreme.SupremeChestMenu;
+import roeyqian.magnatour.inventory.supreme.SupremeCraftableMenu;
+import roeyqian.magnatour.inventory.supreme.SupremeFurnaceMenu;
+import roeyqian.magnatour.inventory.supreme.SupremeReserverMenu;
+import roeyqian.magnatour.inventory.universe.UniverseAnnihilatorMenu;
+import roeyqian.magnatour.inventory.universe.UniverseCommandStarMenu;
+import roeyqian.magnatour.inventory.universe.UniverseDotMenu;
+import roeyqian.magnatour.inventory.universe.UniverseForgeCraftingMenu;
+import roeyqian.magnatour.inventory.universe.UniverseForgeSmeltingMenu;
+import roeyqian.magnatour.inventory.universe.UniverseLibraryMenu;
+import roeyqian.magnatour.inventory.universe.UniversePoolMenu;
+import roeyqian.magnatour.inventory.universe.UniverseRefineryMenu;
 import roeyqian.magnatour.registry.StuffHelper;
 
 /*

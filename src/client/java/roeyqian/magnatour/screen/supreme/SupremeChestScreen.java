@@ -20,7 +20,7 @@ import org.jspecify.annotations.NonNull;
 
 // Magnatour
 import roeyqian.magnatour.Magnatour;
-import roeyqian.magnatour.menu.supreme.SupremeChestMenu;
+import roeyqian.magnatour.inventory.supreme.SupremeChestMenu;
 
 public class SupremeChestScreen extends AbstractContainerScreen<SupremeChestMenu> {
 

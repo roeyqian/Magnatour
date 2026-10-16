@@ -5,7 +5,7 @@
  * This file is part of Magnatour.
  * Full license text available in the LICENSE file in the project root.
  */
-package roeyqian.magnatour.menu.universe;
+package roeyqian.magnatour.inventory.supreme;
 
 // Minecraft
 import net.minecraft.server.level.ServerLevel;
@@ -30,23 +30,20 @@ import roeyqian.magnatour.registry.logic.MagnaRecipes;
 import roeyqian.magnatour.registry.stuff.MagnaBlocks;
 import roeyqian.magnatour.registry.stuff.MagnaMenus;
 
-public class UniverseRefineryMenu extends AbstractFurnaceMenu {
-
-  // Container data packets encode values as signed 16-bit integers.
-  private static final int MAX_SYNCED_FUEL_VALUE = Short.MAX_VALUE;
+public class SupremeFurnaceMenu extends AbstractFurnaceMenu {
 
   private final ContainerData propertyDelegate;
 
   private final ContainerLevelAccess context;
 
-  public UniverseRefineryMenu(
+  public SupremeFurnaceMenu(
       int syncId,
       Inventory playerInventory
   ) {
     this(syncId, playerInventory, new SimpleContainer(3), new SimpleContainerData(4));
   }
 
-  public UniverseRefineryMenu(
+  public SupremeFurnaceMenu(
       int syncId,
       Inventory playerInventory,
       Container inventory,
@@ -55,47 +52,31 @@ public class UniverseRefineryMenu extends AbstractFurnaceMenu {
     this(syncId, playerInventory, ContainerLevelAccess.NULL, inventory, propertyDelegate);
   }
 
-  private UniverseRefineryMenu(
-      int syncId,
-      Inventory playerInventory,
-      ContainerLevelAccess context,
-      Container inventory,
-      FuelProgressData syncedData
-  ) {
-    super(
-        MagnaMenus.UNIVERSE_REFINERY_HANDLER,
-        RecipePropertySet.FURNACE_INPUT,
-        RecipeBookType.FURNACE,
-        syncId,
-        playerInventory,
-        inventory,
-        syncedData
-    );
-    this.context = context;
-    this.propertyDelegate = syncedData;
-  }
-
-  public UniverseRefineryMenu(
+  public SupremeFurnaceMenu(
       int syncId,
       Inventory playerInventory,
       ContainerLevelAccess context,
       Container inventory,
       ContainerData propertyDelegate
   ) {
-    this(
+    super(
+        MagnaMenus.SUPREME_FURNACE_HANDLER,
+        RecipePropertySet.FURNACE_INPUT,
+        RecipeBookType.FURNACE,
         syncId,
         playerInventory,
-        context,
         inventory,
-        new FuelProgressData(propertyDelegate)
+        propertyDelegate
     );
+    this.context = context;
+    this.propertyDelegate = propertyDelegate;
   }
 
   public float getFuelProgress() {
     int litTime = this.propertyDelegate.get(0);
     int litDuration = this.propertyDelegate.get(1);
     if (litDuration == 0) {
-      return 0.0F;
+      litDuration = 200;
     }
     return (float) litTime / (float) litDuration;
   }
@@ -117,7 +98,7 @@ public class UniverseRefineryMenu extends AbstractFurnaceMenu {
   public boolean stillValid(
       @NonNull Player player
   ) {
-    return stillValid(this.context, player, MagnaBlocks.UNIVERSE_REFINERY);
+    return stillValid(this.context, player, MagnaBlocks.SUPREME_FURNACE);
   }
 
   @Override
@@ -128,72 +109,14 @@ public class UniverseRefineryMenu extends AbstractFurnaceMenu {
 
     if (this.level instanceof ServerLevel serverWorld) {
       SingleRecipeInput input = new SingleRecipeInput(itemStack);
-      var recipes = serverWorld.recipeAccess().getSynchronizedRecipes();
-
-      if (recipes.getFirstMatch(MagnaRecipes.SUPREME_SMELTING_TYPE, input, serverWorld).isPresent()) {
-        return true;
-      }
-
-      return recipes
-          .getFirstMatch(MagnaRecipes.UNIVERSE_SMELTING_TYPE, input, serverWorld)
+      return serverWorld
+          .recipeAccess()
+          .getSynchronizedRecipes()
+          .getFirstMatch(MagnaRecipes.SUPREME_SMELTING_TYPE, input, serverWorld)
           .isPresent();
     } else {
       return false;
     }
-  }
-
-  @Override
-  protected boolean isFuel(
-      @NonNull ItemStack itemStack
-  ) {
-    return !itemStack.isEmpty();
-  }
-
-  private static final class FuelProgressData implements ContainerData {
-
-    private final ContainerData delegate;
-
-    private FuelProgressData(
-        ContainerData delegate
-    ) {
-      this.delegate = delegate;
-    }
-
-    @Override
-    public int get(
-        int index
-    ) {
-      if (index == 0) {
-        int totalTime = this.delegate.get(1);
-        int remainingTime = this.delegate.get(0);
-        if (totalTime > MAX_SYNCED_FUEL_VALUE) {
-          if (remainingTime <= 0) return 0;
-          long scaledTime = ((long) remainingTime * MAX_SYNCED_FUEL_VALUE + totalTime - 1L)
-              / totalTime;
-          return (int) Math.min(scaledTime, MAX_SYNCED_FUEL_VALUE);
-        }
-        return Math.max(remainingTime, 0);
-      }
-
-      if (index == 1) {
-        return Math.max(0, Math.min(this.delegate.get(1), MAX_SYNCED_FUEL_VALUE));
-      }
-
-      return this.delegate.get(index);
-    }
-
-    @Override
-    public int getCount() {
-      return this.delegate.getCount();
-    }
-
-    @Override
-    public void set(
-        int index, int value
-    ) {
-      this.delegate.set(index, value);
-    }
-
   }
 
 }

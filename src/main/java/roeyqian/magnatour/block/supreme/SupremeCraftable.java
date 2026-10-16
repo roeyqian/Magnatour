@@ -30,7 +30,7 @@ import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 // Magnatour
-import roeyqian.magnatour.menu.supreme.SupremeCraftableMenu;
+import roeyqian.magnatour.inventory.supreme.SupremeCraftableMenu;
 
 public class SupremeCraftable extends Block {
 

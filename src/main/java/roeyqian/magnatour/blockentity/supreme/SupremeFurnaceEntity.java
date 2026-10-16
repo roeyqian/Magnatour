@@ -31,8 +31,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.jspecify.annotations.NonNull;
 
 // Magnatour
+import roeyqian.magnatour.inventory.supreme.SupremeFurnaceMenu;
 import roeyqian.magnatour.level.recipe.SupremeSmeltingRecipe;
-import roeyqian.magnatour.menu.supreme.SupremeFurnaceMenu;
 import roeyqian.magnatour.mixin.world.AbstractFurnaceBlockEntityAccessor;
 import roeyqian.magnatour.registry.logic.MagnaRecipes;
 import roeyqian.magnatour.registry.stuff.MagnaBlockEntities;

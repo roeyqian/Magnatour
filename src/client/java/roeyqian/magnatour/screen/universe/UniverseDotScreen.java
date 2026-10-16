@@ -42,8 +42,8 @@ import org.jspecify.annotations.NonNull;
 // Magnatour
 import roeyqian.magnatour.Magnatour;
 import roeyqian.magnatour.blockentity.universe.UniverseDotEntity;
+import roeyqian.magnatour.inventory.universe.UniverseDotMenu;
 import roeyqian.magnatour.level.network.UniverseDotPayload;
-import roeyqian.magnatour.menu.universe.UniverseDotMenu;
 
 public class UniverseDotScreen extends AbstractContainerScreen<UniverseDotMenu> {
 

@@ -5,7 +5,7 @@
  * This file is part of Magnatour.
  * Full license text available in the LICENSE file in the project root.
  */
-package roeyqian.magnatour.menu.universe;
+package roeyqian.magnatour.inventory.universe;
 
 // Java Standard
 import java.util.List;
@@ -29,7 +29,7 @@ import roeyqian.magnatour.entity.universe.UniverseAnnihilation;
 import roeyqian.magnatour.entity.universe.UniverseAnnihilator;
 import roeyqian.magnatour.registry.stuff.MagnaMenus;
 
-public final class UniverseAnnihilatorMenu extends AbstractContainerMenu {
+public class UniverseAnnihilatorMenu extends AbstractContainerMenu {
 
   public static final int CANCEL = Integer.MAX_VALUE - 1;
   public static final int CONFIRM = Integer.MAX_VALUE;

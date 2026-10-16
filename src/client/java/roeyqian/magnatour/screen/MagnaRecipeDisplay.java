@@ -21,7 +21,7 @@ import net.minecraft.world.item.crafting.display.ShapelessCraftingRecipeDisplay;
 // Magnatour
 import roeyqian.magnatour.mixin.gui.GhostSlotsInvoker;
 
-public interface CustomRecipeDisplay {
+public interface MagnaRecipeDisplay {
 
   static boolean canDisplay(
       RecipeDisplay display,

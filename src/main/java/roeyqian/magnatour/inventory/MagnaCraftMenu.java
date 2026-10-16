@@ -5,7 +5,7 @@
  * This file is part of Magnatour.
  * Full license text available in the LICENSE file in the project root.
  */
-package roeyqian.magnatour.menu;
+package roeyqian.magnatour.inventory;
 
 // Java Standard
 import java.util.List;
@@ -27,7 +27,7 @@ import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
 
-public interface CustomCraftingBlock {
+public interface MagnaCraftMenu {
 
   List<Slot> getSlots();
 

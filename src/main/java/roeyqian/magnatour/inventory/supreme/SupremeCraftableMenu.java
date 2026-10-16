@@ -5,7 +5,7 @@
  * This file is part of Magnatour.
  * Full license text available in the LICENSE file in the project root.
  */
-package roeyqian.magnatour.menu.universe;
+package roeyqian.magnatour.inventory.supreme;
 
 // Java Standard
 import java.util.List;
@@ -27,68 +27,49 @@ import net.minecraft.world.item.crafting.RecipeHolder;
 
 // JSpecify
 import org.jspecify.annotations.NonNull;
-import org.jspecify.annotations.Nullable;
 
 // Magnatour
-import roeyqian.magnatour.blockentity.universe.UniverseForgeEntity;
-import roeyqian.magnatour.menu.CustomCraftingBlock;
-import roeyqian.magnatour.mixin.world.AbstractCraftingMenuAccessor;
+import roeyqian.magnatour.inventory.MagnaCraftMenu;
 import roeyqian.magnatour.registry.logic.MagnaRecipes;
 import roeyqian.magnatour.registry.stuff.MagnaBlocks;
 import roeyqian.magnatour.registry.stuff.MagnaMenus;
 
-public class UniverseForgeCraftingMenu extends AbstractCraftingMenu implements CustomCraftingBlock {
+public class SupremeCraftableMenu extends AbstractCraftingMenu implements MagnaCraftMenu {
 
   public static final int RESULT_ID = 0;
 
-  private static final int HOTBAR_END = 62;
-  private static final int HOTBAR_START = 53;
-  private static final int INPUT_END = 26;
+  private static final int HOTBAR_END = 53;
+  private static final int HOTBAR_START = 44;
+  private static final int INPUT_END = 17;
   private static final int INPUT_START = 1;
-  private static final int INVENTORY_END = 53;
-  private static final int INVENTORY_START = 26;
+  private static final int INVENTORY_END = 44;
+  private static final int INVENTORY_START = 17;
 
   private final Player player;
 
   private final ContainerLevelAccess context;
 
-  private final @Nullable UniverseForgeEntity forge;
-
   private boolean filling;
 
-  public UniverseForgeCraftingMenu(
+  public SupremeCraftableMenu(
       int syncId,
       Inventory playerInventory
   ) {
-    this(syncId, playerInventory, ContainerLevelAccess.NULL, null);
+    this(syncId, playerInventory, ContainerLevelAccess.NULL);
   }
 
-  public UniverseForgeCraftingMenu(
+  public SupremeCraftableMenu(
       int syncId,
       Inventory playerInventory,
       ContainerLevelAccess context
   ) {
-    this(syncId, playerInventory, context, null);
-  }
-
-  public UniverseForgeCraftingMenu(
-      int syncId,
-      Inventory playerInventory,
-      ContainerLevelAccess context,
-      @Nullable UniverseForgeEntity forge
-  ) {
-    super(MagnaMenus.UNIVERSE_FORGE_HANDLER, syncId, 5, 5);
+    super(MagnaMenus.SUPREME_CRAFTABLE_HANDLER, syncId, 4, 4);
     this.context = context;
     this.player = playerInventory.player;
-    this.forge = forge;
-    if (forge != null) {
-      ((AbstractCraftingMenuAccessor) this).magnatour$setCraftSlots(forge.getCraftingInventory());
-    }
 
-    this.addResultSlot(this.player, 149, 54);
+    this.addResultSlot(this.player, 137, 44);
     this.addCraftingGridSlots(30, 17);
-    this.addStandardInventorySlots(playerInventory, 8, 120);
-    this.slotsChanged(this.craftSlots);
+    this.addStandardInventorySlots(playerInventory, 8, 102);
   }
 
   @Override
@@ -105,15 +86,6 @@ public class UniverseForgeCraftingMenu extends AbstractCraftingMenu implements C
   }
 
   @Override
-  public boolean clickMenuButton(
-      @NonNull Player player,
-      int id
-  ) {
-    return id == 0 && this.forge != null && this.stillValid(player)
-        && this.forge.switchMenu(player, true);
-  }
-
-  @Override
   public Optional<RecipeHolder<CraftingRecipe>> findCustomRecipe(
       CraftingInput input,
       ServerLevel world
@@ -121,9 +93,7 @@ public class UniverseForgeCraftingMenu extends AbstractCraftingMenu implements C
     var recipeManager = world.recipeAccess().getSynchronizedRecipes();
     var supremeMatch = recipeManager.getFirstMatch(MagnaRecipes.SUPREME_CRAFTING_TYPE, input, world);
 
-    return supremeMatch.or(
-        () -> recipeManager.getFirstMatch(MagnaRecipes.UNIVERSE_CRAFTING_TYPE, input, world)
-    );
+    return supremeMatch;
   }
 
   @Override
@@ -197,12 +167,6 @@ public class UniverseForgeCraftingMenu extends AbstractCraftingMenu implements C
     return this.slots;
   }
 
-  public boolean isFor(
-      UniverseForgeEntity entity
-  ) {
-    return this.forge == entity;
-  }
-
   @Override
   public boolean noInsertItem(
       ItemStack stack,
@@ -217,7 +181,7 @@ public class UniverseForgeCraftingMenu extends AbstractCraftingMenu implements C
       @NonNull Player player,
       int slot
   ) {
-    return CustomCraftingBlock.super.quickMove(player, slot);
+    return MagnaCraftMenu.super.quickMove(player, slot);
   }
 
   @Override
@@ -225,7 +189,7 @@ public class UniverseForgeCraftingMenu extends AbstractCraftingMenu implements C
       @NonNull Player player
   ) {
     super.removed(player);
-    this.resultSlots.clearContent();
+    this.context.execute((_, _) -> this.clearContainer(player, this.craftSlots));
   }
 
   @Override
@@ -250,7 +214,7 @@ public class UniverseForgeCraftingMenu extends AbstractCraftingMenu implements C
   public boolean stillValid(
       @NonNull Player player
   ) {
-    return stillValid(this.context, player, MagnaBlocks.UNIVERSE_FORGE);
+    return stillValid(this.context, player, MagnaBlocks.SUPREME_CRAFTABLE);
   }
 
   @Override @NonNull

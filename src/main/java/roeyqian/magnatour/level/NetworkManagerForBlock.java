@@ -30,6 +30,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 
 // Magnatour
+import roeyqian.magnatour.inventory.universe.UniverseCommandStarMenu;
 import roeyqian.magnatour.item.RemoteAccessManager;
 import roeyqian.magnatour.item.supreme.MirrorMobile;
 import roeyqian.magnatour.item.universe.UniverseBucket;
@@ -39,7 +40,6 @@ import roeyqian.magnatour.item.universe.UniverseUltimaSword;
 import roeyqian.magnatour.level.network.DurableItemModePayload;
 import roeyqian.magnatour.level.network.UniverseBucketPickupPayload;
 import roeyqian.magnatour.level.network.UniverseCommandStarBoundBlockPayload;
-import roeyqian.magnatour.menu.universe.UniverseCommandStarMenu;
 import roeyqian.magnatour.mixinhelper.universe.UniverseBucketMain;
 import roeyqian.magnatour.registry.logic.MagnaComponents;
 

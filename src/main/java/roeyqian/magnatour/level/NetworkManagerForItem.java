@@ -22,12 +22,12 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import roeyqian.magnatour.blockentity.supreme.ItemHubEntity;
 import roeyqian.magnatour.blockentity.supreme.RedstoneTriggerEntity;
 import roeyqian.magnatour.blockentity.universe.UniverseDotEntity;
+import roeyqian.magnatour.inventory.supreme.ItemHubMenu;
+import roeyqian.magnatour.inventory.supreme.RedstoneTriggerMenu;
+import roeyqian.magnatour.inventory.universe.UniverseDotMenu;
 import roeyqian.magnatour.level.network.ItemHubPayload;
 import roeyqian.magnatour.level.network.RedstoneTriggerPayload;
 import roeyqian.magnatour.level.network.UniverseDotPayload;
-import roeyqian.magnatour.menu.supreme.ItemHubMenu;
-import roeyqian.magnatour.menu.supreme.RedstoneTriggerMenu;
-import roeyqian.magnatour.menu.universe.UniverseDotMenu;
 
 public final class NetworkManagerForItem {
 

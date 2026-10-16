@@ -34,9 +34,9 @@ import org.jspecify.annotations.NonNull;
 
 // Magnatour
 import roeyqian.magnatour.Magnatour;
+import roeyqian.magnatour.inventory.universe.UniverseCommandStarMenu;
 import roeyqian.magnatour.item.universe.UniverseCommandStar;
 import roeyqian.magnatour.level.network.UniverseCommandStarBoundBlockPayload;
-import roeyqian.magnatour.menu.universe.UniverseCommandStarMenu;
 
 public class UniverseCommandStarScreen extends AbstractContainerScreen<UniverseCommandStarMenu> {
 

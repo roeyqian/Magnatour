@@ -30,7 +30,7 @@ import net.minecraft.world.item.crafting.display.RecipeDisplay;
 import org.jspecify.annotations.NonNull;
 
 // Magnatour
-import roeyqian.magnatour.menu.universe.UniverseRefineryMenu;
+import roeyqian.magnatour.inventory.universe.UniverseRefineryMenu;
 import roeyqian.magnatour.mixin.gui.GhostSlotsInvoker;
 import roeyqian.magnatour.registry.logic.MagnaRecipes;
 import roeyqian.magnatour.registry.stuff.MagnaItems;

@@ -40,10 +40,10 @@ import org.jspecify.annotations.NonNull;
 
 // Magnatour
 import roeyqian.magnatour.block.universe.UniverseForge;
+import roeyqian.magnatour.inventory.universe.UniverseForgeCraftingMenu;
+import roeyqian.magnatour.inventory.universe.UniverseForgeSmeltingMenu;
 import roeyqian.magnatour.level.recipe.SupremeSmeltingRecipe;
 import roeyqian.magnatour.level.recipe.UniverseSmeltingRecipe;
-import roeyqian.magnatour.menu.universe.UniverseForgeCraftingMenu;
-import roeyqian.magnatour.menu.universe.UniverseForgeSmeltingMenu;
 import roeyqian.magnatour.mixin.world.AbstractFurnaceBlockEntityAccessor;
 import roeyqian.magnatour.registry.logic.MagnaRecipes;
 import roeyqian.magnatour.registry.stuff.MagnaBlockEntities;
@@ -245,7 +245,7 @@ public class UniverseForgeEntity extends AbstractFurnaceBlockEntity {
   ) {
     super.loadAdditional(input);
     this.craftingInventory.items.clear();
-    ContainerHelper.loadAllItems(input.childOrEmpty("CraftingInventory"), this.craftingInventory.items);
+    ContainerHelper.loadAllItems(input.childOrEmpty("MagnaCraftMenu"), this.craftingInventory.items);
   }
 
   @Override
@@ -253,7 +253,7 @@ public class UniverseForgeEntity extends AbstractFurnaceBlockEntity {
       @NonNull ValueOutput output
   ) {
     super.saveAdditional(output);
-    ContainerHelper.saveAllItems(output.child("CraftingInventory"), this.craftingInventory.items);
+    ContainerHelper.saveAllItems(output.child("MagnaCraftMenu"), this.craftingInventory.items);
   }
 
   private static boolean canBurn(

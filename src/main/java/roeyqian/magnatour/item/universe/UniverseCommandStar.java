@@ -46,9 +46,9 @@ import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 // Magnatour
+import roeyqian.magnatour.inventory.universe.UniverseCommandStarMenu;
 import roeyqian.magnatour.item.CustomItemSetting;
 import roeyqian.magnatour.item.CustomToolMaterial;
-import roeyqian.magnatour.menu.universe.UniverseCommandStarMenu;
 import roeyqian.magnatour.registry.logic.MagnaComponents;
 
 public class UniverseCommandStar extends Item {

@@ -20,7 +20,7 @@ import net.minecraft.world.entity.player.Inventory;
 import org.jspecify.annotations.NonNull;
 
 // Magnatour
-import roeyqian.magnatour.menu.supreme.SupremeFurnaceMenu;
+import roeyqian.magnatour.inventory.supreme.SupremeFurnaceMenu;
 
 public class SupremeFurnaceScreen extends AbstractRecipeBookScreen<SupremeFurnaceMenu> {
 

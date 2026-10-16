@@ -25,7 +25,7 @@ import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 // Magnatour
-import roeyqian.magnatour.menu.supreme.SupremeReserverMenu;
+import roeyqian.magnatour.inventory.supreme.SupremeReserverMenu;
 
 public class SupremeReserver extends Block {
 

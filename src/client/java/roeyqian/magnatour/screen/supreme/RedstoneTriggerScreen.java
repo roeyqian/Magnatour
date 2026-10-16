@@ -27,8 +27,8 @@ import org.jspecify.annotations.NonNull;
 // Magnatour
 import roeyqian.magnatour.Magnatour;
 import roeyqian.magnatour.blockentity.supreme.RedstoneTriggerEntity;
+import roeyqian.magnatour.inventory.supreme.RedstoneTriggerMenu;
 import roeyqian.magnatour.level.network.RedstoneTriggerPayload;
-import roeyqian.magnatour.menu.supreme.RedstoneTriggerMenu;
 
 public class RedstoneTriggerScreen extends AbstractContainerScreen<RedstoneTriggerMenu> {
 
