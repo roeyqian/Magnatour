@@ -5,7 +5,7 @@
  * This file is part of Magnatour.
  * Full license text available in the LICENSE file in the project root.
  */
-package roeyqian.magnatour.registry.worldgen;
+package roeyqian.magnatour.registry.world;
 
 // Minecraft
 import net.minecraft.world.level.levelgen.structure.StructureType;
@@ -19,13 +19,13 @@ import roeyqian.magnatour.levelgen.structure.GoldBellTowerPiece;
 import roeyqian.magnatour.levelgen.structure.GoldBellTowerStructure;
 import roeyqian.magnatour.levelgen.structure.StructureMobSpawner;
 import roeyqian.magnatour.levelgen.structure.TownOfFortuneStructure;
-import roeyqian.magnatour.registry.WorldgenRegHelper;
+import roeyqian.magnatour.registry.WorldHelper;
 
 /*
  * Supreme Group: Harvest Continent, Ore Continent
  * Universe Group: Structure
  */
-public final class CustomStructures {
+public final class MagnaStructures {
 
   // Supreme Group: Ore Continent
   public static final StructurePieceType DIAMOND_CITY_PIECE =
@@ -35,33 +35,33 @@ public final class CustomStructures {
       registerGoldBellTowerPiece();
 
   public static final StructureType<DiamondCityStructure> DIAMOND_CITY =
-      WorldgenRegHelper.registerStructureType(
+      WorldHelper.registerStructureType(
           "diamond_city",
           () -> DiamondCityStructure.CODEC
       );
 
   public static final StructureType<GoldBellTowerStructure> GOLD_BELL_TOWER =
-      WorldgenRegHelper.registerStructureType(
+      WorldHelper.registerStructureType(
           "gold_bell_tower",
           () -> GoldBellTowerStructure.CODEC
       );
 
   public static final StructureType<TownOfFortuneStructure> TOWN_OF_FORTUNE =
-      WorldgenRegHelper.registerStructureType(
+      WorldHelper.registerStructureType(
           "town_of_fortune",
           () -> TownOfFortuneStructure.CODEC
       );
 
-  private CustomStructures() {}
+  private MagnaStructures() {}
 
   public static void init() {
     StructureMobSpawner.registerTickEvent();
-    Magnatour.LOGGER.info("[Server] Initializing 'CustomStructures'");
+    Magnatour.LOGGER.info("[Server] Initializing 'MagnaStructures'");
   }
 
   private static StructurePieceType registerDiamondCityPiece() {
     StructurePieceType[] pieceHolder = new StructurePieceType[1];
-    pieceHolder[0] = WorldgenRegHelper.registerStructurePiece(
+    pieceHolder[0] = WorldHelper.registerStructurePiece(
         "diamond_city",
         (_, tag) -> new DiamondCityPiece(pieceHolder[0], tag)
     );
@@ -70,7 +70,7 @@ public final class CustomStructures {
 
   private static StructurePieceType registerGoldBellTowerPiece() {
     StructurePieceType[] pieceHolder = new StructurePieceType[1];
-    pieceHolder[0] = WorldgenRegHelper.registerStructurePiece(
+    pieceHolder[0] = WorldHelper.registerStructurePiece(
         "gold_bell_tower",
         (_, tag) -> new GoldBellTowerPiece(pieceHolder[0], tag)
     );

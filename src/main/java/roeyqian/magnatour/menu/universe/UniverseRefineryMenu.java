@@ -26,9 +26,9 @@ import net.minecraft.world.item.crafting.SingleRecipeInput;
 import org.jspecify.annotations.NonNull;
 
 // Magnatour
-import roeyqian.magnatour.registry.content.UniverseBlocks;
-import roeyqian.magnatour.registry.content.UniverseMenus;
-import roeyqian.magnatour.registry.logic.CustomRecipes;
+import roeyqian.magnatour.registry.logic.MagnaRecipes;
+import roeyqian.magnatour.registry.stuff.MagnaBlocks;
+import roeyqian.magnatour.registry.stuff.MagnaMenus;
 
 public class UniverseRefineryMenu extends AbstractFurnaceMenu {
 
@@ -63,7 +63,7 @@ public class UniverseRefineryMenu extends AbstractFurnaceMenu {
       FuelProgressData syncedData
   ) {
     super(
-        UniverseMenus.UNIVERSE_REFINERY_HANDLER,
+        MagnaMenus.UNIVERSE_REFINERY_HANDLER,
         RecipePropertySet.FURNACE_INPUT,
         RecipeBookType.FURNACE,
         syncId,
@@ -117,7 +117,7 @@ public class UniverseRefineryMenu extends AbstractFurnaceMenu {
   public boolean stillValid(
       @NonNull Player player
   ) {
-    return stillValid(this.context, player, UniverseBlocks.UNIVERSE_REFINERY);
+    return stillValid(this.context, player, MagnaBlocks.UNIVERSE_REFINERY);
   }
 
   @Override
@@ -130,12 +130,12 @@ public class UniverseRefineryMenu extends AbstractFurnaceMenu {
       SingleRecipeInput input = new SingleRecipeInput(itemStack);
       var recipes = serverWorld.recipeAccess().getSynchronizedRecipes();
 
-      if (recipes.getFirstMatch(CustomRecipes.SUPREME_SMELTING_TYPE, input, serverWorld).isPresent()) {
+      if (recipes.getFirstMatch(MagnaRecipes.SUPREME_SMELTING_TYPE, input, serverWorld).isPresent()) {
         return true;
       }
 
       return recipes
-          .getFirstMatch(CustomRecipes.UNIVERSE_SMELTING_TYPE, input, serverWorld)
+          .getFirstMatch(MagnaRecipes.UNIVERSE_SMELTING_TYPE, input, serverWorld)
           .isPresent();
     } else {
       return false;

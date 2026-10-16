@@ -18,7 +18,7 @@ import org.jspecify.annotations.NonNull;
 
 // Magnatour
 import roeyqian.magnatour.item.universe.UniverseCommandStar;
-import roeyqian.magnatour.registry.content.UniverseMenus;
+import roeyqian.magnatour.registry.stuff.MagnaMenus;
 
 public class UniverseCommandStarMenu extends AbstractContainerMenu {
 
@@ -38,7 +38,7 @@ public class UniverseCommandStarMenu extends AbstractContainerMenu {
       UniverseCommandStar.BoundBlockList boundBlocks,
       InteractionHand commandStarHand
   ) {
-    super(UniverseMenus.UNIVERSE_COMMAND_STAR_HANDLER, syncId);
+    super(MagnaMenus.UNIVERSE_COMMAND_STAR_HANDLER, syncId);
     this.boundBlocks = boundBlocks != null
         ? boundBlocks
         : UniverseCommandStar.BoundBlockList.EMPTY;

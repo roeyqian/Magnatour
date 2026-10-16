@@ -28,7 +28,7 @@ import org.jspecify.annotations.Nullable;
 
 // Magnatour
 import roeyqian.magnatour.blockentity.universe.UniversePoolEntity;
-import roeyqian.magnatour.registry.content.UniverseBlockEntities;
+import roeyqian.magnatour.registry.stuff.MagnaBlockEntities;
 
 public class UniversePool extends BaseEntityBlock {
 
@@ -46,7 +46,7 @@ public class UniversePool extends BaseEntityBlock {
   ) {
     return createTickerHelper(
         type,
-        UniverseBlockEntities.UNIVERSE_POOL_ENTITY,
+        MagnaBlockEntities.UNIVERSE_POOL_ENTITY,
         (world1, _, _, blockEntity) -> blockEntity.tick(world1)
     );
   }

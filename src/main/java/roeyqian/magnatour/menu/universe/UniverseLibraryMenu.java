@@ -27,7 +27,7 @@ import org.jspecify.annotations.NonNull;
 
 // Magnatour
 import roeyqian.magnatour.blockentity.universe.UniverseLibraryEntity;
-import roeyqian.magnatour.registry.content.UniverseMenus;
+import roeyqian.magnatour.registry.stuff.MagnaMenus;
 
 public class UniverseLibraryMenu extends AbstractContainerMenu {
 
@@ -65,7 +65,7 @@ public class UniverseLibraryMenu extends AbstractContainerMenu {
       Inventory playerInventory,
       Container inventory
   ) {
-    super(UniverseMenus.UNIVERSE_LIBRARY_HANDLER, syncId);
+    super(MagnaMenus.UNIVERSE_LIBRARY_HANDLER, syncId);
     this.sourceInventory = inventory;
     this.liveSourceInventory = inventory instanceof UniverseLibraryEntity;
     this.addDataSlot(this.scrollOffset);

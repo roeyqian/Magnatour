@@ -31,8 +31,8 @@ import org.jspecify.annotations.NonNull;
 // Magnatour
 import roeyqian.magnatour.menu.supreme.SupremeCraftableMenu;
 import roeyqian.magnatour.mixin.screen.GhostSlotsInvoker;
-import roeyqian.magnatour.registry.content.SupremeItems;
-import roeyqian.magnatour.registry.logic.CustomRecipes;
+import roeyqian.magnatour.registry.logic.MagnaRecipes;
+import roeyqian.magnatour.registry.stuff.MagnaItems;
 import roeyqian.magnatour.screen.CustomRecipeDisplay;
 
 public final class SupremeCraftingBookComponent extends RecipeBookComponent<SupremeCraftableMenu> {
@@ -56,7 +56,7 @@ public final class SupremeCraftingBookComponent extends RecipeBookComponent<Supr
       new RecipeBookComponent.TabInfo(Items.BRICKS, RecipeBookCategories.CRAFTING_BUILDING_BLOCKS),
       new RecipeBookComponent.TabInfo(Items.LAVA_BUCKET, Items.APPLE, RecipeBookCategories.CRAFTING_MISC),
       new RecipeBookComponent.TabInfo(Items.REDSTONE, RecipeBookCategories.CRAFTING_REDSTONE),
-      new RecipeBookComponent.TabInfo(SupremeItems.SUPREME_CORE, CustomRecipes.SUPREME_CRAFTING)
+      new RecipeBookComponent.TabInfo(MagnaItems.SUPREME_CORE, MagnaRecipes.SUPREME_CRAFTING)
   );
 
   public SupremeCraftingBookComponent(

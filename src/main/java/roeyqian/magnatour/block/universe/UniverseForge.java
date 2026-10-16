@@ -34,7 +34,7 @@ import org.jspecify.annotations.Nullable;
 
 // Magnatour
 import roeyqian.magnatour.blockentity.universe.UniverseForgeEntity;
-import roeyqian.magnatour.registry.content.UniverseBlockEntities;
+import roeyqian.magnatour.registry.stuff.MagnaBlockEntities;
 
 public class UniverseForge extends BaseEntityBlock {
 
@@ -67,7 +67,7 @@ public class UniverseForge extends BaseEntityBlock {
       @NonNull BlockEntityType<T> type
   ) {
     return world.isClientSide() ? null : createTickerHelper(
-        type, UniverseBlockEntities.UNIVERSE_FORGE_ENTITY,
+        type, MagnaBlockEntities.UNIVERSE_FORGE_ENTITY,
         (level, pos, tickState, entity) -> {
           if (level instanceof ServerLevel serverLevel) {
             UniverseForgeEntity.tick(serverLevel, pos, tickState, entity);

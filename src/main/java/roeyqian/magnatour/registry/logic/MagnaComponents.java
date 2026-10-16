@@ -21,13 +21,13 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import roeyqian.magnatour.Magnatour;
 import roeyqian.magnatour.blockentity.universe.UniverseLibraryContents;
 import roeyqian.magnatour.item.universe.UniverseCommandStar;
-import roeyqian.magnatour.registry.LogicRegHelper;
+import roeyqian.magnatour.registry.LogicHelper;
 
 /*
  * Supreme Group: Item, Render
  * Universe Group: Item, Render
  */
-public final class CustomComponents {
+public final class MagnaComponents {
 
   public static final DataComponentType<String> MIRROR_MOBILE_BLOCK_ID = register(
       "mirror_mobile_block_id",
@@ -93,7 +93,7 @@ public final class CustomComponents {
           .networkSynchronized(UniverseCommandStar.BoundBlockList.PACKET_CODEC)
   );
 
-  private CustomComponents() {}
+  private MagnaComponents() {}
 
   public static final DataComponentType<UniverseLibraryContents> UNIVERSE_LIBRARY_CONTENTS = register(
       "universe_library_contents",
@@ -103,14 +103,14 @@ public final class CustomComponents {
   );
 
   public static void init() {
-    Magnatour.LOGGER.info("[Server] Initializing 'CustomComponents'");
+    Magnatour.LOGGER.info("[Server] Initializing 'MagnaComponents'");
   }
 
   private static <T> DataComponentType<T> register(
       String id,
       UnaryOperator<DataComponentType.Builder<T>> builderOperator
   ) {
-    return LogicRegHelper.registerDataComponentType(id, builderOperator);
+    return LogicHelper.registerDataComponentType(id, builderOperator);
   }
 
 }

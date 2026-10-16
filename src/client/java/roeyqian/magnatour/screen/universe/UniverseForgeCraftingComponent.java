@@ -31,9 +31,8 @@ import org.jspecify.annotations.NonNull;
 // Magnatour
 import roeyqian.magnatour.menu.universe.UniverseForgeCraftingMenu;
 import roeyqian.magnatour.mixin.screen.GhostSlotsInvoker;
-import roeyqian.magnatour.registry.content.SupremeItems;
-import roeyqian.magnatour.registry.content.UniverseItems;
-import roeyqian.magnatour.registry.logic.CustomRecipes;
+import roeyqian.magnatour.registry.logic.MagnaRecipes;
+import roeyqian.magnatour.registry.stuff.MagnaItems;
 import roeyqian.magnatour.screen.CustomRecipeDisplay;
 
 public final class UniverseForgeCraftingComponent extends RecipeBookComponent<UniverseForgeCraftingMenu> {
@@ -57,8 +56,8 @@ public final class UniverseForgeCraftingComponent extends RecipeBookComponent<Un
       new RecipeBookComponent.TabInfo(Items.BRICKS, RecipeBookCategories.CRAFTING_BUILDING_BLOCKS),
       new RecipeBookComponent.TabInfo(Items.LAVA_BUCKET, Items.APPLE, RecipeBookCategories.CRAFTING_MISC),
       new RecipeBookComponent.TabInfo(Items.REDSTONE, RecipeBookCategories.CRAFTING_REDSTONE),
-      new RecipeBookComponent.TabInfo(SupremeItems.SUPREME_CORE, CustomRecipes.SUPREME_CRAFTING),
-      new RecipeBookComponent.TabInfo(UniverseItems.UNIVERSE_CORE, CustomRecipes.UNIVERSE_CRAFTING)
+      new RecipeBookComponent.TabInfo(MagnaItems.SUPREME_CORE, MagnaRecipes.SUPREME_CRAFTING),
+      new RecipeBookComponent.TabInfo(MagnaItems.UNIVERSE_CORE, MagnaRecipes.UNIVERSE_CRAFTING)
   );
 
   public UniverseForgeCraftingComponent(

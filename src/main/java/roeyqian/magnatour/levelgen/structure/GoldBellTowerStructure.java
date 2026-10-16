@@ -40,7 +40,7 @@ import org.jspecify.annotations.NonNull;
 import roeyqian.magnatour.Magnatour;
 import roeyqian.magnatour.levelgen.biome.HarvestContinentBiomeSource;
 import roeyqian.magnatour.levelgen.terrain.HarvestContinentTerrain;
-import roeyqian.magnatour.registry.worldgen.CustomStructures;
+import roeyqian.magnatour.registry.world.MagnaStructures;
 
 public final class GoldBellTowerStructure extends Structure {
 
@@ -124,7 +124,7 @@ public final class GoldBellTowerStructure extends Structure {
     }
 
     GoldBellTowerPiece piece = new GoldBellTowerPiece(
-        CustomStructures.GOLD_BELL_TOWER_PIECE,
+        MagnaStructures.GOLD_BELL_TOWER_PIECE,
         lowerPos,
         lowerSize,
         upperSize,
@@ -143,7 +143,7 @@ public final class GoldBellTowerStructure extends Structure {
 
   @Override @NonNull
   public StructureType<?> type() {
-    return CustomStructures.GOLD_BELL_TOWER;
+    return MagnaStructures.GOLD_BELL_TOWER;
   }
 
   private static long mix(

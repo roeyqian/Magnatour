@@ -27,7 +27,7 @@ import net.minecraft.world.level.Level;
 // Magnatour
 import roeyqian.magnatour.entity.universe.UniverseAnnihilation;
 import roeyqian.magnatour.entity.universe.UniverseAnnihilator;
-import roeyqian.magnatour.registry.content.UniverseMenus;
+import roeyqian.magnatour.registry.stuff.MagnaMenus;
 
 public final class UniverseAnnihilatorMenu extends AbstractContainerMenu {
 
@@ -58,7 +58,7 @@ public final class UniverseAnnihilatorMenu extends AbstractContainerMenu {
       OpeningData data,
       UniverseAnnihilator entity
   ) {
-    super(UniverseMenus.UNIVERSE_ANNIHILATOR_HANDLER, id);
+    super(MagnaMenus.UNIVERSE_ANNIHILATOR_HANDLER, id);
     this.data = data;
     var initialTask = entity == null ? null : UniverseAnnihilation.getTask(
         ((net.minecraft.server.level.ServerLevel) entity.level()).getServer(), entity.getUUID());

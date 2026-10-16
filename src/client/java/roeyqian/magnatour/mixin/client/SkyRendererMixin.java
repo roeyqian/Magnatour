@@ -21,7 +21,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 // Magnatour
 import roeyqian.magnatour.levelgen.terrain.HarvestContinentTerrain;
-import roeyqian.magnatour.registry.worldgen.CustomDimensions;
+import roeyqian.magnatour.registry.world.MagnaDimensions;
 
 @Mixin(value = SkyRenderer.class, priority = 3600000)
 public class SkyRendererMixin {
@@ -33,9 +33,9 @@ public class SkyRendererMixin {
       ClientLevel level,
       CallbackInfoReturnable<Boolean> cir
   ) {
-    if (level.dimension() == CustomDimensions.UNIVERSE_META) {
+    if (level.dimension() == MagnaDimensions.UNIVERSE_META) {
       cir.setReturnValue(false);
-    } else if (level.dimension() == CustomDimensions.HARVEST_CONTINENT) {
+    } else if (level.dimension() == MagnaDimensions.HARVEST_CONTINENT) {
       LocalPlayer player = Minecraft.getInstance().player;
       double horizon = level.getLevelData().getHorizonHeight(level)
           + HarvestContinentTerrain.SURFACE_Y_OFFSET;

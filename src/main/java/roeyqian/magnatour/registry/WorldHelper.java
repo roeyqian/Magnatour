@@ -24,7 +24,7 @@ import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceType;
 // Magnatour
 import roeyqian.magnatour.Magnatour;
 
-public interface WorldgenRegHelper {
+public interface WorldHelper {
 
   static Identifier id(
       String path

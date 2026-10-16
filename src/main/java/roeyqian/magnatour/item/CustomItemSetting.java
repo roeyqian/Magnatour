@@ -26,7 +26,7 @@ import net.minecraft.world.item.component.ItemLore;
 
 // Magnatour
 import roeyqian.magnatour.Magnatour;
-import roeyqian.magnatour.registry.logic.CustomComponents;
+import roeyqian.magnatour.registry.logic.MagnaComponents;
 
 public interface CustomItemSetting {
 
@@ -45,7 +45,7 @@ public interface CustomItemSetting {
     return settings
         .rarity(Rarity.RARE)
         .component(DataComponents.UNBREAKABLE, Unit.INSTANCE)
-        .component(CustomComponents.SUPREME_GLINT_OVERRIDE, true)
+        .component(MagnaComponents.SUPREME_GLINT_OVERRIDE, true)
         .delayedComponent(
             DataComponents.DAMAGE_RESISTANT,
             provider -> new DamageResistant(provider.lookupOrThrow(Registries.DAMAGE_TYPE)
@@ -60,7 +60,7 @@ public interface CustomItemSetting {
     return settings
         .rarity(Rarity.EPIC)
         .component(DataComponents.UNBREAKABLE, Unit.INSTANCE)
-        .component(CustomComponents.UNIVERSE_GLINT_OVERRIDE, true)
+        .component(MagnaComponents.UNIVERSE_GLINT_OVERRIDE, true)
         .delayedComponent(
             DataComponents.DAMAGE_RESISTANT,
             provider -> new DamageResistant(provider.lookupOrThrow(Registries.DAMAGE_TYPE)

@@ -62,7 +62,7 @@ import org.jspecify.annotations.Nullable;
 // Magnatour
 import roeyqian.magnatour.blockentity.supreme.ItemHubEntity;
 import roeyqian.magnatour.menu.supreme.ItemHubMenu;
-import roeyqian.magnatour.registry.content.SupremeBlockEntities;
+import roeyqian.magnatour.registry.stuff.MagnaBlockEntities;
 
 public class ItemHub extends BaseEntityBlock {
 
@@ -106,7 +106,7 @@ public class ItemHub extends BaseEntityBlock {
   ) {
     return level.isClientSide()
         ? null
-        : createTickerHelper(type, SupremeBlockEntities.ITEM_HUB_ENTITY, ItemHubEntity::pushItemsTick);
+        : createTickerHelper(type, MagnaBlockEntities.ITEM_HUB_ENTITY, ItemHubEntity::pushItemsTick);
   }
 
   @Nullable @Override

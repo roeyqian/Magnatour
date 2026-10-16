@@ -49,7 +49,7 @@ import org.jspecify.annotations.Nullable;
 
 // Magnatour
 import roeyqian.magnatour.entity.EntityLootTableHelper;
-import roeyqian.magnatour.registry.logic.CustomParticles;
+import roeyqian.magnatour.registry.logic.MagnaParticles;
 
 public class UniverseGuardian extends TamableAnimal {
 
@@ -377,7 +377,7 @@ public class UniverseGuardian extends TamableAnimal {
 
         for (int i = 1; i < (int) distance; ++i) {
           serverWorld.sendParticles(
-              CustomParticles.UNIVERSE_SONIC_BOOM,
+              MagnaParticles.UNIVERSE_SONIC_BOOM,
               startX + dX * i, startY + dY * i, startZ + dZ * i,
               1, 0.0F, 0.0F, 0.0F, 0.0F
           );

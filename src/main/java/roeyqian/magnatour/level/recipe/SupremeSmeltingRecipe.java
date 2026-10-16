@@ -21,8 +21,8 @@ import net.minecraft.world.item.crafting.RecipeType;
 import org.jspecify.annotations.NonNull;
 
 // Magnatour
-import roeyqian.magnatour.registry.content.SupremeBlocks;
-import roeyqian.magnatour.registry.logic.CustomRecipes;
+import roeyqian.magnatour.registry.logic.MagnaRecipes;
+import roeyqian.magnatour.registry.stuff.MagnaBlocks;
 
 public class SupremeSmeltingRecipe extends AbstractCookingRecipe {
 
@@ -50,17 +50,17 @@ public class SupremeSmeltingRecipe extends AbstractCookingRecipe {
 
   @Override @NonNull
   public RecipeType<? extends SupremeSmeltingRecipe> getType() {
-    return CustomRecipes.SUPREME_SMELTING_TYPE;
+    return MagnaRecipes.SUPREME_SMELTING_TYPE;
   }
 
   @Override @NonNull
   public RecipeBookCategory recipeBookCategory() {
-    return CustomRecipes.SUPREME_SMELTING;
+    return MagnaRecipes.SUPREME_SMELTING;
   }
 
   @Override @NonNull
   protected Item furnaceIcon() {
-    return SupremeBlocks.SUPREME_FURNACE.asItem();
+    return MagnaBlocks.SUPREME_FURNACE.asItem();
   }
 
 }

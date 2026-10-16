@@ -20,7 +20,7 @@ import net.minecraft.world.item.ItemStack;
 import org.jspecify.annotations.NonNull;
 
 // Magnatour
-import roeyqian.magnatour.registry.content.UniverseMenus;
+import roeyqian.magnatour.registry.stuff.MagnaMenus;
 
 public class UniversePoolMenu extends AbstractContainerMenu {
 
@@ -38,7 +38,7 @@ public class UniversePoolMenu extends AbstractContainerMenu {
       Inventory playerInventory,
       Container inventory
   ) {
-    super(UniverseMenus.UNIVERSE_POOL_HANDLER, syncId);
+    super(MagnaMenus.UNIVERSE_POOL_HANDLER, syncId);
     checkContainerSize(inventory, 7);
     this.inventory = inventory;
     inventory.startOpen(playerInventory.player);

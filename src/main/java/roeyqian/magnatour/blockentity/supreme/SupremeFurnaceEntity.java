@@ -34,8 +34,8 @@ import org.jspecify.annotations.NonNull;
 import roeyqian.magnatour.level.recipe.SupremeSmeltingRecipe;
 import roeyqian.magnatour.menu.supreme.SupremeFurnaceMenu;
 import roeyqian.magnatour.mixin.block.AbstractFurnaceBlockEntityAccessor;
-import roeyqian.magnatour.registry.content.SupremeBlockEntities;
-import roeyqian.magnatour.registry.logic.CustomRecipes;
+import roeyqian.magnatour.registry.logic.MagnaRecipes;
+import roeyqian.magnatour.registry.stuff.MagnaBlockEntities;
 
 public class SupremeFurnaceEntity extends AbstractFurnaceBlockEntity {
 
@@ -47,8 +47,8 @@ public class SupremeFurnaceEntity extends AbstractFurnaceBlockEntity {
       BlockPos pos,
       BlockState state
   ) {
-    super(SupremeBlockEntities.SUPREME_FURNACE_ENTITY, pos, state, RecipeType.SMELTING);
-    this.supremeMatchGetter = RecipeManager.createCheck(CustomRecipes.SUPREME_SMELTING_TYPE);
+    super(MagnaBlockEntities.SUPREME_FURNACE_ENTITY, pos, state, RecipeType.SMELTING);
+    this.supremeMatchGetter = RecipeManager.createCheck(MagnaRecipes.SUPREME_SMELTING_TYPE);
   }
 
   public static void tick(

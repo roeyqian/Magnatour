@@ -29,7 +29,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 // Magnatour
 import roeyqian.magnatour.level.data.PortalLinkSavedData;
-import roeyqian.magnatour.registry.worldgen.CustomDimensions;
+import roeyqian.magnatour.registry.world.MagnaDimensions;
 
 /** Links Nether portals made in Universe Meta with their generated Nether-side portal. */
 public final class BlockHelperForNetherPortal {
@@ -74,7 +74,7 @@ public final class BlockHelperForNetherPortal {
       BlockPos sourcePortalPos,
       TeleportTransition transition
   ) {
-    if (!CustomDimensions.UNIVERSE_META.equals(sourceLevel.dimension())
+    if (!MagnaDimensions.UNIVERSE_META.equals(sourceLevel.dimension())
         || transition == null
         || !Level.NETHER.equals(transition.newLevel().dimension())) {
       return;
@@ -146,7 +146,7 @@ public final class BlockHelperForNetherPortal {
   private static boolean isUniverseMetaOrNether(
       ResourceKey<Level> dimension
   ) {
-    return CustomDimensions.UNIVERSE_META.equals(dimension) || Level.NETHER.equals(dimension);
+    return MagnaDimensions.UNIVERSE_META.equals(dimension) || Level.NETHER.equals(dimension);
   }
 
   private static PortalLinkSavedData.Endpoint endpointAt(
@@ -159,8 +159,8 @@ public final class BlockHelperForNetherPortal {
   private static boolean isUniverseMetaNetherPair(
       ResourceKey<Level> sourceDimension, ResourceKey<Level> destinationDimension
   ) {
-    return (CustomDimensions.UNIVERSE_META.equals(sourceDimension) && Level.NETHER.equals(destinationDimension))
-        || (Level.NETHER.equals(sourceDimension) && CustomDimensions.UNIVERSE_META.equals(destinationDimension));
+    return (MagnaDimensions.UNIVERSE_META.equals(sourceDimension) && Level.NETHER.equals(destinationDimension))
+        || (Level.NETHER.equals(sourceDimension) && MagnaDimensions.UNIVERSE_META.equals(destinationDimension));
   }
 
   /**

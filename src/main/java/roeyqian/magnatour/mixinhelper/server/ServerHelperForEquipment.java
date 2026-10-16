@@ -39,8 +39,8 @@ import net.minecraft.world.phys.Vec3;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 // Magnatour
-import roeyqian.magnatour.registry.content.UniverseItems;
-import roeyqian.magnatour.registry.logic.CustomComponents;
+import roeyqian.magnatour.registry.logic.MagnaComponents;
+import roeyqian.magnatour.registry.stuff.MagnaItems;
 
 public final class ServerHelperForEquipment {
 
@@ -59,8 +59,8 @@ public final class ServerHelperForEquipment {
     }
 
     ItemStack stack = player.getItemInHand(InteractionHand.MAIN_HAND);
-    if (stack.is(UniverseItems.UNIVERSE_OMNI_BLADE)
-        && stack.getOrDefault(CustomComponents.UNIVERSE_OMNI_BLADE_MODE, 0) == 0) {
+    if (stack.is(MagnaItems.UNIVERSE_OMNI_BLADE)
+        && stack.getOrDefault(MagnaComponents.UNIVERSE_OMNI_BLADE_MODE, 0) == 0) {
       execShovelMode(level, player, direction, pos, ci);
     }
   }
@@ -69,7 +69,7 @@ public final class ServerHelperForEquipment {
       ServerPlayer player
   ) {
     ItemStack stack = player.getMainHandItem();
-    if (!stack.is(UniverseItems.UNIVERSE_BUCKET)) return;
+    if (!stack.is(MagnaItems.UNIVERSE_BUCKET)) return;
 
     BlockHitResult hitResult = getPlayerFluidSourceHitResult(player);
     if (hitResult.getType() != HitResult.Type.BLOCK) return;

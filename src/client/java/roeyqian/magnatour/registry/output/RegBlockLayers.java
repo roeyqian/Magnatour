@@ -40,8 +40,7 @@ import roeyqian.magnatour.block.CustomPortalVertex;
 import roeyqian.magnatour.block.supreme.HarvestContinentPortal;
 import roeyqian.magnatour.block.supreme.OreContinentPortal;
 import roeyqian.magnatour.block.universe.UniverseMetaPortal;
-import roeyqian.magnatour.registry.content.SupremeBlocks;
-import roeyqian.magnatour.registry.content.UniverseBlocks;
+import roeyqian.magnatour.registry.stuff.MagnaBlocks;
 
 @Environment(EnvType.CLIENT)
 public final class RegBlockLayers {
@@ -67,19 +66,19 @@ public final class RegBlockLayers {
   public static void init() {
     registerPortalOverlay(
         ORE_PORTAL_OVERLAY_ID,
-        SupremeBlocks.ORE_CONTINENT_PORTAL,
+        MagnaBlocks.ORE_CONTINENT_PORTAL,
         () -> OreContinentPortal.clientPortalTicks,
         ticks -> OreContinentPortal.clientPortalTicks = ticks
     );
     registerPortalOverlay(
         HARVEST_PORTAL_OVERLAY_ID,
-        SupremeBlocks.HARVEST_CONTINENT_PORTAL,
+        MagnaBlocks.HARVEST_CONTINENT_PORTAL,
         () -> HarvestContinentPortal.clientPortalTicks,
         ticks -> HarvestContinentPortal.clientPortalTicks = ticks
     );
     registerPortalOverlay(
         UNIVERSE_META_PORTAL_OVERLAY_ID,
-        UniverseBlocks.UNIVERSE_META_PORTAL,
+        MagnaBlocks.UNIVERSE_META_PORTAL,
         () -> UniverseMetaPortal.clientPortalTicks,
         ticks -> UniverseMetaPortal.clientPortalTicks = ticks
     );

@@ -13,9 +13,9 @@ import roeyqian.magnatour.item.supreme.StarAtlas;
 import roeyqian.magnatour.level.NetworkManagerForBlock;
 import roeyqian.magnatour.level.NetworkManagerForItem;
 
-public final class CustomNetworks {
+public final class MagnaNetworks {
 
-  private CustomNetworks() {}
+  private MagnaNetworks() {}
 
   public static void init() {
     StarAtlas.initNetworking();
@@ -27,7 +27,7 @@ public final class CustomNetworks {
     NetworkManagerForItem.registerUniverseDotNetworking();
     NetworkManagerForItem.registerRedstoneTriggerNetworking();
 
-    Magnatour.LOGGER.info("[Server] Initializing 'CustomNetworks'");
+    Magnatour.LOGGER.info("[Server] Initializing 'MagnaNetworks'");
   }
 
 }

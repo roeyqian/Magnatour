@@ -5,7 +5,7 @@
  * This file is part of Magnatour.
  * Full license text available in the LICENSE file in the project root.
  */
-package roeyqian.magnatour.registry.worldgen;
+package roeyqian.magnatour.registry.world;
 
 // Mojang
 import com.mojang.serialization.MapCodec;
@@ -14,32 +14,32 @@ import com.mojang.serialization.MapCodec;
 import roeyqian.magnatour.Magnatour;
 import roeyqian.magnatour.levelgen.feature.GiantIceSpikeFeature;
 import roeyqian.magnatour.levelgen.tree.OreTreeFeature;
-import roeyqian.magnatour.registry.WorldgenRegHelper;
+import roeyqian.magnatour.registry.WorldHelper;
 
 /*
  * Supreme Group: Feature
  * Universe Group: Feature
  */
-  public final class CustomFeatures {
+  public final class MagnaFeatures {
 
   // Supreme Group: Harvest Continent
   public static final MapCodec<GiantIceSpikeFeature> GIANT_ICE_SPIKE =
-      WorldgenRegHelper.registerFeature(
+      WorldHelper.registerFeature(
           "giant_ice_spike",
           GiantIceSpikeFeature.CODEC
       );
 
   // Supreme Group: Ore Continent
   public static final MapCodec<OreTreeFeature> ORE_TREE =
-      WorldgenRegHelper.registerFeature(
+      WorldHelper.registerFeature(
           "ore_tree",
           OreTreeFeature.CODEC
       );
 
-  private CustomFeatures() {}
+  private MagnaFeatures() {}
 
   public static void init() {
-    Magnatour.LOGGER.info("[Server] Initializing 'CustomFeatures'");
+    Magnatour.LOGGER.info("[Server] Initializing 'MagnaFeatures'");
   }
 
 }

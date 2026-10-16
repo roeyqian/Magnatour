@@ -39,7 +39,7 @@ import org.jspecify.annotations.NonNull;
 
 // Magnatour
 import roeyqian.magnatour.Magnatour;
-import roeyqian.magnatour.registry.content.SupremeBlocks;
+import roeyqian.magnatour.registry.stuff.MagnaBlocks;
 
 public final class GoldBellTowerPiece extends StructurePiece {
 
@@ -221,7 +221,7 @@ public final class GoldBellTowerPiece extends StructurePiece {
     int minZ = lowerBox.minZ();
     int maxZ = lowerBox.maxZ();
 
-    BlockState dirt = SupremeBlocks.EVER_WATER_SOIL.defaultBlockState();
+    BlockState dirt = MagnaBlocks.EVER_WATER_SOIL.defaultBlockState();
 
     for (int x = minX; x <= maxX; x++) {
       mutablePos.setX(x);
@@ -232,7 +232,7 @@ public final class GoldBellTowerPiece extends StructurePiece {
 
         BlockState state = level.getBlockState(mutablePos);
         if (state.is(Blocks.GRASS_BLOCK)
-            || state.is(SupremeBlocks.EVER_WATER_GRASS_BLOCK)) {
+            || state.is(MagnaBlocks.EVER_WATER_GRASS_BLOCK)) {
           level.setBlock(mutablePos, dirt, 2);
         }
       }

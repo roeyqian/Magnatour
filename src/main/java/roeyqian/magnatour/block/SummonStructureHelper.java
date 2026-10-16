@@ -43,8 +43,8 @@ import roeyqian.magnatour.entity.supreme.NetheriteGolem;
 import roeyqian.magnatour.entity.supreme.ObsidianGolem;
 import roeyqian.magnatour.entity.supreme.PaleLord;
 import roeyqian.magnatour.entity.supreme.SculkBehemoth;
-import roeyqian.magnatour.registry.content.SupremeBlocks;
-import roeyqian.magnatour.registry.content.SupremeEntities;
+import roeyqian.magnatour.registry.stuff.MagnaBlocks;
+import roeyqian.magnatour.registry.stuff.MagnaEntities;
 
 public final class SummonStructureHelper {
 
@@ -100,7 +100,7 @@ public final class SummonStructureHelper {
         || state.is(Blocks.REINFORCED_DEEPSLATE)
         || state.is(Blocks.CREAKING_HEART)
         || state.is(Blocks.PALE_OAK_LOG)
-        || state.is(SupremeBlocks.SUPREME_PUMPKIN_HEAD)
+        || state.is(MagnaBlocks.SUPREME_PUMPKIN_HEAD)
         || state.is(Blocks.CRYING_OBSIDIAN)
         || state.is(Blocks.OBSIDIAN)
         || state.is(Blocks.NETHERITE_BLOCK)
@@ -137,7 +137,7 @@ public final class SummonStructureHelper {
     );
     if (match == null) return;
 
-    NetheriteGolem netheriteGolem = SupremeEntities.NETHERITE_GOLEM.create(level, EntitySpawnReason.TRIGGERED);
+    NetheriteGolem netheriteGolem = MagnaEntities.NETHERITE_GOLEM.create(level, EntitySpawnReason.TRIGGERED);
     if (netheriteGolem == null) return;
 
     netheriteGolem.setPlayerCreated(true);
@@ -162,7 +162,7 @@ public final class SummonStructureHelper {
     );
     if (match == null) return;
 
-    ObsidianGolem obsidianGolem = SupremeEntities.OBSIDIAN_GOLEM.create(level, EntitySpawnReason.TRIGGERED);
+    ObsidianGolem obsidianGolem = MagnaEntities.OBSIDIAN_GOLEM.create(level, EntitySpawnReason.TRIGGERED);
     if (obsidianGolem == null) return;
 
     obsidianGolem.setPlayerCreated(true);
@@ -187,7 +187,7 @@ public final class SummonStructureHelper {
     );
     if (match == null) return;
 
-    PaleLord paleLord = SupremeEntities.PALE_LORD.create(level, EntitySpawnReason.TRIGGERED);
+    PaleLord paleLord = MagnaEntities.PALE_LORD.create(level, EntitySpawnReason.TRIGGERED);
     if (paleLord == null) return;
 
     clearPatternBlocks(level, match);
@@ -211,7 +211,7 @@ public final class SummonStructureHelper {
     );
     if (match == null) return;
 
-    SculkBehemoth sculkBehemoth = SupremeEntities.SCULK_BEHEMOTH.create(
+    SculkBehemoth sculkBehemoth = MagnaEntities.SCULK_BEHEMOTH.create(
         level, EntitySpawnReason.TRIGGERED
     );
     if (sculkBehemoth == null) return;
@@ -285,7 +285,7 @@ public final class SummonStructureHelper {
   private static boolean isNetheriteGolemTriggerBlock(
       BlockState state
   ) {
-    return state.is(SupremeBlocks.SUPREME_PUMPKIN_HEAD)
+    return state.is(MagnaBlocks.SUPREME_PUMPKIN_HEAD)
         || state.is(Blocks.NETHERITE_BLOCK)
         || state.is(Blocks.ANCIENT_DEBRIS);
   }
@@ -320,7 +320,7 @@ public final class SummonStructureHelper {
           builder -> builder
           .where('#', BlockInWorld.hasState(BlockStatePredicate.forBlock(Blocks.NETHERITE_BLOCK)))
           .where('A', BlockInWorld.hasState(BlockStatePredicate.forBlock(Blocks.ANCIENT_DEBRIS)))
-          .where('P', BlockInWorld.hasState(BlockStatePredicate.forBlock(SupremeBlocks.SUPREME_PUMPKIN_HEAD)))
+          .where('P', BlockInWorld.hasState(BlockStatePredicate.forBlock(MagnaBlocks.SUPREME_PUMPKIN_HEAD)))
           .where('~', BlockInWorld.hasState(BlockBehaviour.BlockStateBase::isAir))
       );
     }
@@ -388,7 +388,7 @@ public final class SummonStructureHelper {
   private static boolean isObsidianGolemTriggerBlock(
       BlockState state
   ) {
-    return state.is(SupremeBlocks.SUPREME_PUMPKIN_HEAD)
+    return state.is(MagnaBlocks.SUPREME_PUMPKIN_HEAD)
         || state.is(Blocks.CRYING_OBSIDIAN)
         || state.is(Blocks.OBSIDIAN);
   }
@@ -400,7 +400,7 @@ public final class SummonStructureHelper {
           builder -> builder
           .where('#', BlockInWorld.hasState(BlockStatePredicate.forBlock(Blocks.CRYING_OBSIDIAN)))
           .where('O', BlockInWorld.hasState(BlockStatePredicate.forBlock(Blocks.OBSIDIAN)))
-          .where('P', BlockInWorld.hasState(BlockStatePredicate.forBlock(SupremeBlocks.SUPREME_PUMPKIN_HEAD)))
+          .where('P', BlockInWorld.hasState(BlockStatePredicate.forBlock(MagnaBlocks.SUPREME_PUMPKIN_HEAD)))
           .where('~', BlockInWorld.hasState(BlockBehaviour.BlockStateBase::isAir))
       );
     }
@@ -411,7 +411,7 @@ public final class SummonStructureHelper {
   private static boolean isPaleLordTriggerBlock(
       BlockState state
   ) {
-    return state.is(SupremeBlocks.HARVEST_BLOCK)
+    return state.is(MagnaBlocks.HARVEST_BLOCK)
         || state.is(Blocks.CREAKING_HEART)
         || state.is(Blocks.PALE_OAK_LOG);
   }
@@ -421,7 +421,7 @@ public final class SummonStructureHelper {
       paleLordPatterns = createHorizontalPatternVariants(
           PALE_LORD_AISLES,
           builder -> builder
-          .where('#', BlockInWorld.hasState(BlockStatePredicate.forBlock(SupremeBlocks.HARVEST_BLOCK)))
+          .where('#', BlockInWorld.hasState(BlockStatePredicate.forBlock(MagnaBlocks.HARVEST_BLOCK)))
           .where('C', BlockInWorld.hasState(BlockStatePredicate.forBlock(Blocks.CREAKING_HEART)))
           .where('L', BlockInWorld.hasState(BlockStatePredicate.forBlock(Blocks.PALE_OAK_LOG)))
       );
@@ -433,7 +433,7 @@ public final class SummonStructureHelper {
   private static boolean isSculkBehemothTriggerBlock(
       BlockState state
   ) {
-    return state.is(SupremeBlocks.ORE_BLOCK)
+    return state.is(MagnaBlocks.ORE_BLOCK)
         || state.is(Blocks.SCULK_CATALYST)
         || state.is(Blocks.SCULK)
         || state.is(Blocks.REINFORCED_DEEPSLATE);
@@ -444,7 +444,7 @@ public final class SummonStructureHelper {
       sculkBehemothPatterns = createHorizontalPatternVariants(
           SCULK_BEHEMOTH_AISLES,
           builder -> builder
-          .where('#', BlockInWorld.hasState(BlockStatePredicate.forBlock(SupremeBlocks.ORE_BLOCK)))
+          .where('#', BlockInWorld.hasState(BlockStatePredicate.forBlock(MagnaBlocks.ORE_BLOCK)))
           .where('C', BlockInWorld.hasState(BlockStatePredicate.forBlock(Blocks.SCULK_CATALYST)))
           .where('S', BlockInWorld.hasState(BlockStatePredicate.forBlock(Blocks.SCULK)))
           .where('R', BlockInWorld.hasState(BlockStatePredicate.forBlock(Blocks.REINFORCED_DEEPSLATE)))

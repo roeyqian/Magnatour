@@ -18,7 +18,7 @@ import net.minecraft.world.entity.player.Player;
 // Magnatour
 import roeyqian.magnatour.entity.supreme.NetheriteGolem;
 import roeyqian.magnatour.entity.supreme.ObsidianGolem;
-import roeyqian.magnatour.registry.worldgen.CustomStructures;
+import roeyqian.magnatour.registry.world.MagnaStructures;
 
 /** Makes golems inside a Diamond City hostile while preserving player-created golem protection. */
 public final class DiamondCityGolemTargetGoal extends NearestAttackableTargetGoal<Player> {
@@ -48,7 +48,7 @@ public final class DiamondCityGolemTargetGoal extends NearestAttackableTargetGoa
     return golem.level() instanceof ServerLevel level
         && level.structureManager().getStructureWithPieceAt(
             golem.blockPosition(),
-            holder -> holder.value().type() == CustomStructures.DIAMOND_CITY
+            holder -> holder.value().type() == MagnaStructures.DIAMOND_CITY
         ).isValid();
   }
 

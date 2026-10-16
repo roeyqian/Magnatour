@@ -17,7 +17,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
 // Magnatour
-import roeyqian.magnatour.registry.content.SupremeBlocks;
+import roeyqian.magnatour.registry.stuff.MagnaBlocks;
 
 /** Generates a golden tree rooted in the single reserved grass block. */
 public final class ReservedGoldenTree {
@@ -33,8 +33,8 @@ public final class ReservedGoldenTree {
     RandomSource random = RandomSource.create(
         seed ^ ground.getX() * 341873128712L ^ ground.getZ() * 132897987541L);
     int height = 6 + random.nextInt(3);
-    BlockState log = SupremeBlocks.GOLDEN_LOG.defaultBlockState();
-    BlockState leaves = SupremeBlocks.GOLDEN_LEAVES.defaultBlockState();
+    BlockState log = MagnaBlocks.GOLDEN_LOG.defaultBlockState();
+    BlockState leaves = MagnaBlocks.GOLDEN_LEAVES.defaultBlockState();
     BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
 
     // Direct placement avoids the random selector and tree clearance rejection.
@@ -51,7 +51,7 @@ public final class ReservedGoldenTree {
           pos.setWithOffset(root, dx, dy, dz);
           BlockState existing = level.getBlockState(pos);
           if (!existing.isAir() && !existing.is(Blocks.WHEAT)
-              && !existing.is(SupremeBlocks.GOLDEN_LEAVES)) continue;
+              && !existing.is(MagnaBlocks.GOLDEN_LEAVES)) continue;
           int distance = Math.max(1, Math.abs(dx) + Math.abs(dz) + Math.max(0, dy - height + 1));
           level.setBlock(pos, leaves.setValue(BlockStateProperties.DISTANCE, distance), Block.UPDATE_CLIENTS);
         }

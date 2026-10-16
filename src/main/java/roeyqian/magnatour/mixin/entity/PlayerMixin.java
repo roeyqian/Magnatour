@@ -32,7 +32,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import roeyqian.magnatour.item.universe.UniverseUltimaSword;
 import roeyqian.magnatour.mixinhelper.entity.EntityHelperForEquipment;
 import roeyqian.magnatour.mixinhelper.item.ItemHelperForEnchantment;
-import roeyqian.magnatour.registry.logic.CustomComponents;
+import roeyqian.magnatour.registry.logic.MagnaComponents;
 
 // Other
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
@@ -69,7 +69,7 @@ public class PlayerMixin {
     if (player.level() instanceof ServerLevel world
         && target instanceof LivingEntity living && living.isAlive()
         && weapon.getItem() instanceof UniverseUltimaSword sword
-        && weapon.getOrDefault(CustomComponents.UNIVERSE_ULTIMA_SWORD_MODE, 0) == 1) {
+        && weapon.getOrDefault(MagnaComponents.UNIVERSE_ULTIMA_SWORD_MODE, 0) == 1) {
       // Trigger execution even when immunity would prevent a successful hit.
       // Use vanilla's already-computed critical flag, before any death effects.
       sword.executeUniverseAttack(world, living, player, critical);

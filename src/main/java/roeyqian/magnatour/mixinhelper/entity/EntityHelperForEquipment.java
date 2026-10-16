@@ -34,8 +34,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import roeyqian.magnatour.Magnatour;
 import roeyqian.magnatour.item.RemoteAccessManager;
 import roeyqian.magnatour.item.supreme.EmperorArmor;
-import roeyqian.magnatour.registry.content.UniverseItems;
-import roeyqian.magnatour.registry.logic.CustomComponents;
+import roeyqian.magnatour.registry.logic.MagnaComponents;
+import roeyqian.magnatour.registry.stuff.MagnaItems;
 
 public final class EntityHelperForEquipment {
 
@@ -47,8 +47,8 @@ public final class EntityHelperForEquipment {
       Player player
   ) {
     return player.getAbilities().flying
-        && player.getItemBySlot(EquipmentSlot.CHEST).is(UniverseItems.UNIVERSE_VOID_CHESTPLATE)
-        && player.getItemBySlot(EquipmentSlot.FEET).is(UniverseItems.UNIVERSE_VOID_BOOTS);
+        && player.getItemBySlot(EquipmentSlot.CHEST).is(MagnaItems.UNIVERSE_VOID_CHESTPLATE)
+        && player.getItemBySlot(EquipmentSlot.FEET).is(MagnaItems.UNIVERSE_VOID_BOOTS);
   }
 
   public static void handleDefaultFlight(
@@ -99,7 +99,7 @@ public final class EntityHelperForEquipment {
       return flightTicks;
     }
 
-    if (player.getItemBySlot(EquipmentSlot.CHEST).is(UniverseItems.UNIVERSE_VOID_CHESTPLATE)) {
+    if (player.getItemBySlot(EquipmentSlot.CHEST).is(MagnaItems.UNIVERSE_VOID_CHESTPLATE)) {
       return handleUniverseVoidFlight(player, flightTicks);
     }
 
@@ -123,7 +123,7 @@ public final class EntityHelperForEquipment {
       Player player,
       CallbackInfo ci
   ) {
-    if (player.getItemBySlot(EquipmentSlot.CHEST).is(UniverseItems.UNIVERSE_VOID_CHESTPLATE)) {
+    if (player.getItemBySlot(EquipmentSlot.CHEST).is(MagnaItems.UNIVERSE_VOID_CHESTPLATE)) {
       ci.cancel();
     }
   }
@@ -151,7 +151,7 @@ public final class EntityHelperForEquipment {
       Player player,
       Vec3 movementInput
   ) {
-    if (!player.getItemBySlot(EquipmentSlot.LEGS).is(UniverseItems.UNIVERSE_VOID_LEGGINGS)) return;
+    if (!player.getItemBySlot(EquipmentSlot.LEGS).is(MagnaItems.UNIVERSE_VOID_LEGGINGS)) return;
     if (player.getAbilities().flying || movementInput.lengthSqr() <= 0) return;
 
     if (player.isInWater()) {
@@ -173,9 +173,9 @@ public final class EntityHelperForEquipment {
     if (!(source.getEntity() instanceof Player player)) return;
 
     ItemStack weaponStack = player.getMainHandItem();
-    if (!weaponStack.is(UniverseItems.UNIVERSE_ULTIMA_SWORD)) return;
+    if (!weaponStack.is(MagnaItems.UNIVERSE_ULTIMA_SWORD)) return;
 
-    if (weaponStack.getOrDefault(CustomComponents.UNIVERSE_ULTIMA_SWORD_MODE, 0) == 1) {
+    if (weaponStack.getOrDefault(MagnaComponents.UNIVERSE_ULTIMA_SWORD_MODE, 0) == 1) {
       target.hurtTime = 0;
       target.setInvulnerableTime(0);
     }
@@ -191,10 +191,10 @@ public final class EntityHelperForEquipment {
       if (!slot.isArmor() || armorStack.isEmpty()) {
         continue;
       }
-      if (armorStack.is(UniverseItems.UNIVERSE_VOID_CHESTPLATE)
-          || armorStack.is(UniverseItems.UNIVERSE_VOID_HELMET)
-          || armorStack.is(UniverseItems.UNIVERSE_VOID_LEGGINGS)
-          || armorStack.is(UniverseItems.UNIVERSE_VOID_BOOTS)) {
+      if (armorStack.is(MagnaItems.UNIVERSE_VOID_CHESTPLATE)
+          || armorStack.is(MagnaItems.UNIVERSE_VOID_HELMET)
+          || armorStack.is(MagnaItems.UNIVERSE_VOID_LEGGINGS)
+          || armorStack.is(MagnaItems.UNIVERSE_VOID_BOOTS)) {
         count++;
       }
     }
@@ -219,7 +219,7 @@ public final class EntityHelperForEquipment {
       CallbackInfoReturnable<Boolean> cir
   ) {
     ItemStack boots = player.getItemBySlot(EquipmentSlot.FEET);
-    if (!boots.is(UniverseItems.UNIVERSE_VOID_BOOTS)) return;
+    if (!boots.is(MagnaItems.UNIVERSE_VOID_BOOTS)) return;
     if (player.isShiftKeyDown()) return;
 
     Level level = player.level();
@@ -236,7 +236,7 @@ public final class EntityHelperForEquipment {
       Player player
   ) {
     ItemStack boots = player.getItemBySlot(EquipmentSlot.FEET);
-    if (!boots.is(UniverseItems.UNIVERSE_VOID_BOOTS)) return;
+    if (!boots.is(MagnaItems.UNIVERSE_VOID_BOOTS)) return;
     if (player.isShiftKeyDown()) return;
     if (player.getAbilities().flying || player.isSpectator()) return;
 
@@ -274,7 +274,7 @@ public final class EntityHelperForEquipment {
       DamageSource source,
       CallbackInfoReturnable<Boolean> cir
   ) {
-    if (player.getItemBySlot(EquipmentSlot.CHEST).is(UniverseItems.UNIVERSE_VOID_CHESTPLATE)
+    if (player.getItemBySlot(EquipmentSlot.CHEST).is(MagnaItems.UNIVERSE_VOID_CHESTPLATE)
         && (source.is(DamageTypeTags.IS_FIRE) || source.is(DamageTypeTags.IS_FREEZING))) {
       cir.setReturnValue(true);
     }
@@ -291,7 +291,7 @@ public final class EntityHelperForEquipment {
 
     float baseSpeed = player.isSprinting() ? 0.2F : 0.08F;
     float targetSpeed = baseSpeed;
-    boolean allowSpeedUp = player.getItemBySlot(EquipmentSlot.LEGS).is(UniverseItems.UNIVERSE_VOID_LEGGINGS);
+    boolean allowSpeedUp = player.getItemBySlot(EquipmentSlot.LEGS).is(MagnaItems.UNIVERSE_VOID_LEGGINGS);
 
     if (allowSpeedUp && player.getAbilities().flying && player.isSprinting()) {
       flightTicks++;
@@ -337,7 +337,7 @@ public final class EntityHelperForEquipment {
         Magnatour.MOD_ID, "universe_void_leggings_jump_boost"
     );
 
-    if (legStack.is(UniverseItems.UNIVERSE_VOID_LEGGINGS)) {
+    if (legStack.is(MagnaItems.UNIVERSE_VOID_LEGGINGS)) {
       if (stepAttr != null && !stepAttr.hasModifier(stepId)) {
         stepAttr.addTransientModifier(
             new AttributeModifier(stepId, 0.5, AttributeModifier.Operation.ADD_VALUE)

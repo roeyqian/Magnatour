@@ -45,7 +45,7 @@ import net.minecraft.world.phys.Vec3;
 import roeyqian.magnatour.Magnatour;
 import roeyqian.magnatour.levelgen.HarvestContinentChunkGenerator;
 import roeyqian.magnatour.levelgen.terrain.HarvestContinentTerrain;
-import roeyqian.magnatour.registry.worldgen.CustomDimensions;
+import roeyqian.magnatour.registry.world.MagnaDimensions;
 
 /** Natural animal spawning and additional surface monster spawning in the cactus desert. */
 public final class BiomeMobSpawner {
@@ -68,7 +68,7 @@ public final class BiomeMobSpawner {
     tickEventRegistered = true;
     // The completed level tick has the game time used by vanilla's chunk spawner.
     ServerTickEvents.END_LEVEL_TICK.register(level -> {
-      if (!level.dimension().equals(CustomDimensions.HARVEST_CONTINENT)
+      if (!level.dimension().equals(MagnaDimensions.HARVEST_CONTINENT)
           || !level.tickRateManager().runsNormally()
           || !level.getGameRules().get(GameRules.SPAWN_MOBS)
           || level.players().isEmpty()) return;

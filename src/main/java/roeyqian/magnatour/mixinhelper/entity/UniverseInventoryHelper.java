@@ -17,7 +17,7 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
 // Magnatour
-import roeyqian.magnatour.registry.content.UniverseItems;
+import roeyqian.magnatour.registry.stuff.MagnaItems;
 
 public final class UniverseInventoryHelper {
 
@@ -44,10 +44,10 @@ public final class UniverseInventoryHelper {
       Player player
   ) {
     int pieces = 0;
-    if (player.getItemBySlot(EquipmentSlot.HEAD).is(UniverseItems.UNIVERSE_VOID_HELMET)) pieces++;
-    if (player.getItemBySlot(EquipmentSlot.CHEST).is(UniverseItems.UNIVERSE_VOID_CHESTPLATE)) pieces++;
-    if (player.getItemBySlot(EquipmentSlot.LEGS).is(UniverseItems.UNIVERSE_VOID_LEGGINGS)) pieces++;
-    if (player.getItemBySlot(EquipmentSlot.FEET).is(UniverseItems.UNIVERSE_VOID_BOOTS)) pieces++;
+    if (player.getItemBySlot(EquipmentSlot.HEAD).is(MagnaItems.UNIVERSE_VOID_HELMET)) pieces++;
+    if (player.getItemBySlot(EquipmentSlot.CHEST).is(MagnaItems.UNIVERSE_VOID_CHESTPLATE)) pieces++;
+    if (player.getItemBySlot(EquipmentSlot.LEGS).is(MagnaItems.UNIVERSE_VOID_LEGGINGS)) pieces++;
+    if (player.getItemBySlot(EquipmentSlot.FEET).is(MagnaItems.UNIVERSE_VOID_BOOTS)) pieces++;
     return pieces == 0 ? 0 : 64 << (pieces - 1);
   }
 

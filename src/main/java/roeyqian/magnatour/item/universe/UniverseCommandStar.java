@@ -27,14 +27,10 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.EquipmentSlotGroup;
-import net.minecraft.world.entity.ai.attributes.AttributeModifier;
-import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -50,11 +46,10 @@ import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 // Magnatour
-import roeyqian.magnatour.Magnatour;
 import roeyqian.magnatour.item.CustomItemSetting;
 import roeyqian.magnatour.item.CustomToolMaterial;
 import roeyqian.magnatour.menu.universe.UniverseCommandStarMenu;
-import roeyqian.magnatour.registry.logic.CustomComponents;
+import roeyqian.magnatour.registry.logic.MagnaComponents;
 
 public class UniverseCommandStar extends Item {
 
@@ -71,7 +66,7 @@ public class UniverseCommandStar extends Item {
       @NonNull InteractionHand hand
   ) {
     ItemStack stack = player.getItemInHand(hand);
-    int mode = stack.getOrDefault(CustomComponents.UNIVERSE_COMMAND_STAR_MODE, 0);
+    int mode = stack.getOrDefault(MagnaComponents.UNIVERSE_COMMAND_STAR_MODE, 0);
 
     if (mode == 0) {
       return execWorkingManager(world, player, stack, hand);
@@ -88,7 +83,7 @@ public class UniverseCommandStar extends Item {
     if (player == null) return InteractionResult.PASS;
 
     ItemStack stack = context.getItemInHand();
-    int mode = stack.getOrDefault(CustomComponents.UNIVERSE_COMMAND_STAR_MODE, 0);
+    int mode = stack.getOrDefault(MagnaComponents.UNIVERSE_COMMAND_STAR_MODE, 0);
 
     if (mode == 1) return bindBlock(context);
     return InteractionResult.PASS;
@@ -106,8 +101,8 @@ public class UniverseCommandStar extends Item {
             DataComponents.ATTRIBUTE_MODIFIERS,
             createAttributes()
         )
-        .component(CustomComponents.UNIVERSE_COMMAND_STAR_MODE, 0)
-        .component(CustomComponents.UNIVERSE_COMMAND_STAR_BOUND_LIST, BoundBlockList.EMPTY);
+        .component(MagnaComponents.UNIVERSE_COMMAND_STAR_MODE, 0)
+        .component(MagnaComponents.UNIVERSE_COMMAND_STAR_BOUND_LIST, BoundBlockList.EMPTY);
   }
 
   private static ItemAttributeModifiers createAttributes() {
@@ -123,7 +118,7 @@ public class UniverseCommandStar extends Item {
     if (world.isClientSide()) return InteractionResult.SUCCESS;
 
     BoundBlockList boundList = stack.getOrDefault(
-        CustomComponents.UNIVERSE_COMMAND_STAR_BOUND_LIST, BoundBlockList.EMPTY
+        MagnaComponents.UNIVERSE_COMMAND_STAR_BOUND_LIST, BoundBlockList.EMPTY
     );
 
     player.openMenu(new ExtendedMenuProvider<BoundBlockList>() {
@@ -176,7 +171,7 @@ public class UniverseCommandStar extends Item {
 
     if (!world.isClientSide()) {
       BoundBlockList currentList = stack.getOrDefault(
-          CustomComponents.UNIVERSE_COMMAND_STAR_BOUND_LIST,
+          MagnaComponents.UNIVERSE_COMMAND_STAR_BOUND_LIST,
           BoundBlockList.EMPTY
       );
 
@@ -184,7 +179,7 @@ public class UniverseCommandStar extends Item {
       BoundBlocks newBlock = new BoundBlocks(pos, world.dimension(), blockName);
 
       BoundBlockList newList = currentList.withAdded(newBlock);
-      stack.set(CustomComponents.UNIVERSE_COMMAND_STAR_BOUND_LIST, newList);
+      stack.set(MagnaComponents.UNIVERSE_COMMAND_STAR_BOUND_LIST, newList);
 
       player.sendOverlayMessage(
           Component.translatable("msg.magnatour.universe_command_star.bind")

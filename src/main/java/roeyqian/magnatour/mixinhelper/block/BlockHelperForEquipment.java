@@ -25,8 +25,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 // Magnatour
 import roeyqian.magnatour.item.universe.UniverseOmniBlade;
-import roeyqian.magnatour.registry.content.UniverseItems;
-import roeyqian.magnatour.registry.logic.CustomComponents;
+import roeyqian.magnatour.registry.logic.MagnaComponents;
+import roeyqian.magnatour.registry.stuff.MagnaItems;
 
 public final class BlockHelperForEquipment {
 
@@ -45,7 +45,7 @@ public final class BlockHelperForEquipment {
     }
 
     ItemStack boots = player.getItemBySlot(EquipmentSlot.FEET);
-    if (boots.is(UniverseItems.UNIVERSE_VOID_BOOTS)) {
+    if (boots.is(MagnaItems.UNIVERSE_VOID_BOOTS)) {
       cir.setReturnValue(true);
     }
   }
@@ -55,16 +55,16 @@ public final class BlockHelperForEquipment {
       CallbackInfoReturnable<Float> cir
   ) {
     ItemStack stack = player.getItemInHand(player.getUsedItemHand());
-    if (stack.is(UniverseItems.UNIVERSE_ULTIMA_SWORD)) {
+    if (stack.is(MagnaItems.UNIVERSE_ULTIMA_SWORD)) {
       cir.setReturnValue(UNIVERSE_ULTIMA_SWORD_DESTROY_PROGRESS);
       return;
     }
 
-    if (!stack.is(UniverseItems.UNIVERSE_OMNI_BLADE)) {
+    if (!stack.is(MagnaItems.UNIVERSE_OMNI_BLADE)) {
       return;
     }
 
-    int mode = stack.getOrDefault(CustomComponents.UNIVERSE_OMNI_BLADE_MODE, 0);
+    int mode = stack.getOrDefault(MagnaComponents.UNIVERSE_OMNI_BLADE_MODE, 0);
     if (mode == 0) {
       cir.setReturnValue(UNIVERSE_OMNI_BLADE_MODE_0_DESTROY_PROGRESS);
       return;
@@ -86,7 +86,7 @@ public final class BlockHelperForEquipment {
     }
 
     // Mode 0 uses normal block loot, including Omniscience's Fortune bonuses.
-    if (tool.getOrDefault(CustomComponents.UNIVERSE_OMNI_BLADE_MODE, 0) == 0) {
+    if (tool.getOrDefault(MagnaComponents.UNIVERSE_OMNI_BLADE_MODE, 0) == 0) {
       return;
     }
 

@@ -55,7 +55,7 @@ import roeyqian.magnatour.levelgen.terrain.HarvestContinentCaveSampler;
 import roeyqian.magnatour.levelgen.terrain.HarvestContinentTerrain;
 import roeyqian.magnatour.levelgen.terrain.HarvestMelonTerrain;
 import roeyqian.magnatour.levelgen.tree.ReservedGoldenTree;
-import roeyqian.magnatour.registry.content.SupremeBlocks;
+import roeyqian.magnatour.registry.stuff.MagnaBlocks;
 
 public final class HarvestContinentChunkGenerator extends ChunkGenerator {
 
@@ -123,7 +123,7 @@ public final class HarvestContinentChunkGenerator extends ChunkGenerator {
         }
         int y = surface.height();
         ground.set(x, y, z);
-        if (level.getBlockState(ground).is(SupremeBlocks.EVER_WATER_GRASS_BLOCK)) {
+        if (level.getBlockState(ground).is(MagnaBlocks.EVER_WATER_GRASS_BLOCK)) {
           ReservedGoldenTree.place(level, this.terrainSeed, ground);
         }
       }
@@ -304,8 +304,8 @@ public final class HarvestContinentChunkGenerator extends ChunkGenerator {
         ? Blocks.MUD.defaultBlockState() : Blocks.GRASS_BLOCK.defaultBlockState();
     if (profile.berrySnowfield()) return profile.berryClearing()
         ? Blocks.GRASS_BLOCK.defaultBlockState() : Blocks.SNOW_BLOCK.defaultBlockState();
-    return profile.crop() ? SupremeBlocks.EVER_WATER_FARMLAND.defaultBlockState()
-        : SupremeBlocks.EVER_WATER_GRASS_BLOCK.defaultBlockState();
+    return profile.crop() ? MagnaBlocks.EVER_WATER_FARMLAND.defaultBlockState()
+        : MagnaBlocks.EVER_WATER_GRASS_BLOCK.defaultBlockState();
   }
 
   private static BlockState surfaceFiller(
@@ -317,7 +317,7 @@ public final class HarvestContinentChunkGenerator extends ChunkGenerator {
     if (profile.berrySnowfield()) return profile.berryClearing()
         ? Blocks.DIRT.defaultBlockState() : Blocks.PACKED_ICE.defaultBlockState();
     if (profile.marsh()) return Blocks.DIRT.defaultBlockState();
-    return SupremeBlocks.EVER_WATER_SOIL.defaultBlockState();
+    return MagnaBlocks.EVER_WATER_SOIL.defaultBlockState();
   }
 
   private static BlockState blockAt(

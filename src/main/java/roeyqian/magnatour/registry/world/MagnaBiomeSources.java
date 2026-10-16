@@ -5,7 +5,7 @@
  * This file is part of Magnatour.
  * Full license text available in the LICENSE file in the project root.
  */
-package roeyqian.magnatour.registry.worldgen;
+package roeyqian.magnatour.registry.world;
 
 // Minecraft
 import net.minecraft.resources.Identifier;
@@ -14,30 +14,30 @@ import net.minecraft.resources.Identifier;
 import roeyqian.magnatour.Magnatour;
 import roeyqian.magnatour.levelgen.biome.HarvestContinentBiomeSource;
 import roeyqian.magnatour.levelgen.biome.OreContinentBiomeSource;
-import roeyqian.magnatour.registry.WorldgenRegHelper;
+import roeyqian.magnatour.registry.WorldHelper;
 
 /*
  * Supreme Group: Biome Source
  * Universe Group: Biome Source
  */
-public final class CustomBiomeSources {
+public final class MagnaBiomeSources {
 
   // Supreme Group: Biome Source
-  public static final Identifier HARVEST_CONTINENT = WorldgenRegHelper.id("harvest_continent");
-  public static final Identifier ORE_CONTINENT = WorldgenRegHelper.id("ore_continent");
+  public static final Identifier HARVEST_CONTINENT = WorldHelper.id("harvest_continent");
+  public static final Identifier ORE_CONTINENT = WorldHelper.id("ore_continent");
 
-  private CustomBiomeSources() {}
+  private MagnaBiomeSources() {}
 
   public static void init() {
-    WorldgenRegHelper.registerBiomeSource(
+    WorldHelper.registerBiomeSource(
         HARVEST_CONTINENT.getPath(),
         HarvestContinentBiomeSource.CODEC
     );
-    WorldgenRegHelper.registerBiomeSource(
+    WorldHelper.registerBiomeSource(
         ORE_CONTINENT.getPath(),
         OreContinentBiomeSource.CODEC
     );
-    Magnatour.LOGGER.info("[Server] Initializing 'CustomBiomeSources'");
+    Magnatour.LOGGER.info("[Server] Initializing 'MagnaBiomeSources'");
   }
 
 }

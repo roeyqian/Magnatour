@@ -28,7 +28,7 @@ import org.jspecify.annotations.Nullable;
 
 // Magnatour
 import roeyqian.magnatour.blockentity.universe.UniverseRefineryEntity;
-import roeyqian.magnatour.registry.content.UniverseBlockEntities;
+import roeyqian.magnatour.registry.stuff.MagnaBlockEntities;
 
 public class UniverseRefinery extends AbstractFurnaceBlock {
 
@@ -90,7 +90,7 @@ public class UniverseRefinery extends AbstractFurnaceBlock {
       BlockEntityType<A> givenType,
       BlockEntityTicker<? super E> ticker
   ) {
-    return UniverseBlockEntities.UNIVERSE_REFINERY_ENTITY == givenType ? (BlockEntityTicker<A>) ticker : null;
+    return MagnaBlockEntities.UNIVERSE_REFINERY_ENTITY == givenType ? (BlockEntityTicker<A>) ticker : null;
   }
 
 }

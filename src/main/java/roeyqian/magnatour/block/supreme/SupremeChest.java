@@ -76,7 +76,7 @@ import org.jspecify.annotations.Nullable;
 import roeyqian.magnatour.blockentity.supreme.SupremeChestEntity;
 import roeyqian.magnatour.menu.supreme.SupremeChestContainer;
 import roeyqian.magnatour.menu.supreme.SupremeChestMenu;
-import roeyqian.magnatour.registry.content.SupremeBlockEntities;
+import roeyqian.magnatour.registry.stuff.MagnaBlockEntities;
 
 public class SupremeChest extends BaseEntityBlock
     implements SimpleWaterloggedBlock, WorldlyContainerHolder {
@@ -196,7 +196,7 @@ public class SupremeChest extends BaseEntityBlock
       @NonNull BlockEntityType<T> type
   ) {
     return level.isClientSide()
-        ? createTickerHelper(type, SupremeBlockEntities.SUPREME_CHEST_ENTITY, (_, _, _, be) -> SupremeChestEntity.tick(be))
+        ? createTickerHelper(type, MagnaBlockEntities.SUPREME_CHEST_ENTITY, (_, _, _, be) -> SupremeChestEntity.tick(be))
         : null;
   }
 

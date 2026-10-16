@@ -42,7 +42,7 @@ import org.jspecify.annotations.Nullable;
 
 // Magnatour
 import roeyqian.magnatour.blockentity.supreme.LogisticsFiberEntity;
-import roeyqian.magnatour.registry.content.SupremeBlockEntities;
+import roeyqian.magnatour.registry.stuff.MagnaBlockEntities;
 
 public class LogisticsFiber extends BaseEntityBlock {
 
@@ -137,7 +137,7 @@ public class LogisticsFiber extends BaseEntityBlock {
   ) {
     return world.isClientSide()
         ? null
-        : createTickerHelper(type, SupremeBlockEntities.LOGISTICS_FIBER_ENTITY, LogisticsFiberEntity::tick);
+        : createTickerHelper(type, MagnaBlockEntities.LOGISTICS_FIBER_ENTITY, LogisticsFiberEntity::tick);
   }
 
   @Nullable @Override

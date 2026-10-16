@@ -26,7 +26,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 // Magnatour
 import roeyqian.magnatour.mixinhelper.item.ItemHelperForEnchantment;
-import roeyqian.magnatour.registry.content.SupremeItems;
+import roeyqian.magnatour.registry.stuff.MagnaItems;
 
 // Other
 // Apache Commons Lang
@@ -59,7 +59,7 @@ public abstract class EnchantmentMixin {
       ItemStack stack,
       CallbackInfoReturnable<Boolean> cir
   ) {
-    if (cir.getReturnValue() || !stack.is(SupremeItems.EMPEROR_AXE_PICKAXE)) return;
+    if (cir.getReturnValue() || !stack.is(MagnaItems.EMPEROR_AXE_PICKAXE)) return;
     Enchantment enchantment = (Enchantment) (Object) this;
     if (enchantment.isSupportedItem(stack)
         && ItemHelperForEnchantment.supportsAxeOrPickaxe(
@@ -77,7 +77,7 @@ public abstract class EnchantmentMixin {
       cir.setReturnValue(!stack.isEmpty());
       return;
     }
-    if (cir.getReturnValue() || !stack.is(SupremeItems.EMPEROR_AXE_PICKAXE)) return;
+    if (cir.getReturnValue() || !stack.is(MagnaItems.EMPEROR_AXE_PICKAXE)) return;
     Enchantment enchantment = (Enchantment) (Object) this;
     if (ItemHelperForEnchantment.supportsAxeOrPickaxe(enchantment.getSupportedItems())) {
       cir.setReturnValue(true);

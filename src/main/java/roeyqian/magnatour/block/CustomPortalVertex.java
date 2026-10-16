@@ -41,8 +41,8 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 
 // Magnatour
 import roeyqian.magnatour.level.data.PortalLinkSavedData;
-import roeyqian.magnatour.registry.content.SupremeBlocks;
-import roeyqian.magnatour.registry.worldgen.CustomDimensions;
+import roeyqian.magnatour.registry.stuff.MagnaBlocks;
+import roeyqian.magnatour.registry.world.MagnaDimensions;
 
 public interface CustomPortalVertex {
 
@@ -169,7 +169,7 @@ public interface CustomPortalVertex {
       if (linkedEndpoint.isPresent()) {
         PortalLinkSavedData.Endpoint endpoint = linkedEndpoint.get();
         ServerLevel linkedWorld = server.getLevel(endpoint.dimension());
-        if (linkedWorld != null && endpoint.dimension() == CustomDimensions.UNIVERSE_META
+        if (linkedWorld != null && endpoint.dimension() == MagnaDimensions.UNIVERSE_META
             && isValidPortal(linkedWorld, endpoint.pos(), portalAxis(linkedWorld, endpoint.pos()), frameBlock, portalBlock)) {
           targetWorld = linkedWorld;
           targetPos = endpoint.pos();
@@ -195,7 +195,7 @@ public interface CustomPortalVertex {
           portalBlock
       );
 
-      if (currentWorld.dimension() == CustomDimensions.UNIVERSE_META) {
+      if (currentWorld.dimension() == MagnaDimensions.UNIVERSE_META) {
         PortalLinkSavedData.Endpoint targetEndpoint = new PortalLinkSavedData.Endpoint(
             targetWorld.dimension(), getPortalOrigin(targetWorld, targetPos, frameBlock, portalBlock)
         );
@@ -482,14 +482,14 @@ public interface CustomPortalVertex {
   private static List<PortalSpec> portalSpecs() {
     return List.of(
         new PortalSpec(
-            SupremeBlocks.ORE_BLOCK,
-            SupremeBlocks.ORE_CONTINENT_PORTAL,
-            CustomDimensions.ORE_CONTINENT
+            MagnaBlocks.ORE_BLOCK,
+            MagnaBlocks.ORE_CONTINENT_PORTAL,
+            MagnaDimensions.ORE_CONTINENT
         ),
         new PortalSpec(
-            SupremeBlocks.HARVEST_BLOCK,
-            SupremeBlocks.HARVEST_CONTINENT_PORTAL,
-            CustomDimensions.HARVEST_CONTINENT
+            MagnaBlocks.HARVEST_BLOCK,
+            MagnaBlocks.HARVEST_CONTINENT_PORTAL,
+            MagnaDimensions.HARVEST_CONTINENT
         )
     );
   }
@@ -643,7 +643,7 @@ public interface CustomPortalVertex {
     ) {
       if (!(world instanceof Level level)) return false;
       return level.dimension() == Level.OVERWORLD
-          || level.dimension() == CustomDimensions.UNIVERSE_META
+          || level.dimension() == MagnaDimensions.UNIVERSE_META
           || level.dimension() == this.portalDimension;
     }
 

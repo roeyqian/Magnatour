@@ -41,7 +41,7 @@ import roeyqian.magnatour.level.network.UniverseBucketPickupPayload;
 import roeyqian.magnatour.level.network.UniverseCommandStarBoundBlockPayload;
 import roeyqian.magnatour.menu.universe.UniverseCommandStarMenu;
 import roeyqian.magnatour.mixinhelper.server.ServerHelperForEquipment;
-import roeyqian.magnatour.registry.logic.CustomComponents;
+import roeyqian.magnatour.registry.logic.MagnaComponents;
 
 public final class NetworkManagerForBlock {
 
@@ -62,23 +62,23 @@ public final class NetworkManagerForBlock {
           switch (item) {
             case MirrorMobile _ -> execTogglingMode(
                 player, stack,
-                CustomComponents.MIRROR_MOBILE_MODE, "msg.magnatour.mirror_mobile"
+                MagnaComponents.MIRROR_MOBILE_MODE, "msg.magnatour.mirror_mobile"
             );
             case UniverseUltimaSword _ -> execTogglingMode(
                 player, stack,
-                CustomComponents.UNIVERSE_ULTIMA_SWORD_MODE, "msg.magnatour.universe_ultima_sword"
+                MagnaComponents.UNIVERSE_ULTIMA_SWORD_MODE, "msg.magnatour.universe_ultima_sword"
             );
             case UniverseOmniBlade _ -> execTogglingMode(
                 player, stack,
-                CustomComponents.UNIVERSE_OMNI_BLADE_MODE, "msg.magnatour.universe_omni_blade"
+                MagnaComponents.UNIVERSE_OMNI_BLADE_MODE, "msg.magnatour.universe_omni_blade"
             );
             case UniverseCommandStar _ -> execTogglingMode(
                 player, stack,
-                CustomComponents.UNIVERSE_COMMAND_STAR_MODE, "msg.magnatour.universe_command_star"
+                MagnaComponents.UNIVERSE_COMMAND_STAR_MODE, "msg.magnatour.universe_command_star"
             );
             case UniverseBucket _ -> execTogglingMode(
                 player, stack,
-                CustomComponents.UNIVERSE_BUCKET_MODE, "msg.magnatour.universe_bucket"
+                MagnaComponents.UNIVERSE_BUCKET_MODE, "msg.magnatour.universe_bucket"
             );
             default -> {}
           }
@@ -193,14 +193,14 @@ public final class NetworkManagerForBlock {
     if (!(commandStarStack.getItem() instanceof UniverseCommandStar)) return;
 
     UniverseCommandStar.BoundBlockList currentList = commandStarStack.getOrDefault(
-        CustomComponents.UNIVERSE_COMMAND_STAR_BOUND_LIST,
+        MagnaComponents.UNIVERSE_COMMAND_STAR_BOUND_LIST,
         UniverseCommandStar.BoundBlockList.EMPTY
     );
     UniverseCommandStar.BoundBlockList newList = currentList.withRemoved(
         payload.pos(), payload.dimension()
     );
 
-    commandStarStack.set(CustomComponents.UNIVERSE_COMMAND_STAR_BOUND_LIST, newList);
+    commandStarStack.set(MagnaComponents.UNIVERSE_COMMAND_STAR_BOUND_LIST, newList);
     player.sendOverlayMessage(
         Component.translatable("msg.magnatour.universe_command_star.remove")
             .withStyle(ChatFormatting.GREEN)

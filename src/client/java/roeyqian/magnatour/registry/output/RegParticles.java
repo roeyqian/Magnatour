@@ -15,7 +15,7 @@ import net.fabricmc.fabric.api.client.particle.v1.ParticleProviderRegistry;
 // Magnatour
 import roeyqian.magnatour.Magnatour;
 import roeyqian.magnatour.particle.UniverseSonicBoomParticle;
-import roeyqian.magnatour.registry.logic.CustomParticles;
+import roeyqian.magnatour.registry.logic.MagnaParticles;
 
 @Environment(EnvType.CLIENT)
 public final class RegParticles {
@@ -24,11 +24,11 @@ public final class RegParticles {
 
   public static void init() {
     ParticleProviderRegistry.getInstance().register(
-        CustomParticles.UNIVERSE_SONIC_BOOM,
+        MagnaParticles.UNIVERSE_SONIC_BOOM,
         UniverseSonicBoomParticle.RainbowFactory::new
     );
 
-    Magnatour.LOGGER.info("[Client] Initializing 'CustomParticles'");
+    Magnatour.LOGGER.info("[Client] Initializing 'MagnaParticles'");
   }
 
 }

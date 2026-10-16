@@ -17,10 +17,8 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 
 // Magnatour
 import roeyqian.magnatour.Magnatour;
-import roeyqian.magnatour.registry.content.SupremeBlockEntities;
-import roeyqian.magnatour.registry.content.SupremeMenus;
-import roeyqian.magnatour.registry.content.UniverseBlockEntities;
-import roeyqian.magnatour.registry.content.UniverseMenus;
+import roeyqian.magnatour.registry.stuff.MagnaBlockEntities;
+import roeyqian.magnatour.registry.stuff.MagnaMenus;
 import roeyqian.magnatour.renderer.supreme.SupremeChestRenderer;
 import roeyqian.magnatour.renderer.universe.UniverseLibraryRenderer;
 import roeyqian.magnatour.screen.supreme.ItemHubScreen;
@@ -44,24 +42,24 @@ public final class RegScreens {
   private RegScreens() {}
 
   public static void init() {
-    MenuScreens.register(UniverseMenus.UNIVERSE_ANNIHILATOR_HANDLER, UniverseAnnihilatorScreen::new);
-    MenuScreens.register(SupremeMenus.SUPREME_FURNACE_HANDLER, SupremeFurnaceScreen::new);
-    MenuScreens.register(SupremeMenus.SUPREME_CRAFTABLE_HANDLER, SupremeCraftableScreen::new);
-    MenuScreens.register(SupremeMenus.SUPREME_RESERVER_HANDLER, SupremeReserverScreen::new);
-    MenuScreens.register(SupremeMenus.SUPREME_CHEST_HANDLER, SupremeChestScreen::new);
-    MenuScreens.register(SupremeMenus.REDSTONE_TRIGGER_HANDLER, RedstoneTriggerScreen::new);
-    MenuScreens.register(SupremeMenus.ITEM_HUB_HANDLER, ItemHubScreen::new);
+    MenuScreens.register(MagnaMenus.UNIVERSE_ANNIHILATOR_HANDLER, UniverseAnnihilatorScreen::new);
+    MenuScreens.register(MagnaMenus.SUPREME_FURNACE_HANDLER, SupremeFurnaceScreen::new);
+    MenuScreens.register(MagnaMenus.SUPREME_CRAFTABLE_HANDLER, SupremeCraftableScreen::new);
+    MenuScreens.register(MagnaMenus.SUPREME_RESERVER_HANDLER, SupremeReserverScreen::new);
+    MenuScreens.register(MagnaMenus.SUPREME_CHEST_HANDLER, SupremeChestScreen::new);
+    MenuScreens.register(MagnaMenus.REDSTONE_TRIGGER_HANDLER, RedstoneTriggerScreen::new);
+    MenuScreens.register(MagnaMenus.ITEM_HUB_HANDLER, ItemHubScreen::new);
 
-    MenuScreens.register(UniverseMenus.UNIVERSE_COMMAND_STAR_HANDLER, UniverseCommandStarScreen::new);
-    MenuScreens.register(UniverseMenus.UNIVERSE_FORGE_HANDLER, UniverseForgeCraftingScreen::new);
-    MenuScreens.register(UniverseMenus.UNIVERSE_FORGE_SMELTING_HANDLER, UniverseForgeSmeltingScreen::new);
-    MenuScreens.register(UniverseMenus.UNIVERSE_REFINERY_HANDLER, UniverseRefineryScreen::new);
-    MenuScreens.register(UniverseMenus.UNIVERSE_LIBRARY_HANDLER, UniverseLibraryScreen::new);
-    MenuScreens.register(UniverseMenus.UNIVERSE_POOL_HANDLER, UniversePoolScreen::new);
-    MenuScreens.register(UniverseMenus.UNIVERSE_DOT_HANDLER, UniverseDotScreen::new);
+    MenuScreens.register(MagnaMenus.UNIVERSE_COMMAND_STAR_HANDLER, UniverseCommandStarScreen::new);
+    MenuScreens.register(MagnaMenus.UNIVERSE_FORGE_HANDLER, UniverseForgeCraftingScreen::new);
+    MenuScreens.register(MagnaMenus.UNIVERSE_FORGE_SMELTING_HANDLER, UniverseForgeSmeltingScreen::new);
+    MenuScreens.register(MagnaMenus.UNIVERSE_REFINERY_HANDLER, UniverseRefineryScreen::new);
+    MenuScreens.register(MagnaMenus.UNIVERSE_LIBRARY_HANDLER, UniverseLibraryScreen::new);
+    MenuScreens.register(MagnaMenus.UNIVERSE_POOL_HANDLER, UniversePoolScreen::new);
+    MenuScreens.register(MagnaMenus.UNIVERSE_DOT_HANDLER, UniverseDotScreen::new);
 
-    BlockEntityRenderers.register(UniverseBlockEntities.UNIVERSE_LIBRARY_ENTITY, UniverseLibraryRenderer::new);
-    BlockEntityRenderers.register(SupremeBlockEntities.SUPREME_CHEST_ENTITY, SupremeChestRenderer::new);
+    BlockEntityRenderers.register(MagnaBlockEntities.UNIVERSE_LIBRARY_ENTITY, UniverseLibraryRenderer::new);
+    BlockEntityRenderers.register(MagnaBlockEntities.SUPREME_CHEST_ENTITY, SupremeChestRenderer::new);
 
     Magnatour.LOGGER.info("[Client] Initializing 'RegScreens'");
   }

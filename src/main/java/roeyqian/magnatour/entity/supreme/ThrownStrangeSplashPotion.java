@@ -27,7 +27,7 @@ import org.jspecify.annotations.NonNull;
 
 // Magnatour
 import roeyqian.magnatour.item.StrangePotionEffect;
-import roeyqian.magnatour.registry.content.SupremeItems;
+import roeyqian.magnatour.registry.stuff.MagnaItems;
 
 public class ThrownStrangeSplashPotion extends ThrownSplashPotion {
 
@@ -58,7 +58,7 @@ public class ThrownStrangeSplashPotion extends ThrownSplashPotion {
 
   @NonNull @Override
   protected Item getDefaultItem() {
-    return SupremeItems.STRANGE_SPLASH_POTION;
+    return MagnaItems.STRANGE_SPLASH_POTION;
   }
 
   @Override

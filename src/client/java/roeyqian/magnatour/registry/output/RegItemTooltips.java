@@ -24,7 +24,7 @@ import net.minecraft.world.item.component.TooltipDisplay;
 // Magnatour
 import roeyqian.magnatour.Magnatour;
 import roeyqian.magnatour.item.supreme.EmperorArmor;
-import roeyqian.magnatour.registry.logic.CustomComponents;
+import roeyqian.magnatour.registry.logic.MagnaComponents;
 
 @Environment(EnvType.CLIENT)
 public final class RegItemTooltips {
@@ -36,9 +36,9 @@ public final class RegItemTooltips {
       TooltipDisplay display = stack.getOrDefault(DataComponents.TOOLTIP_DISPLAY, TooltipDisplay.DEFAULT);
       if (display.hideTooltip()) return;
 
-      if (stack.get(CustomComponents.UNIVERSE_LIBRARY_CONTENTS) != null) {
+      if (stack.get(MagnaComponents.UNIVERSE_LIBRARY_CONTENTS) != null) {
         List<Component> contents = new ArrayList<>();
-        stack.addToTooltip(CustomComponents.UNIVERSE_LIBRARY_CONTENTS, context, display, contents::add, flag);
+        stack.addToTooltip(MagnaComponents.UNIVERSE_LIBRARY_CONTENTS, context, display, contents::add, flag);
         lines.addAll(Math.min(1, lines.size()), contents);
       }
 

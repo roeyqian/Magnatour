@@ -29,8 +29,7 @@ import roeyqian.magnatour.model.supreme.SculkBehemothModel;
 import roeyqian.magnatour.model.supreme.SupremeChestModel;
 import roeyqian.magnatour.model.supreme.TheUnnameableThingModel;
 import roeyqian.magnatour.model.universe.UniverseGuardianModel;
-import roeyqian.magnatour.registry.content.SupremeEntities;
-import roeyqian.magnatour.registry.content.UniverseLiveEntities;
+import roeyqian.magnatour.registry.stuff.MagnaEntities;
 import roeyqian.magnatour.renderer.supreme.BellRingerRenderer;
 import roeyqian.magnatour.renderer.supreme.BellSoulRenderer;
 import roeyqian.magnatour.renderer.supreme.NetheriteGolemRenderer;
@@ -78,7 +77,7 @@ public final class RegEntityLayers {
   private RegEntityLayers() {}
 
   public static void init() {
-    EntityRenderers.register(UniverseLiveEntities.UNIVERSE_ANNIHILATOR, UniverseAnnihilatorRenderer::new);
+    EntityRenderers.register(MagnaEntities.UNIVERSE_ANNIHILATOR, UniverseAnnihilatorRenderer::new);
     ModelLayerRegistry.registerModelLayer(SCULK_BEHEMOTH, SculkBehemothModel::createBodyLayer);
     ModelLayerRegistry.registerModelLayer(SCULK_BEHEMOTH_HEART, SculkBehemothModel::createHeartLayer);
     ModelLayerRegistry.registerModelLayer(BELL_RINGER, BellRingerModel::createBodyLayer);
@@ -90,17 +89,17 @@ public final class RegEntityLayers {
     ModelLayerRegistry.registerModelLayer(NETHERITE_GOLEM, CustomGolemModel::createNetheriteBodyLayer);
     ModelLayerRegistry.registerModelLayer(SUPREME_CHEST_TRIPLE_MIDDLE, SupremeChestModel::createTripleMiddleBodyLayer);
 
-    EntityRenderers.register(SupremeEntities.SCULK_BEHEMOTH, SculkBehemothRenderer::new);
-    EntityRenderers.register(SupremeEntities.BELL_RINGER, BellRingerRenderer::new);
-    EntityRenderers.register(UniverseLiveEntities.UNIVERSE_GUARDIAN, UniverseGuardianRenderer::new);
-    EntityRenderers.register(SupremeEntities.THE_UNNAMEABLE_THING, TheUnnameableThingRenderer::new);
-    EntityRenderers.register(SupremeEntities.PALE_LORD, PaleLordRenderer::new);
-    EntityRenderers.register(SupremeEntities.PALE_LORD_CLONE, PaleLordRenderer::new);
-    EntityRenderers.register(SupremeEntities.BELL_SOUL, BellSoulRenderer::new);
-    EntityRenderers.register(SupremeEntities.OBSIDIAN_GOLEM, ObsidianGolemRenderer::new);
-    EntityRenderers.register(SupremeEntities.NETHERITE_GOLEM, NetheriteGolemRenderer::new);
+    EntityRenderers.register(MagnaEntities.SCULK_BEHEMOTH, SculkBehemothRenderer::new);
+    EntityRenderers.register(MagnaEntities.BELL_RINGER, BellRingerRenderer::new);
+    EntityRenderers.register(MagnaEntities.UNIVERSE_GUARDIAN, UniverseGuardianRenderer::new);
+    EntityRenderers.register(MagnaEntities.THE_UNNAMEABLE_THING, TheUnnameableThingRenderer::new);
+    EntityRenderers.register(MagnaEntities.PALE_LORD, PaleLordRenderer::new);
+    EntityRenderers.register(MagnaEntities.PALE_LORD_CLONE, PaleLordRenderer::new);
+    EntityRenderers.register(MagnaEntities.BELL_SOUL, BellSoulRenderer::new);
+    EntityRenderers.register(MagnaEntities.OBSIDIAN_GOLEM, ObsidianGolemRenderer::new);
+    EntityRenderers.register(MagnaEntities.NETHERITE_GOLEM, NetheriteGolemRenderer::new);
 
-    registerTntLike(SupremeEntities.PRIMED_CHUNK_TNT);
+    registerTntLike(MagnaEntities.PRIMED_CHUNK_TNT);
 
     Magnatour.LOGGER.info("[Client] Initializing 'RegEntityLayers'");
   }

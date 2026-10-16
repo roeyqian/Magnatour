@@ -16,7 +16,7 @@ import net.minecraft.world.level.block.state.BlockState;
 // Magnatour
 import roeyqian.magnatour.block.VirtualBlockLightManager;
 import roeyqian.magnatour.block.supreme.SupremeBlock;
-import roeyqian.magnatour.registry.content.SupremeBlockEntities;
+import roeyqian.magnatour.registry.stuff.MagnaBlockEntities;
 
 public class SupremeBlockEntity extends BlockEntity {
 
@@ -26,7 +26,7 @@ public class SupremeBlockEntity extends BlockEntity {
       BlockPos pos,
       BlockState state
   ) {
-    super(SupremeBlockEntities.SUPREME_BLOCK_ENTITY, pos, state);
+    super(MagnaBlockEntities.SUPREME_BLOCK_ENTITY, pos, state);
   }
 
   public static void tick(

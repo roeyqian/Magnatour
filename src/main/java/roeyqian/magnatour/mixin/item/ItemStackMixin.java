@@ -27,7 +27,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 // Magnatour
 import roeyqian.magnatour.item.universe.UniverseBanquet;
 import roeyqian.magnatour.mixinhelper.item.ItemHelperForEnchantment;
-import roeyqian.magnatour.registry.content.UniverseItems;
+import roeyqian.magnatour.registry.stuff.MagnaItems;
 
 @Mixin(value = ItemStack.class, priority = 3600000)
 public class ItemStackMixin {
@@ -53,7 +53,7 @@ public class ItemStackMixin {
       LivingEntity entity,
       CallbackInfo ci
   ) {
-    if (((ItemStack) (Object) this).is(UniverseItems.UNIVERSE_BANQUET)) {
+    if (((ItemStack) (Object) this).is(MagnaItems.UNIVERSE_BANQUET)) {
       UniverseBanquet.healFeedingTarget();
       ci.cancel();
     }

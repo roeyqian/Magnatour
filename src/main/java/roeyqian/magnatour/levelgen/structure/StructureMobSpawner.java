@@ -56,9 +56,9 @@ import roeyqian.magnatour.Magnatour;
 import roeyqian.magnatour.entity.supreme.BellRinger;
 import roeyqian.magnatour.entity.supreme.BellSoul;
 import roeyqian.magnatour.level.data.GoldBellTowerSpawnSavedData;
-import roeyqian.magnatour.registry.content.SupremeEntities;
-import roeyqian.magnatour.registry.worldgen.CustomDimensions;
-import roeyqian.magnatour.registry.worldgen.CustomStructures;
+import roeyqian.magnatour.registry.stuff.MagnaEntities;
+import roeyqian.magnatour.registry.world.MagnaDimensions;
+import roeyqian.magnatour.registry.world.MagnaStructures;
 
 public final class StructureMobSpawner {
 
@@ -100,8 +100,8 @@ public final class StructureMobSpawner {
   private static final StructureSpawnProfile DIAMOND_CITY_PROFILE =
       new StructureSpawnProfile(
           "diamond_city",
-          CustomDimensions.ORE_CONTINENT,
-          CustomStructures.DIAMOND_CITY,
+          MagnaDimensions.ORE_CONTINENT,
+          MagnaStructures.DIAMOND_CITY,
           DIAMOND_CITY_SCAN_RADIUS_CHUNKS,
           96.0D,
           DIAMOND_CITY_TARGET_GOLEMS,
@@ -116,8 +116,8 @@ public final class StructureMobSpawner {
   private static final StructureSpawnProfile GOLD_BELL_TOWER_PROFILE =
       new StructureSpawnProfile(
           "gold_bell_tower",
-          CustomDimensions.HARVEST_CONTINENT,
-          CustomStructures.GOLD_BELL_TOWER,
+          MagnaDimensions.HARVEST_CONTINENT,
+          MagnaStructures.GOLD_BELL_TOWER,
           GOLD_BELL_TOWER_SCAN_RADIUS_CHUNKS,
           48.0D,
           GOLD_BELL_TOWER_TARGET_BELL_RINGERS + GOLD_BELL_TOWER_TARGET_BELL_SOULS,
@@ -132,8 +132,8 @@ public final class StructureMobSpawner {
   private static final StructureSpawnProfile TOWN_OF_FORTUNE_PROFILE =
       new StructureSpawnProfile(
           "town_of_fortune",
-          CustomDimensions.ORE_CONTINENT,
-          CustomStructures.TOWN_OF_FORTUNE,
+          MagnaDimensions.ORE_CONTINENT,
+          MagnaStructures.TOWN_OF_FORTUNE,
           TOWN_OF_FORTUNE_SCAN_RADIUS_CHUNKS,
           80.0D,
           TOWN_OF_FORTUNE_TARGET_VILLAGERS + TOWN_OF_FORTUNE_TARGET_ANIMALS,
@@ -163,7 +163,7 @@ public final class StructureMobSpawner {
       ServerPlayer player,
       BlockPos bellPos
   ) {
-    if (!level.dimension().equals(CustomDimensions.HARVEST_CONTINENT)
+    if (!level.dimension().equals(MagnaDimensions.HARVEST_CONTINENT)
         || !player.isAlive() || player.isSpectator()) {
       return;
     }
@@ -171,7 +171,7 @@ public final class StructureMobSpawner {
     // Both the interacting player and the bell must be inside the same tower.
     StructureStart start = level.structureManager().getStructureWithPieceAt(
         bellPos,
-        holder -> holder.value().type() == CustomStructures.GOLD_BELL_TOWER
+        holder -> holder.value().type() == MagnaStructures.GOLD_BELL_TOWER
     );
     if (!start.isValid() || !AABB.of(start.getBoundingBox()).contains(player.position())) return;
 
@@ -212,11 +212,11 @@ public final class StructureMobSpawner {
     // Bell rewards are additional spawns, independent of population targets.
     BoundingBox box = start.getBoundingBox();
     int ringersSpawned = spawnGoldBellTowerFloorMobs(
-        level, level.getRandom(), box, SupremeEntities.BELL_RINGER,
+        level, level.getRandom(), box, MagnaEntities.BELL_RINGER,
         GOLD_BELL_TOWER_BELL_SPAWNS_PER_TYPE
     );
     int soulsSpawned = spawnGoldBellTowerFloorMobs(
-        level, level.getRandom(), box, SupremeEntities.BELL_SOUL,
+        level, level.getRandom(), box, MagnaEntities.BELL_SOUL,
         GOLD_BELL_TOWER_BELL_SPAWNS_PER_TYPE
     );
     player.sendOverlayMessage(Component.translatable(
@@ -270,8 +270,8 @@ public final class StructureMobSpawner {
       EntityType<?> type
   ) {
     return type == EntityTypes.IRON_GOLEM
-        || type == SupremeEntities.OBSIDIAN_GOLEM
-        || type == SupremeEntities.NETHERITE_GOLEM;
+        || type == MagnaEntities.OBSIDIAN_GOLEM
+        || type == MagnaEntities.NETHERITE_GOLEM;
   }
 
   private static boolean isTownOfFortuneAnimal(
@@ -967,7 +967,7 @@ public final class StructureMobSpawner {
     if (spawnBatch <= 0) return 0;
 
     List<EntityType<? extends AbstractGolem>> types = List.of(
-        EntityTypes.IRON_GOLEM, SupremeEntities.OBSIDIAN_GOLEM, SupremeEntities.NETHERITE_GOLEM
+        EntityTypes.IRON_GOLEM, MagnaEntities.OBSIDIAN_GOLEM, MagnaEntities.NETHERITE_GOLEM
     );
     int[] populations = new int[types.size()];
     AABB countBox = mobCountBox(structureBox, profile);
@@ -1051,7 +1051,7 @@ public final class StructureMobSpawner {
     // Give a missing Bell Soul the first slot before Bell Ringers use the budget.
     if (missingSouls > 0) {
       int soulsSpawned = spawnGoldBellTowerFloorMobs(
-          level, random, structureBox, SupremeEntities.BELL_SOUL, 1
+          level, random, structureBox, MagnaEntities.BELL_SOUL, 1
       );
       spawned += soulsSpawned;
       cycleBudget -= soulsSpawned;
@@ -1063,7 +1063,7 @@ public final class StructureMobSpawner {
           level,
           random,
           structureBox,
-          SupremeEntities.BELL_RINGER,
+          MagnaEntities.BELL_RINGER,
           Math.min(missingRingers, cycleBudget)
       );
       spawned += ringersSpawned;
@@ -1085,7 +1085,7 @@ public final class StructureMobSpawner {
           level,
           random,
           structureBox,
-          SupremeEntities.BELL_SOUL,
+          MagnaEntities.BELL_SOUL,
           Math.min(missingSouls, cycleBudget)
       );
     }

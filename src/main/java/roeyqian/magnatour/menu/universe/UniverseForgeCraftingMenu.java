@@ -33,9 +33,9 @@ import org.jspecify.annotations.Nullable;
 import roeyqian.magnatour.blockentity.universe.UniverseForgeEntity;
 import roeyqian.magnatour.menu.CustomCraftingBlock;
 import roeyqian.magnatour.mixin.menu.AbstractCraftingMenuAccessor;
-import roeyqian.magnatour.registry.content.UniverseBlocks;
-import roeyqian.magnatour.registry.content.UniverseMenus;
-import roeyqian.magnatour.registry.logic.CustomRecipes;
+import roeyqian.magnatour.registry.logic.MagnaRecipes;
+import roeyqian.magnatour.registry.stuff.MagnaBlocks;
+import roeyqian.magnatour.registry.stuff.MagnaMenus;
 
 public class UniverseForgeCraftingMenu extends AbstractCraftingMenu implements CustomCraftingBlock {
 
@@ -77,7 +77,7 @@ public class UniverseForgeCraftingMenu extends AbstractCraftingMenu implements C
       ContainerLevelAccess context,
       @Nullable UniverseForgeEntity forge
   ) {
-    super(UniverseMenus.UNIVERSE_FORGE_HANDLER, syncId, 5, 5);
+    super(MagnaMenus.UNIVERSE_FORGE_HANDLER, syncId, 5, 5);
     this.context = context;
     this.player = playerInventory.player;
     this.forge = forge;
@@ -119,10 +119,10 @@ public class UniverseForgeCraftingMenu extends AbstractCraftingMenu implements C
       ServerLevel world
   ) {
     var recipeManager = world.recipeAccess().getSynchronizedRecipes();
-    var supremeMatch = recipeManager.getFirstMatch(CustomRecipes.SUPREME_CRAFTING_TYPE, input, world);
+    var supremeMatch = recipeManager.getFirstMatch(MagnaRecipes.SUPREME_CRAFTING_TYPE, input, world);
 
     return supremeMatch.or(
-        () -> recipeManager.getFirstMatch(CustomRecipes.UNIVERSE_CRAFTING_TYPE, input, world)
+        () -> recipeManager.getFirstMatch(MagnaRecipes.UNIVERSE_CRAFTING_TYPE, input, world)
     );
   }
 
@@ -250,7 +250,7 @@ public class UniverseForgeCraftingMenu extends AbstractCraftingMenu implements C
   public boolean stillValid(
       @NonNull Player player
   ) {
-    return stillValid(this.context, player, UniverseBlocks.UNIVERSE_FORGE);
+    return stillValid(this.context, player, MagnaBlocks.UNIVERSE_FORGE);
   }
 
   @Override @NonNull

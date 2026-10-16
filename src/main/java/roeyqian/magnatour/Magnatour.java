@@ -42,25 +42,20 @@ import org.slf4j.LoggerFactory;
 import roeyqian.magnatour.block.VirtualBlockLightManager;
 import roeyqian.magnatour.entity.universe.UniverseAnnihilation;
 import roeyqian.magnatour.mixinhelper.entity.UniverseInventoryHelper;
-import roeyqian.magnatour.registry.content.SupremeBlockEntities;
-import roeyqian.magnatour.registry.content.SupremeBlocks;
-import roeyqian.magnatour.registry.content.SupremeEntities;
-import roeyqian.magnatour.registry.content.SupremeItems;
-import roeyqian.magnatour.registry.content.SupremeMenus;
-import roeyqian.magnatour.registry.content.UniverseBlockEntities;
-import roeyqian.magnatour.registry.content.UniverseBlocks;
-import roeyqian.magnatour.registry.content.UniverseItems;
-import roeyqian.magnatour.registry.content.UniverseLiveEntities;
-import roeyqian.magnatour.registry.content.UniverseMenus;
-import roeyqian.magnatour.registry.logic.CustomComponents;
-import roeyqian.magnatour.registry.logic.CustomNetworks;
-import roeyqian.magnatour.registry.logic.CustomParticles;
-import roeyqian.magnatour.registry.logic.CustomRecipes;
-import roeyqian.magnatour.registry.worldgen.CustomBiomeSources;
-import roeyqian.magnatour.registry.worldgen.CustomChunkGenerators;
-import roeyqian.magnatour.registry.worldgen.CustomDimensions;
-import roeyqian.magnatour.registry.worldgen.CustomFeatures;
-import roeyqian.magnatour.registry.worldgen.CustomStructures;
+import roeyqian.magnatour.registry.logic.MagnaComponents;
+import roeyqian.magnatour.registry.logic.MagnaNetworks;
+import roeyqian.magnatour.registry.logic.MagnaParticles;
+import roeyqian.magnatour.registry.logic.MagnaRecipes;
+import roeyqian.magnatour.registry.stuff.MagnaBlockEntities;
+import roeyqian.magnatour.registry.stuff.MagnaBlocks;
+import roeyqian.magnatour.registry.stuff.MagnaEntities;
+import roeyqian.magnatour.registry.stuff.MagnaItems;
+import roeyqian.magnatour.registry.stuff.MagnaMenus;
+import roeyqian.magnatour.registry.world.MagnaBiomeSources;
+import roeyqian.magnatour.registry.world.MagnaChunkGenerators;
+import roeyqian.magnatour.registry.world.MagnaDimensions;
+import roeyqian.magnatour.registry.world.MagnaFeatures;
+import roeyqian.magnatour.registry.world.MagnaStructures;
 
 public class Magnatour implements ModInitializer {
 
@@ -94,30 +89,25 @@ public class Magnatour implements ModInitializer {
     ServerTickEvents.END_LEVEL_TICK.register(VirtualBlockLightManager::tick);
     ServerChunkEvents.CHUNK_LOAD.register((world, chunk, _) -> VirtualBlockLightManager.onChunkLoad(world, chunk));
     ServerChunkEvents.CHUNK_UNLOAD.register((world, chunk) -> VirtualBlockLightManager.onChunkUnload(world, chunk.getPos()));
-    SupremeItems.init();
-    UniverseItems.init();
-    CustomNetworks.init();
+    MagnaItems.init();
+    MagnaNetworks.init();
 
-    SupremeBlocks.init();
-    UniverseBlocks.init();
-    SupremeBlockEntities.init();
-    UniverseBlockEntities.init();
+    MagnaBlocks.init();
+    MagnaBlockEntities.init();
 
-    SupremeEntities.init();
-    UniverseLiveEntities.init();
+    MagnaEntities.init();
 
-    SupremeMenus.init();
-    UniverseMenus.init();
+    MagnaMenus.init();
 
-    CustomRecipes.init();
-    CustomParticles.init();
-    CustomComponents.init();
+    MagnaRecipes.init();
+    MagnaParticles.init();
+    MagnaComponents.init();
 
-    CustomFeatures.init();
-    CustomDimensions.init();
-    CustomBiomeSources.init();
-    CustomChunkGenerators.init();
-    CustomStructures.init();
+    MagnaFeatures.init();
+    MagnaDimensions.init();
+    MagnaBiomeSources.init();
+    MagnaChunkGenerators.init();
+    MagnaStructures.init();
 
     registerSupremeItemTab();
     registerSupremeBlockTab();
@@ -130,41 +120,41 @@ public class Magnatour implements ModInitializer {
         BuiltInRegistries.CREATIVE_MODE_TAB, SUPREME_ITEM_KEY, FabricCreativeModeTab
             .builder()
             .title(Component.translatable("group.magnatour.supreme_item"))
-            .icon(() -> new ItemStack(SupremeItems.SUPREME_CORE))
+            .icon(() -> new ItemStack(MagnaItems.SUPREME_CORE))
             .displayItems((_, entries) -> {
-              entries.accept(SupremeItems.SUPREME_CORE);
-              entries.accept(SupremeItems.HARVEST_CORE);
-              entries.accept(SupremeItems.ORE_CORE);
-              entries.accept(SupremeItems.SEED_OF_ALL_THINGS);
-              entries.accept(SupremeItems.FRUIT_OF_ALL_THINGS);
-              entries.accept(SupremeItems.GREAT_BANQUET);
-              entries.accept(SupremeItems.FORTUNE_METAL);
-              entries.accept(SupremeItems.FORTUNE_CRYSTAL);
-              entries.accept(SupremeItems.RAINBOW_MIRROR);
-              entries.accept(SupremeItems.WITHER_SPAWN_EGG);
-              entries.accept(SupremeItems.ENDER_DRAGON_SPAWN_EGG);
-              entries.accept(SupremeItems.SCULK_BEHEMOTH_SPAWN_EGG);
-              entries.accept(SupremeItems.PALE_LORD_SPAWN_EGG);
-              entries.accept(SupremeItems.THE_UNNAMEABLE_EGG);
-              entries.accept(SupremeItems.BELL_RINGER_SPAWN_EGG);
-              entries.accept(SupremeItems.BELL_SOUL_SPAWN_EGG);
-              entries.accept(SupremeItems.OBSIDIAN_GOLEM_SPAWN_EGG);
-              entries.accept(SupremeItems.NETHERITE_GOLEM_SPAWN_EGG);
-              entries.accept(SupremeItems.EMPEROR_SWORD);
-              entries.accept(SupremeItems.EMPEROR_BOW);
-              entries.accept(SupremeItems.EMPEROR_AXE_PICKAXE);
-              entries.accept(SupremeItems.EMPEROR_SHOVEL);
-              entries.accept(SupremeItems.EMPEROR_HOE);
-              entries.accept(SupremeItems.EMPEROR_HELMET);
-              entries.accept(SupremeItems.EMPEROR_CHESTPLATE);
-              entries.accept(SupremeItems.EMPEROR_LEGGINGS);
-              entries.accept(SupremeItems.EMPEROR_BOOTS);
-              entries.accept(SupremeItems.STRANGE_MATTER);
-              entries.accept(SupremeItems.STRANGE_POTION);
-              entries.accept(SupremeItems.STRANGE_SPLASH_POTION);
-              entries.accept(SupremeItems.STRANGE_LINGERING_POTION);
-              entries.accept(SupremeItems.MIRROR_MOBILE);
-              entries.accept(SupremeItems.STAR_ATLAS);
+              entries.accept(MagnaItems.SUPREME_CORE);
+              entries.accept(MagnaItems.HARVEST_CORE);
+              entries.accept(MagnaItems.ORE_CORE);
+              entries.accept(MagnaItems.SEED_OF_ALL_THINGS);
+              entries.accept(MagnaItems.FRUIT_OF_ALL_THINGS);
+              entries.accept(MagnaItems.GREAT_BANQUET);
+              entries.accept(MagnaItems.FORTUNE_METAL);
+              entries.accept(MagnaItems.FORTUNE_CRYSTAL);
+              entries.accept(MagnaItems.RAINBOW_MIRROR);
+              entries.accept(MagnaItems.WITHER_SPAWN_EGG);
+              entries.accept(MagnaItems.ENDER_DRAGON_SPAWN_EGG);
+              entries.accept(MagnaItems.SCULK_BEHEMOTH_SPAWN_EGG);
+              entries.accept(MagnaItems.PALE_LORD_SPAWN_EGG);
+              entries.accept(MagnaItems.THE_UNNAMEABLE_EGG);
+              entries.accept(MagnaItems.BELL_RINGER_SPAWN_EGG);
+              entries.accept(MagnaItems.BELL_SOUL_SPAWN_EGG);
+              entries.accept(MagnaItems.OBSIDIAN_GOLEM_SPAWN_EGG);
+              entries.accept(MagnaItems.NETHERITE_GOLEM_SPAWN_EGG);
+              entries.accept(MagnaItems.EMPEROR_SWORD);
+              entries.accept(MagnaItems.EMPEROR_BOW);
+              entries.accept(MagnaItems.EMPEROR_AXE_PICKAXE);
+              entries.accept(MagnaItems.EMPEROR_SHOVEL);
+              entries.accept(MagnaItems.EMPEROR_HOE);
+              entries.accept(MagnaItems.EMPEROR_HELMET);
+              entries.accept(MagnaItems.EMPEROR_CHESTPLATE);
+              entries.accept(MagnaItems.EMPEROR_LEGGINGS);
+              entries.accept(MagnaItems.EMPEROR_BOOTS);
+              entries.accept(MagnaItems.STRANGE_MATTER);
+              entries.accept(MagnaItems.STRANGE_POTION);
+              entries.accept(MagnaItems.STRANGE_SPLASH_POTION);
+              entries.accept(MagnaItems.STRANGE_LINGERING_POTION);
+              entries.accept(MagnaItems.MIRROR_MOBILE);
+              entries.accept(MagnaItems.STAR_ATLAS);
             })
             .build()
     );
@@ -175,42 +165,42 @@ public class Magnatour implements ModInitializer {
         BuiltInRegistries.CREATIVE_MODE_TAB, SUPREME_BLOCK_KEY, FabricCreativeModeTab
             .builder()
             .title(Component.translatable("group.magnatour.supreme_block"))
-            .icon(() -> new ItemStack(SupremeBlocks.SUPREME_BLOCK))
+            .icon(() -> new ItemStack(MagnaBlocks.SUPREME_BLOCK))
             .displayItems((_, entries) -> {
-              entries.accept(SupremeBlocks.GOLDEN_LOG);
-              entries.accept(SupremeBlocks.STRIPPED_GOLDEN_LOG);
-              entries.accept(SupremeBlocks.GOLDEN_WOOD);
-              entries.accept(SupremeBlocks.STRIPPED_GOLDEN_WOOD);
-              entries.accept(SupremeBlocks.GOLDEN_PLANKS);
-              entries.accept(SupremeBlocks.GOLDEN_STAIRS);
-              entries.accept(SupremeBlocks.GOLDEN_SLAB);
-              entries.accept(SupremeBlocks.GOLDEN_FENCE);
-              entries.accept(SupremeBlocks.GOLDEN_FENCE_GATE);
-              entries.accept(SupremeBlocks.GOLDEN_DOOR);
-              entries.accept(SupremeBlocks.GOLDEN_TRAPDOOR);
-              entries.accept(SupremeBlocks.GOLDEN_PRESSURE_PLATE);
-              entries.accept(SupremeBlocks.GOLDEN_BUTTON);
-              entries.accept(SupremeBlocks.GOLDEN_SHELF);
-              entries.accept(SupremeBlocks.GOLDEN_SIGN_ITEM);
-              entries.accept(SupremeBlocks.GOLDEN_HANGING_SIGN_ITEM);
-              entries.accept(SupremeBlocks.GOLDEN_LEAVES);
-              entries.accept(SupremeBlocks.GOLDEN_SAPLING);
-              entries.accept(SupremeBlocks.EVER_WATER_GRASS_BLOCK);
-              entries.accept(SupremeBlocks.GOLDEN_GRASS_BLOCK);
-              entries.accept(SupremeBlocks.EVER_WATER_SOIL);
-              entries.accept(SupremeBlocks.EVER_WATER_FARMLAND);
-              entries.accept(SupremeBlocks.ORE_BLOCK);
-              entries.accept(SupremeBlocks.HARVEST_BLOCK);
-              entries.accept(SupremeBlocks.CHUNK_TNT);
-              entries.accept(SupremeBlocks.SUPREME_PUMPKIN_HEAD);
-              entries.accept(SupremeBlocks.SUPREME_BLOCK);
-              entries.accept(SupremeBlocks.SUPREME_CRAFTABLE);
-              entries.accept(SupremeBlocks.SUPREME_FURNACE);
-              entries.accept(SupremeBlocks.SUPREME_RESERVER);
-              entries.accept(SupremeBlocks.SUPREME_CHEST);
-              entries.accept(SupremeBlocks.REDSTONE_TRIGGER);
-              entries.accept(SupremeBlocks.ITEM_HUB);
-              entries.accept(SupremeBlocks.LOGISTICS_FIBER);
+              entries.accept(MagnaBlocks.GOLDEN_LOG);
+              entries.accept(MagnaBlocks.STRIPPED_GOLDEN_LOG);
+              entries.accept(MagnaBlocks.GOLDEN_WOOD);
+              entries.accept(MagnaBlocks.STRIPPED_GOLDEN_WOOD);
+              entries.accept(MagnaBlocks.GOLDEN_PLANKS);
+              entries.accept(MagnaBlocks.GOLDEN_STAIRS);
+              entries.accept(MagnaBlocks.GOLDEN_SLAB);
+              entries.accept(MagnaBlocks.GOLDEN_FENCE);
+              entries.accept(MagnaBlocks.GOLDEN_FENCE_GATE);
+              entries.accept(MagnaBlocks.GOLDEN_DOOR);
+              entries.accept(MagnaBlocks.GOLDEN_TRAPDOOR);
+              entries.accept(MagnaBlocks.GOLDEN_PRESSURE_PLATE);
+              entries.accept(MagnaBlocks.GOLDEN_BUTTON);
+              entries.accept(MagnaBlocks.GOLDEN_SHELF);
+              entries.accept(MagnaBlocks.GOLDEN_SIGN_ITEM);
+              entries.accept(MagnaBlocks.GOLDEN_HANGING_SIGN_ITEM);
+              entries.accept(MagnaBlocks.GOLDEN_LEAVES);
+              entries.accept(MagnaBlocks.GOLDEN_SAPLING);
+              entries.accept(MagnaBlocks.EVER_WATER_GRASS_BLOCK);
+              entries.accept(MagnaBlocks.GOLDEN_GRASS_BLOCK);
+              entries.accept(MagnaBlocks.EVER_WATER_SOIL);
+              entries.accept(MagnaBlocks.EVER_WATER_FARMLAND);
+              entries.accept(MagnaBlocks.ORE_BLOCK);
+              entries.accept(MagnaBlocks.HARVEST_BLOCK);
+              entries.accept(MagnaBlocks.CHUNK_TNT);
+              entries.accept(MagnaBlocks.SUPREME_PUMPKIN_HEAD);
+              entries.accept(MagnaBlocks.SUPREME_BLOCK);
+              entries.accept(MagnaBlocks.SUPREME_CRAFTABLE);
+              entries.accept(MagnaBlocks.SUPREME_FURNACE);
+              entries.accept(MagnaBlocks.SUPREME_RESERVER);
+              entries.accept(MagnaBlocks.SUPREME_CHEST);
+              entries.accept(MagnaBlocks.REDSTONE_TRIGGER);
+              entries.accept(MagnaBlocks.ITEM_HUB);
+              entries.accept(MagnaBlocks.LOGISTICS_FIBER);
             })
             .build()
     );
@@ -221,33 +211,33 @@ public class Magnatour implements ModInitializer {
         BuiltInRegistries.CREATIVE_MODE_TAB, UNIVERSE_ITEM_KEY, FabricCreativeModeTab
             .builder()
             .title(Component.translatable("group.magnatour.universe_item"))
-            .icon(() -> new ItemStack(UniverseItems.UNIVERSE_CORE))
+            .icon(() -> new ItemStack(MagnaItems.UNIVERSE_CORE))
             .displayItems((_, entries) -> {
-              entries.accept(UniverseItems.UNIVERSE_GEMRED);
-              entries.accept(UniverseItems.UNIVERSE_GEMBLUE);
-              entries.accept(UniverseItems.UNIVERSE_GEMYELLOW);
-              entries.accept(UniverseItems.UNIVERSE_GEMGREEN);
-              entries.accept(UniverseItems.UNIVERSE_GEMBLACK);
-              entries.accept(UniverseItems.UNIVERSE_GEMWHITE);
-              entries.accept(UniverseItems.UNIVERSE_LIGHT);
-              entries.accept(UniverseItems.UNIVERSE_DARK);
-              entries.accept(UniverseItems.UNIVERSE_PRIMARY_FRAGMENT);
-              entries.accept(UniverseItems.UNIVERSE_CORE);
-              entries.accept(UniverseItems.UNIVERSE_STICK);
-              entries.accept(UniverseItems.UNIVERSE_ULTIMA_SWORD);
-              entries.accept(UniverseItems.UNIVERSE_OMNI_BLADE);
-              entries.accept(UniverseItems.UNIVERSE_COMMAND_STAR);
-              entries.accept(UniverseItems.UNIVERSE_VOID_HELMET);
-              entries.accept(UniverseItems.UNIVERSE_VOID_CHESTPLATE);
-              entries.accept(UniverseItems.UNIVERSE_VOID_LEGGINGS);
-              entries.accept(UniverseItems.UNIVERSE_VOID_BOOTS);
-              entries.accept(UniverseItems.UNIVERSE_BUCKET);
-              entries.accept(UniverseItems.UNIVERSE_BANQUET);
-              entries.accept(UniverseItems.UNIVERSE_POTION);
-              entries.accept(UniverseItems.UNIVERSE_SPLASH_POTION);
-              entries.accept(UniverseItems.UNIVERSE_LINGERING_POTION);
-              entries.accept(UniverseItems.UNIVERSE_GUARDIAN_SPAWN_EGG);
-              entries.accept(UniverseItems.UNIVERSE_ANNIHILATOR_SPAWN_EGG);
+              entries.accept(MagnaItems.UNIVERSE_GEMRED);
+              entries.accept(MagnaItems.UNIVERSE_GEMBLUE);
+              entries.accept(MagnaItems.UNIVERSE_GEMYELLOW);
+              entries.accept(MagnaItems.UNIVERSE_GEMGREEN);
+              entries.accept(MagnaItems.UNIVERSE_GEMBLACK);
+              entries.accept(MagnaItems.UNIVERSE_GEMWHITE);
+              entries.accept(MagnaItems.UNIVERSE_LIGHT);
+              entries.accept(MagnaItems.UNIVERSE_DARK);
+              entries.accept(MagnaItems.UNIVERSE_PRIMARY_FRAGMENT);
+              entries.accept(MagnaItems.UNIVERSE_CORE);
+              entries.accept(MagnaItems.UNIVERSE_STICK);
+              entries.accept(MagnaItems.UNIVERSE_ULTIMA_SWORD);
+              entries.accept(MagnaItems.UNIVERSE_OMNI_BLADE);
+              entries.accept(MagnaItems.UNIVERSE_COMMAND_STAR);
+              entries.accept(MagnaItems.UNIVERSE_VOID_HELMET);
+              entries.accept(MagnaItems.UNIVERSE_VOID_CHESTPLATE);
+              entries.accept(MagnaItems.UNIVERSE_VOID_LEGGINGS);
+              entries.accept(MagnaItems.UNIVERSE_VOID_BOOTS);
+              entries.accept(MagnaItems.UNIVERSE_BUCKET);
+              entries.accept(MagnaItems.UNIVERSE_BANQUET);
+              entries.accept(MagnaItems.UNIVERSE_POTION);
+              entries.accept(MagnaItems.UNIVERSE_SPLASH_POTION);
+              entries.accept(MagnaItems.UNIVERSE_LINGERING_POTION);
+              entries.accept(MagnaItems.UNIVERSE_GUARDIAN_SPAWN_EGG);
+              entries.accept(MagnaItems.UNIVERSE_ANNIHILATOR_SPAWN_EGG);
             })
             .build()
     );
@@ -258,41 +248,41 @@ public class Magnatour implements ModInitializer {
         BuiltInRegistries.CREATIVE_MODE_TAB, UNIVERSE_BLOCK_KEY, FabricCreativeModeTab
             .builder()
             .title(Component.translatable("group.magnatour.universe_block"))
-            .icon(() -> new ItemStack(UniverseBlocks.UNIVERSE_BLOCK))
+            .icon(() -> new ItemStack(MagnaBlocks.UNIVERSE_BLOCK))
             .displayItems((_, entries) -> {
-              entries.accept(UniverseBlocks.UNIVERSE_LOG);
-              entries.accept(UniverseBlocks.STRIPPED_UNIVERSE_LOG);
-              entries.accept(UniverseBlocks.UNIVERSE_WOOD);
-              entries.accept(UniverseBlocks.STRIPPED_UNIVERSE_WOOD);
-              entries.accept(UniverseBlocks.UNIVERSE_PLANKS);
-              entries.accept(UniverseBlocks.UNIVERSE_STAIRS);
-              entries.accept(UniverseBlocks.UNIVERSE_SLAB);
-              entries.accept(UniverseBlocks.UNIVERSE_FENCE);
-              entries.accept(UniverseBlocks.UNIVERSE_FENCE_GATE);
-              entries.accept(UniverseBlocks.UNIVERSE_DOOR);
-              entries.accept(UniverseBlocks.UNIVERSE_TRAPDOOR);
-              entries.accept(UniverseBlocks.UNIVERSE_PRESSURE_PLATE);
-              entries.accept(UniverseBlocks.UNIVERSE_BUTTON);
-              entries.accept(UniverseBlocks.UNIVERSE_SHELF);
-              entries.accept(UniverseBlocks.UNIVERSE_SIGN_ITEM);
-              entries.accept(UniverseBlocks.UNIVERSE_HANGING_SIGN_ITEM);
-              entries.accept(UniverseBlocks.UNIVERSE_LEAVES);
-              entries.accept(UniverseBlocks.UNIVERSE_SAPLING);
-              entries.accept(UniverseBlocks.UNIVERSE_LIGHT_BLOCK);
-              entries.accept(UniverseBlocks.UNIVERSE_DARK_BLOCK);
-              entries.accept(UniverseBlocks.UNIVERSE_LIGHT_AIR);
-              entries.accept(UniverseBlocks.UNIVERSE_DARK_AIR);
-              entries.accept(UniverseBlocks.UNIVERSE_PRIMARY_BLOCK);
+              entries.accept(MagnaBlocks.UNIVERSE_LOG);
+              entries.accept(MagnaBlocks.STRIPPED_UNIVERSE_LOG);
+              entries.accept(MagnaBlocks.UNIVERSE_WOOD);
+              entries.accept(MagnaBlocks.STRIPPED_UNIVERSE_WOOD);
+              entries.accept(MagnaBlocks.UNIVERSE_PLANKS);
+              entries.accept(MagnaBlocks.UNIVERSE_STAIRS);
+              entries.accept(MagnaBlocks.UNIVERSE_SLAB);
+              entries.accept(MagnaBlocks.UNIVERSE_FENCE);
+              entries.accept(MagnaBlocks.UNIVERSE_FENCE_GATE);
+              entries.accept(MagnaBlocks.UNIVERSE_DOOR);
+              entries.accept(MagnaBlocks.UNIVERSE_TRAPDOOR);
+              entries.accept(MagnaBlocks.UNIVERSE_PRESSURE_PLATE);
+              entries.accept(MagnaBlocks.UNIVERSE_BUTTON);
+              entries.accept(MagnaBlocks.UNIVERSE_SHELF);
+              entries.accept(MagnaBlocks.UNIVERSE_SIGN_ITEM);
+              entries.accept(MagnaBlocks.UNIVERSE_HANGING_SIGN_ITEM);
+              entries.accept(MagnaBlocks.UNIVERSE_LEAVES);
+              entries.accept(MagnaBlocks.UNIVERSE_SAPLING);
+              entries.accept(MagnaBlocks.UNIVERSE_LIGHT_BLOCK);
+              entries.accept(MagnaBlocks.UNIVERSE_DARK_BLOCK);
+              entries.accept(MagnaBlocks.UNIVERSE_LIGHT_AIR);
+              entries.accept(MagnaBlocks.UNIVERSE_DARK_AIR);
+              entries.accept(MagnaBlocks.UNIVERSE_PRIMARY_BLOCK);
               entries.accept(Blocks.COMMAND_BLOCK);
               entries.accept(Blocks.STRUCTURE_BLOCK);
               entries.accept(Blocks.JIGSAW);
               entries.accept(Blocks.BARRIER);
-              entries.accept(UniverseBlocks.UNIVERSE_BLOCK);
-              entries.accept(UniverseBlocks.UNIVERSE_FORGE);
-              entries.accept(UniverseBlocks.UNIVERSE_REFINERY);
-              entries.accept(UniverseBlocks.UNIVERSE_POOL);
-              entries.accept(UniverseBlocks.UNIVERSE_LIBRARY);
-              entries.accept(UniverseBlocks.UNIVERSE_DOT);
+              entries.accept(MagnaBlocks.UNIVERSE_BLOCK);
+              entries.accept(MagnaBlocks.UNIVERSE_FORGE);
+              entries.accept(MagnaBlocks.UNIVERSE_REFINERY);
+              entries.accept(MagnaBlocks.UNIVERSE_POOL);
+              entries.accept(MagnaBlocks.UNIVERSE_LIBRARY);
+              entries.accept(MagnaBlocks.UNIVERSE_DOT);
             })
             .build()
     );

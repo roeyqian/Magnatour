@@ -39,8 +39,8 @@ import roeyqian.magnatour.level.recipe.SupremeShapedCraftingRecipe;
 import roeyqian.magnatour.level.recipe.SupremeShapelessCraftingRecipe;
 import roeyqian.magnatour.level.recipe.UniverseShapedCraftingRecipe;
 import roeyqian.magnatour.level.recipe.UniverseShapelessCraftingRecipe;
-import roeyqian.magnatour.registry.logic.CustomRecipes;
-import roeyqian.magnatour.registry.worldgen.CustomDimensions;
+import roeyqian.magnatour.registry.logic.MagnaRecipes;
+import roeyqian.magnatour.registry.world.MagnaDimensions;
 
 public final class BlockHelperForFunction {
 
@@ -205,7 +205,7 @@ public final class BlockHelperForFunction {
       BlockPos pos,
       Direction forwardDirection
   ) {
-    if (level.dimension() != CustomDimensions.UNIVERSE_META) return false;
+    if (level.dimension() != MagnaDimensions.UNIVERSE_META) return false;
 
     Direction.Axis axis = forwardDirection.getAxis().isHorizontal()
         ? forwardDirection.getCounterClockWise().getAxis()
@@ -217,7 +217,7 @@ public final class BlockHelperForFunction {
       Level level,
       BlockPos pos
   ) {
-    if (level.dimension() != CustomDimensions.UNIVERSE_META) return false;
+    if (level.dimension() != MagnaDimensions.UNIVERSE_META) return false;
 
     var portalShape = PortalShape.findEmptyPortalShape(level, pos, Direction.Axis.X);
     if (portalShape.isEmpty()) return false;
@@ -240,10 +240,10 @@ public final class BlockHelperForFunction {
       return null;
     }
 
-    var supremeMatch = recipeManager.getFirstMatch(CustomRecipes.SUPREME_CRAFTING_TYPE, recipeInput, world);
+    var supremeMatch = recipeManager.getFirstMatch(MagnaRecipes.SUPREME_CRAFTING_TYPE, recipeInput, world);
     if (supremeMatch.isPresent()) return supremeMatch.get();
 
-    var universeMatch = recipeManager.getFirstMatch(CustomRecipes.UNIVERSE_CRAFTING_TYPE, recipeInput, world);
+    var universeMatch = recipeManager.getFirstMatch(MagnaRecipes.UNIVERSE_CRAFTING_TYPE, recipeInput, world);
     return universeMatch.orElse(null);
   }
 

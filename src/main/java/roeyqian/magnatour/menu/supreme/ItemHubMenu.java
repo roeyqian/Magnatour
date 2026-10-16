@@ -35,7 +35,7 @@ import org.jspecify.annotations.NonNull;
 
 // Magnatour
 import roeyqian.magnatour.blockentity.supreme.ItemHubEntity;
-import roeyqian.magnatour.registry.content.SupremeMenus;
+import roeyqian.magnatour.registry.stuff.MagnaMenus;
 
 public class ItemHubMenu extends AbstractContainerMenu {
 
@@ -86,7 +86,7 @@ public class ItemHubMenu extends AbstractContainerMenu {
       ResourceKey<Level> dimension,
       List<String> anchoredItemIds
   ) {
-    super(SupremeMenus.ITEM_HUB_HANDLER, containerId);
+    super(MagnaMenus.ITEM_HUB_HANDLER, containerId);
     this.hopper = hopper;
     this.blockPos = blockPos;
     this.dimension = dimension;

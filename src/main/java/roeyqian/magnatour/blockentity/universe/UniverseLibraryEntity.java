@@ -37,8 +37,8 @@ import org.jspecify.annotations.NonNull;
 
 // Magnatour
 import roeyqian.magnatour.menu.universe.UniverseLibraryMenu;
-import roeyqian.magnatour.registry.content.UniverseBlockEntities;
-import roeyqian.magnatour.registry.logic.CustomComponents;
+import roeyqian.magnatour.registry.logic.MagnaComponents;
+import roeyqian.magnatour.registry.stuff.MagnaBlockEntities;
 
 public class UniverseLibraryEntity extends BaseContainerBlockEntity {
 
@@ -107,7 +107,7 @@ public class UniverseLibraryEntity extends BaseContainerBlockEntity {
       BlockPos pos,
       BlockState state
   ) {
-    super(UniverseBlockEntities.UNIVERSE_LIBRARY_ENTITY, pos, state);
+    super(MagnaBlockEntities.UNIVERSE_LIBRARY_ENTITY, pos, state);
   }
 
   public static int getStorageStackLimit(
@@ -271,7 +271,7 @@ public class UniverseLibraryEntity extends BaseContainerBlockEntity {
       @NonNull DataComponentGetter components
   ) {
     super.applyImplicitComponents(components);
-    UniverseLibraryContents contents = components.get(CustomComponents.UNIVERSE_LIBRARY_CONTENTS);
+    UniverseLibraryContents contents = components.get(MagnaComponents.UNIVERSE_LIBRARY_CONTENTS);
     if (contents != null) contents.copyInto(this.inventory);
   }
 
@@ -281,7 +281,7 @@ public class UniverseLibraryEntity extends BaseContainerBlockEntity {
   ) {
     super.collectImplicitComponents(builder);
     builder.set(DataComponents.CONTAINER, ItemContainerContents.EMPTY);
-    builder.set(CustomComponents.UNIVERSE_LIBRARY_CONTENTS, UniverseLibraryContents.fromItems(this.inventory));
+    builder.set(MagnaComponents.UNIVERSE_LIBRARY_CONTENTS, UniverseLibraryContents.fromItems(this.inventory));
   }
 
   @Override @NonNull

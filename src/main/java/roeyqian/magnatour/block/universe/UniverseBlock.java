@@ -33,9 +33,9 @@ import org.jspecify.annotations.Nullable;
 import roeyqian.magnatour.block.CustomPortalHorizon;
 import roeyqian.magnatour.block.VirtualBlockLightManager;
 import roeyqian.magnatour.blockentity.universe.UniverseBlockEntity;
-import roeyqian.magnatour.registry.content.UniverseBlockEntities;
-import roeyqian.magnatour.registry.content.UniverseBlocks;
-import roeyqian.magnatour.registry.worldgen.CustomDimensions;
+import roeyqian.magnatour.registry.stuff.MagnaBlockEntities;
+import roeyqian.magnatour.registry.stuff.MagnaBlocks;
+import roeyqian.magnatour.registry.world.MagnaDimensions;
 
 public class UniverseBlock extends BaseEntityBlock {
 
@@ -56,7 +56,7 @@ public class UniverseBlock extends BaseEntityBlock {
   ) {
     return createTickerHelper(
         type,
-        UniverseBlockEntities.UNIVERSE_BLOCK_ENTITY,
+        MagnaBlockEntities.UNIVERSE_BLOCK_ENTITY,
         UniverseBlockEntity::tick
     );
   }
@@ -114,8 +114,8 @@ public class UniverseBlock extends BaseEntityBlock {
 
       // Try to activate portal when block is lit
       if (newLit && (world.dimension() == Level.OVERWORLD
-          || world.dimension() == CustomDimensions.UNIVERSE_META)) {
-        CustomPortalHorizon.tryActivatePortal(world, pos, this, UniverseBlocks.UNIVERSE_META_PORTAL);
+          || world.dimension() == MagnaDimensions.UNIVERSE_META)) {
+        CustomPortalHorizon.tryActivatePortal(world, pos, this, MagnaBlocks.UNIVERSE_META_PORTAL);
       }
     }
     return InteractionResult.SUCCESS;

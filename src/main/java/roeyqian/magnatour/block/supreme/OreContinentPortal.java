@@ -24,7 +24,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.InsideBlockEffectApplier;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -44,8 +43,8 @@ import org.jspecify.annotations.Nullable;
 
 // Magnatour
 import roeyqian.magnatour.block.CustomPortalVertex;
-import roeyqian.magnatour.registry.content.SupremeBlocks;
-import roeyqian.magnatour.registry.worldgen.CustomDimensions;
+import roeyqian.magnatour.registry.stuff.MagnaBlocks;
+import roeyqian.magnatour.registry.world.MagnaDimensions;
 
 public class OreContinentPortal extends Block {
 
@@ -110,8 +109,8 @@ public class OreContinentPortal extends Block {
     boolean[] clientFlag = new boolean[]{clientInPortal};
     CustomPortalVertex.handleEntityCollision(world, pos, entity,
         PORTAL_TICKS, IN_PORTAL_THIS_TICK, clientFlag,
-        SupremeBlocks.ORE_BLOCK, SupremeBlocks.ORE_CONTINENT_PORTAL,
-        CustomDimensions.ORE_CONTINENT, Level.OVERWORLD);
+        MagnaBlocks.ORE_BLOCK, MagnaBlocks.ORE_CONTINENT_PORTAL,
+        MagnaDimensions.ORE_CONTINENT, Level.OVERWORLD);
     clientInPortal = clientFlag[0];
   }
 
@@ -127,7 +126,7 @@ public class OreContinentPortal extends Block {
       @NonNull RandomSource random
   ) {
     if (CustomPortalVertex.shouldBreakPortal(
-        SupremeBlocks.ORE_CONTINENT_PORTAL, SupremeBlocks.ORE_BLOCK,
+        MagnaBlocks.ORE_CONTINENT_PORTAL, MagnaBlocks.ORE_BLOCK,
         state, neighborState, pos, direction, world
     )) {
       return Blocks.AIR.defaultBlockState();

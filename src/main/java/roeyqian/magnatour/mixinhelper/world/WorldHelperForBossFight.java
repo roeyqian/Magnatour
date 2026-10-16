@@ -25,9 +25,8 @@ import net.minecraft.world.level.dimension.end.EnderDragonFight;
 import net.minecraft.world.level.levelgen.Heightmap;
 
 // Magnatour
-import roeyqian.magnatour.registry.content.SupremeBlocks;
-import roeyqian.magnatour.registry.content.UniverseBlocks;
-import roeyqian.magnatour.registry.content.UniverseItems;
+import roeyqian.magnatour.registry.stuff.MagnaBlocks;
+import roeyqian.magnatour.registry.stuff.MagnaItems;
 
 public final class WorldHelperForBossFight {
 
@@ -101,10 +100,10 @@ public final class WorldHelperForBossFight {
   ) {
     Player player = dragon.getLastHurtByPlayer();
     if (player != null && hasAllUniverseGems(player)) {
-      return UniverseBlocks.UNIVERSE_FORGE;
+      return MagnaBlocks.UNIVERSE_FORGE;
     }
 
-    return SupremeBlocks.SUPREME_CRAFTABLE;
+    return MagnaBlocks.SUPREME_CRAFTABLE;
   }
 
   private static boolean canPlaceCraftable(
@@ -154,12 +153,12 @@ public final class WorldHelperForBossFight {
   private static boolean hasAllUniverseGems(
       Player player
   ) {
-    return player.getInventory().contains(new ItemStack(UniverseItems.UNIVERSE_GEMRED))
-        && player.getInventory().contains(new ItemStack(UniverseItems.UNIVERSE_GEMBLUE))
-        && player.getInventory().contains(new ItemStack(UniverseItems.UNIVERSE_GEMYELLOW))
-        && player.getInventory().contains(new ItemStack(UniverseItems.UNIVERSE_GEMGREEN))
-        && player.getInventory().contains(new ItemStack(UniverseItems.UNIVERSE_GEMBLACK))
-        && player.getInventory().contains(new ItemStack(UniverseItems.UNIVERSE_GEMWHITE));
+    return player.getInventory().contains(new ItemStack(MagnaItems.UNIVERSE_GEMRED))
+        && player.getInventory().contains(new ItemStack(MagnaItems.UNIVERSE_GEMBLUE))
+        && player.getInventory().contains(new ItemStack(MagnaItems.UNIVERSE_GEMYELLOW))
+        && player.getInventory().contains(new ItemStack(MagnaItems.UNIVERSE_GEMGREEN))
+        && player.getInventory().contains(new ItemStack(MagnaItems.UNIVERSE_GEMBLACK))
+        && player.getInventory().contains(new ItemStack(MagnaItems.UNIVERSE_GEMWHITE));
   }
 
   private record DragonKillReward(

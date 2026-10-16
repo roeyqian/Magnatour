@@ -18,7 +18,6 @@ import java.util.Set;
 // Minecraft
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionResult;
@@ -41,11 +40,10 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.jspecify.annotations.NonNull;
 
 // Magnatour
-import roeyqian.magnatour.Magnatour;
 import roeyqian.magnatour.item.CustomItemSetting;
 import roeyqian.magnatour.item.CustomToolMaterial;
-import roeyqian.magnatour.registry.content.SupremeBlocks;
-import roeyqian.magnatour.registry.logic.CustomComponents;
+import roeyqian.magnatour.registry.logic.MagnaComponents;
+import roeyqian.magnatour.registry.stuff.MagnaBlocks;
 
 public class UniverseOmniBlade extends Item {
 
@@ -55,8 +53,8 @@ public class UniverseOmniBlade extends Item {
       Map.entry(Blocks.DIRT, Blocks.FARMLAND.defaultBlockState()),
       Map.entry(Blocks.COARSE_DIRT, Blocks.DIRT.defaultBlockState()),
       Map.entry(Blocks.ROOTED_DIRT, Blocks.DIRT.defaultBlockState()),
-      Map.entry(SupremeBlocks.EVER_WATER_GRASS_BLOCK, SupremeBlocks.EVER_WATER_FARMLAND.defaultBlockState()),
-      Map.entry(SupremeBlocks.EVER_WATER_SOIL, SupremeBlocks.EVER_WATER_FARMLAND.defaultBlockState())
+      Map.entry(MagnaBlocks.EVER_WATER_GRASS_BLOCK, MagnaBlocks.EVER_WATER_FARMLAND.defaultBlockState()),
+      Map.entry(MagnaBlocks.EVER_WATER_SOIL, MagnaBlocks.EVER_WATER_FARMLAND.defaultBlockState())
   );
 
   public UniverseOmniBlade(
@@ -96,7 +94,7 @@ public class UniverseOmniBlade extends Item {
     player.swing(player.getUsedItemHand(), SwingAnimation.DEFAULT, false);
     if (world.isClientSide()) return InteractionResult.PASS;
 
-    int mode = context.getItemInHand().getOrDefault(CustomComponents.UNIVERSE_OMNI_BLADE_MODE, 0);
+    int mode = context.getItemInHand().getOrDefault(MagnaComponents.UNIVERSE_OMNI_BLADE_MODE, 0);
     return mode == 0 ? execTilling(context, world, blockPos) : execChainBreak(world, blockPos, player);
   }
 

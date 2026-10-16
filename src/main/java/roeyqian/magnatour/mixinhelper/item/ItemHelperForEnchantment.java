@@ -38,8 +38,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 // Magnatour
 import roeyqian.magnatour.Magnatour;
 import roeyqian.magnatour.item.CustomToolMaterial;
-import roeyqian.magnatour.registry.content.SupremeItems;
-import roeyqian.magnatour.registry.content.UniverseItems;
+import roeyqian.magnatour.registry.stuff.MagnaItems;
 
 // Other
 // Apache Commons Lang
@@ -204,10 +203,10 @@ public final class ItemHelperForEnchantment {
   public static boolean isEmperorTool(
       ItemStack stack
   ) {
-    return stack.is(SupremeItems.EMPEROR_SWORD)
-        || stack.is(SupremeItems.EMPEROR_AXE_PICKAXE)
-        || stack.is(SupremeItems.EMPEROR_SHOVEL)
-        || stack.is(SupremeItems.EMPEROR_HOE);
+    return stack.is(MagnaItems.EMPEROR_SWORD)
+        || stack.is(MagnaItems.EMPEROR_AXE_PICKAXE)
+        || stack.is(MagnaItems.EMPEROR_SHOVEL)
+        || stack.is(MagnaItems.EMPEROR_HOE);
   }
 
   public static boolean isFinality(
@@ -220,12 +219,12 @@ public final class ItemHelperForEnchantment {
   public static boolean isUniverseEnchantBlocked(
       ItemStack stack
   ) {
-    return stack.is(UniverseItems.UNIVERSE_VOID_HELMET)
-        || stack.is(UniverseItems.UNIVERSE_VOID_CHESTPLATE)
-        || stack.is(UniverseItems.UNIVERSE_VOID_LEGGINGS)
-        || stack.is(UniverseItems.UNIVERSE_VOID_BOOTS)
-        || stack.is(UniverseItems.UNIVERSE_ULTIMA_SWORD)
-        || stack.is(UniverseItems.UNIVERSE_OMNI_BLADE);
+    return stack.is(MagnaItems.UNIVERSE_VOID_HELMET)
+        || stack.is(MagnaItems.UNIVERSE_VOID_CHESTPLATE)
+        || stack.is(MagnaItems.UNIVERSE_VOID_LEGGINGS)
+        || stack.is(MagnaItems.UNIVERSE_VOID_BOOTS)
+        || stack.is(MagnaItems.UNIVERSE_ULTIMA_SWORD)
+        || stack.is(MagnaItems.UNIVERSE_OMNI_BLADE);
   }
 
   public static boolean isUnrestrictedDivineEnchantment(

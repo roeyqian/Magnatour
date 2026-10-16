@@ -13,29 +13,95 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
 
+// Fabric
+import net.fabricmc.fabric.api.item.v1.DefaultItemComponentEvents;
+import net.fabricmc.fabric.api.menu.v1.ExtendedMenuType;
+import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
+
 // Minecraft
 import net.minecraft.core.Direction;
 import net.minecraft.core.Registry;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.MobCategory;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.flag.FeatureFlags;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.DoubleHighBlockItem;
 import net.minecraft.world.item.HangingSignItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.StandingAndWallBlockItem;
+import net.minecraft.world.item.component.CookingFuel;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.PushReaction;
+import net.minecraft.world.level.storage.loot.providers.number.floats.ContextFloatProviders;
+import net.minecraft.world.level.storage.loot.providers.number.floats.ResolvableFloat;
+import net.minecraft.world.level.storage.loot.providers.number.ints.ResolvableInt;
 
 // Magnatour
 import roeyqian.magnatour.Magnatour;
 
-public interface BlockRegHelper {
+public interface StuffHelper {
+
+  static Identifier id(
+      String path
+  ) {
+    return Identifier.fromNamespaceAndPath(Magnatour.MOD_ID, path);
+  }
+
+  static <T extends AbstractContainerMenu> MenuType<T> register(
+      String path,
+      MenuType.MenuSupplier<T> factory
+  ) {
+    return Registry.register(
+        BuiltInRegistries.MENU,
+        Identifier.fromNamespaceAndPath(Magnatour.MOD_ID, path),
+        new MenuType<>(factory, FeatureFlags.VANILLA_SET)
+    );
+  }
+
+  static <T extends Entity> EntityType<T> register(
+      ResourceKey<EntityType<?>> key,
+      EntityType.EntityFactory<T> factory,
+      MobCategory category,
+      float width, float height
+  ) {
+    return Registry.register(
+        BuiltInRegistries.ENTITY_TYPE,
+        key,
+        EntityType.Builder.of(factory, category).sized(width, height).build(key)
+    );
+  }
+
+  static ResourceKey<EntityType<?>> entityKey(
+      String path
+  ) {
+    return ResourceKey.create(Registries.ENTITY_TYPE, id(path));
+  }
+
+  @SuppressWarnings("DataFlowIssue")
+  static <T extends LivingEntity> void registerAttributes(
+      EntityType<T> type,
+      AttributeSupplier.Builder attributes
+  ) {
+    Objects.requireNonNull(type, "type");
+    Objects.requireNonNull(attributes, "attributes");
+    FabricDefaultAttributeRegistry.register(type, attributes);
+  }
 
   static Block registerBase(
       String name, String type,
@@ -53,6 +119,15 @@ public interface BlockRegHelper {
           setting -> setting.rarity(Rarity.EPIC)
       );
     }
+  }
+
+  static Item registerConsumableItem(
+      String name,
+      int stacks,
+      Function<Item.Properties, Item> factory,
+      Item.Properties settings
+  ) {
+    return registerItem(name, factory, settings.stacksTo(stacks));
   }
 
   static Block registerCrop(
@@ -81,6 +156,38 @@ public interface BlockRegHelper {
           setting -> setting.rarity(Rarity.EPIC)
       );
     }
+  }
+
+  static Item registerDurableItem(
+      String name,
+      Function<Item.Properties, Item> factory,
+      Item.Properties settings
+  ) {
+    return registerItem(name, factory, settings.stacksTo(1));
+  }
+
+  static <T extends AbstractContainerMenu, D> MenuType<T> registerExtended(
+      String path,
+      ExtendedMenuType.ExtendedFactory<T, D> factory,
+      StreamCodec<? super RegistryFriendlyByteBuf, D> codec
+  ) {
+    return Registry.register(
+        BuiltInRegistries.MENU,
+        Identifier.fromNamespaceAndPath(Magnatour.MOD_ID, path),
+        new ExtendedMenuType<>(factory, codec)
+    );
+  }
+
+  static void registerFuel(
+      int time,
+      Item fuel
+  ) {
+    DefaultItemComponentEvents.MODIFY.register(context -> context.modify(fuel, builder ->
+        builder.set(DataComponents.COOKING_FUEL, new CookingFuel(
+            new ResolvableInt.Constant(time),
+            ResolvableFloat.fromKey(ContextFloatProviders.COOKING_DEFAULT_SPEED_MULTIPLIER)
+        ))
+    ));
   }
 
   static Block registerGrass(
@@ -337,6 +444,20 @@ public interface BlockRegHelper {
     Registry.register(BuiltInRegistries.ITEM, itemKey, blockItem);
 
     return block;
+  }
+
+  private static Item registerItem(
+      String name,
+      Function<Item.Properties, Item> factory,
+      Item.Properties settings
+  ) {
+    ResourceKey<Item> key = ResourceKey.create(
+        Registries.ITEM,
+        Identifier.fromNamespaceAndPath(Magnatour.MOD_ID, name)
+    );
+    Item item = factory.apply(settings.setId(key));
+    if (item instanceof BlockItem blockItem) blockItem.registerBlocks(Item.BY_BLOCK, item);
+    return Registry.register(BuiltInRegistries.ITEM, key, item);
   }
 
 }

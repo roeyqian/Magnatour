@@ -15,7 +15,7 @@ import net.minecraft.world.level.block.CropBlock;
 import org.jspecify.annotations.NonNull;
 
 // Magnatour
-import roeyqian.magnatour.registry.content.SupremeItems;
+import roeyqian.magnatour.registry.stuff.MagnaItems;
 
 public class CropOfAllThings extends CropBlock {
 
@@ -27,7 +27,7 @@ public class CropOfAllThings extends CropBlock {
 
   @Override @NonNull
   protected ItemLike getBaseSeedId() {
-    return SupremeItems.SEED_OF_ALL_THINGS;
+    return MagnaItems.SEED_OF_ALL_THINGS;
   }
 
 }

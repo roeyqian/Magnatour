@@ -30,7 +30,7 @@ import net.minecraft.world.level.levelgen.structure.pieces.StructurePiecesBuilde
 import org.jspecify.annotations.NonNull;
 
 // Magnatour
-import roeyqian.magnatour.registry.worldgen.CustomStructures;
+import roeyqian.magnatour.registry.world.MagnaStructures;
 
 public final class DiamondCityStructure extends Structure {
 
@@ -102,7 +102,7 @@ public final class DiamondCityStructure extends Structure {
     }
 
     DiamondCityPiece piece = new DiamondCityPiece(
-        CustomStructures.DIAMOND_CITY_PIECE,
+        MagnaStructures.DIAMOND_CITY_PIECE,
         cityPos,
         citySize,
         layoutSeed
@@ -116,7 +116,7 @@ public final class DiamondCityStructure extends Structure {
 
   @Override @NonNull
   public StructureType<?> type() {
-    return CustomStructures.DIAMOND_CITY;
+    return MagnaStructures.DIAMOND_CITY;
   }
 
 }

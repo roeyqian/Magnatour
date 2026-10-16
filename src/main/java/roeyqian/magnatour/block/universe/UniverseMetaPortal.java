@@ -24,7 +24,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.InsideBlockEffectApplier;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -44,8 +43,8 @@ import org.jspecify.annotations.Nullable;
 
 // Magnatour
 import roeyqian.magnatour.block.CustomPortalHorizon;
-import roeyqian.magnatour.registry.content.UniverseBlocks;
-import roeyqian.magnatour.registry.worldgen.CustomDimensions;
+import roeyqian.magnatour.registry.stuff.MagnaBlocks;
+import roeyqian.magnatour.registry.world.MagnaDimensions;
 
 public class UniverseMetaPortal extends Block {
 
@@ -113,8 +112,8 @@ public class UniverseMetaPortal extends Block {
     CustomPortalHorizon.handleEntityCollision(
         world, pos, entity,
         PORTAL_TICKS, IN_PORTAL_THIS_TICK, clientFlag,
-        UniverseBlocks.UNIVERSE_BLOCK, this,
-        CustomDimensions.UNIVERSE_META, Level.OVERWORLD, FALLBACK_PORTAL_CENTER
+        MagnaBlocks.UNIVERSE_BLOCK, this,
+        MagnaDimensions.UNIVERSE_META, Level.OVERWORLD, FALLBACK_PORTAL_CENTER
     );
     clientInPortal = clientFlag[0];
   }
@@ -131,7 +130,7 @@ public class UniverseMetaPortal extends Block {
       @NonNull RandomSource random
   ) {
     if (CustomPortalHorizon.shouldBreakPortal(
-        this, UniverseBlocks.UNIVERSE_BLOCK, neighborState, pos, world
+        this, MagnaBlocks.UNIVERSE_BLOCK, neighborState, pos, world
     )) {
       return Blocks.AIR.defaultBlockState();
     }

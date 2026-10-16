@@ -38,8 +38,8 @@ import net.minecraft.world.level.Level;
 import org.jspecify.annotations.NonNull;
 
 // Magnatour
-import roeyqian.magnatour.registry.content.UniverseBlocks;
-import roeyqian.magnatour.registry.logic.CustomRecipes;
+import roeyqian.magnatour.registry.logic.MagnaRecipes;
+import roeyqian.magnatour.registry.stuff.MagnaBlocks;
 
 public class UniverseShapelessCraftingRecipe implements CraftingRecipe {
 
@@ -122,7 +122,7 @@ public class UniverseShapelessCraftingRecipe implements CraftingRecipe {
 
     SlotDisplay resultDisplay = new SlotDisplay.ItemStackSlotDisplay(this.resultStack);
     SlotDisplay craftingStationDisplay = new SlotDisplay.ItemSlotDisplay(
-        UniverseBlocks.UNIVERSE_FORGE.asItem()
+        MagnaBlocks.UNIVERSE_FORGE.asItem()
     );
 
     return List.of(
@@ -145,7 +145,7 @@ public class UniverseShapelessCraftingRecipe implements CraftingRecipe {
 
   @Override @NonNull
   public RecipeType<CraftingRecipe> getType() {
-    return CustomRecipes.UNIVERSE_CRAFTING_TYPE;
+    return MagnaRecipes.UNIVERSE_CRAFTING_TYPE;
   }
 
   @Override @NonNull
@@ -169,7 +169,7 @@ public class UniverseShapelessCraftingRecipe implements CraftingRecipe {
 
   @Override @NonNull
   public RecipeBookCategory recipeBookCategory() {
-    return CustomRecipes.UNIVERSE_CRAFTING;
+    return MagnaRecipes.UNIVERSE_CRAFTING;
   }
 
   @Override

@@ -56,7 +56,7 @@ import net.minecraft.world.phys.Vec3;
 // Magnatour
 import roeyqian.magnatour.Magnatour;
 import roeyqian.magnatour.mixin.server.UniverseAnnihilationServerAccessor;
-import roeyqian.magnatour.registry.worldgen.CustomDimensions;
+import roeyqian.magnatour.registry.world.MagnaDimensions;
 
 public final class UniverseAnnihilation {
 
@@ -98,7 +98,7 @@ public final class UniverseAnnihilation {
   public static ResourceKey<Level> evacuationDimension(
       ResourceKey<Level> dimension
   ) {
-    return dimension.equals(CustomDimensions.UNIVERSE_META) ? Level.OVERWORLD : CustomDimensions.UNIVERSE_META;
+    return dimension.equals(MagnaDimensions.UNIVERSE_META) ? Level.OVERWORLD : MagnaDimensions.UNIVERSE_META;
   }
 
   /** Shared by evacuation, login and respawn so none can redirect into a locked dimension. */
@@ -108,7 +108,7 @@ public final class UniverseAnnihilation {
   ) {
     ServerLevel destination = server.getLevel(evacuationDimension(dimension));
     if (destination == null || isLocked(destination)) throw new IllegalStateException("Evacuation dimension unavailable");
-    if (destination.dimension().equals(CustomDimensions.UNIVERSE_META)) {
+    if (destination.dimension().equals(MagnaDimensions.UNIVERSE_META)) {
       BlockPos feet = REFUGE_POSITIONS.get(destination.getRandom().nextInt(REFUGE_POSITIONS.size()));
       createPlatform(destination, feet);
       return new Landing(destination, feet);

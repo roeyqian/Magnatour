@@ -36,7 +36,7 @@ import org.jspecify.annotations.NonNull;
 // Magnatour
 import roeyqian.magnatour.item.CustomItemSetting;
 import roeyqian.magnatour.menu.supreme.MirrorMobileMenuAccess;
-import roeyqian.magnatour.registry.logic.CustomComponents;
+import roeyqian.magnatour.registry.logic.MagnaComponents;
 
 public class MirrorMobile extends Item {
 
@@ -57,10 +57,10 @@ public class MirrorMobile extends Item {
     user.swing(hand, SwingAnimation.DEFAULT, false);
     if (world.isClientSide()) return InteractionResult.PASS;
 
-    int mode = stack.getOrDefault(CustomComponents.MIRROR_MOBILE_MODE, 0);
+    int mode = stack.getOrDefault(MagnaComponents.MIRROR_MOBILE_MODE, 0);
     if (mode != 0) return InteractionResult.PASS;
 
-    String blockId = stack.getOrDefault(CustomComponents.MIRROR_MOBILE_BLOCK_ID, "");
+    String blockId = stack.getOrDefault(MagnaComponents.MIRROR_MOBILE_BLOCK_ID, "");
 
     if (blockId.isEmpty()) {
       user.sendOverlayMessage(
@@ -87,7 +87,7 @@ public class MirrorMobile extends Item {
     Player player = context.getPlayer();
     ItemStack stack = context.getItemInHand();
 
-    int mode = stack.getOrDefault(CustomComponents.MIRROR_MOBILE_MODE, 0);
+    int mode = stack.getOrDefault(MagnaComponents.MIRROR_MOBILE_MODE, 0);
     if (mode != 1) return InteractionResult.PASS;
 
     if (player == null) return InteractionResult.PASS;
@@ -113,7 +113,7 @@ public class MirrorMobile extends Item {
     }
 
     String blockId = BuiltInRegistries.BLOCK.getKey(blockState.getBlock()).toString();
-    stack.set(CustomComponents.MIRROR_MOBILE_BLOCK_ID, blockId);
+    stack.set(MagnaComponents.MIRROR_MOBILE_BLOCK_ID, blockId);
 
     Component blockName = Component.translatable(blockState.getBlock().getDescriptionId());
     player.sendOverlayMessage(
@@ -129,8 +129,8 @@ public class MirrorMobile extends Item {
   ) {
     return CustomItemSetting.applySupremeDefaults(settings)
         .component(DataComponents.LORE, CustomItemSetting.supremeLore("mirror_mobile"))
-        .component(CustomComponents.MIRROR_MOBILE_MODE, 0)
-        .component(CustomComponents.MIRROR_MOBILE_BLOCK_ID, "");
+        .component(MagnaComponents.MIRROR_MOBILE_MODE, 0)
+        .component(MagnaComponents.MIRROR_MOBILE_BLOCK_ID, "");
   }
 
   private static MenuProvider getNamedScreenHandlerFactory(

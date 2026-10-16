@@ -30,9 +30,9 @@ import org.jspecify.annotations.NonNull;
 
 // Magnatour
 import roeyqian.magnatour.menu.CustomCraftingBlock;
-import roeyqian.magnatour.registry.content.SupremeBlocks;
-import roeyqian.magnatour.registry.content.SupremeMenus;
-import roeyqian.magnatour.registry.logic.CustomRecipes;
+import roeyqian.magnatour.registry.logic.MagnaRecipes;
+import roeyqian.magnatour.registry.stuff.MagnaBlocks;
+import roeyqian.magnatour.registry.stuff.MagnaMenus;
 
 public class SupremeCraftableMenu extends AbstractCraftingMenu implements CustomCraftingBlock {
 
@@ -63,7 +63,7 @@ public class SupremeCraftableMenu extends AbstractCraftingMenu implements Custom
       Inventory playerInventory,
       ContainerLevelAccess context
   ) {
-    super(SupremeMenus.SUPREME_CRAFTABLE_HANDLER, syncId, 4, 4);
+    super(MagnaMenus.SUPREME_CRAFTABLE_HANDLER, syncId, 4, 4);
     this.context = context;
     this.player = playerInventory.player;
 
@@ -91,7 +91,7 @@ public class SupremeCraftableMenu extends AbstractCraftingMenu implements Custom
       ServerLevel world
   ) {
     var recipeManager = world.recipeAccess().getSynchronizedRecipes();
-    var supremeMatch = recipeManager.getFirstMatch(CustomRecipes.SUPREME_CRAFTING_TYPE, input, world);
+    var supremeMatch = recipeManager.getFirstMatch(MagnaRecipes.SUPREME_CRAFTING_TYPE, input, world);
 
     return supremeMatch;
   }
@@ -214,7 +214,7 @@ public class SupremeCraftableMenu extends AbstractCraftingMenu implements Custom
   public boolean stillValid(
       @NonNull Player player
   ) {
-    return stillValid(this.context, player, SupremeBlocks.SUPREME_CRAFTABLE);
+    return stillValid(this.context, player, MagnaBlocks.SUPREME_CRAFTABLE);
   }
 
   @Override @NonNull

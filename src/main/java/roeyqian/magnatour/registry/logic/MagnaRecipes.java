@@ -21,66 +21,66 @@ import roeyqian.magnatour.level.recipe.SupremeSmeltingRecipe;
 import roeyqian.magnatour.level.recipe.UniverseShapedCraftingRecipe;
 import roeyqian.magnatour.level.recipe.UniverseShapelessCraftingRecipe;
 import roeyqian.magnatour.level.recipe.UniverseSmeltingRecipe;
-import roeyqian.magnatour.registry.LogicRegHelper;
+import roeyqian.magnatour.registry.LogicHelper;
 
 /*
  * Supreme Group: Crafting, Smelting
  * Universe Group: Crafting, Smelting
  */
-public final class CustomRecipes {
+public final class MagnaRecipes {
 
   // Supreme Group: Smelting
   public static final RecipeBookCategory SUPREME_SMELTING =
-      LogicRegHelper.registerRecipeBookCategory("supreme_smelting");
+      LogicHelper.registerRecipeBookCategory("supreme_smelting");
   // Supreme Group: Crafting
   public static final RecipeBookCategory SUPREME_CRAFTING =
-      LogicRegHelper.registerRecipeBookCategory("supreme_crafting");
+      LogicHelper.registerRecipeBookCategory("supreme_crafting");
   // Universe Group: Smelting
   public static final RecipeBookCategory UNIVERSE_SMELTING =
-      LogicRegHelper.registerRecipeBookCategory("universe_smelting");
+      LogicHelper.registerRecipeBookCategory("universe_smelting");
   // Universe Group: Crafting
   public static final RecipeBookCategory UNIVERSE_CRAFTING =
-      LogicRegHelper.registerRecipeBookCategory("universe_crafting");
+      LogicHelper.registerRecipeBookCategory("universe_crafting");
 
   public static final RecipeType<CraftingRecipe> SUPREME_CRAFTING_TYPE =
-      LogicRegHelper.registerRecipeType("supreme_crafting");
+      LogicHelper.registerRecipeType("supreme_crafting");
   public static final RecipeType<CraftingRecipe> UNIVERSE_CRAFTING_TYPE =
-      LogicRegHelper.registerRecipeType("universe_crafting");
+      LogicHelper.registerRecipeType("universe_crafting");
 
   public static final RecipeType<SupremeSmeltingRecipe> SUPREME_SMELTING_TYPE =
-      LogicRegHelper.registerRecipeType("supreme_smelting");
+      LogicHelper.registerRecipeType("supreme_smelting");
 
   public static final RecipeType<UniverseSmeltingRecipe> UNIVERSE_SMELTING_TYPE =
-      LogicRegHelper.registerRecipeType("universe_smelting");
+      LogicHelper.registerRecipeType("universe_smelting");
 
   @SuppressWarnings("unused") // loaded for registry side effect
   public static final RecipeSerializer<SupremeSmeltingRecipe> SUPREME_SMELTING_SERIALIZER =
-      LogicRegHelper.registerRecipeSerializer("supreme_smelting", SupremeSmeltingRecipe.SERIALIZER);
+      LogicHelper.registerRecipeSerializer("supreme_smelting", SupremeSmeltingRecipe.SERIALIZER);
 
   @SuppressWarnings("unused") // loaded for registry side effect
   public static final RecipeSerializer<SupremeShapedCraftingRecipe> SUPREME_SHAPED_CRAFTING_SERIALIZER =
-      LogicRegHelper.registerRecipeSerializer("supreme_crafting_shaped", SupremeShapedCraftingRecipe.SERIALIZER);
+      LogicHelper.registerRecipeSerializer("supreme_crafting_shaped", SupremeShapedCraftingRecipe.SERIALIZER);
 
   @SuppressWarnings("unused") // loaded for registry side effect
   public static final RecipeSerializer<SupremeShapelessCraftingRecipe> SUPREME_SHAPELESS_CRAFTING_SERIALIZER =
-      LogicRegHelper.registerRecipeSerializer("supreme_crafting_shapeless", SupremeShapelessCraftingRecipe.SERIALIZER);
+      LogicHelper.registerRecipeSerializer("supreme_crafting_shapeless", SupremeShapelessCraftingRecipe.SERIALIZER);
 
   @SuppressWarnings("unused") // loaded for registry side effect
   public static final RecipeSerializer<UniverseSmeltingRecipe> UNIVERSE_SMELTING_SERIALIZER =
-      LogicRegHelper.registerRecipeSerializer("universe_smelting", UniverseSmeltingRecipe.SERIALIZER);
+      LogicHelper.registerRecipeSerializer("universe_smelting", UniverseSmeltingRecipe.SERIALIZER);
 
   @SuppressWarnings("unused") // loaded for registry side effect
   public static final RecipeSerializer<UniverseShapedCraftingRecipe> UNIVERSE_SHAPED_CRAFTING_SERIALIZER =
-      LogicRegHelper.registerRecipeSerializer("universe_crafting_shaped", UniverseShapedCraftingRecipe.SERIALIZER);
+      LogicHelper.registerRecipeSerializer("universe_crafting_shaped", UniverseShapedCraftingRecipe.SERIALIZER);
 
   @SuppressWarnings("unused") // loaded for registry side effect
   public static final RecipeSerializer<UniverseShapelessCraftingRecipe> UNIVERSE_SHAPELESS_CRAFTING_SERIALIZER =
-      LogicRegHelper.registerRecipeSerializer("universe_crafting_shapeless", UniverseShapelessCraftingRecipe.SERIALIZER);
+      LogicHelper.registerRecipeSerializer("universe_crafting_shapeless", UniverseShapelessCraftingRecipe.SERIALIZER);
 
-  private CustomRecipes() {}
+  private MagnaRecipes() {}
 
   public static void init() {
-    Magnatour.LOGGER.info("[Server] Initializing 'CustomRecipes'");
+    Magnatour.LOGGER.info("[Server] Initializing 'MagnaRecipes'");
   }
 
 }

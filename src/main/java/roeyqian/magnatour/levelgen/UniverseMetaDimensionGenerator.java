@@ -16,8 +16,8 @@ import net.minecraft.server.level.ServerLevel;
 
 // Magnatour
 import roeyqian.magnatour.level.data.UniverseMetaGenerationSavedData;
-import roeyqian.magnatour.registry.content.UniverseBlocks;
-import roeyqian.magnatour.registry.worldgen.CustomDimensions;
+import roeyqian.magnatour.registry.stuff.MagnaBlocks;
+import roeyqian.magnatour.registry.world.MagnaDimensions;
 
 public final class UniverseMetaDimensionGenerator {
 
@@ -32,7 +32,7 @@ public final class UniverseMetaDimensionGenerator {
 
   public static void register() {
     ServerTickEvents.END_SERVER_TICK.register(server -> {
-      ServerLevel world = server.getLevel(CustomDimensions.UNIVERSE_META);
+      ServerLevel world = server.getLevel(MagnaDimensions.UNIVERSE_META);
       UniverseMetaGenerationSavedData generationData = UniverseMetaGenerationSavedData.get(server);
       if (world != null && !generationData.isGenerated()) {
         int startIndex = generationData.nextBlockIndex();
@@ -79,7 +79,7 @@ public final class UniverseMetaDimensionGenerator {
       boolean isSurfaceBorder = boundaryAxes >= 2;
       world.setBlock(
           new BlockPos(x, y, z),
-          (isSurfaceBorder ? UniverseBlocks.UNIVERSE_LIGHT_BLOCK : UniverseBlocks.UNIVERSE_DARK_BLOCK)
+          (isSurfaceBorder ? MagnaBlocks.UNIVERSE_LIGHT_BLOCK : MagnaBlocks.UNIVERSE_DARK_BLOCK)
               .defaultBlockState(),
           3
       );
