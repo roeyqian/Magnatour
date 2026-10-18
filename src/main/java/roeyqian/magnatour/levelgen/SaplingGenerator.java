@@ -5,7 +5,7 @@
  * This file is part of Magnatour.
  * Full license text available in the LICENSE file in the project root.
  */
-package roeyqian.magnatour.levelgen.tree;
+package roeyqian.magnatour.levelgen;
 
 // Minecraft
 import net.minecraft.core.registries.Registries;
@@ -17,7 +17,7 @@ import net.minecraft.world.level.block.grower.TreeGrower;
 // Magnatour
 import roeyqian.magnatour.Magnatour;
 
-public final class SaplingGenerators {
+public final class SaplingGenerator {
 
   public static final TreeGrower GOLDEN = new TreeGrower(
       "golden",

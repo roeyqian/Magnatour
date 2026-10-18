@@ -5,7 +5,7 @@
  * This file is part of Magnatour.
  * Full license text available in the LICENSE file in the project root.
  */
-package roeyqian.magnatour.levelgen.structure;
+package roeyqian.magnatour.levelgen.supreme;
 
 // Java Standard
 import java.util.ArrayList;
@@ -34,7 +34,7 @@ import net.minecraft.world.level.material.Fluids;
 // Magnatour
 import roeyqian.magnatour.Magnatour;
 
-final class DiamondCityLayout {
+final class StructureDiamondCityLayout {
 
   static final int FOUNDATION_DEPTH = 16;
 
@@ -53,7 +53,7 @@ final class DiamondCityLayout {
 
   private final Vec3i citySize;
 
-  private DiamondCityLayout(
+  private StructureDiamondCityLayout(
       Vec3i citySize,
       List<Building> buildings
   ) {
@@ -61,7 +61,7 @@ final class DiamondCityLayout {
     this.buildings = List.copyOf(buildings);
   }
 
-  static Optional<DiamondCityLayout> create(
+  static Optional<StructureDiamondCityLayout> create(
       StructureTemplateManager templates,
       long seed
   ) {
@@ -120,7 +120,7 @@ final class DiamondCityLayout {
         height = Math.max(height, house.size().getY() + 1);
       }
     }
-    return Optional.of(new DiamondCityLayout(new Vec3i(CITY_WIDTH, height, CITY_WIDTH), buildings));
+    return Optional.of(new StructureDiamondCityLayout(new Vec3i(CITY_WIDTH, height, CITY_WIDTH), buildings));
   }
 
   static long seed(

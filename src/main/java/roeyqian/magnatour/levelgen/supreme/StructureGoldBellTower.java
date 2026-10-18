@@ -5,7 +5,7 @@
  * This file is part of Magnatour.
  * Full license text available in the LICENSE file in the project root.
  */
-package roeyqian.magnatour.levelgen.structure;
+package roeyqian.magnatour.levelgen.supreme;
 
 // Java Standard
 import java.util.Optional;
@@ -38,14 +38,12 @@ import org.jspecify.annotations.NonNull;
 
 // Magnatour
 import roeyqian.magnatour.Magnatour;
-import roeyqian.magnatour.levelgen.biome.HarvestContinentBiomeSource;
-import roeyqian.magnatour.levelgen.terrain.HarvestContinentTerrain;
 import roeyqian.magnatour.registry.world.MagnaStructures;
 
-public final class GoldBellTowerStructure extends Structure {
+public final class StructureGoldBellTower extends Structure {
 
-  public static final MapCodec<GoldBellTowerStructure> CODEC =
-      simpleCodec(GoldBellTowerStructure::new);
+  public static final MapCodec<StructureGoldBellTower> CODEC =
+      simpleCodec(StructureGoldBellTower::new);
 
   private static final int CELL_SIZE = 128;
   private static final int LAND_MARGIN = 16;
@@ -58,7 +56,7 @@ public final class GoldBellTowerStructure extends Structure {
   private static final Identifier UPPER_TEMPLATE =
       Identifier.fromNamespaceAndPath(Magnatour.MOD_ID, "gold_bell_tower/tower_2");
 
-  public GoldBellTowerStructure(
+  public StructureGoldBellTower(
       StructureSettings settings
   ) {
     super(settings);
@@ -123,7 +121,7 @@ public final class GoldBellTowerStructure extends Structure {
       return Optional.empty();
     }
 
-    GoldBellTowerPiece piece = new GoldBellTowerPiece(
+    StructureGoldBellTowerPiece piece = new StructureGoldBellTowerPiece(
         MagnaStructures.GOLD_BELL_TOWER_PIECE,
         lowerPos,
         lowerSize,

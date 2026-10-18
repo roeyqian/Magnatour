@@ -1,0 +1,9 @@
+{
+  "type": "magnatour:universe_meta_origin",
+  "biomes": [
+    "magnatour:universe_meta_void"
+  ],
+  "step": "surface_structures",
+  "spawn_overrides": {},
+  "terrain_adaptation": "none"
+}

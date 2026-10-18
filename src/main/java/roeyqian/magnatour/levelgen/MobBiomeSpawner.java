@@ -5,7 +5,7 @@
  * This file is part of Magnatour.
  * Full license text available in the LICENSE file in the project root.
  */
-package roeyqian.magnatour.levelgen.biome;
+package roeyqian.magnatour.levelgen;
 
 // Java Standard
 import java.util.ArrayList;
@@ -43,12 +43,12 @@ import net.minecraft.world.phys.Vec3;
 
 // Magnatour
 import roeyqian.magnatour.Magnatour;
-import roeyqian.magnatour.levelgen.HarvestContinentChunkGenerator;
-import roeyqian.magnatour.levelgen.terrain.HarvestContinentTerrain;
+import roeyqian.magnatour.levelgen.supreme.HarvestContinentChunkGenerator;
+import roeyqian.magnatour.levelgen.supreme.HarvestContinentTerrain;
 import roeyqian.magnatour.registry.world.MagnaDimensions;
 
 /** Natural animal spawning and additional surface monster spawning in the cactus desert. */
-public final class BiomeMobSpawner {
+public final class MobBiomeSpawner {
 
   private static final int DESERT_CHUNK_PASSES = 3;
   private static final int DESERT_LOCAL_POPULATION_LIMIT = 280;
@@ -61,7 +61,7 @@ public final class BiomeMobSpawner {
 
   private static boolean tickEventRegistered;
 
-  private BiomeMobSpawner() {}
+  private MobBiomeSpawner() {}
 
   public static void registerTickEvent() {
     if (tickEventRegistered) return;

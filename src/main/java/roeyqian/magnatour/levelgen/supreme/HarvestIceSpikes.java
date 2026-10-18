@@ -5,7 +5,7 @@
  * This file is part of Magnatour.
  * Full license text available in the LICENSE file in the project root.
  */
-package roeyqian.magnatour.levelgen.feature;
+package roeyqian.magnatour.levelgen.supreme;
 
 // Mojang
 import com.mojang.serialization.MapCodec;
@@ -22,13 +22,13 @@ import net.minecraft.world.level.levelgen.feature.Feature;
 // JSpecify
 import org.jspecify.annotations.NonNull;
 
-public final class GiantIceSpikeFeature implements Feature {
+public final class HarvestIceSpikes implements Feature {
 
-  public static final MapCodec<GiantIceSpikeFeature> CODEC =
-      MapCodec.unit(GiantIceSpikeFeature::new);
+  public static final MapCodec<HarvestIceSpikes> CODEC =
+      MapCodec.unit(HarvestIceSpikes::new);
 
   @NonNull @Override
-  public MapCodec<GiantIceSpikeFeature> codec() {
+  public MapCodec<HarvestIceSpikes> codec() {
     return CODEC;
   }
 

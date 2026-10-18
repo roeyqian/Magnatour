@@ -68,7 +68,7 @@ import roeyqian.magnatour.block.universe.UniverseLibrary;
 import roeyqian.magnatour.block.universe.UniverseMetaPortal;
 import roeyqian.magnatour.block.universe.UniversePool;
 import roeyqian.magnatour.block.universe.UniverseRefinery;
-import roeyqian.magnatour.levelgen.tree.SaplingGenerators;
+import roeyqian.magnatour.levelgen.SaplingGenerator;
 import roeyqian.magnatour.registry.StuffHelper;
 
 /*
@@ -208,7 +208,7 @@ public final class MagnaBlocks {
       "golden_hanging_sign", supreme, GOLDEN_HANGING_SIGN, GOLDEN_WALL_HANGING_SIGN, true
   );
   public static final Block GOLDEN_SAPLING = StuffHelper.registerSapling(
-      "golden_sapling", supreme, setting -> new SaplingBlock(SaplingGenerators.GOLDEN, setting),
+      "golden_sapling", supreme, setting -> new SaplingBlock(SaplingGenerator.GOLDEN, setting),
       BlockBehaviour.Properties.of()
   );
   public static final Block GOLDEN_WOOD = StuffHelper.registerWood(
@@ -403,7 +403,7 @@ public final class MagnaBlocks {
       "universe_hanging_sign", universe, UNIVERSE_HANGING_SIGN, UNIVERSE_WALL_HANGING_SIGN, true
   );
   public static final Block UNIVERSE_SAPLING = StuffHelper.registerSapling(
-      "universe_sapling", universe, setting -> new SaplingBlock(SaplingGenerators.UNIVERSE, setting),
+      "universe_sapling", universe, setting -> new SaplingBlock(SaplingGenerator.UNIVERSE, setting),
       BlockBehaviour.Properties.of()
   );
   public static final Block UNIVERSE_WOOD = StuffHelper.registerWood(

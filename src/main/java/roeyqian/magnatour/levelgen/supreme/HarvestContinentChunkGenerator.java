@@ -5,7 +5,7 @@
  * This file is part of Magnatour.
  * Full license text available in the LICENSE file in the project root.
  */
-package roeyqian.magnatour.levelgen;
+package roeyqian.magnatour.levelgen.supreme;
 
 // Java Standard
 import java.util.List;
@@ -23,6 +23,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.WorldGenRegion;
+import net.minecraft.util.RandomSource;
 import net.minecraft.util.random.WeightedList;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.level.Level;
@@ -34,6 +35,7 @@ import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.BiomeManager;
 import net.minecraft.world.level.biome.BiomeSource;
 import net.minecraft.world.level.biome.MobSpawnSettings;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -50,11 +52,6 @@ import net.minecraft.world.level.levelgen.structure.StructureSet;
 import org.jspecify.annotations.NonNull;
 
 // Magnatour
-import roeyqian.magnatour.levelgen.biome.HarvestContinentBiomeSource;
-import roeyqian.magnatour.levelgen.terrain.HarvestContinentCaveSampler;
-import roeyqian.magnatour.levelgen.terrain.HarvestContinentTerrain;
-import roeyqian.magnatour.levelgen.terrain.HarvestMelonTerrain;
-import roeyqian.magnatour.levelgen.tree.ReservedGoldenTree;
 import roeyqian.magnatour.registry.stuff.MagnaBlocks;
 
 public final class HarvestContinentChunkGenerator extends ChunkGenerator {
@@ -73,9 +70,9 @@ public final class HarvestContinentChunkGenerator extends ChunkGenerator {
   private static final int MIN_Y = -64;
   private static final int MAX_Y = MIN_Y + GEN_DEPTH - 1;
 
-  private final Identifier settings;
-
   private final HarvestContinentBiomeSource harvestourSource;
+
+  private final Identifier settings;
 
   private volatile long terrainSeed;
 
@@ -124,7 +121,7 @@ public final class HarvestContinentChunkGenerator extends ChunkGenerator {
         int y = surface.height();
         ground.set(x, y, z);
         if (level.getBlockState(ground).is(MagnaBlocks.EVER_WATER_GRASS_BLOCK)) {
-          ReservedGoldenTree.place(level, this.terrainSeed, ground);
+          placeReservedGoldenTree(level, this.terrainSeed, ground);
         }
       }
     }
@@ -258,7 +255,7 @@ public final class HarvestContinentChunkGenerator extends ChunkGenerator {
       MobCategory category,
       BlockPos pos
   ) {
-    // Creature spawning is handled once per cycle by BiomeMobSpawner, with its
+    // Creature spawning is handled once per cycle by MobBiomeSpawner, with its
     // own population and batch limits. Keep vanilla spawning for other groups.
     return category == MobCategory.CREATURE ? WeightedList.of()
         : super.getMobsAt(level, structures, category, pos);
@@ -292,6 +289,42 @@ public final class HarvestContinentChunkGenerator extends ChunkGenerator {
     chunk.setBlockState(pos, state);
     oceanFloor.update(localX, y, localZ, state);
     worldSurface.update(localX, y, localZ, state);
+  }
+
+  /** Generates a golden tree rooted in the single reserved grass block. */
+  private static void placeReservedGoldenTree(
+      WorldGenLevel level,
+      long seed,
+      BlockPos ground
+  ) {
+    BlockPos root = ground.above();
+    RandomSource random = RandomSource.create(
+        seed ^ ground.getX() * 341873128712L ^ ground.getZ() * 132897987541L);
+    int height = 6 + random.nextInt(3);
+    BlockState log = MagnaBlocks.GOLDEN_LOG.defaultBlockState();
+    BlockState leaves = MagnaBlocks.GOLDEN_LEAVES.defaultBlockState();
+    BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
+
+    // Direct placement avoids the random selector and tree clearance rejection.
+    // The grass marker stays intact instead of being converted to vanilla dirt.
+    for (int dy = 0; dy < height; dy++) {
+      pos.setWithOffset(root, 0, dy, 0);
+      level.setBlock(pos, log, Block.UPDATE_CLIENTS);
+    }
+    for (int dy = height - 3; dy <= height; dy++) {
+      int radius = dy == height ? 1 : 2;
+      for (int dx = -radius; dx <= radius; dx++) {
+        for (int dz = -radius; dz <= radius; dz++) {
+          if (dx * dx + dz * dz > radius * radius + 1) continue;
+          pos.setWithOffset(root, dx, dy, dz);
+          BlockState existing = level.getBlockState(pos);
+          if (!existing.isAir() && !existing.is(Blocks.WHEAT)
+              && !existing.is(MagnaBlocks.GOLDEN_LEAVES)) continue;
+          int distance = Math.max(1, Math.abs(dx) + Math.abs(dz) + Math.max(0, dy - height + 1));
+          level.setBlock(pos, leaves.setValue(BlockStateProperties.DISTANCE, distance), Block.UPDATE_CLIENTS);
+        }
+      }
+    }
   }
 
   private static BlockState surfaceTop(
@@ -399,7 +432,7 @@ public final class HarvestContinentChunkGenerator extends ChunkGenerator {
         biome.equals(HarvestContinentTerrain.BERRY_SNOWFIELD)
             && HarvestContinentTerrain.fbmPerlin(this.terrainSeed ^ 0xD1310BA698DFB5ACL,
                 x, z, 0.045, 2) > 0.10,
-        HarvestMelonTerrain.column(this.terrainSeed, x, z, surface.height(),
+        HarvestContinentTerrain.melonColumn(this.terrainSeed, x, z, surface.height(),
             surface.melonWeight())
     );
   }
@@ -408,7 +441,7 @@ public final class HarvestContinentChunkGenerator extends ChunkGenerator {
       ResourceKey<Biome> biome,
       int surfaceY, int waterLevel,
       boolean treeReservation, boolean berryClearing,
-      HarvestMelonTerrain.Column melonTerrain
+      HarvestContinentTerrain.MelonColumn melonTerrain
   ) {
 
     boolean wheatPlain() { return this.biome.equals(HarvestContinentTerrain.WHEAT_PLAIN); }

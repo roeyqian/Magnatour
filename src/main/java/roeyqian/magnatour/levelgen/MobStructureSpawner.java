@@ -5,7 +5,7 @@
  * This file is part of Magnatour.
  * Full license text available in the LICENSE file in the project root.
  */
-package roeyqian.magnatour.levelgen.structure;
+package roeyqian.magnatour.levelgen;
 
 // Java Standard
 import java.util.ArrayList;
@@ -60,7 +60,7 @@ import roeyqian.magnatour.registry.stuff.MagnaEntities;
 import roeyqian.magnatour.registry.world.MagnaDimensions;
 import roeyqian.magnatour.registry.world.MagnaStructures;
 
-public final class StructureMobSpawner {
+public final class MobStructureSpawner {
 
   private static final int DIAMOND_CITY_MAX_SPAWNS_PER_CYCLE = 9;
   private static final int DIAMOND_CITY_SCAN_RADIUS_CHUNKS = 12;
@@ -110,8 +110,8 @@ public final class StructureMobSpawner {
           DIAMOND_CITY_SPAWN_INTERVAL_TICKS,
           DIAMOND_CITY_COUNT_HORIZONTAL_PADDING,
           DIAMOND_CITY_COUNT_VERTICAL_PADDING,
-          StructureMobSpawner::countDiamondCityMobs,
-          StructureMobSpawner::spawnDiamondCityMobs
+          MobStructureSpawner::countDiamondCityMobs,
+          MobStructureSpawner::spawnDiamondCityMobs
       );
   private static final StructureSpawnProfile GOLD_BELL_TOWER_PROFILE =
       new StructureSpawnProfile(
@@ -126,8 +126,8 @@ public final class StructureMobSpawner {
           GOLD_BELL_TOWER_SPAWN_INTERVAL_TICKS,
           GOLD_BELL_TOWER_COUNT_HORIZONTAL_PADDING,
           GOLD_BELL_TOWER_COUNT_VERTICAL_PADDING,
-          StructureMobSpawner::countGoldBellTowerMobs,
-          StructureMobSpawner::spawnGoldBellTowerMobs
+          MobStructureSpawner::countGoldBellTowerMobs,
+          MobStructureSpawner::spawnGoldBellTowerMobs
       );
   private static final StructureSpawnProfile TOWN_OF_FORTUNE_PROFILE =
       new StructureSpawnProfile(
@@ -142,8 +142,8 @@ public final class StructureMobSpawner {
           TOWN_OF_FORTUNE_SPAWN_INTERVAL_TICKS,
           TOWN_OF_FORTUNE_COUNT_HORIZONTAL_PADDING,
           TOWN_OF_FORTUNE_COUNT_VERTICAL_PADDING,
-          StructureMobSpawner::countTownOfFortuneMobs,
-          StructureMobSpawner::spawnTownOfFortuneMobs
+          MobStructureSpawner::countTownOfFortuneMobs,
+          MobStructureSpawner::spawnTownOfFortuneMobs
       );
 
   private static final Map<StructureInstanceKey, SpawnState> SPAWN_STATES =
@@ -156,7 +156,7 @@ public final class StructureMobSpawner {
 
   private static boolean tickEventRegistered = false;
 
-  private StructureMobSpawner() {}
+  private MobStructureSpawner() {}
 
   public static void onGoldBellTowerBellRung(
       ServerLevel level,

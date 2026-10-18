@@ -5,7 +5,7 @@
  * This file is part of Magnatour.
  * Full license text available in the LICENSE file in the project root.
  */
-package roeyqian.magnatour.levelgen.structure;
+package roeyqian.magnatour.levelgen.supreme;
 
 // Java Standard
 import java.util.Optional;
@@ -36,7 +36,7 @@ import org.jspecify.annotations.NonNull;
 // Magnatour
 import roeyqian.magnatour.Magnatour;
 
-public final class DiamondCityPiece extends StructurePiece {
+public final class StructureDiamondCityPiece extends StructurePiece {
 
   private final long layoutSeed;
 
@@ -44,7 +44,7 @@ public final class DiamondCityPiece extends StructurePiece {
 
   private final BlockPos cityPos;
 
-  public DiamondCityPiece(
+  public StructureDiamondCityPiece(
       StructurePieceType type,
       CompoundTag tag
   ) {
@@ -52,11 +52,11 @@ public final class DiamondCityPiece extends StructurePiece {
     this.cityPos = readBlockPos(tag);
     this.citySize = readVec3i(tag, "CitySize");
     this.layoutSeed = tag.getLong("LayoutSeed").orElseGet(
-        () -> DiamondCityLayout.seed(0L, this.cityPos.getX(), this.cityPos.getZ())
+        () -> StructureDiamondCityLayout.seed(0L, this.cityPos.getX(), this.cityPos.getZ())
     );
   }
 
-  public DiamondCityPiece(
+  public StructureDiamondCityPiece(
       StructurePieceType type,
       BlockPos cityPos,
       Vec3i citySize,
@@ -79,7 +79,7 @@ public final class DiamondCityPiece extends StructurePiece {
       @NonNull BlockPos pivot
   ) {
     StructureTemplateManager templateManager = level.getLevel().getStructureTemplateManager();
-    Optional<DiamondCityLayout> layoutOpt = DiamondCityLayout.create(
+    Optional<StructureDiamondCityLayout> layoutOpt = StructureDiamondCityLayout.create(
         templateManager,
         this.layoutSeed
     );
@@ -126,7 +126,7 @@ public final class DiamondCityPiece extends StructurePiece {
   ) {
     return new BoundingBox(
         cityPos.getX(),
-        cityPos.getY() - DiamondCityLayout.FOUNDATION_DEPTH,
+        cityPos.getY() - StructureDiamondCityLayout.FOUNDATION_DEPTH,
         cityPos.getZ(),
         cityPos.getX() + citySize.getX() - 1,
         cityPos.getY() + citySize.getY() - 1,

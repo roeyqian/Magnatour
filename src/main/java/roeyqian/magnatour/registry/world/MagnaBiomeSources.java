@@ -12,8 +12,8 @@ import net.minecraft.resources.Identifier;
 
 // Magnatour
 import roeyqian.magnatour.Magnatour;
-import roeyqian.magnatour.levelgen.biome.HarvestContinentBiomeSource;
-import roeyqian.magnatour.levelgen.biome.OreContinentBiomeSource;
+import roeyqian.magnatour.levelgen.supreme.HarvestContinentBiomeSource;
+import roeyqian.magnatour.levelgen.supreme.OreContinentBiomeSource;
 import roeyqian.magnatour.registry.WorldHelper;
 
 /*

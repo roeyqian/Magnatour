@@ -5,15 +5,18 @@
  * This file is part of Magnatour.
  * Full license text available in the LICENSE file in the project root.
  */
-package roeyqian.magnatour.levelgen.terrain;
+package roeyqian.magnatour.levelgen;
 
 // Java Standard
 import java.util.Arrays;
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 
+// Magnatour
+import roeyqian.magnatour.levelgen.supreme.HarvestContinentTerrain;
+
 /** Continuous biome parameter normalized to percentiles of a seeded noise field. */
-public final class PercentileBiomeField {
+public final class BiomeField {
 
   public static final double PARAMETER_MAX = 100.0;
 
@@ -36,14 +39,14 @@ public final class PercentileBiomeField {
 
   private static final ConcurrentHashMap<Long, double[]> DISTRIBUTIONS = new ConcurrentHashMap<>();
 
-  private PercentileBiomeField() {}
+  private BiomeField() {}
 
   public static double sample(
       long seed,
       int worldX, int worldZ
   ) {
     if (DISTRIBUTIONS.size() > DISTRIBUTION_CACHE_LIMIT) DISTRIBUTIONS.clear();
-    double[] distribution = DISTRIBUTIONS.computeIfAbsent(seed, PercentileBiomeField::createDistribution);
+    double[] distribution = DISTRIBUTIONS.computeIfAbsent(seed, BiomeField::createDistribution);
     double value = rawSample(seed, worldX * WORLD_COORDINATE_SCALE, worldZ * WORLD_COORDINATE_SCALE);
     int index = Arrays.binarySearch(distribution, value);
     if (index >= 0) return index * PARAMETER_MAX / (distribution.length - 1);
@@ -100,7 +103,7 @@ public final class PercentileBiomeField {
       Node node
   ) {
     if (MEDIAN_NODES.size() > CACHE_LIMIT) MEDIAN_NODES.clear();
-    return MEDIAN_NODES.computeIfAbsent(node, PercentileBiomeField::computeMedian);
+    return MEDIAN_NODES.computeIfAbsent(node, BiomeField::computeMedian);
   }
 
   private static double computeMedian(

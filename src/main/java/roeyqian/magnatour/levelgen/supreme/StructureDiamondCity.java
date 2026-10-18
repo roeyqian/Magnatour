@@ -5,7 +5,7 @@
  * This file is part of Magnatour.
  * Full license text available in the LICENSE file in the project root.
  */
-package roeyqian.magnatour.levelgen.structure;
+package roeyqian.magnatour.levelgen.supreme;
 
 // Java Standard
 import java.util.Optional;
@@ -32,12 +32,12 @@ import org.jspecify.annotations.NonNull;
 // Magnatour
 import roeyqian.magnatour.registry.world.MagnaStructures;
 
-public final class DiamondCityStructure extends Structure {
+public final class StructureDiamondCity extends Structure {
 
-  public static final MapCodec<DiamondCityStructure> CODEC =
-      simpleCodec(DiamondCityStructure::new);
+  public static final MapCodec<StructureDiamondCity> CODEC =
+      simpleCodec(StructureDiamondCity::new);
 
-  public DiamondCityStructure(
+  public StructureDiamondCity(
       StructureSettings settings
   ) {
     super(settings);
@@ -61,8 +61,8 @@ public final class DiamondCityStructure extends Structure {
       return Optional.empty();
     }
 
-    long layoutSeed = DiamondCityLayout.seed(context.seed(), chunkPos.x(), chunkPos.z());
-    Optional<DiamondCityLayout> layoutOpt = DiamondCityLayout.create(
+    long layoutSeed = StructureDiamondCityLayout.seed(context.seed(), chunkPos.x(), chunkPos.z());
+    Optional<StructureDiamondCityLayout> layoutOpt = StructureDiamondCityLayout.create(
         context.structureTemplateManager(),
         layoutSeed
     );
@@ -96,12 +96,12 @@ public final class DiamondCityStructure extends Structure {
         originZ - citySize.getZ() / 2
     );
 
-    if (baseY - DiamondCityLayout.FOUNDATION_DEPTH < context.heightAccessor().getMinY()
+    if (baseY - StructureDiamondCityLayout.FOUNDATION_DEPTH < context.heightAccessor().getMinY()
         || baseY + citySize.getY() > context.heightAccessor().getMaxY()) {
       return Optional.empty();
     }
 
-    DiamondCityPiece piece = new DiamondCityPiece(
+    StructureDiamondCityPiece piece = new StructureDiamondCityPiece(
         MagnaStructures.DIAMOND_CITY_PIECE,
         cityPos,
         citySize,

@@ -13,12 +13,14 @@ import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceType;
 
 // Magnatour
 import roeyqian.magnatour.Magnatour;
-import roeyqian.magnatour.levelgen.structure.DiamondCityPiece;
-import roeyqian.magnatour.levelgen.structure.DiamondCityStructure;
-import roeyqian.magnatour.levelgen.structure.GoldBellTowerPiece;
-import roeyqian.magnatour.levelgen.structure.GoldBellTowerStructure;
-import roeyqian.magnatour.levelgen.structure.StructureMobSpawner;
-import roeyqian.magnatour.levelgen.structure.TownOfFortuneStructure;
+import roeyqian.magnatour.levelgen.MobStructureSpawner;
+import roeyqian.magnatour.levelgen.supreme.StructureDiamondCity;
+import roeyqian.magnatour.levelgen.supreme.StructureDiamondCityPiece;
+import roeyqian.magnatour.levelgen.supreme.StructureGoldBellTower;
+import roeyqian.magnatour.levelgen.supreme.StructureGoldBellTowerPiece;
+import roeyqian.magnatour.levelgen.supreme.StructureTownOfFortune;
+import roeyqian.magnatour.levelgen.universe.StructureUniverseMetaOrigin;
+import roeyqian.magnatour.levelgen.universe.StructureUniverseMetaOriginPiece;
 import roeyqian.magnatour.registry.WorldHelper;
 
 /*
@@ -34,28 +36,38 @@ public final class MagnaStructures {
   public static final StructurePieceType GOLD_BELL_TOWER_PIECE =
       registerGoldBellTowerPiece();
 
-  public static final StructureType<DiamondCityStructure> DIAMOND_CITY =
+  // Universe Group: Structure
+  public static final StructurePieceType UNIVERSE_META_ORIGIN_PIECE =
+      registerUniverseMetaOriginPiece();
+
+  public static final StructureType<StructureDiamondCity> DIAMOND_CITY =
       WorldHelper.registerStructureType(
           "diamond_city",
-          () -> DiamondCityStructure.CODEC
+          () -> StructureDiamondCity.CODEC
       );
 
-  public static final StructureType<GoldBellTowerStructure> GOLD_BELL_TOWER =
+  public static final StructureType<StructureGoldBellTower> GOLD_BELL_TOWER =
       WorldHelper.registerStructureType(
           "gold_bell_tower",
-          () -> GoldBellTowerStructure.CODEC
+          () -> StructureGoldBellTower.CODEC
       );
 
-  public static final StructureType<TownOfFortuneStructure> TOWN_OF_FORTUNE =
+  public static final StructureType<StructureTownOfFortune> TOWN_OF_FORTUNE =
       WorldHelper.registerStructureType(
           "town_of_fortune",
-          () -> TownOfFortuneStructure.CODEC
+          () -> StructureTownOfFortune.CODEC
+      );
+
+  public static final StructureType<StructureUniverseMetaOrigin> UNIVERSE_META_ORIGIN =
+      WorldHelper.registerStructureType(
+          "universe_meta_origin",
+          () -> StructureUniverseMetaOrigin.CODEC
       );
 
   private MagnaStructures() {}
 
   public static void init() {
-    StructureMobSpawner.registerTickEvent();
+    MobStructureSpawner.registerTickEvent();
     Magnatour.LOGGER.info("[Server] Initializing 'MagnaStructures'");
   }
 
@@ -63,7 +75,7 @@ public final class MagnaStructures {
     StructurePieceType[] pieceHolder = new StructurePieceType[1];
     pieceHolder[0] = WorldHelper.registerStructurePiece(
         "diamond_city",
-        (_, tag) -> new DiamondCityPiece(pieceHolder[0], tag)
+        (_, tag) -> new StructureDiamondCityPiece(pieceHolder[0], tag)
     );
     return pieceHolder[0];
   }
@@ -72,7 +84,16 @@ public final class MagnaStructures {
     StructurePieceType[] pieceHolder = new StructurePieceType[1];
     pieceHolder[0] = WorldHelper.registerStructurePiece(
         "gold_bell_tower",
-        (_, tag) -> new GoldBellTowerPiece(pieceHolder[0], tag)
+        (_, tag) -> new StructureGoldBellTowerPiece(pieceHolder[0], tag)
+    );
+    return pieceHolder[0];
+  }
+
+  private static StructurePieceType registerUniverseMetaOriginPiece() {
+    StructurePieceType[] pieceHolder = new StructurePieceType[1];
+    pieceHolder[0] = WorldHelper.registerStructurePiece(
+        "universe_meta_origin",
+        (_, tag) -> new StructureUniverseMetaOriginPiece(pieceHolder[0], tag)
     );
     return pieceHolder[0];
   }

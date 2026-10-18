@@ -1,0 +1,11 @@
+{
+  "placement": {
+    "type": "minecraft:dimension_origin"
+  },
+  "structures": [
+    {
+      "structure": "magnatour:universe_meta_origin",
+      "weight": 1
+    }
+  ]
+}

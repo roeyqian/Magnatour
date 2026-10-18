@@ -5,13 +5,16 @@
  * This file is part of Magnatour.
  * Full license text available in the LICENSE file in the project root.
  */
-package roeyqian.magnatour.levelgen.tree;
+package roeyqian.magnatour.levelgen.supreme;
 
 // Mojang
+import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 // Minecraft
 import net.minecraft.core.BlockPos;
+import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.state.BlockState;
@@ -21,21 +24,21 @@ import net.minecraft.world.level.levelgen.feature.Feature;
 // JSpecify
 import org.jspecify.annotations.NonNull;
 
-public final class OreTreeFeature implements Feature {
+public final class OreMineralTrees implements Feature {
 
-  public static final MapCodec<OreTreeFeature> CODEC =
-      OreTreeConfiguration.CODEC.xmap(OreTreeFeature::new, OreTreeFeature::config);
+  public static final MapCodec<OreMineralTrees> CODEC =
+      MineralTreeConfiguration.CODEC.xmap(OreMineralTrees::new, OreMineralTrees::config);
 
-  private final OreTreeConfiguration config;
+  private final MineralTreeConfiguration config;
 
-  public OreTreeFeature(
-      OreTreeConfiguration config
+  public OreMineralTrees(
+      MineralTreeConfiguration config
   ) {
     this.config = config;
   }
 
   @NonNull @Override
-  public MapCodec<OreTreeFeature> codec() {
+  public MapCodec<OreMineralTrees> codec() {
     return CODEC;
   }
 
@@ -46,7 +49,7 @@ public final class OreTreeFeature implements Feature {
       @NonNull RandomSource random,
       @NonNull BlockPos origin
   ) {
-    OreTreeConfiguration config = this.config;
+    MineralTreeConfiguration config = this.config;
 
     int height = config.minHeight();
     int heightRange = config.maxHeight() - config.minHeight();
@@ -161,8 +164,37 @@ public final class OreTreeFeature implements Feature {
     }
   }
 
-  private OreTreeConfiguration config() {
+  private MineralTreeConfiguration config() {
     return config;
+  }
+
+  public record MineralTreeConfiguration(
+      BlockState trunk, BlockState foliage,
+      int minHeight, int maxHeight, int foliageRadius
+  ) {
+
+    public static final MapCodec<MineralTreeConfiguration> CODEC =
+        RecordCodecBuilder.mapCodec((instance) -> instance.group(
+                BlockState.CODEC.fieldOf("trunk")
+                    .forGetter(MineralTreeConfiguration::trunk),
+                BlockState.CODEC.fieldOf("foliage")
+                    .forGetter(MineralTreeConfiguration::foliage),
+                Codec.INT.optionalFieldOf("min_height", 4)
+                    .forGetter(MineralTreeConfiguration::minHeight),
+                Codec.INT.optionalFieldOf("max_height", 7)
+                    .forGetter(MineralTreeConfiguration::maxHeight),
+                Codec.INT.optionalFieldOf("foliage_radius", 2)
+                    .forGetter(MineralTreeConfiguration::foliageRadius)
+            )
+            .apply(instance, MineralTreeConfiguration::new)
+        );
+
+    public MineralTreeConfiguration {
+      minHeight = Mth.clamp(minHeight, 1, 32);
+      maxHeight = Mth.clamp(Math.max(maxHeight, minHeight), 1, 32);
+      foliageRadius = Mth.clamp(foliageRadius, 1, 5);
+    }
+
   }
 
 }

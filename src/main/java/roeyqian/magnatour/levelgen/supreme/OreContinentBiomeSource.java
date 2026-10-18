@@ -5,7 +5,7 @@
  * This file is part of Magnatour.
  * Full license text available in the LICENSE file in the project root.
  */
-package roeyqian.magnatour.levelgen.biome;
+package roeyqian.magnatour.levelgen.supreme;
 
 // Java Standard
 import java.util.Optional;
@@ -31,11 +31,11 @@ import net.minecraft.world.level.biome.Climate;
 import org.jspecify.annotations.NonNull;
 
 // Magnatour
-import roeyqian.magnatour.levelgen.terrain.PercentileBiomeField;
+import roeyqian.magnatour.levelgen.BiomeField;
 
 public final class OreContinentBiomeSource extends BiomeSource {
 
-  public static final double ORETOUR_MAX = PercentileBiomeField.PARAMETER_MAX;
+  public static final double ORETOUR_MAX = BiomeField.PARAMETER_MAX;
   // Percentile intervals retain an approximately equal area share for all three biomes.
   public static final double FOREST_ORETOUR_LIMIT = ORETOUR_MAX / 3.0;
   public static final double PLAIN_ORETOUR_LIMIT = ORETOUR_MAX * 2.0 / 3.0;
@@ -102,7 +102,7 @@ public final class OreContinentBiomeSource extends BiomeSource {
   public double sampleOretour(
       int worldX, int worldZ
   ) {
-    return PercentileBiomeField.sample(this.worldSeed ^ this.seed ^ ORETOUR_SEED_SALT, worldX, worldZ);
+    return BiomeField.sample(this.worldSeed ^ this.seed ^ ORETOUR_SEED_SALT, worldX, worldZ);
   }
 
   public void setWorldSeed(

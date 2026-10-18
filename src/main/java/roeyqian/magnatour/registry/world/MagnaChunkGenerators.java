@@ -12,8 +12,8 @@ import net.minecraft.resources.Identifier;
 
 // Magnatour
 import roeyqian.magnatour.Magnatour;
-import roeyqian.magnatour.levelgen.HarvestContinentChunkGenerator;
-import roeyqian.magnatour.levelgen.OreContinentChunkGenerator;
+import roeyqian.magnatour.levelgen.supreme.HarvestContinentChunkGenerator;
+import roeyqian.magnatour.levelgen.supreme.OreContinentChunkGenerator;
 import roeyqian.magnatour.registry.WorldHelper;
 
 /*

@@ -5,20 +5,28 @@
  * This file is part of Magnatour.
  * Full license text available in the LICENSE file in the project root.
  */
-package roeyqian.magnatour.levelgen.terrain;
+package roeyqian.magnatour.levelgen.supreme;
 
 // Java Standard
+import java.util.LinkedHashMap;
 import java.util.Random;
 
 // Minecraft
 import net.minecraft.core.registries.Registries;
+import net.minecraft.data.worldgen.TerrainProvider;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.util.BoundedFloatFunction;
+import net.minecraft.util.CubicSpline;
+import net.minecraft.util.Interval;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.levelgen.XoroshiroRandomSource;
+import net.minecraft.world.level.levelgen.synth.PerlinNoise;
 
 // Magnatour
 import roeyqian.magnatour.Magnatour;
+import roeyqian.magnatour.levelgen.BiomeField;
 
 public final class HarvestContinentTerrain {
 
@@ -53,6 +61,12 @@ public final class HarvestContinentTerrain {
 
   private static final int LAKE_CENTER_ISLAND_BASE_HEIGHT = 65 + SURFACE_Y_OFFSET;
   private static final int LAKE_CENTER_ISLAND_MAX_HEIGHT = 70 + SURFACE_Y_OFFSET;
+  // Vanilla terrain splines and a reduced-octave melon density field on a 4x4x8 grid.
+  private static final int MELON_CACHE_LIMIT = 8;
+  private static final int MELON_MAX_Y = 192;
+  private static final int MELON_MIN_Y = 64;
+  private static final int MELON_Y_STEP = 8;
+  private static final int MELON_Y_NODES = (MELON_MAX_Y - MELON_MIN_Y) / MELON_Y_STEP + 1;
   private static final int PUMPKIN_GORGE_BASE_HEIGHT = 150 + SURFACE_Y_OFFSET;
   private static final int PUMPKIN_GORGE_INTERIOR_MIN_HEIGHT = 144 + SURFACE_Y_OFFSET;
   private static final int PUMPKIN_GORGE_MAX_HEIGHT = 214 + SURFACE_Y_OFFSET;
@@ -74,6 +88,17 @@ public final class HarvestContinentTerrain {
       LAKE_HARVESTOUR_LIMIT, MARSH_HARVESTOUR_LIMIT, WHEAT_HARVESTOUR_LIMIT,
       DESERT_HARVESTOUR_LIMIT, BERRY_HARVESTOUR_LIMIT, PUMPKIN_HARVESTOUR_LIMIT, MELON_HARVESTOUR_LIMIT
   };
+
+  // A worker owns its noise generators and bounded tile cache: no shared mutable
+  // interpolation cursor, cross-world cache reuse, or generation-order dependency.
+  private static final ThreadLocal<MelonContext> MELON_CONTEXT = new ThreadLocal<>();
+
+  private static final CubicSpline<MelonCoordinate> MELON_FACTOR = TerrainProvider.overworldFactor(
+      MelonCoordinate.CONTINENTS, MelonCoordinate.EROSION, MelonCoordinate.RIDGES, MelonCoordinate.FOLDED_RIDGES, false);
+  private static final CubicSpline<MelonCoordinate> MELON_JAGGEDNESS = TerrainProvider.overworldJaggedness(
+      MelonCoordinate.CONTINENTS, MelonCoordinate.EROSION, MelonCoordinate.RIDGES, MelonCoordinate.FOLDED_RIDGES, false);
+  private static final CubicSpline<MelonCoordinate> MELON_OFFSET = TerrainProvider.overworldOffset(
+      MelonCoordinate.CONTINENTS, MelonCoordinate.EROSION, MelonCoordinate.FOLDED_RIDGES, false);
 
   private HarvestContinentTerrain() {}
 
@@ -131,7 +156,7 @@ public final class HarvestContinentTerrain {
     }
     if (value < MARSH_SHORE_END) {
       return blendHeight(value, LAKE_HARVESTOUR_LIMIT, MARSH_SHORE_END,
-          SEA_LEVEL, HarvestRegionalTerrain.marshHeight(seed, worldX, worldZ));
+          SEA_LEVEL, marshHeight(seed, worldX, worldZ));
     }
     for (int index = 1; index < HARVESTOUR_LIMITS.length; index++) {
       double boundary = HARVESTOUR_LIMITS[index];
@@ -197,6 +222,40 @@ public final class HarvestContinentTerrain {
         / (MELON_EXIT_BLEND_END - MELON_EXIT_BLEND_START));
   }
 
+  /** Precompute occupancy once; chunk filling and height queries use the same mask. */
+  public static MelonColumn melonColumn(
+      long seed,
+      int x, int z, int surfaceY,
+      double weight
+  ) {
+    if (weight <= 0.0) return null;
+    MelonTile melonTile = melonTile(seed, x, z);
+    int columnIndex = melonIndex(x, z);
+    int shift = surfaceY - (int) Math.round(melonTile.heights[columnIndex]);
+    int bottom = MELON_MIN_Y + shift;
+    long lower = 0L;
+    long upper = 0L;
+    int base = columnIndex * MELON_Y_NODES;
+    int limit = Math.min(MELON_MAX_Y - MELON_MIN_Y, surfaceY - bottom + 1);
+    for (int offset = 0; offset < limit; offset++) {
+      int y = bottom + offset;
+      boolean solid = y >= surfaceY - 3;
+      if (!solid) {
+        int node = offset / MELON_Y_STEP;
+        double density = Mth.lerp((offset % MELON_Y_STEP) / (double) MELON_Y_STEP,
+            melonTile.densities[base + node], melonTile.densities[base + node + 1]);
+        // Translate the density field with the blended surface. Fade its openings
+        // into solid terrain towards wheat/pumpkin instead of cutting a vertical seam.
+        solid = Mth.lerp(weight, (surfaceY - y) / 32.0, density) > 0.0;
+      }
+      if (solid) {
+        if (offset < 64) lower |= 1L << offset;
+        else upper |= 1L << (offset - 64);
+      }
+    }
+    return new MelonColumn(bottom, lower, upper);
+  }
+
   /** A continuous percentile field; interval widths target long-run area percentages. */
   public static double sampleHarvestour(
       long seed,
@@ -218,7 +277,7 @@ public final class HarvestContinentTerrain {
       long seed,
       int worldX, int worldZ
   ) {
-    return PercentileBiomeField.sample(seed, worldX, worldZ);
+    return BiomeField.sample(seed, worldX, worldZ);
   }
 
   static boolean canCarveCave(
@@ -352,21 +411,68 @@ public final class HarvestContinentTerrain {
     return Mth.clamp(38.0 + shape * 9.0, 26.0, 52.0) + SURFACE_Y_OFFSET;
   }
 
+  private static double marshHeight(
+      long seed,
+      int x, int z
+  ) {
+    double pools = fbmPerlin(seed ^ 0x5BE0CD19137E2179L, x, z, 0.025, 3);
+    return Mth.clamp(64.0 + pools * 12.0, 59.0, 69.0) + SURFACE_Y_OFFSET;
+  }
+
   private static double profileHeight(
       int index,
       long seed,
       int x, int z
   ) {
     return switch (index) {
-      case 1 -> HarvestRegionalTerrain.marshHeight(seed, x, z);
+      case 1 -> marshHeight(seed, x, z);
       case 2 -> wheatPlainHeight(seed, x, z);
-      case 3 -> HarvestRegionalTerrain.desertHeight(seed, x, z);
-      case 4 -> HarvestRegionalTerrain.berrySnowfieldHeight(seed, x, z);
+      case 3 -> desertHeight(seed, x, z);
+      case 4 -> berrySnowfieldHeight(seed, x, z);
       case 5 -> pumpkinGorgeHeight(seed, x, z);
       case 6 -> melonJungleHeight(seed, x, z);
-      case 7 -> HarvestRegionalTerrain.sacredMountainHeight(seed, x, z);
+      case 7 -> sacredMountainHeight(seed, x, z);
       default -> lakeBedHeight(seed, x, z);
     };
+  }
+
+  private static MelonTile melonTile(
+      long seed,
+      int x, int z
+  ) {
+    MelonContext context = MELON_CONTEXT.get();
+    if (context == null || context.seed != seed) {
+      context = new MelonContext(seed);
+      MELON_CONTEXT.set(context);
+    }
+    int chunkX = Math.floorDiv(x, 16);
+    int chunkZ = Math.floorDiv(z, 16);
+    long key = ((long) chunkX << 32) ^ (chunkZ & 0xFFFFFFFFL);
+    if (context.lastTile != null && context.lastKey == key) return context.lastTile;
+    MelonTile melonTile = context.tiles.get(key);
+    if (melonTile == null) {
+      melonTile = new MelonTile(context, chunkX * 16, chunkZ * 16);
+      if (context.tiles.size() >= MELON_CACHE_LIMIT) {
+        context.tiles.remove(context.tiles.keySet().iterator().next());
+      }
+      context.tiles.put(key, melonTile);
+    }
+    context.lastKey = key;
+    context.lastTile = melonTile;
+    return melonTile;
+  }
+
+  private static int melonIndex(
+      int x, int z
+  ) {
+    return Math.floorMod(x, 16) * 16 + Math.floorMod(z, 16);
+  }
+
+  private static double melonHeight(
+      long seed,
+      int x, int z
+  ) {
+    return melonTile(seed, x, z).heights[melonIndex(x, z)];
   }
 
   private static int fastFloor(
@@ -404,6 +510,24 @@ public final class HarvestContinentTerrain {
         WHEAT_INTERIOR_MIN_HEIGHT, WHEAT_INTERIOR_MAX_HEIGHT);
   }
 
+  private static double desertHeight(
+      long seed,
+      int x, int z
+  ) {
+    double dunes = fbmPerlin(seed ^ 0xCBBB9D5DC1059ED8L, x, z, 0.006, 3);
+    double ripples = Math.sin(x * 0.045 + z * 0.018 + dunes * 5.0);
+    return Mth.clamp(100.0 + dunes * 48.0 + ripples * 7.0, 78.0, 132.0) + SURFACE_Y_OFFSET;
+  }
+
+  private static double berrySnowfieldHeight(
+      long seed,
+      int x, int z
+  ) {
+    double rolling = fbmPerlin(seed ^ 0x629A292A367CD507L, x, z, 0.004, 3);
+    double detail = fbmPerlin(seed ^ 0x9159015A3070DD17L, x, z, 0.018, 2);
+    return Mth.clamp(112.0 + rolling * 15.0 + detail * 3.0, 100.0, 124.0) + SURFACE_Y_OFFSET;
+  }
+
   private static double pumpkinGorgeHeight(
       long seed,
       int x, int z
@@ -422,7 +546,18 @@ public final class HarvestContinentTerrain {
       long seed,
       int x, int z
   ) {
-    return HarvestMelonTerrain.height(seed, x, z) + SURFACE_Y_OFFSET;
+    return melonHeight(seed, x, z) + SURFACE_Y_OFFSET;
+  }
+
+  private static double sacredMountainHeight(
+      long seed,
+      int x, int z
+  ) {
+    double broad = fbmPerlin(seed ^ 0x510E527FADE682D1L, x, z, 0.002, 3);
+    double ridge = 1.0 - Math.abs(fbmPerlin(seed ^ 0x9B05688C2B3E6C1FL, x, z, 0.008, 3));
+    double detail = fbmPerlin(seed ^ 0x1F83D9ABFB41BD6BL, x, z, 0.035, 2);
+    return Mth.clamp(380.0 + broad * 100.0 + ridge * ridge * 145.0 + detail * 18.0,
+        380.0, 520.0 - SURFACE_Y_OFFSET) + SURFACE_Y_OFFSET;
   }
 
   private static double value(
@@ -431,6 +566,165 @@ public final class HarvestContinentTerrain {
   ) {
     long h = mix(mix(seed, x, z), y, x ^ z);
     return ((h >>> 11) * 0x1.0p-53) * 2.0 - 1.0;
+  }
+
+  private static double melonClimate(
+      long seed,
+      int x, int z,
+      double scale,
+      int octaves
+  ) {
+    return HarvestContinentTerrain.fbmPerlin(seed, x, z, scale, octaves);
+  }
+
+  private static double melonSmooth(
+      double t
+  ) {
+    t = Mth.clamp(t, 0.0, 1.0);
+    return t * t * (3.0 - 2.0 * t);
+  }
+
+  public record MelonColumn(
+      int bottom,
+      long lower, long upper
+  ) {
+
+    public boolean solid(
+        int y
+    ) {
+      int offset = y - this.bottom;
+      if (offset < 0) return true;
+      if (offset >= 128) return false;
+      return offset < 64 ? (this.lower & (1L << offset)) != 0L
+          : (this.upper & (1L << (offset - 64))) != 0L;
+    }
+
+  }
+
+  private static final class MelonContext {
+
+    private final long seed;
+
+    private final PerlinNoise lower;
+    private final PerlinNoise selector;
+    private final PerlinNoise upper;
+
+    private final LinkedHashMap<Long, MelonTile> tiles = new LinkedHashMap<>(MELON_CACHE_LIMIT, 0.75F, true);
+
+    private long lastKey;
+
+    private MelonTile lastTile;
+
+    private MelonContext(
+        long seed
+    ) {
+      this.seed = seed;
+      this.lower = new PerlinNoise(new XoroshiroRandomSource(seed ^ 0x6A09E667F3BCC909L));
+      this.upper = new PerlinNoise(new XoroshiroRandomSource(seed ^ 0xBB67AE8584CAA73BL));
+      this.selector = new PerlinNoise(new XoroshiroRandomSource(seed ^ 0x3C6EF372FE94F82BL));
+    }
+
+  }
+
+  private enum MelonCoordinate implements BoundedFloatFunction<MelonPoint> {
+    CONTINENTS, EROSION, RIDGES, FOLDED_RIDGES;
+
+    @Override
+    public float apply(MelonPoint point) {
+      return switch (this) {
+        case CONTINENTS -> point.continents();
+        case EROSION -> point.erosion();
+        case RIDGES -> point.ridges();
+        case FOLDED_RIDGES -> TerrainProvider.peaksAndValleys(point.ridges());
+      };
+    }
+
+    @Override
+    public Interval range() {
+      return Interval.of(-1.0F, 1.0F);
+    }
+
+  }
+
+  private record MelonPoint(
+      float continents, float erosion, float ridges
+  ) {}
+
+  private static final class MelonTile {
+
+    private final float[] densities = new float[256 * MELON_Y_NODES];
+
+    private final double[] heights = new double[256];
+
+    private MelonTile(
+        MelonContext context,
+        int minX, int minZ
+    ) {
+      float[] nodes = new float[25 * MELON_Y_NODES];
+      for (int gx = 0; gx <= 4; gx++) {
+        for (int gz = 0; gz <= 4; gz++) {
+          int x = minX + gx * 4;
+          int z = minZ + gz * 4;
+          MelonPoint point = new MelonPoint(
+              // Keep this continent inland; remap the narrower custom Perlin
+              // signal so the original splines reach valleys and mountain branches.
+              (float) Mth.clamp(0.35 + melonClimate(context.seed ^ 0xD1B54A32D192ED03L, x, z, 0.00075, 4) * 1.5, -0.1, 1.0),
+              (float) Mth.clamp(melonClimate(context.seed ^ 0x94D049BB133111EBL, x, z, 0.00145, 3) * 2.0, -1.0, 1.0),
+              (float) Mth.clamp(melonClimate(context.seed ^ 0x2545F4914F6CDD1DL, x, z, 0.00320, 3) * 2.0, -1.0, 1.0));
+          double offset = CubicSpline.sample(MELON_OFFSET, point);
+          double factor = CubicSpline.sample(MELON_FACTOR, point);
+          double jagged = CubicSpline.sample(MELON_JAGGEDNESS, point)
+              * context.lower.get(x * 0.014, z * 0.014);
+          if (jagged < 0.0) jagged *= 0.5;
+          int base = (gx * 5 + gz) * MELON_Y_NODES;
+          for (int gy = 0; gy < MELON_Y_NODES; gy++) {
+            int y = MELON_MIN_Y + gy * MELON_Y_STEP;
+            // Vanilla depth gradient + offset, raised ~32 blocks for Harvest.
+            double depth = (96.0 - y) / 128.0 + offset + jagged;
+            double shaped = depth * factor;
+            if (shaped < 0.0) shaped *= 0.25;
+            double blend = Mth.clamp(0.5 + context.selector.get(x * 0.008, y * 0.012, z * 0.008), 0.0, 1.0);
+            double noise = Mth.lerp(blend,
+                context.lower.get(x * 0.018, y * 0.022, z * 0.018),
+                context.upper.get(x * 0.036, y * 0.044, z * 0.036));
+            // Only the noise octave budget is reduced; offset/factor/jaggedness
+            // use the game's real, unamplified Overworld splines.
+            double density = shaped * 4.0 + noise * 1.5;
+            density += 4.0 * (1.0 - melonSmooth((y - MELON_MIN_Y) / 16.0));
+            density -= 4.0 * melonSmooth((y - 176.0) / 16.0);
+            // Bracket every surface crossing even on an extreme spline branch.
+            if (gy == 0) density = Math.max(density, 1.0);
+            if (gy == MELON_Y_NODES - 1) density = Math.min(density, -1.0);
+            nodes[base + gy] = (float) density;
+          }
+        }
+      }
+      for (int x = 0; x < 16; x++) {
+        for (int z = 0; z < 16; z++) {
+          int base = (x * 16 + z) * MELON_Y_NODES;
+          int corner = ((x / 4) * 5 + z / 4) * MELON_Y_NODES;
+          double tx = (x % 4) / 4.0;
+          double tz = (z % 4) / 4.0;
+          for (int gy = 0; gy < MELON_Y_NODES; gy++) {
+            this.densities[base + gy] = (float) Mth.lerp(tz,
+                Mth.lerp(tx, nodes[corner + gy], nodes[corner + 5 * MELON_Y_NODES + gy]),
+                Mth.lerp(tx, nodes[corner + MELON_Y_NODES + gy], nodes[corner + 6 * MELON_Y_NODES + gy]));
+          }
+          double melonHeight = 68.0;
+          // Highest positive-to-negative crossing preserves overhangs below it.
+          for (int gy = MELON_Y_NODES - 2; gy >= 0; gy--) {
+            double below = this.densities[base + gy];
+            double above = this.densities[base + gy + 1];
+            if (below > 0.0) {
+              melonHeight = MELON_MIN_Y + gy * MELON_Y_STEP + MELON_Y_STEP * Mth.clamp(below / (below - above), 0.0, 1.0);
+              break;
+            }
+          }
+          this.heights[x * 16 + z] = Mth.clamp(melonHeight, 68.0, 190.0);
+        }
+      }
+    }
+
   }
 
 }

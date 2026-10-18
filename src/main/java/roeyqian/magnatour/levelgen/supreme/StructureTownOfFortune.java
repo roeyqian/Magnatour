@@ -5,7 +5,7 @@
  * This file is part of Magnatour.
  * Full license text available in the LICENSE file in the project root.
  */
-package roeyqian.magnatour.levelgen.structure;
+package roeyqian.magnatour.levelgen.supreme;
 
 // Java Standard
 import java.util.Optional;
@@ -41,10 +41,10 @@ import org.jspecify.annotations.NonNull;
 import roeyqian.magnatour.Magnatour;
 import roeyqian.magnatour.registry.world.MagnaStructures;
 
-public final class TownOfFortuneStructure extends Structure {
+public final class StructureTownOfFortune extends Structure {
 
-  public static final MapCodec<TownOfFortuneStructure> CODEC =
-      simpleCodec(TownOfFortuneStructure::new);
+  public static final MapCodec<StructureTownOfFortune> CODEC =
+      simpleCodec(StructureTownOfFortune::new);
 
   private static final int MAX_DEPTH = 24;
 
@@ -60,7 +60,7 @@ public final class TownOfFortuneStructure extends Structure {
           )
       );
 
-  public TownOfFortuneStructure(
+  public StructureTownOfFortune(
       StructureSettings settings
   ) {
     super(settings);

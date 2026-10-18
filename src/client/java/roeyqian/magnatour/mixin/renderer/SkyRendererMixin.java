@@ -20,7 +20,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 // Magnatour
-import roeyqian.magnatour.levelgen.terrain.HarvestContinentTerrain;
+import roeyqian.magnatour.levelgen.supreme.HarvestContinentTerrain;
 import roeyqian.magnatour.registry.world.MagnaDimensions;
 
 @Mixin(value = SkyRenderer.class, priority = 3600000)

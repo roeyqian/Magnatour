@@ -25,7 +25,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 // Magnatour
-import roeyqian.magnatour.levelgen.structure.StructureMobSpawner;
+import roeyqian.magnatour.levelgen.MobStructureSpawner;
 
 @Mixin(BellBlock.class)
 public class BellBlockMixin {
@@ -42,7 +42,7 @@ public class BellBlockMixin {
     if (cir.getReturnValue().consumesAction()
         && level instanceof ServerLevel serverLevel
         && player instanceof ServerPlayer serverPlayer) {
-      StructureMobSpawner.onGoldBellTowerBellRung(serverLevel, serverPlayer, pos);
+      MobStructureSpawner.onGoldBellTowerBellRung(serverLevel, serverPlayer, pos);
     }
   }
 

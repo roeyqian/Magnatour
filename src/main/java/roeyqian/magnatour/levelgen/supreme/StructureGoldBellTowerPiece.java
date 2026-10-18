@@ -5,7 +5,7 @@
  * This file is part of Magnatour.
  * Full license text available in the LICENSE file in the project root.
  */
-package roeyqian.magnatour.levelgen.structure;
+package roeyqian.magnatour.levelgen.supreme;
 
 // Java Standard
 import java.util.Optional;
@@ -41,7 +41,7 @@ import org.jspecify.annotations.NonNull;
 import roeyqian.magnatour.Magnatour;
 import roeyqian.magnatour.registry.stuff.MagnaBlocks;
 
-public final class GoldBellTowerPiece extends StructurePiece {
+public final class StructureGoldBellTowerPiece extends StructurePiece {
 
   private static final Identifier LOWER_TEMPLATE =
       Identifier.fromNamespaceAndPath(Magnatour.MOD_ID, "gold_bell_tower/tower_1");
@@ -55,7 +55,7 @@ public final class GoldBellTowerPiece extends StructurePiece {
 
   private final Rotation rotation;
 
-  public GoldBellTowerPiece(
+  public StructureGoldBellTowerPiece(
       StructurePieceType type,
       CompoundTag tag
   ) {
@@ -66,7 +66,7 @@ public final class GoldBellTowerPiece extends StructurePiece {
     this.rotation = tag.getString("Rotation").map(Rotation::valueOf).orElse(Rotation.NONE);
   }
 
-  public GoldBellTowerPiece(
+  public StructureGoldBellTowerPiece(
       StructurePieceType type,
       BlockPos lowerPos,
       Vec3i lowerSize, Vec3i upperSize,

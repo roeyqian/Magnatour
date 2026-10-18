@@ -5,7 +5,7 @@
  * This file is part of Magnatour.
  * Full license text available in the LICENSE file in the project root.
  */
-package roeyqian.magnatour.levelgen.terrain;
+package roeyqian.magnatour.levelgen.supreme;
 
 /**
  * Task-local cave density grid. World-aligned nodes are identical across chunk
