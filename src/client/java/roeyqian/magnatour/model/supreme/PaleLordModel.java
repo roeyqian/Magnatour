@@ -25,7 +25,7 @@ import net.minecraft.util.Mth;
 import org.jspecify.annotations.NonNull;
 
 // Magnatour
-import roeyqian.magnatour.renderstate.supreme.PaleLordRenderState;
+import roeyqian.magnatour.render.supreme.PaleLordRenderer.PaleLordRenderState;
 
 @Environment(EnvType.CLIENT)
 public final class PaleLordModel extends EntityModel<PaleLordRenderState> {

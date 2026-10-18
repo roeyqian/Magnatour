@@ -29,7 +29,7 @@ import net.minecraft.util.Mth;
 import org.jspecify.annotations.NonNull;
 
 // Magnatour
-import roeyqian.magnatour.renderstate.supreme.SculkBehemothRenderState;
+import roeyqian.magnatour.render.supreme.SculkBehemothRenderer.SculkBehemothRenderState;
 
 @Environment(EnvType.CLIENT)
 public final class SculkBehemothModel extends EntityModel<SculkBehemothRenderState> {

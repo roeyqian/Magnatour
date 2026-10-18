@@ -5,7 +5,7 @@
  * This file is part of Magnatour.
  * Full license text available in the LICENSE file in the project root.
  */
-package roeyqian.magnatour.renderer.universe;
+package roeyqian.magnatour.render.universe;
 
 // Minecraft
 import net.minecraft.client.model.HumanoidModel;

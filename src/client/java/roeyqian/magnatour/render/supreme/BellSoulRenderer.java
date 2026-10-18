@@ -5,7 +5,7 @@
  * This file is part of Magnatour.
  * Full license text available in the LICENSE file in the project root.
  */
-package roeyqian.magnatour.renderer.supreme;
+package roeyqian.magnatour.render.supreme;
 
 // Mojang
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -17,6 +17,7 @@ import net.fabricmc.api.EnvType;
 // Minecraft
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
+import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.resources.Identifier;
 
 // JSpecify
@@ -27,7 +28,7 @@ import roeyqian.magnatour.Magnatour;
 import roeyqian.magnatour.entity.supreme.BellSoul;
 import roeyqian.magnatour.model.supreme.BellSoulModel;
 import roeyqian.magnatour.registry.output.MagnaEntityLayers;
-import roeyqian.magnatour.renderstate.supreme.BellSoulRenderState;
+import roeyqian.magnatour.render.supreme.BellSoulRenderer.BellSoulRenderState;
 
 @Environment(EnvType.CLIENT)
 public final class BellSoulRenderer extends MobRenderer<BellSoul, BellSoulRenderState, BellSoulModel> {
@@ -73,6 +74,13 @@ public final class BellSoulRenderer extends MobRenderer<BellSoul, BellSoulRender
     super.scale(state, poseStack);
     // Align the visual model center with BellSoul's small hitbox.
     poseStack.translate(0.0F, -0.35F, 0.0F);
+  }
+
+  @Environment(EnvType.CLIENT)
+  public static final class BellSoulRenderState extends LivingEntityRenderState {
+
+    public boolean charging;
+
   }
 
 }

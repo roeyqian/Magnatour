@@ -5,7 +5,7 @@
  * This file is part of Magnatour.
  * Full license text available in the LICENSE file in the project root.
  */
-package roeyqian.magnatour.renderer.universe;
+package roeyqian.magnatour.render.universe;
 
 // Fabric
 import net.fabricmc.api.Environment;
@@ -15,6 +15,7 @@ import net.fabricmc.api.EnvType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
+import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.resources.Identifier;
 
 // JSpecify
@@ -25,7 +26,7 @@ import roeyqian.magnatour.Magnatour;
 import roeyqian.magnatour.entity.universe.UniverseGuardian;
 import roeyqian.magnatour.model.universe.UniverseGuardianModel;
 import roeyqian.magnatour.registry.output.MagnaEntityLayers;
-import roeyqian.magnatour.renderstate.universe.UniverseGuardianRenderState;
+import roeyqian.magnatour.render.universe.UniverseGuardianRenderer.UniverseGuardianRenderState;
 
 @Environment(EnvType.CLIENT)
 public final class UniverseGuardianRenderer extends MobRenderer<UniverseGuardian, UniverseGuardianRenderState, UniverseGuardianModel> {
@@ -63,5 +64,8 @@ public final class UniverseGuardianRenderer extends MobRenderer<UniverseGuardian
   ) {
     return TEXTURE;
   }
+
+  @Environment(EnvType.CLIENT)
+  public static final class UniverseGuardianRenderState extends LivingEntityRenderState {}
 
 }

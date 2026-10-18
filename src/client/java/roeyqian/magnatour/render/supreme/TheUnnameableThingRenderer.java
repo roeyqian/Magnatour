@@ -5,7 +5,7 @@
  * This file is part of Magnatour.
  * Full license text available in the LICENSE file in the project root.
  */
-package roeyqian.magnatour.renderer.supreme;
+package roeyqian.magnatour.render.supreme;
 
 // Mojang
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -17,6 +17,7 @@ import net.fabricmc.api.EnvType;
 // Minecraft
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
+import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.resources.Identifier;
 
 // JSpecify
@@ -27,7 +28,7 @@ import roeyqian.magnatour.Magnatour;
 import roeyqian.magnatour.entity.supreme.TheUnnameableThing;
 import roeyqian.magnatour.model.supreme.TheUnnameableThingModel;
 import roeyqian.magnatour.registry.output.MagnaEntityLayers;
-import roeyqian.magnatour.renderstate.supreme.TheUnnameableThingRenderState;
+import roeyqian.magnatour.render.supreme.TheUnnameableThingRenderer.TheUnnameableThingRenderState;
 
 @Environment(EnvType.CLIENT)
 public final class TheUnnameableThingRenderer extends MobRenderer<TheUnnameableThing, TheUnnameableThingRenderState, TheUnnameableThingModel> {
@@ -65,5 +66,8 @@ public final class TheUnnameableThingRenderer extends MobRenderer<TheUnnameableT
     super.scale(state, poseStack);
     poseStack.scale(MODEL_SCALE, MODEL_SCALE, MODEL_SCALE);
   }
+
+  @Environment(EnvType.CLIENT)
+  public static final class TheUnnameableThingRenderState extends LivingEntityRenderState {}
 
 }

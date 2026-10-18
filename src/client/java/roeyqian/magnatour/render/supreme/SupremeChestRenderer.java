@@ -5,7 +5,7 @@
  * This file is part of Magnatour.
  * Full license text available in the LICENSE file in the project root.
  */
-package roeyqian.magnatour.renderer.supreme;
+package roeyqian.magnatour.render.supreme;
 
 // Java Standard
 import java.util.List;
@@ -27,11 +27,13 @@ import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.ChestRenderer;
+import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.model.sprite.SpriteGetter;
 import net.minecraft.client.resources.model.sprite.SpriteId;
+import net.minecraft.core.Direction;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.ChestType;
@@ -46,7 +48,7 @@ import roeyqian.magnatour.Magnatour;
 import roeyqian.magnatour.block.supreme.SupremeChest;
 import roeyqian.magnatour.blockentity.supreme.SupremeChestEntity;
 import roeyqian.magnatour.registry.output.MagnaEntityLayers;
-import roeyqian.magnatour.renderstate.supreme.SupremeChestRenderState;
+import roeyqian.magnatour.render.supreme.SupremeChestRenderer.SupremeChestRenderState;
 
 @Environment(EnvType.CLIENT)
 public final class SupremeChestRenderer implements BlockEntityRenderer<SupremeChestEntity, SupremeChestRenderState> {
@@ -191,6 +193,20 @@ public final class SupremeChestRenderer implements BlockEntityRenderer<SupremeCh
     }
 
     return this.models.select(state.type);
+  }
+
+  @Environment(EnvType.CLIENT)
+  public static final class SupremeChestRenderState extends BlockEntityRenderState {
+
+    public float lidProgress;
+
+    public int connectedChestCount = 1;
+    public int connectedChestIndex = 0;
+
+    public Direction facing = Direction.SOUTH;
+
+    public ChestType type = ChestType.SINGLE;
+
   }
 
 }

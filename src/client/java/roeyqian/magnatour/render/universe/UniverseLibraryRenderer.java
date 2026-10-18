@@ -5,7 +5,7 @@
  * This file is part of Magnatour.
  * Full license text available in the LICENSE file in the project root.
  */
-package roeyqian.magnatour.renderer.universe;
+package roeyqian.magnatour.render.universe;
 
 // Mojang
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -23,11 +23,13 @@ import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.ChestRenderer;
+import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.model.sprite.SpriteGetter;
 import net.minecraft.client.resources.model.sprite.SpriteId;
+import net.minecraft.core.Direction;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
@@ -40,7 +42,7 @@ import org.jspecify.annotations.Nullable;
 import roeyqian.magnatour.Magnatour;
 import roeyqian.magnatour.block.universe.UniverseLibrary;
 import roeyqian.magnatour.blockentity.universe.UniverseLibraryEntity;
-import roeyqian.magnatour.renderstate.universe.UniverseLibraryRenderState;
+import roeyqian.magnatour.render.universe.UniverseLibraryRenderer.UniverseLibraryRenderState;
 
 @Environment(EnvType.CLIENT)
 public final class UniverseLibraryRenderer implements BlockEntityRenderer<UniverseLibraryEntity, UniverseLibraryRenderState> {
@@ -113,6 +115,15 @@ public final class UniverseLibraryRenderer implements BlockEntityRenderer<Univer
     );
 
     poseStack.popPose();
+  }
+
+  @Environment(EnvType.CLIENT)
+  public static final class UniverseLibraryRenderState extends BlockEntityRenderState {
+
+    public float lidProgress;
+
+    public Direction facing = Direction.SOUTH;
+
   }
 
 }

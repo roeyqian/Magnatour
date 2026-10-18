@@ -5,7 +5,7 @@
  * This file is part of Magnatour.
  * Full license text available in the LICENSE file in the project root.
  */
-package roeyqian.magnatour.renderer.supreme;
+package roeyqian.magnatour.render.supreme;
 
 // Mojang
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -28,40 +28,42 @@ import org.jspecify.annotations.NonNull;
 
 // Magnatour
 import roeyqian.magnatour.Magnatour;
-import roeyqian.magnatour.entity.supreme.ObsidianGolem;
+import roeyqian.magnatour.entity.supreme.NetheriteGolem;
 import roeyqian.magnatour.model.supreme.CustomGolemModel;
 import roeyqian.magnatour.registry.output.MagnaEntityLayers;
-import roeyqian.magnatour.renderstate.supreme.CustomGolemRenderState;
+import roeyqian.magnatour.render.CommonGolemRenderState;
 
 @Environment(EnvType.CLIENT)
-public final class ObsidianGolemRenderer extends MobRenderer<ObsidianGolem, CustomGolemRenderState, CustomGolemModel> {
+public final class NetheriteGolemRenderer extends MobRenderer<NetheriteGolem, CommonGolemRenderState, CustomGolemModel> {
 
   public static final BlockDisplayContext BLOCK_DISPLAY_CONTEXT = BlockDisplayContext.create();
 
   private static final Identifier GOLEM_LOCATION = Identifier.fromNamespaceAndPath(
-      Magnatour.MOD_ID, "textures/entity/custom_golem/obsidian.png"
+      Magnatour.MOD_ID, "textures/entity/custom_golem/netherite.png"
   );
 
   private final BlockModelResolver blockModelResolver;
 
-  public ObsidianGolemRenderer(
+  public NetheriteGolemRenderer(
       final EntityRendererProvider.Context context
   ) {
-    super(context, new CustomGolemModel(context.bakeLayer(MagnaEntityLayers.OBSIDIAN_GOLEM)), 0.7F * ObsidianGolem.SIZE_SCALE);
+    super(context, new CustomGolemModel(context.bakeLayer(MagnaEntityLayers.NETHERITE_GOLEM)), 0.7F * NetheriteGolem.SIZE_SCALE);
     this.blockModelResolver = context.getBlockModelResolver();
   }
 
-  @NonNull public CustomGolemRenderState createRenderState() {
-    return new CustomGolemRenderState();
+  @NonNull public CommonGolemRenderState createRenderState() {
+    return new CommonGolemRenderState();
   }
 
   public void extractRenderState(
-      final @NonNull ObsidianGolem entity,
-      final @NonNull CustomGolemRenderState state,
+      final @NonNull NetheriteGolem entity,
+      final @NonNull CommonGolemRenderState state,
       final float partialTicks
   ) {
     super.extractRenderState(entity, state, partialTicks);
-    state.attackTicksRemaining = (float) entity.getAttackAnimationTick() > 0.0F ? (float) entity.getAttackAnimationTick() - partialTicks : 0.0F;
+    state.attackTicksRemaining = (float) entity.getAttackAnimationTick() > 0.0F
+        ? (float) entity.getAttackAnimationTick() - partialTicks
+        : 0.0F;
     state.offerFlowerTick = entity.getOfferFlowerTick();
     if (state.offerFlowerTick > 0) {
       this.blockModelResolver.update(state.flowerBlock, Blocks.POPPY.defaultBlockState(), BLOCK_DISPLAY_CONTEXT);
@@ -74,22 +76,22 @@ public final class ObsidianGolemRenderer extends MobRenderer<ObsidianGolem, Cust
 
   @NonNull
   public Identifier getTextureLocation(
-      final @NonNull CustomGolemRenderState state
+      final @NonNull CommonGolemRenderState state
   ) {
     return GOLEM_LOCATION;
   }
 
   @Override
   protected void scale(
-      final @NonNull CustomGolemRenderState state,
+      final @NonNull CommonGolemRenderState state,
       final @NonNull PoseStack poseStack
   ) {
     super.scale(state, poseStack);
-    poseStack.scale(ObsidianGolem.SIZE_SCALE, ObsidianGolem.SIZE_SCALE, ObsidianGolem.SIZE_SCALE);
+    poseStack.scale(NetheriteGolem.SIZE_SCALE, NetheriteGolem.SIZE_SCALE, NetheriteGolem.SIZE_SCALE);
   }
 
   protected void setupRotations(
-      final @NonNull CustomGolemRenderState state,
+      final @NonNull CommonGolemRenderState state,
       final @NonNull PoseStack poseStack,
       final float bodyRot, final float entityScale
   ) {

@@ -5,7 +5,7 @@
  * This file is part of Magnatour.
  * Full license text available in the LICENSE file in the project root.
  */
-package roeyqian.magnatour.renderer.supreme;
+package roeyqian.magnatour.render.supreme;
 
 // Fabric
 import net.fabricmc.api.Environment;
@@ -14,6 +14,7 @@ import net.fabricmc.api.EnvType;
 // Minecraft
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
+import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.monster.Monster;
 
@@ -24,7 +25,7 @@ import org.jspecify.annotations.NonNull;
 import roeyqian.magnatour.Magnatour;
 import roeyqian.magnatour.model.supreme.PaleLordModel;
 import roeyqian.magnatour.registry.output.MagnaEntityLayers;
-import roeyqian.magnatour.renderstate.supreme.PaleLordRenderState;
+import roeyqian.magnatour.render.supreme.PaleLordRenderer.PaleLordRenderState;
 
 @Environment(EnvType.CLIENT)
 public final class PaleLordRenderer extends MobRenderer<Monster, PaleLordRenderState, PaleLordModel> {
@@ -60,6 +61,13 @@ public final class PaleLordRenderer extends MobRenderer<Monster, PaleLordRenderS
       @NonNull PaleLordRenderState state
   ) {
     return TEXTURE;
+  }
+
+  @Environment(EnvType.CLIENT)
+  public static final class PaleLordRenderState extends LivingEntityRenderState {
+
+    public float attackProgress;
+
   }
 
 }

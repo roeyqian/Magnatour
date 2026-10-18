@@ -26,10 +26,10 @@ import net.minecraft.util.Mth;
 import org.jspecify.annotations.NonNull;
 
 // Magnatour
-import roeyqian.magnatour.renderstate.supreme.CustomGolemRenderState;
+import roeyqian.magnatour.render.CommonGolemRenderState;
 
 @Environment(EnvType.CLIENT)
-public final class CustomGolemModel extends EntityModel<CustomGolemRenderState> {
+public final class CustomGolemModel extends EntityModel<CommonGolemRenderState> {
 
   private final ModelPart head;
   private final ModelPart leftArm;
@@ -94,7 +94,7 @@ public final class CustomGolemModel extends EntityModel<CustomGolemRenderState> 
   }
 
   public void setupAnim(
-      final @NonNull CustomGolemRenderState state
+      final @NonNull CommonGolemRenderState state
   ) {
     super.setupAnim(state);
     float attackTick = state.attackTicksRemaining;

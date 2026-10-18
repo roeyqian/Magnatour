@@ -25,7 +25,7 @@ import net.minecraft.util.Mth;
 import org.jspecify.annotations.NonNull;
 
 // Magnatour
-import roeyqian.magnatour.renderstate.supreme.BellSoulRenderState;
+import roeyqian.magnatour.render.supreme.BellSoulRenderer.BellSoulRenderState;
 
 @Environment(EnvType.CLIENT)
 public final class BellSoulModel extends EntityModel<BellSoulRenderState> {

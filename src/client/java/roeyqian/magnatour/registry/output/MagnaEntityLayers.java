@@ -30,15 +30,15 @@ import roeyqian.magnatour.model.supreme.SupremeChestModel;
 import roeyqian.magnatour.model.supreme.TheUnnameableThingModel;
 import roeyqian.magnatour.model.universe.UniverseGuardianModel;
 import roeyqian.magnatour.registry.stuff.MagnaEntities;
-import roeyqian.magnatour.renderer.supreme.BellRingerRenderer;
-import roeyqian.magnatour.renderer.supreme.BellSoulRenderer;
-import roeyqian.magnatour.renderer.supreme.NetheriteGolemRenderer;
-import roeyqian.magnatour.renderer.supreme.ObsidianGolemRenderer;
-import roeyqian.magnatour.renderer.supreme.PaleLordRenderer;
-import roeyqian.magnatour.renderer.supreme.SculkBehemothRenderer;
-import roeyqian.magnatour.renderer.supreme.TheUnnameableThingRenderer;
-import roeyqian.magnatour.renderer.universe.UniverseAnnihilatorRenderer;
-import roeyqian.magnatour.renderer.universe.UniverseGuardianRenderer;
+import roeyqian.magnatour.render.supreme.BellRingerRenderer;
+import roeyqian.magnatour.render.supreme.BellSoulRenderer;
+import roeyqian.magnatour.render.supreme.NetheriteGolemRenderer;
+import roeyqian.magnatour.render.supreme.ObsidianGolemRenderer;
+import roeyqian.magnatour.render.supreme.PaleLordRenderer;
+import roeyqian.magnatour.render.supreme.SculkBehemothRenderer;
+import roeyqian.magnatour.render.supreme.TheUnnameableThingRenderer;
+import roeyqian.magnatour.render.universe.UniverseAnnihilatorRenderer;
+import roeyqian.magnatour.render.universe.UniverseGuardianRenderer;
 
 @Environment(EnvType.CLIENT)
 public final class MagnaEntityLayers {

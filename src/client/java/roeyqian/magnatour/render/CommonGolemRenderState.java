@@ -5,7 +5,7 @@
  * This file is part of Magnatour.
  * Full license text available in the LICENSE file in the project root.
  */
-package roeyqian.magnatour.renderstate.supreme;
+package roeyqian.magnatour.render;
 
 // Fabric
 import net.fabricmc.api.Environment;
@@ -17,7 +17,7 @@ import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.world.entity.Crackiness;
 
 @Environment(EnvType.CLIENT)
-public final class CustomGolemRenderState extends LivingEntityRenderState {
+public final class CommonGolemRenderState extends LivingEntityRenderState {
 
   public final BlockModelRenderState flowerBlock = new BlockModelRenderState();
 
@@ -27,7 +27,7 @@ public final class CustomGolemRenderState extends LivingEntityRenderState {
 
   public Crackiness.Level crackiness;
 
-  public CustomGolemRenderState() {
+  public CommonGolemRenderState() {
     this.crackiness = Crackiness.Level.NONE;
   }
 

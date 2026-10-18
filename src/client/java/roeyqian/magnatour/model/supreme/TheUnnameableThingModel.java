@@ -22,7 +22,7 @@ import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
 
 // Magnatour
-import roeyqian.magnatour.renderstate.supreme.TheUnnameableThingRenderState;
+import roeyqian.magnatour.render.supreme.TheUnnameableThingRenderer.TheUnnameableThingRenderState;
 
 @Environment(EnvType.CLIENT)
 public final class TheUnnameableThingModel extends EntityModel<TheUnnameableThingRenderState> {

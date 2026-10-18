@@ -5,7 +5,7 @@
  * This file is part of Magnatour.
  * Full license text available in the LICENSE file in the project root.
  */
-package roeyqian.magnatour.renderer.universe;
+package roeyqian.magnatour.render.universe;
 
 // Mojang
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -15,21 +15,21 @@ import net.fabricmc.api.Environment;
 import net.fabricmc.api.EnvType;
 
 // Minecraft
+import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
+import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 
 // Magnatour
 import roeyqian.magnatour.mixinhelper.base.GlintClient.RenderTypes;
-import roeyqian.magnatour.model.universe.UniverseGuardianModel;
-import roeyqian.magnatour.renderstate.universe.UniverseGuardianRenderState;
 
 @Environment(EnvType.CLIENT)
-public final class UniverseGuardianGlintLayer extends RenderLayer<UniverseGuardianRenderState, UniverseGuardianModel> {
+public final class UniverseAnnihilatorGlintLayer extends RenderLayer<HumanoidRenderState, HumanoidModel<HumanoidRenderState>> {
 
-  public UniverseGuardianGlintLayer(
-      RenderLayerParent<UniverseGuardianRenderState, UniverseGuardianModel> parent
+  public UniverseAnnihilatorGlintLayer(
+      RenderLayerParent<HumanoidRenderState, HumanoidModel<HumanoidRenderState>> parent
   ) {
     super(parent);
   }
@@ -39,7 +39,7 @@ public final class UniverseGuardianGlintLayer extends RenderLayer<UniverseGuardi
       PoseStack poseStack,
       SubmitNodeCollector collector,
       int lightCoords,
-      UniverseGuardianRenderState state,
+      HumanoidRenderState state,
       float yRot, float xRot
   ) {
     if (state.isInvisible) return;

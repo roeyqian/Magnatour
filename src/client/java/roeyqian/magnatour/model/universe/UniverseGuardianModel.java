@@ -22,7 +22,7 @@ import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
 
 // Magnatour
-import roeyqian.magnatour.renderstate.universe.UniverseGuardianRenderState;
+import roeyqian.magnatour.render.universe.UniverseGuardianRenderer.UniverseGuardianRenderState;
 
 @Environment(EnvType.CLIENT)
 public final class UniverseGuardianModel extends EntityModel<UniverseGuardianRenderState> {
