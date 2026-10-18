@@ -40,8 +40,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.jspecify.annotations.NonNull;
 
 // Magnatour
-import roeyqian.magnatour.item.CustomItemSetting;
-import roeyqian.magnatour.item.CustomToolMaterial;
+import roeyqian.magnatour.item.MagnaItemSettings;
 import roeyqian.magnatour.registry.logic.MagnaComponents;
 import roeyqian.magnatour.registry.stuff.MagnaBlocks;
 
@@ -101,10 +100,10 @@ public class UniverseOmniBlade extends Item {
   private static Properties applySettings(
       Properties settings
   ) {
-    return CustomToolMaterial.applyOmniscience(CustomItemSetting.applyUniverseDefaults(settings), 10)
+    return MagnaItemSettings.applyOmniscience(MagnaItemSettings.applyUniverseDefaults(settings), 10)
         .component(
             DataComponents.LORE,
-            CustomItemSetting.universeLore("universe_omni_blade")
+            MagnaItemSettings.universeLore("universe_omni_blade")
         )
         .component(
             DataComponents.ATTRIBUTE_MODIFIERS,
@@ -118,7 +117,7 @@ public class UniverseOmniBlade extends Item {
             Attributes.ATTACK_DAMAGE,
             new AttributeModifier(
                 Item.BASE_ATTACK_DAMAGE_ID,
-                CustomToolMaterial.UNIVERSE_TOOL.attackDamageBonus() - 1,
+                MagnaItemSettings.UNIVERSE_TOOL.attackDamageBonus() - 1,
                 AttributeModifier.Operation.ADD_VALUE
             ),
             EquipmentSlotGroup.MAINHAND
@@ -127,7 +126,7 @@ public class UniverseOmniBlade extends Item {
             Attributes.ATTACK_SPEED,
             new AttributeModifier(
                 Item.BASE_ATTACK_SPEED_ID,
-                CustomToolMaterial.UNIVERSE_TOOL.speed() - 4,
+                MagnaItemSettings.UNIVERSE_TOOL.speed() - 4,
                 AttributeModifier.Operation.ADD_VALUE
             ),
             EquipmentSlotGroup.MAINHAND

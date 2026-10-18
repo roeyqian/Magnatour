@@ -36,7 +36,7 @@ import net.minecraft.world.phys.AABB;
 
 // Magnatour
 import roeyqian.magnatour.Magnatour;
-import roeyqian.magnatour.block.CustomPortalVertex;
+import roeyqian.magnatour.block.MagnaPortalX;
 import roeyqian.magnatour.block.supreme.HarvestContinentPortal;
 import roeyqian.magnatour.block.supreme.OreContinentPortal;
 import roeyqian.magnatour.block.universe.UniverseMetaPortal;
@@ -184,7 +184,7 @@ public final class RegBlockLayers {
             return;
           }
 
-          float progress = (float) ticks / CustomPortalVertex.TELEPORT_TICKS;
+          float progress = (float) ticks / MagnaPortalX.TELEPORT_TICKS;
           renderPortalOverlay(guiGraphics, progress, client, portalBlock);
         }
     );
@@ -195,7 +195,7 @@ public final class RegBlockLayers {
       int currentTicks,
       IntConsumer setTicks
   ) {
-    int maxTicks = CustomPortalVertex.TELEPORT_TICKS;
+    int maxTicks = MagnaPortalX.TELEPORT_TICKS;
     if (isInPortal) {
       if (currentTicks < maxTicks) setTicks.accept(currentTicks + 1);
     } else {

@@ -44,7 +44,7 @@ import roeyqian.magnatour.level.data.PortalLinkSavedData;
 import roeyqian.magnatour.registry.stuff.MagnaBlocks;
 import roeyqian.magnatour.registry.world.MagnaDimensions;
 
-public interface CustomPortalVertex {
+public interface MagnaPortalX {
 
   int MAX_PORTAL_INNER_HEIGHT = 21;
   int MAX_PORTAL_INNER_WIDTH = 21;

@@ -18,7 +18,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.jspecify.annotations.NonNull;
 
 // Magnatour
-import roeyqian.magnatour.block.SummonStructureHelper;
+import roeyqian.magnatour.block.StructureSummon;
 
 public class SupremePumpkinHead extends Block {
 
@@ -37,8 +37,8 @@ public class SupremePumpkinHead extends Block {
       boolean movedByPiston
   ) {
     if (!oldState.is(state.getBlock())) {
-      SummonStructureHelper.trySpawnObsidianGolemFromPlacedBlock(level, pos, state);
-      SummonStructureHelper.trySpawnNetheriteGolemFromPlacedBlock(level, pos, state);
+      StructureSummon.trySpawnObsidianGolemFromPlacedBlock(level, pos, state);
+      StructureSummon.trySpawnNetheriteGolemFromPlacedBlock(level, pos, state);
     }
   }
 

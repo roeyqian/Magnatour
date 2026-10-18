@@ -30,7 +30,7 @@ import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 // Magnatour
-import roeyqian.magnatour.block.VirtualBlockLightManager;
+import roeyqian.magnatour.block.VirtualBlockLighter;
 import roeyqian.magnatour.blockentity.supreme.SupremeBlockEntity;
 import roeyqian.magnatour.registry.stuff.MagnaBlockEntities;
 
@@ -77,7 +77,7 @@ public class SupremeBlock extends BaseEntityBlock {
   ) {
     BlockState newState = world.getBlockState(pos);
     if (!state.is(newState.getBlock())) {
-      VirtualBlockLightManager.setActive(world, pos, LIGHT_LEVEL, false);
+      VirtualBlockLighter.setActive(world, pos, LIGHT_LEVEL, false);
       super.affectNeighborsAfterRemoval(state, world, pos, moved);
     }
   }
@@ -105,7 +105,7 @@ public class SupremeBlock extends BaseEntityBlock {
       if (blockEntity instanceof SupremeBlockEntity supremeBlockEntity) {
         supremeBlockEntity.setLightRegistered(newLit);
       } else {
-        VirtualBlockLightManager.setActive(world, pos, LIGHT_LEVEL, newLit);
+        VirtualBlockLighter.setActive(world, pos, LIGHT_LEVEL, newLit);
       }
     }
     return InteractionResult.SUCCESS;

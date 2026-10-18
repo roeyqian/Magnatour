@@ -47,24 +47,24 @@ import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 // Magnatour
-import roeyqian.magnatour.entity.CustomBossEntity;
+import roeyqian.magnatour.entity.CommonPaleLord;
 import roeyqian.magnatour.entity.EntityLootTableHelper;
-import roeyqian.magnatour.entity.PaleLordCommon;
+import roeyqian.magnatour.entity.MagnaBossEntity;
 import roeyqian.magnatour.registry.stuff.MagnaEntities;
 
-public class PaleLord extends Monster implements CustomBossEntity {
+public class PaleLord extends Monster implements MagnaBossEntity {
 
   private static final int EXPERIENCE_REWARD = 5000;
 
-  private static final SoundEvent AMBIENT_SOUND = PaleLordCommon.resolveSound(
+  private static final SoundEvent AMBIENT_SOUND = CommonPaleLord.resolveSound(
       "entity.creaking.ambient",
       SoundEvents.CREAKING_AMBIENT
   );
-  private static final SoundEvent DEATH_SOUND = PaleLordCommon.resolveSound(
+  private static final SoundEvent DEATH_SOUND = CommonPaleLord.resolveSound(
       "entity.creaking.death",
       SoundEvents.CREAKING_DEATH
   );
-  private static final SoundEvent HURT_SOUND = PaleLordCommon.resolveSound(
+  private static final SoundEvent HURT_SOUND = CommonPaleLord.resolveSound(
       "entity.creaking.hurt",
       SoundEvents.SKELETON_HURT
   );
@@ -103,7 +103,7 @@ public class PaleLord extends Monster implements CustomBossEntity {
   public boolean canBeAffected(
       @NonNull MobEffectInstance effect
   ) {
-    return !PaleLordCommon.isImmuneToEffect(effect) && super.canBeAffected(effect);
+    return !CommonPaleLord.isImmuneToEffect(effect) && super.canBeAffected(effect);
   }
 
   @Override
@@ -130,13 +130,13 @@ public class PaleLord extends Monster implements CustomBossEntity {
       @NonNull DamageSource source,
       float amount
   ) {
-    if (PaleLordCommon.isImmuneToDamage(source)) {
+    if (CommonPaleLord.isImmuneToDamage(source)) {
       return false;
     }
-    boolean lowDamageHit = amount < PaleLordCommon.DAMAGE_THRESHOLD;
+    boolean lowDamageHit = amount < CommonPaleLord.DAMAGE_THRESHOLD;
     float normalized = lowDamageHit ? 1.0F : amount;
     boolean damaged = super.hurtServer(world, source, normalized);
-    PaleLordCommon.applyProjectileLaunch(this, source);
+    CommonPaleLord.applyProjectileLaunch(this, source);
 
     if (!damaged || !this.isAlive()) {
       return damaged;
@@ -255,7 +255,7 @@ public class PaleLord extends Monster implements CustomBossEntity {
   ) {
     List<PaleLordClone> clones = world.getEntitiesOfClass(
         PaleLordClone.class,
-        this.getBoundingBox().inflate(PaleLordCommon.SYNC_RADIUS),
+        this.getBoundingBox().inflate(CommonPaleLord.SYNC_RADIUS),
         Entity::isAlive
     );
 
@@ -374,7 +374,7 @@ public class PaleLord extends Monster implements CustomBossEntity {
   ) {
     List<PaleLord> bodies = world.getEntitiesOfClass(
         PaleLord.class,
-        this.getBoundingBox().inflate(PaleLordCommon.SYNC_RADIUS),
+        this.getBoundingBox().inflate(CommonPaleLord.SYNC_RADIUS),
         Entity::isAlive
     );
 
@@ -394,10 +394,10 @@ public class PaleLord extends Monster implements CustomBossEntity {
   private void updateAttackDamage(
       ServerLevel world
   ) {
-    int cloneCount = PaleLordCommon.countNearbyClones(world, this);
+    int cloneCount = CommonPaleLord.countNearbyClones(world, this);
     AttributeInstance attribute = this.getAttribute(Attributes.ATTACK_DAMAGE);
     if (attribute != null) {
-      attribute.setBaseValue(PaleLordCommon.computeAttackDamage(cloneCount));
+      attribute.setBaseValue(CommonPaleLord.computeAttackDamage(cloneCount));
     }
   }
 

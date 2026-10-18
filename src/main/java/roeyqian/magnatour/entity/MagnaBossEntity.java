@@ -15,7 +15,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.gamerules.GameRules;
 import net.minecraft.world.phys.Vec3;
 
-public interface CustomBossEntity {
+public interface MagnaBossEntity {
 
   int DEFAULT_MAX_EXPERIENCE_ORB_VALUE = 37;
 

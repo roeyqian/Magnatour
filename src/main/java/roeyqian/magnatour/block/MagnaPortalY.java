@@ -37,7 +37,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 // Magnatour
 import roeyqian.magnatour.level.data.PortalLinkSavedData;
 
-public interface CustomPortalHorizon {
+public interface MagnaPortalY {
 
   int TELEPORT_TICKS = 80;
 

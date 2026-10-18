@@ -42,7 +42,7 @@ import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 // Magnatour
-import roeyqian.magnatour.block.CustomPortalVertex;
+import roeyqian.magnatour.block.MagnaPortalX;
 import roeyqian.magnatour.registry.stuff.MagnaBlocks;
 import roeyqian.magnatour.registry.world.MagnaDimensions;
 
@@ -60,7 +60,7 @@ public class OreContinentPortal extends Block {
       Properties settings
   ) {
     super(settings);
-    this.registerDefaultState(this.stateDefinition.any().setValue(CustomPortalVertex.AXIS, Direction.Axis.X));
+    this.registerDefaultState(this.stateDefinition.any().setValue(MagnaPortalX.AXIS, Direction.Axis.X));
   }
 
   public static void registerTickEvent() {
@@ -77,7 +77,7 @@ public class OreContinentPortal extends Block {
       @NonNull BlockPos pos,
       @NonNull CollisionContext context
   ) {
-    return CustomPortalVertex.getOutlineShape(state);
+    return MagnaPortalX.getOutlineShape(state);
   }
 
   @Override
@@ -94,7 +94,7 @@ public class OreContinentPortal extends Block {
   protected void createBlockStateDefinition(
       StateDefinition.@NonNull Builder<Block, BlockState> builder
   ) {
-    builder.add(CustomPortalVertex.AXIS);
+    builder.add(MagnaPortalX.AXIS);
   }
 
   @Override
@@ -107,7 +107,7 @@ public class OreContinentPortal extends Block {
       boolean bl
   ) {
     boolean[] clientFlag = new boolean[]{clientInPortal};
-    CustomPortalVertex.handleEntityCollision(world, pos, entity,
+    MagnaPortalX.handleEntityCollision(world, pos, entity,
         PORTAL_TICKS, IN_PORTAL_THIS_TICK, clientFlag,
         MagnaBlocks.ORE_BLOCK, MagnaBlocks.ORE_CONTINENT_PORTAL,
         MagnaDimensions.ORE_CONTINENT, Level.OVERWORLD);
@@ -125,7 +125,7 @@ public class OreContinentPortal extends Block {
       @NonNull BlockState neighborState,
       @NonNull RandomSource random
   ) {
-    if (CustomPortalVertex.shouldBreakPortal(
+    if (MagnaPortalX.shouldBreakPortal(
         MagnaBlocks.ORE_CONTINENT_PORTAL, MagnaBlocks.ORE_BLOCK,
         state, neighborState, pos, direction, world
     )) {

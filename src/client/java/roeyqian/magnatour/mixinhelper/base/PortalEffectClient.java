@@ -18,8 +18,8 @@ import net.minecraft.world.entity.LivingEntity;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 // Magnatour
-import roeyqian.magnatour.block.CustomPortalHorizon;
-import roeyqian.magnatour.block.CustomPortalVertex;
+import roeyqian.magnatour.block.MagnaPortalX;
+import roeyqian.magnatour.block.MagnaPortalY;
 import roeyqian.magnatour.block.supreme.HarvestContinentPortal;
 import roeyqian.magnatour.block.supreme.OreContinentPortal;
 import roeyqian.magnatour.block.universe.UniverseMetaPortal;
@@ -37,17 +37,17 @@ public final class PortalEffectClient {
 
     int oreContinentPortalTicks = OreContinentPortal.clientPortalTicks;
     if (oreContinentPortalTicks > 0) {
-      cir.setReturnValue((float) oreContinentPortalTicks / CustomPortalVertex.TELEPORT_TICKS);
+      cir.setReturnValue((float) oreContinentPortalTicks / MagnaPortalX.TELEPORT_TICKS);
     }
 
     int harvestContinentPortalTicks = HarvestContinentPortal.clientPortalTicks;
     if (harvestContinentPortalTicks > 0) {
-      cir.setReturnValue((float) harvestContinentPortalTicks / CustomPortalVertex.TELEPORT_TICKS);
+      cir.setReturnValue((float) harvestContinentPortalTicks / MagnaPortalX.TELEPORT_TICKS);
     }
 
     int universeMetaPortalTicks = UniverseMetaPortal.clientPortalTicks;
     if (universeMetaPortalTicks > 0) {
-      cir.setReturnValue((float) universeMetaPortalTicks / CustomPortalHorizon.TELEPORT_TICKS);
+      cir.setReturnValue((float) universeMetaPortalTicks / MagnaPortalY.TELEPORT_TICKS);
     }
   }
 

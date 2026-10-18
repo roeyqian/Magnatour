@@ -44,12 +44,12 @@ import org.jspecify.annotations.NonNull;
 
 // Magnatour
 import roeyqian.magnatour.block.supreme.SupremeChest;
-import roeyqian.magnatour.blockentity.CustomContainer;
+import roeyqian.magnatour.blockentity.MagnaContainer;
 import roeyqian.magnatour.inventory.supreme.SupremeChestContainer;
 import roeyqian.magnatour.inventory.supreme.SupremeChestMenu;
 import roeyqian.magnatour.registry.stuff.MagnaBlockEntities;
 
-public class SupremeChestEntity extends BlockEntity implements CustomContainer {
+public class SupremeChestEntity extends BlockEntity implements MagnaContainer {
 
   public static final int SLOT_COUNT = 36;
 

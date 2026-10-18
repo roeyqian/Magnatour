@@ -33,7 +33,7 @@ import net.minecraft.world.phys.Vec3;
 import org.jspecify.annotations.NonNull;
 
 // Magnatour
-import roeyqian.magnatour.item.CustomItemSetting;
+import roeyqian.magnatour.item.MagnaItemSettings;
 
 public class UniverseBanquet extends Item {
 
@@ -96,12 +96,12 @@ public class UniverseBanquet extends Item {
   private static Properties applySettings(
       Properties settings
   ) {
-    return CustomItemSetting.applyUniverseDefaults(settings)
+    return MagnaItemSettings.applyUniverseDefaults(settings)
         .stacksTo(1)
         .food(new FoodProperties(RESTORATION_AMOUNT, RESTORATION_AMOUNT, true))
         .component(
             DataComponents.LORE,
-            CustomItemSetting.universeLore("universe_banquet")
+            MagnaItemSettings.universeLore("universe_banquet")
         );
   }
 

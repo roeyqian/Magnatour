@@ -39,7 +39,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 // Magnatour
-import roeyqian.magnatour.block.VirtualBlockLightManager;
+import roeyqian.magnatour.block.VirtualBlockLighter;
 import roeyqian.magnatour.entity.universe.UniverseAnnihilation;
 import roeyqian.magnatour.mixinhelper.universe.UniverseVoidArmorMain;
 import roeyqian.magnatour.registry.logic.MagnaComponents;
@@ -85,10 +85,10 @@ public class Magnatour implements ModInitializer {
     });
     ServerTickEvents.END_SERVER_TICK.register(UniverseAnnihilation::tick);
     ServerLifecycleEvents.SERVER_STOPPED.register(UniverseAnnihilation::forget);
-    VirtualBlockLightManager.init();
-    ServerTickEvents.END_LEVEL_TICK.register(VirtualBlockLightManager::tick);
-    ServerChunkEvents.CHUNK_LOAD.register((world, chunk, _) -> VirtualBlockLightManager.onChunkLoad(world, chunk));
-    ServerChunkEvents.CHUNK_UNLOAD.register((world, chunk) -> VirtualBlockLightManager.onChunkUnload(world, chunk.getPos()));
+    VirtualBlockLighter.init();
+    ServerTickEvents.END_LEVEL_TICK.register(VirtualBlockLighter::tick);
+    ServerChunkEvents.CHUNK_LOAD.register((world, chunk, _) -> VirtualBlockLighter.onChunkLoad(world, chunk));
+    ServerChunkEvents.CHUNK_UNLOAD.register((world, chunk) -> VirtualBlockLighter.onChunkUnload(world, chunk.getPos()));
     MagnaItems.init();
     MagnaNetworks.init();
 

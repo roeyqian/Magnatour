@@ -42,7 +42,7 @@ import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 // Magnatour
-import roeyqian.magnatour.block.CustomPortalHorizon;
+import roeyqian.magnatour.block.MagnaPortalY;
 import roeyqian.magnatour.registry.stuff.MagnaBlocks;
 import roeyqian.magnatour.registry.world.MagnaDimensions;
 
@@ -62,7 +62,7 @@ public class UniverseMetaPortal extends Block {
       Properties settings
   ) {
     super(settings);
-    this.registerDefaultState(this.stateDefinition.any().setValue(CustomPortalHorizon.AXIS, Direction.Axis.X));
+    this.registerDefaultState(this.stateDefinition.any().setValue(MagnaPortalY.AXIS, Direction.Axis.X));
   }
 
   public static void registerTickEvent() {
@@ -79,7 +79,7 @@ public class UniverseMetaPortal extends Block {
       @NonNull BlockPos pos,
       @NonNull CollisionContext context
   ) {
-    return CustomPortalHorizon.getOutlineShape(state);
+    return MagnaPortalY.getOutlineShape(state);
   }
 
   @Override
@@ -96,7 +96,7 @@ public class UniverseMetaPortal extends Block {
   protected void createBlockStateDefinition(
       StateDefinition.@NonNull Builder<Block, BlockState> builder
   ) {
-    builder.add(CustomPortalHorizon.AXIS);
+    builder.add(MagnaPortalY.AXIS);
   }
 
   @Override
@@ -109,7 +109,7 @@ public class UniverseMetaPortal extends Block {
       boolean bl
   ) {
     boolean[] clientFlag = new boolean[]{clientInPortal};
-    CustomPortalHorizon.handleEntityCollision(
+    MagnaPortalY.handleEntityCollision(
         world, pos, entity,
         PORTAL_TICKS, IN_PORTAL_THIS_TICK, clientFlag,
         MagnaBlocks.UNIVERSE_BLOCK, this,
@@ -129,7 +129,7 @@ public class UniverseMetaPortal extends Block {
       @NonNull BlockState neighborState,
       @NonNull RandomSource random
   ) {
-    if (CustomPortalHorizon.shouldBreakPortal(
+    if (MagnaPortalY.shouldBreakPortal(
         this, MagnaBlocks.UNIVERSE_BLOCK, neighborState, pos, world
     )) {
       return Blocks.AIR.defaultBlockState();

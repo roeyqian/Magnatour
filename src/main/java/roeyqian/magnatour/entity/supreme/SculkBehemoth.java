@@ -49,11 +49,11 @@ import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 // Magnatour
-import roeyqian.magnatour.entity.CustomBossEntity;
 import roeyqian.magnatour.entity.EntityLootTableHelper;
+import roeyqian.magnatour.entity.MagnaBossEntity;
 
 public class SculkBehemoth extends Mob
-    implements Enemy, CustomBossEntity {
+    implements Enemy, MagnaBossEntity {
 
   private static final int EXPERIENCE_REWARD = 5000;
   private static final int MOVE_BACK_DISTANCE = 15;

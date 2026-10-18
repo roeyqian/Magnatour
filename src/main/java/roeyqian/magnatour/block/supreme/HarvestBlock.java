@@ -18,7 +18,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.jspecify.annotations.NonNull;
 
 // Magnatour
-import roeyqian.magnatour.block.SummonStructureHelper;
+import roeyqian.magnatour.block.StructureSummon;
 
 public class HarvestBlock extends Block {
 
@@ -37,7 +37,7 @@ public class HarvestBlock extends Block {
       boolean movedByPiston
   ) {
     if (!oldState.is(state.getBlock())) {
-      SummonStructureHelper.trySpawnPaleLordFromPlacedBlock(level, pos, state);
+      StructureSummon.trySpawnPaleLordFromPlacedBlock(level, pos, state);
     }
   }
 

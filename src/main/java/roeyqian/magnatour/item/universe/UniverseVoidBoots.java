@@ -12,8 +12,7 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.item.Item;
 
 // Magnatour
-import roeyqian.magnatour.item.CustomItemSetting;
-import roeyqian.magnatour.item.CustomToolMaterial;
+import roeyqian.magnatour.item.MagnaItemSettings;
 
 public class UniverseVoidBoots extends Item {
 
@@ -26,8 +25,8 @@ public class UniverseVoidBoots extends Item {
   private static Properties applySettings(
       Properties settings
   ) {
-    return CustomToolMaterial.applyEternity(CustomItemSetting.applyUniverseDefaults(settings), 10).component(
-        DataComponents.LORE, CustomItemSetting.universeLore("universe_void_boots")
+    return MagnaItemSettings.applyEternity(MagnaItemSettings.applyUniverseDefaults(settings), 10).component(
+        DataComponents.LORE, MagnaItemSettings.universeLore("universe_void_boots")
     );
   }
 

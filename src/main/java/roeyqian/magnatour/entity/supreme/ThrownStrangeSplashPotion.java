@@ -26,7 +26,7 @@ import net.minecraft.world.phys.HitResult;
 import org.jspecify.annotations.NonNull;
 
 // Magnatour
-import roeyqian.magnatour.item.StrangePotionEffect;
+import roeyqian.magnatour.item.StrangePotionEffects;
 import roeyqian.magnatour.registry.stuff.MagnaItems;
 
 public class ThrownStrangeSplashPotion extends ThrownSplashPotion {
@@ -99,7 +99,7 @@ public class ThrownStrangeSplashPotion extends ThrownSplashPotion {
       // 原版喷溅药水半径判定基本就是 4 格内
       if (distSqr < 16.0D) {
         System.out.println("[ThrownStrangeSplashPotion] find! " + target.getName().getString());
-        StrangePotionEffect.applyRandomEffects(target, this.getRandom());
+        StrangePotionEffects.applyRandomEffects(target, this.getRandom());
       }
     }
 

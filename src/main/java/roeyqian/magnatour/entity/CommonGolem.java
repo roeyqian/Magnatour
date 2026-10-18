@@ -58,7 +58,7 @@ import net.minecraft.world.phys.Vec3;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
-public final class CustomGolem<T extends AbstractGolem & NeutralMob> {
+public final class CommonGolem<T extends AbstractGolem & NeutralMob> {
 
   private static final UniformInt PERSISTENT_ANGER_TIME = TimeUtil.rangeOfSeconds(20, 39);
 
@@ -73,7 +73,7 @@ public final class CustomGolem<T extends AbstractGolem & NeutralMob> {
 
   private @Nullable EntityReference<LivingEntity> persistentAngerTarget;
 
-  public CustomGolem(
+  public CommonGolem(
       final T owner,
       final EntityDataAccessor<Byte> dataFlagsId
   ) {

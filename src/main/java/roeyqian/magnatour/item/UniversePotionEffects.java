@@ -36,9 +36,9 @@ public final class UniversePotionEffects {
       Item.Properties settings,
       boolean drinkable
   ) {
-    CustomItemSetting.applyUniverseDefaults(settings)
+    MagnaItemSettings.applyUniverseDefaults(settings)
         .component(DataComponents.POTION_CONTENTS, contents())
-        .component(DataComponents.LORE, CustomItemSetting.universeLore("universe_potion"));
+        .component(DataComponents.LORE, MagnaItemSettings.universeLore("universe_potion"));
     if (drinkable) {
       settings.component(DataComponents.CONSUMABLE, Consumables.DEFAULT_DRINK)
           .usingConvertsTo(Items.GLASS_BOTTLE);

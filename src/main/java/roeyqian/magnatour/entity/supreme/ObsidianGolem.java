@@ -41,8 +41,8 @@ import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 // Magnatour
-import roeyqian.magnatour.entity.CustomGolem;
-import roeyqian.magnatour.entity.DiamondCityGolemTargetGoal;
+import roeyqian.magnatour.entity.CommonGolem;
+import roeyqian.magnatour.entity.DiamondCityGolemGoal;
 import roeyqian.magnatour.entity.EntityLootTableHelper;
 
 public class ObsidianGolem extends AbstractGolem implements NeutralMob {
@@ -50,11 +50,11 @@ public class ObsidianGolem extends AbstractGolem implements NeutralMob {
   public static final float SIZE_SCALE = 1.1F;
 
   protected static final EntityDataAccessor<Byte> DATA_FLAGS_ID =
-      CustomGolem.createDataFlagsId(ObsidianGolem.class);
+      CommonGolem.createDataFlagsId(ObsidianGolem.class);
 
   private static final int[] FASTER_ATTACK_INTERVAL_PATTERN = {13, 13, 14};
 
-  private @Nullable CustomGolem<ObsidianGolem> customGolem;
+  private @Nullable CommonGolem<ObsidianGolem> commonGolem;
 
   public ObsidianGolem(
       final EntityType<? extends ObsidianGolem> type,
@@ -64,7 +64,7 @@ public class ObsidianGolem extends AbstractGolem implements NeutralMob {
   }
 
   public static AttributeSupplier.Builder createAttributes() {
-    return CustomGolem.createBaseAttributes(
+    return CommonGolem.createBaseAttributes(
         2000.0F, 0.4F, 1.5F,
         50.0F, 50.0F, 128.0F, 1.25F
     );
@@ -280,11 +280,11 @@ public class ObsidianGolem extends AbstractGolem implements NeutralMob {
     this.customGolem().addUniversalAngerResetGoal(this.targetSelector, 4);
   }
 
-  private CustomGolem<ObsidianGolem> customGolem() {
-    if (this.customGolem == null) {
-      this.customGolem = new CustomGolem<>(this, DATA_FLAGS_ID);
+  private CommonGolem<ObsidianGolem> customGolem() {
+    if (this.commonGolem == null) {
+      this.commonGolem = new CommonGolem<>(this, DATA_FLAGS_ID);
     }
-    return this.customGolem;
+    return this.commonGolem;
   }
 
   private boolean shouldAttackOnSight(
@@ -294,7 +294,7 @@ public class ObsidianGolem extends AbstractGolem implements NeutralMob {
       return false;
     }
 
-    if (target instanceof AbstractGolem && DiamondCityGolemTargetGoal.isInsideDiamondCity(this)) {
+    if (target instanceof AbstractGolem && DiamondCityGolemGoal.isInsideDiamondCity(this)) {
       return false;
     }
 

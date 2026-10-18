@@ -41,7 +41,7 @@ import net.minecraft.world.level.storage.loot.LootTable;
 
 // Magnatour
 import roeyqian.magnatour.Magnatour;
-import roeyqian.magnatour.block.SummonStructureHelper;
+import roeyqian.magnatour.block.StructureSummon;
 import roeyqian.magnatour.block.supreme.ChunkTntBlock;
 import roeyqian.magnatour.block.supreme.CropOfAllThings;
 import roeyqian.magnatour.block.supreme.EverWaterFarmland;
@@ -465,7 +465,7 @@ public final class MagnaBlocks {
   public static void init() {
     OreContinentPortal.registerTickEvent();
     HarvestContinentPortal.registerTickEvent();
-    SummonStructureHelper.registerTickEvent();
+    StructureSummon.registerTickEvent();
     UniverseMetaPortal.registerTickEvent();
 
     Magnatour.LOGGER.info("[Server] Initializing 'MagnaBlocks'");

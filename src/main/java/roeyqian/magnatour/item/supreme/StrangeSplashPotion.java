@@ -25,7 +25,7 @@ import org.jspecify.annotations.NonNull;
 
 // Magnatour
 import roeyqian.magnatour.entity.supreme.ThrownStrangeSplashPotion;
-import roeyqian.magnatour.item.CustomItemSetting;
+import roeyqian.magnatour.item.MagnaItemSettings;
 
 public class StrangeSplashPotion extends SplashPotionItem {
 
@@ -87,7 +87,7 @@ public class StrangeSplashPotion extends SplashPotionItem {
   private static Properties applySettings(
       Properties settings
   ) {
-    return CustomItemSetting.applySupremeDefaults(settings)
+    return MagnaItemSettings.applySupremeDefaults(settings)
         .component(DataComponents.CONSUMABLE, Consumables.DEFAULT_DRINK);
   }
 

@@ -25,7 +25,7 @@ import net.minecraft.world.phys.Vec3;
 // Magnatour
 import roeyqian.magnatour.entity.supreme.PaleLordClone;
 
-public final class PaleLordCommon {
+public final class CommonPaleLord {
 
   public static final float DAMAGE_THRESHOLD = 1_000_000.0F;
 
@@ -36,7 +36,7 @@ public final class PaleLordCommon {
   private static final double PROJECTILE_LAUNCH_HEIGHT = 1.2;
   private static final double PROJECTILE_LAUNCH_SPEED = 6.0;
 
-  private PaleLordCommon() {}
+  private CommonPaleLord() {}
 
   public static void applyProjectileLaunch(
       LivingEntity entity,

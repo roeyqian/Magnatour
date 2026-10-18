@@ -35,7 +35,7 @@ import org.jspecify.annotations.NonNull;
 
 // Magnatour
 import roeyqian.magnatour.inventory.supreme.MirrorMobileMenuAccess;
-import roeyqian.magnatour.item.CustomItemSetting;
+import roeyqian.magnatour.item.MagnaItemSettings;
 import roeyqian.magnatour.registry.logic.MagnaComponents;
 
 public class MirrorMobile extends Item {
@@ -127,8 +127,8 @@ public class MirrorMobile extends Item {
   private static Properties applySettings(
       Properties settings
   ) {
-    return CustomItemSetting.applySupremeDefaults(settings)
-        .component(DataComponents.LORE, CustomItemSetting.supremeLore("mirror_mobile"))
+    return MagnaItemSettings.applySupremeDefaults(settings)
+        .component(DataComponents.LORE, MagnaItemSettings.supremeLore("mirror_mobile"))
         .component(MagnaComponents.MIRROR_MOBILE_MODE, 0)
         .component(MagnaComponents.MIRROR_MOBILE_BLOCK_ID, "");
   }

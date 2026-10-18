@@ -21,11 +21,11 @@ import roeyqian.magnatour.entity.supreme.ObsidianGolem;
 import roeyqian.magnatour.registry.world.MagnaStructures;
 
 /** Makes golems inside a Diamond City hostile while preserving player-created golem protection. */
-public final class DiamondCityGolemTargetGoal extends NearestAttackableTargetGoal<Player> {
+public final class DiamondCityGolemGoal extends NearestAttackableTargetGoal<Player> {
 
   private final AbstractGolem golem;
 
-  public DiamondCityGolemTargetGoal(
+  public DiamondCityGolemGoal(
       AbstractGolem golem
   ) {
     super(golem, Player.class, 10, true, false, (player, _) ->

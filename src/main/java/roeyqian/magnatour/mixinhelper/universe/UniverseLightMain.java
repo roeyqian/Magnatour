@@ -16,7 +16,7 @@ import net.minecraft.world.level.chunk.LightChunkGetter;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 // Magnatour
-import roeyqian.magnatour.block.VirtualBlockLightManager;
+import roeyqian.magnatour.block.VirtualBlockLighter;
 
 public final class UniverseLightMain {
 
@@ -28,11 +28,11 @@ public final class UniverseLightMain {
       BlockState state,
       CallbackInfoReturnable<Integer> cir
   ) {
-    if (cir.getReturnValueI() >= VirtualBlockLightManager.LIGHT_LEVEL) return;
+    if (cir.getReturnValueI() >= VirtualBlockLighter.LIGHT_LEVEL) return;
     if (chunkSource == null) return;
 
     BlockGetter world = chunkSource.getLevel();
-    int virtualLight = VirtualBlockLightManager.getLightEmission(world, pos, state);
+    int virtualLight = VirtualBlockLighter.getLightEmission(world, pos, state);
     if (virtualLight > cir.getReturnValueI()) cir.setReturnValue(virtualLight);
   }
 

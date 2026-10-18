@@ -37,7 +37,7 @@ import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 // Magnatour
-import roeyqian.magnatour.item.CustomArmorMaterial;
+import roeyqian.magnatour.item.MagnaArmorMaterials;
 import roeyqian.magnatour.mixinhelper.base.GlintClient;
 
 @Environment(EnvType.CLIENT) @Mixin(value = EquipmentLayerRenderer.class, priority = 3600000)
@@ -145,7 +145,7 @@ public class EquipmentLayerRendererMixin {
       CallbackInfo ci
   ) {
     magnatour$animateUniverseVoidHumanoid = layerType == EquipmentClientInfo.LayerType.HUMANOID
-        && equipmentAssetId.equals(CustomArmorMaterial.UNIVERSE_VOID_ARMOR.assetId());
+        && equipmentAssetId.equals(MagnaArmorMaterials.UNIVERSE_VOID_ARMOR.assetId());
   }
 
 }

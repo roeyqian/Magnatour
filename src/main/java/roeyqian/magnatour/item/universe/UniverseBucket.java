@@ -35,7 +35,7 @@ import net.minecraft.world.level.material.Fluids;
 import org.jspecify.annotations.NonNull;
 
 // Magnatour
-import roeyqian.magnatour.item.CustomItemSetting;
+import roeyqian.magnatour.item.MagnaItemSettings;
 import roeyqian.magnatour.registry.logic.MagnaComponents;
 
 public class UniverseBucket extends Item {
@@ -126,10 +126,10 @@ public class UniverseBucket extends Item {
   private static Properties applySettings(
       Properties settings
   ) {
-    return CustomItemSetting.applyUniverseDefaults(settings)
+    return MagnaItemSettings.applyUniverseDefaults(settings)
         .component(
             DataComponents.LORE,
-            CustomItemSetting.universeLore("universe_bucket")
+            MagnaItemSettings.universeLore("universe_bucket")
         )
         .component(
             DataComponents.CONSUMABLE,

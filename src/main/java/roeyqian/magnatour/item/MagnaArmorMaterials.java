@@ -27,7 +27,7 @@ import net.minecraft.world.item.equipment.EquipmentAssets;
 // Magnatour
 import roeyqian.magnatour.Magnatour;
 
-public interface CustomArmorMaterial extends ArmorMaterials {
+public interface MagnaArmorMaterials extends ArmorMaterials {
 
   int universeVoid = 1000;
 

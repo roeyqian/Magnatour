@@ -17,7 +17,7 @@ import net.minecraft.world.item.ItemStack;
 // JSpecify
 import org.jspecify.annotations.NonNull;
 
-public interface CustomContainer extends Container {
+public interface MagnaContainer extends Container {
 
   NonNullList<ItemStack> getItems();
 

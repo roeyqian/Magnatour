@@ -24,7 +24,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 // Magnatour
-import roeyqian.magnatour.block.VirtualBlockLightManager;
+import roeyqian.magnatour.block.VirtualBlockLighter;
 
 @Mixin(value = LevelLightEngine.class, priority = 3600000)
 public abstract class LevelLightEngineMixin {
@@ -51,7 +51,7 @@ public abstract class LevelLightEngineMixin {
       CallbackInfoReturnable<Integer> cir
   ) {
     if (this.magnatour$chunkSource != null
-        && VirtualBlockLightManager.isUniverseLit(this.magnatour$chunkSource.getLevel(), pos)) {
+        && VirtualBlockLighter.isUniverseLit(this.magnatour$chunkSource.getLevel(), pos)) {
       cir.setReturnValue(15);
     }
   }
@@ -64,11 +64,11 @@ public abstract class LevelLightEngineMixin {
   ) {
     this.magnatour$chunkSource = chunkSource;
     LevelLightEngine engine = (LevelLightEngine) (Object) this;
-    this.magnatour$skyListener = new VirtualBlockLightManager.UniverseLightListener(engine.getLayerListener(LightLayer.SKY), chunkSource);
+    this.magnatour$skyListener = new VirtualBlockLighter.UniverseLightListener(engine.getLayerListener(LightLayer.SKY), chunkSource);
     // Client block-light reads also return 15 to keep terrain and entities full-bright at night.
     // This read-time overlay never changes the actual light engine storage or saved light data.
     if (chunkSource.getLevel() instanceof Level level && level.isClientSide()) {
-      this.magnatour$blockListener = new VirtualBlockLightManager.UniverseLightListener(engine.getLayerListener(LightLayer.BLOCK), chunkSource);
+      this.magnatour$blockListener = new VirtualBlockLighter.UniverseLightListener(engine.getLayerListener(LightLayer.BLOCK), chunkSource);
     }
   }
 

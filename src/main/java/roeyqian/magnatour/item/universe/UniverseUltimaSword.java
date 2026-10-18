@@ -52,8 +52,7 @@ import org.jspecify.annotations.NonNull;
 // Magnatour
 import roeyqian.magnatour.block.supreme.ChunkTntBlock;
 import roeyqian.magnatour.entity.universe.UniverseFireball;
-import roeyqian.magnatour.item.CustomItemSetting;
-import roeyqian.magnatour.item.CustomToolMaterial;
+import roeyqian.magnatour.item.MagnaItemSettings;
 import roeyqian.magnatour.registry.logic.MagnaComponents;
 
 public class UniverseUltimaSword extends Item {
@@ -131,13 +130,13 @@ public class UniverseUltimaSword extends Item {
   private static Properties applySettings(
       Properties settings
   ) {
-    return CustomToolMaterial
+    return MagnaItemSettings
         .applyFinality(
-            CustomItemSetting.applyUniverseDefaults(settings), 10
+            MagnaItemSettings.applyUniverseDefaults(settings), 10
         )
         .component(
             DataComponents.LORE,
-            CustomItemSetting.universeLore("universe_ultima_sword")
+            MagnaItemSettings.universeLore("universe_ultima_sword")
         )
         .component(
             DataComponents.ATTRIBUTE_MODIFIERS,
@@ -151,7 +150,7 @@ public class UniverseUltimaSword extends Item {
             Attributes.ATTACK_DAMAGE,
             new AttributeModifier(
                 Item.BASE_ATTACK_DAMAGE_ID,
-                CustomToolMaterial.UNIVERSE_TOOL.attackDamageBonus() - 1,
+                MagnaItemSettings.UNIVERSE_TOOL.attackDamageBonus() - 1,
                 AttributeModifier.Operation.ADD_VALUE
             ),
             EquipmentSlotGroup.MAINHAND
@@ -160,7 +159,7 @@ public class UniverseUltimaSword extends Item {
             Attributes.ATTACK_SPEED,
             new AttributeModifier(
                 Item.BASE_ATTACK_SPEED_ID,
-                CustomToolMaterial.UNIVERSE_TOOL.speed() - 4,
+                MagnaItemSettings.UNIVERSE_TOOL.speed() - 4,
                 AttributeModifier.Operation.ADD_VALUE
             ),
             EquipmentSlotGroup.MAINHAND

@@ -20,7 +20,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 // Magnatour
-import roeyqian.magnatour.entity.DiamondCityGolemTargetGoal;
+import roeyqian.magnatour.entity.DiamondCityGolemGoal;
 
 @Mixin(AbstractGolem.class)
 public abstract class AbstractGolemMixin extends Mob {
@@ -36,7 +36,7 @@ public abstract class AbstractGolemMixin extends Mob {
   private void addDiamondCityPlayerTarget(
       CallbackInfo ci
   ) {
-    this.targetSelector.addGoal(0, new DiamondCityGolemTargetGoal((AbstractGolem) (Object) this));
+    this.targetSelector.addGoal(0, new DiamondCityGolemGoal((AbstractGolem) (Object) this));
   }
 
 }

@@ -18,7 +18,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 
 // Magnatour
-import roeyqian.magnatour.item.StrangePotionEffect;
+import roeyqian.magnatour.item.StrangePotionEffects;
 
 public class StrangeAreaEffectCloud extends AreaEffectCloud {
 
@@ -80,7 +80,7 @@ public class StrangeAreaEffectCloud extends AreaEffectCloud {
       double distSqr = dx * dx + dz * dz;
 
       if (distSqr <= (double) (radius * radius)) {
-        StrangePotionEffect.applyRandomEffects(target, this.getRandom());
+        StrangePotionEffects.applyRandomEffects(target, this.getRandom());
 
         // 每次施加效果后缩小半径（和原版一样）
         this.setRadius(this.getRadius() + this.getRadiusOnUse());

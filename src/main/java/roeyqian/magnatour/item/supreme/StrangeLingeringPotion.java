@@ -25,7 +25,7 @@ import org.jspecify.annotations.NonNull;
 
 // Magnatour
 import roeyqian.magnatour.entity.supreme.ThrownStrangeLingeringPotion;
-import roeyqian.magnatour.item.CustomItemSetting;
+import roeyqian.magnatour.item.MagnaItemSettings;
 
 public class StrangeLingeringPotion extends LingeringPotionItem {
 
@@ -84,7 +84,7 @@ public class StrangeLingeringPotion extends LingeringPotionItem {
   private static Properties applySettings(
       Properties settings
   ) {
-    return CustomItemSetting.applySupremeDefaults(settings)
+    return MagnaItemSettings.applySupremeDefaults(settings)
         .component(DataComponents.CONSUMABLE, Consumables.DEFAULT_DRINK);
   }
 

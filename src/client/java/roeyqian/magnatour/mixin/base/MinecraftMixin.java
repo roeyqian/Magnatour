@@ -21,7 +21,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 // Magnatour
-import roeyqian.magnatour.block.VirtualBlockLightManager;
+import roeyqian.magnatour.block.VirtualBlockLighter;
 import roeyqian.magnatour.mixinhelper.universe.UniverseBucketClient;
 
 @Mixin(value = Minecraft.class, priority = 3600000)
@@ -36,7 +36,7 @@ public class MinecraftMixin {
     if (client.level == null) return;
     var world = client.level;
     var viewArea = client.levelRenderer.viewArea();
-    VirtualBlockLightManager.finishUniverseBuilds(world, (key, started) -> {
+    VirtualBlockLighter.finishUniverseBuilds(world, (key, started) -> {
       var section = viewArea == null ? null : viewArea.getRenderSectionAt(SectionPos.of(key).center());
       if (section == null) return true;
       var mesh = section.getSectionMesh();
@@ -45,13 +45,13 @@ public class MinecraftMixin {
           || mesh.getCompileTaskStartTime() >= started;
     });
     var regions = new RenderRegionCache();
-    VirtualBlockLightManager.submitUniverseRefreshes(world, section -> {
+    VirtualBlockLighter.submitUniverseRefreshes(world, section -> {
       var terrain = viewArea == null ? null : viewArea.getRenderSectionAt(section.center());
       if (terrain == null) return;
       var mesh = terrain.getSectionMesh();
       // Preserve vanilla initial terrain loading. Empty terrain has no old geometry to refresh.
       if (mesh == CompiledSectionMesh.UNCOMPILED || mesh == CompiledSectionMesh.EMPTY) return;
-      VirtualBlockLightManager.beginUniverseBuild(world, section.asLong());
+      VirtualBlockLighter.beginUniverseBuild(world, section.asLong());
       terrain.compileAsync(regions.createRegion(world, section.asLong()));
     });
   }

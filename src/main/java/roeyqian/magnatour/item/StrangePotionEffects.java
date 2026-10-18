@@ -19,13 +19,13 @@ import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
 
-public final class StrangePotionEffect {
+public final class StrangePotionEffects {
 
   private static final int EFFECT_COUNT = 5;
   private static final int MAX_SECONDS = 1000;
   private static final int MIN_SECONDS = 10;
 
-  private StrangePotionEffect() {}
+  private StrangePotionEffects() {}
 
   public static void applyRandomEffects(
       LivingEntity target,

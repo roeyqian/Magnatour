@@ -22,8 +22,8 @@ import net.minecraft.world.level.Level;
 import org.jspecify.annotations.NonNull;
 
 // Magnatour
-import roeyqian.magnatour.item.CustomItemSetting;
-import roeyqian.magnatour.item.StrangePotionEffect;
+import roeyqian.magnatour.item.MagnaItemSettings;
+import roeyqian.magnatour.item.StrangePotionEffects;
 
 public class StrangePotion extends PotionItem {
 
@@ -42,7 +42,7 @@ public class StrangePotion extends PotionItem {
     ItemStack result = super.finishUsingItem(stack, level, entity);
 
     if (!level.isClientSide() && entity instanceof Player player) {
-      StrangePotionEffect.applyRandomEffects(player, player.getRandom());
+      StrangePotionEffects.applyRandomEffects(player, player.getRandom());
     }
 
     return result;
@@ -60,7 +60,7 @@ public class StrangePotion extends PotionItem {
   private static Properties applySettings(
       Properties settings
   ) {
-    return CustomItemSetting.applySupremeDefaults(settings)
+    return MagnaItemSettings.applySupremeDefaults(settings)
         .component(DataComponents.CONSUMABLE, Consumables.DEFAULT_DRINK);
   }
 

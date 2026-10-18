@@ -29,7 +29,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 // Magnatour
 import roeyqian.magnatour.Magnatour;
-import roeyqian.magnatour.item.CustomToolMaterial;
+import roeyqian.magnatour.item.MagnaItemSettings;
 import roeyqian.magnatour.item.universe.UniverseOmniBlade;
 import roeyqian.magnatour.item.universe.UniverseUltimaSword;
 import roeyqian.magnatour.item.universe.UniverseVoidBoots;
@@ -161,14 +161,14 @@ public final class UniverseEnchantMain {
       ItemStack stack
   ) {
     return EnchantmentHelper.getEnchantmentsForCrafting(stack).keySet().stream()
-        .anyMatch(enchantment -> enchantment.is(CustomToolMaterial.ETERNITY));
+        .anyMatch(enchantment -> enchantment.is(MagnaItemSettings.ETERNITY));
   }
 
   public static boolean hasFinality(
       ItemStack stack
   ) {
     return EnchantmentHelper.getEnchantmentsForCrafting(stack).keySet().stream()
-        .anyMatch(enchantment -> enchantment.is(CustomToolMaterial.FINALITY));
+        .anyMatch(enchantment -> enchantment.is(MagnaItemSettings.FINALITY));
   }
 
   public static boolean hasNonDivineEnchantments(
@@ -182,23 +182,23 @@ public final class UniverseEnchantMain {
       ItemStack stack
   ) {
     return EnchantmentHelper.getEnchantmentsForCrafting(stack).keySet().stream()
-        .anyMatch(enchantment -> enchantment.is(CustomToolMaterial.OMNISCIENCE));
+        .anyMatch(enchantment -> enchantment.is(MagnaItemSettings.OMNISCIENCE));
   }
 
   public static boolean hasRevelation(
       ItemStack stack
   ) {
     return EnchantmentHelper.getEnchantmentsForCrafting(stack).keySet().stream()
-        .anyMatch(enchantment -> enchantment.is(CustomToolMaterial.REVELATION));
+        .anyMatch(enchantment -> enchantment.is(MagnaItemSettings.REVELATION));
   }
 
   public static boolean isDivineEnchantment(
       Holder<Enchantment> enchantment
   ) {
-    return enchantment.is(CustomToolMaterial.ETERNITY)
-        || enchantment.is(CustomToolMaterial.FINALITY)
-        || enchantment.is(CustomToolMaterial.OMNISCIENCE)
-        || enchantment.is(CustomToolMaterial.REVELATION);
+    return enchantment.is(MagnaItemSettings.ETERNITY)
+        || enchantment.is(MagnaItemSettings.FINALITY)
+        || enchantment.is(MagnaItemSettings.OMNISCIENCE)
+        || enchantment.is(MagnaItemSettings.REVELATION);
   }
 
   public static boolean isFinality(

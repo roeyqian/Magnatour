@@ -18,7 +18,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.jspecify.annotations.NonNull;
 
 // Magnatour
-import roeyqian.magnatour.block.SummonStructureHelper;
+import roeyqian.magnatour.block.StructureSummon;
 
 public class OreBlock extends Block {
 
@@ -37,7 +37,7 @@ public class OreBlock extends Block {
       boolean movedByPiston
   ) {
     if (!oldState.is(state.getBlock())) {
-      SummonStructureHelper.trySpawnSculkBehemothFromPlacedBlock(level, pos, state);
+      StructureSummon.trySpawnSculkBehemothFromPlacedBlock(level, pos, state);
     }
   }
 

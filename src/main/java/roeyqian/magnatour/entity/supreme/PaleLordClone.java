@@ -34,20 +34,20 @@ import net.minecraft.world.level.Level;
 import org.jspecify.annotations.NonNull;
 
 // Magnatour
+import roeyqian.magnatour.entity.CommonPaleLord;
 import roeyqian.magnatour.entity.EntityLootTableHelper;
-import roeyqian.magnatour.entity.PaleLordCommon;
 
 public class PaleLordClone extends Monster {
 
-  private static final SoundEvent AMBIENT_SOUND = PaleLordCommon.resolveSound(
+  private static final SoundEvent AMBIENT_SOUND = CommonPaleLord.resolveSound(
       "entity.creaking.ambient",
       SoundEvents.CREAKING_AMBIENT
   );
-  private static final SoundEvent DEATH_SOUND = PaleLordCommon.resolveSound(
+  private static final SoundEvent DEATH_SOUND = CommonPaleLord.resolveSound(
       "entity.creaking.death",
       SoundEvents.CREAKING_DEATH
   );
-  private static final SoundEvent HURT_SOUND = PaleLordCommon.resolveSound(
+  private static final SoundEvent HURT_SOUND = CommonPaleLord.resolveSound(
       "entity.creaking.hurt",
       SoundEvents.SKELETON_HURT
   );
@@ -72,7 +72,7 @@ public class PaleLordClone extends Monster {
   public boolean canBeAffected(
       @NonNull MobEffectInstance effect
   ) {
-    return !PaleLordCommon.isImmuneToEffect(effect) && super.canBeAffected(effect);
+    return !CommonPaleLord.isImmuneToEffect(effect) && super.canBeAffected(effect);
   }
 
   @Override
@@ -89,16 +89,16 @@ public class PaleLordClone extends Monster {
       @NonNull DamageSource source,
       float amount
   ) {
-    if (PaleLordCommon.isImmuneToDamage(source)) {
+    if (CommonPaleLord.isImmuneToDamage(source)) {
       return false;
     }
-    if (amount < PaleLordCommon.DAMAGE_THRESHOLD) {
-      PaleLordCommon.applyProjectileLaunch(this, source);
+    if (amount < CommonPaleLord.DAMAGE_THRESHOLD) {
+      CommonPaleLord.applyProjectileLaunch(this, source);
       return false;
     }
 
     boolean damaged = super.hurtServer(world, source, amount);
-    PaleLordCommon.applyProjectileLaunch(this, source);
+    CommonPaleLord.applyProjectileLaunch(this, source);
     return damaged;
   }
 
@@ -156,10 +156,10 @@ public class PaleLordClone extends Monster {
   private void updateAttackDamage(
       ServerLevel world
   ) {
-    int cloneCount = PaleLordCommon.countNearbyClones(world, this);
+    int cloneCount = CommonPaleLord.countNearbyClones(world, this);
     AttributeInstance attribute = this.getAttribute(Attributes.ATTACK_DAMAGE);
     if (attribute != null) {
-      attribute.setBaseValue(PaleLordCommon.computeAttackDamage(cloneCount));
+      attribute.setBaseValue(CommonPaleLord.computeAttackDamage(cloneCount));
     }
   }
 
@@ -168,7 +168,7 @@ public class PaleLordClone extends Monster {
   ) {
     boolean hasBody = !world.getEntitiesOfClass(
         PaleLord.class,
-        this.getBoundingBox().inflate(PaleLordCommon.SYNC_RADIUS),
+        this.getBoundingBox().inflate(CommonPaleLord.SYNC_RADIUS),
         Entity::isAlive
     ).isEmpty();
 

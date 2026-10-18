@@ -41,8 +41,8 @@ import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 // Magnatour
-import roeyqian.magnatour.entity.CustomGolem;
-import roeyqian.magnatour.entity.DiamondCityGolemTargetGoal;
+import roeyqian.magnatour.entity.CommonGolem;
+import roeyqian.magnatour.entity.DiamondCityGolemGoal;
 import roeyqian.magnatour.entity.EntityLootTableHelper;
 
 public class NetheriteGolem extends AbstractGolem implements NeutralMob {
@@ -50,13 +50,13 @@ public class NetheriteGolem extends AbstractGolem implements NeutralMob {
   public static final float SIZE_SCALE = 1.3F;
 
   protected static final EntityDataAccessor<Byte> DATA_FLAGS_ID =
-      CustomGolem.createDataFlagsId(NetheriteGolem.class);
+      CommonGolem.createDataFlagsId(NetheriteGolem.class);
 
   private static final int FASTER_ATTACK_INTERVAL_TICKS = 10;
 
   private static final double PLAYER_PROTECTION_RANGE = 32.0F;
 
-  private @Nullable CustomGolem<NetheriteGolem> customGolem;
+  private @Nullable CommonGolem<NetheriteGolem> commonGolem;
 
   public NetheriteGolem(
       final EntityType<? extends NetheriteGolem> type,
@@ -66,7 +66,7 @@ public class NetheriteGolem extends AbstractGolem implements NeutralMob {
   }
 
   public static AttributeSupplier.Builder createAttributes() {
-    return CustomGolem.createBaseAttributes(
+    return CommonGolem.createBaseAttributes(
         8000.0F, 0.6F, 2.0F,
         100.0F, 100.0F, 128.0F,1.75F
     );
@@ -83,7 +83,7 @@ public class NetheriteGolem extends AbstractGolem implements NeutralMob {
       final @NonNull LivingEntity target
   ) {
     if (target.is(EntityTypes.PLAYER)) {
-      return DiamondCityGolemTargetGoal.isHostileToPlayer(this, target) && super.canAttack(target);
+      return DiamondCityGolemGoal.isHostileToPlayer(this, target) && super.canAttack(target);
     }
 
     return super.canAttack(target);
@@ -299,11 +299,11 @@ public class NetheriteGolem extends AbstractGolem implements NeutralMob {
     this.customGolem().addUniversalAngerResetGoal(this.targetSelector, 4);
   }
 
-  private CustomGolem<NetheriteGolem> customGolem() {
-    if (this.customGolem == null) {
-      this.customGolem = new CustomGolem<>(this, DATA_FLAGS_ID);
+  private CommonGolem<NetheriteGolem> customGolem() {
+    if (this.commonGolem == null) {
+      this.commonGolem = new CommonGolem<>(this, DATA_FLAGS_ID);
     }
-    return this.customGolem;
+    return this.commonGolem;
   }
 
   private boolean shouldProtectPlayersAgainst(
@@ -338,7 +338,7 @@ public class NetheriteGolem extends AbstractGolem implements NeutralMob {
       return false;
     }
 
-    return DiamondCityGolemTargetGoal.isHostileToPlayer(this, target)
+    return DiamondCityGolemGoal.isHostileToPlayer(this, target)
         || target instanceof Enemy
         || this.isNotPlayerCreated()
         || this.shouldProtectPlayersAgainst(target);

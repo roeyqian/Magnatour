@@ -47,8 +47,7 @@ import org.jspecify.annotations.Nullable;
 
 // Magnatour
 import roeyqian.magnatour.inventory.universe.UniverseCommandStarMenu;
-import roeyqian.magnatour.item.CustomItemSetting;
-import roeyqian.magnatour.item.CustomToolMaterial;
+import roeyqian.magnatour.item.MagnaItemSettings;
 import roeyqian.magnatour.registry.logic.MagnaComponents;
 
 public class UniverseCommandStar extends Item {
@@ -92,10 +91,10 @@ public class UniverseCommandStar extends Item {
   private static Properties applySettings(
       Properties settings
   ) {
-    return CustomToolMaterial.applyRevelation(CustomItemSetting.applyUniverseDefaults(settings), 10)
+    return MagnaItemSettings.applyRevelation(MagnaItemSettings.applyUniverseDefaults(settings), 10)
         .component(
             DataComponents.LORE,
-            CustomItemSetting.universeLore("universe_command_star")
+            MagnaItemSettings.universeLore("universe_command_star")
         )
         .component(
             DataComponents.ATTRIBUTE_MODIFIERS,

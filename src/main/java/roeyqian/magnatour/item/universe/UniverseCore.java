@@ -19,7 +19,7 @@ import net.minecraft.world.level.Level;
 import org.jspecify.annotations.NonNull;
 
 // Magnatour
-import roeyqian.magnatour.item.CustomItemSetting;
+import roeyqian.magnatour.item.MagnaItemSettings;
 
 public class UniverseCore extends Item {
 
@@ -42,10 +42,10 @@ public class UniverseCore extends Item {
   private static Properties applySettings(
       Properties settings
   ) {
-    return CustomItemSetting.applyUniverseDefaults(settings)
+    return MagnaItemSettings.applyUniverseDefaults(settings)
         .component(
             DataComponents.LORE,
-            CustomItemSetting.universeLore("universe_core")
+            MagnaItemSettings.universeLore("universe_core")
         );
   }
 

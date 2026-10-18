@@ -25,8 +25,7 @@ import org.jspecify.annotations.Nullable;
 
 // Magnatour
 import roeyqian.magnatour.Magnatour;
-import roeyqian.magnatour.item.CustomItemSetting;
-import roeyqian.magnatour.item.CustomToolMaterial;
+import roeyqian.magnatour.item.MagnaItemSettings;
 
 public class UniverseVoidLeggings extends Item {
 
@@ -67,8 +66,8 @@ public class UniverseVoidLeggings extends Item {
   private static Properties applySettings(
       Properties settings
   ) {
-    return CustomToolMaterial.applyEternity(CustomItemSetting.applyUniverseDefaults(settings), 10).component(
-        DataComponents.LORE, CustomItemSetting.universeLore("universe_void_leggings")
+    return MagnaItemSettings.applyEternity(MagnaItemSettings.applyUniverseDefaults(settings), 10).component(
+        DataComponents.LORE, MagnaItemSettings.universeLore("universe_void_leggings")
     );
   }
 

@@ -31,7 +31,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 // Magnatour
-import roeyqian.magnatour.block.CustomPortalVertex;
+import roeyqian.magnatour.block.MagnaPortalX;
 import roeyqian.magnatour.level.data.PortalLinkSavedData;
 import roeyqian.magnatour.registry.world.MagnaDimensions;
 
@@ -49,7 +49,7 @@ public final class UniversePortalMain {
     if (cir.getReturnValue()) return;
 
     cir.setReturnValue(
-        CustomPortalVertex.canBePlacedAt(level, pos, forwardDirection)
+        MagnaPortalX.canBePlacedAt(level, pos, forwardDirection)
             || canCreateNetherPortal(level, pos, forwardDirection)
     );
   }
@@ -62,7 +62,7 @@ public final class UniversePortalMain {
       CallbackInfo ci
   ) {
     if (oldState.is(state.getBlock())) return;
-    if (CustomPortalVertex.tryCreatePortalFromFire(level, pos)) {
+    if (MagnaPortalX.tryCreatePortalFromFire(level, pos)) {
       ci.cancel();
       return;
     }

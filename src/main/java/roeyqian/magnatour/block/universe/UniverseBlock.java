@@ -30,8 +30,8 @@ import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 // Magnatour
-import roeyqian.magnatour.block.CustomPortalHorizon;
-import roeyqian.magnatour.block.VirtualBlockLightManager;
+import roeyqian.magnatour.block.MagnaPortalY;
+import roeyqian.magnatour.block.VirtualBlockLighter;
 import roeyqian.magnatour.blockentity.universe.UniverseBlockEntity;
 import roeyqian.magnatour.registry.stuff.MagnaBlockEntities;
 import roeyqian.magnatour.registry.stuff.MagnaBlocks;
@@ -78,7 +78,7 @@ public class UniverseBlock extends BaseEntityBlock {
   ) {
     BlockState newState = world.getBlockState(pos);
     if (!state.is(newState.getBlock())) {
-      VirtualBlockLightManager.setActive(world, pos, false);
+      VirtualBlockLighter.setActive(world, pos, false);
       super.affectNeighborsAfterRemoval(state, world, pos, moved);
     }
   }
@@ -109,13 +109,13 @@ public class UniverseBlock extends BaseEntityBlock {
       if (blockEntity instanceof UniverseBlockEntity universeBlockEntity) {
         universeBlockEntity.setLightRegistered(newLit);
       } else {
-        VirtualBlockLightManager.setActive(world, pos, newLit);
+        VirtualBlockLighter.setActive(world, pos, newLit);
       }
 
       // Try to activate portal when block is lit
       if (newLit && (world.dimension() == Level.OVERWORLD
           || world.dimension() == MagnaDimensions.UNIVERSE_META)) {
-        CustomPortalHorizon.tryActivatePortal(world, pos, this, MagnaBlocks.UNIVERSE_META_PORTAL);
+        MagnaPortalY.tryActivatePortal(world, pos, this, MagnaBlocks.UNIVERSE_META_PORTAL);
       }
     }
     return InteractionResult.SUCCESS;

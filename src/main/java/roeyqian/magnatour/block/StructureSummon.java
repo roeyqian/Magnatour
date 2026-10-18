@@ -46,7 +46,7 @@ import roeyqian.magnatour.entity.supreme.SculkBehemoth;
 import roeyqian.magnatour.registry.stuff.MagnaBlocks;
 import roeyqian.magnatour.registry.stuff.MagnaEntities;
 
-public final class SummonStructureHelper {
+public final class StructureSummon {
 
   private static final String[][] NETHERITE_GOLEM_AISLES = {
       {"~P~", "A#A", "~A~"}
@@ -77,7 +77,7 @@ public final class SummonStructureHelper {
   @Nullable
   private static BlockPattern[] sculkBehemothPatterns;
 
-  private SummonStructureHelper() {}
+  private StructureSummon() {}
 
   public static void execBlockTrigger(
       BlockState state,

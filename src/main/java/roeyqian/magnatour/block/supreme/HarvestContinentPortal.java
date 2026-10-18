@@ -42,7 +42,7 @@ import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 // Magnatour
-import roeyqian.magnatour.block.CustomPortalVertex;
+import roeyqian.magnatour.block.MagnaPortalX;
 import roeyqian.magnatour.registry.stuff.MagnaBlocks;
 import roeyqian.magnatour.registry.world.MagnaDimensions;
 
@@ -60,7 +60,7 @@ public class HarvestContinentPortal extends Block {
       Properties settings
   ) {
     super(settings);
-    this.registerDefaultState(this.stateDefinition.any().setValue(CustomPortalVertex.AXIS, Direction.Axis.X));
+    this.registerDefaultState(this.stateDefinition.any().setValue(MagnaPortalX.AXIS, Direction.Axis.X));
   }
 
   public static void registerTickEvent() {
@@ -77,7 +77,7 @@ public class HarvestContinentPortal extends Block {
       @NonNull BlockPos pos,
       @NonNull CollisionContext context
   ) {
-    return CustomPortalVertex.getOutlineShape(state);
+    return MagnaPortalX.getOutlineShape(state);
   }
 
   @Override
@@ -94,7 +94,7 @@ public class HarvestContinentPortal extends Block {
   protected void createBlockStateDefinition(
       StateDefinition.@NonNull Builder<Block, BlockState> builder
   ) {
-    builder.add(CustomPortalVertex.AXIS);
+    builder.add(MagnaPortalX.AXIS);
   }
 
   @Override
@@ -107,7 +107,7 @@ public class HarvestContinentPortal extends Block {
       boolean bl
   ) {
     boolean[] clientFlag = new boolean[]{clientInPortal};
-    CustomPortalVertex.handleEntityCollision(
+    MagnaPortalX.handleEntityCollision(
         world, pos, entity,
         PORTAL_TICKS, IN_PORTAL_THIS_TICK, clientFlag,
         MagnaBlocks.HARVEST_BLOCK, MagnaBlocks.HARVEST_CONTINENT_PORTAL,
@@ -127,7 +127,7 @@ public class HarvestContinentPortal extends Block {
       @NonNull BlockState neighborState,
       @NonNull RandomSource random
   ) {
-    if (CustomPortalVertex.shouldBreakPortal(
+    if (MagnaPortalX.shouldBreakPortal(
         MagnaBlocks.HARVEST_CONTINENT_PORTAL, MagnaBlocks.HARVEST_BLOCK,
         state, neighborState, pos, direction, world
     )) {

@@ -56,7 +56,7 @@ import org.jspecify.annotations.NonNull;
 
 // Magnatour
 import roeyqian.magnatour.Magnatour;
-import roeyqian.magnatour.item.CustomItemSetting;
+import roeyqian.magnatour.item.MagnaItemSettings;
 
 public class StarAtlas extends Item {
 
@@ -65,8 +65,8 @@ public class StarAtlas extends Item {
   public StarAtlas(
       Properties settings
   ) {
-    super(CustomItemSetting.applySupremeDefaults(settings)
-        .component(DataComponents.LORE, CustomItemSetting.supremeLore("star_atlas")));
+    super(MagnaItemSettings.applySupremeDefaults(settings)
+        .component(DataComponents.LORE, MagnaItemSettings.supremeLore("star_atlas")));
   }
 
   /** Use natural colors for specified biomes and stable pseudorandom colors for unspecified ones. */

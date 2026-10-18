@@ -13,7 +13,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 
 // Magnatour
-import roeyqian.magnatour.block.SummonStructureHelper;
+import roeyqian.magnatour.block.StructureSummon;
 
 public final class SummonTriggerMain {
 
@@ -25,7 +25,7 @@ public final class SummonTriggerMain {
       BlockPos pos,
       BlockState oldState
   ) {
-    SummonStructureHelper.execBlockTrigger(state, level, pos, oldState);
+    StructureSummon.execBlockTrigger(state, level, pos, oldState);
   }
 
 }

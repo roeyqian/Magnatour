@@ -32,12 +32,12 @@ import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 // Magnatour
-import roeyqian.magnatour.blockentity.CustomContainer;
+import roeyqian.magnatour.blockentity.MagnaContainer;
 import roeyqian.magnatour.inventory.universe.UniversePoolMenu;
 import roeyqian.magnatour.registry.stuff.MagnaBlockEntities;
 
 public class UniversePoolEntity extends BlockEntity
-    implements MenuProvider, CustomContainer {
+    implements MenuProvider, MagnaContainer {
 
   private final NonNullList<ItemStack> inventory = NonNullList.withSize(7, ItemStack.EMPTY);
 

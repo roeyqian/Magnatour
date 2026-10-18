@@ -69,7 +69,7 @@ import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
 import roeyqian.magnatour.block.universe.UniverseBlock;
 import roeyqian.magnatour.blockentity.universe.UniverseBlockEntity;
 
-public final class VirtualBlockLightManager {
+public final class VirtualBlockLighter {
 
   public static final int LIGHT_LEVEL = 15;
   public static final int MAX_BLOCKS_PER_TICK = 4096;
@@ -95,7 +95,7 @@ public final class VirtualBlockLightManager {
 
   private static final Map<BlockGetter, WorldSources> LIGHT_SOURCES = new WeakHashMap<>();
 
-  private VirtualBlockLightManager() {}
+  private VirtualBlockLighter() {}
 
   public static void beginUniverseBuild(
       Level world,

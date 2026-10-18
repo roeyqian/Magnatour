@@ -19,7 +19,7 @@ import net.minecraft.world.item.ItemStack;
 import org.jspecify.annotations.NonNull;
 
 // Magnatour
-import roeyqian.magnatour.item.CustomItemSetting;
+import roeyqian.magnatour.item.MagnaItemSettings;
 
 public class UniverseStick extends Item {
 
@@ -49,10 +49,10 @@ public class UniverseStick extends Item {
   private static Properties applySettings(
       Properties settings
   ) {
-    return CustomItemSetting.applyUniverseDefaults(settings)
+    return MagnaItemSettings.applyUniverseDefaults(settings)
         .component(
             DataComponents.LORE,
-            CustomItemSetting.universeLore("universe_stick")
+            MagnaItemSettings.universeLore("universe_stick")
         );
   }
 

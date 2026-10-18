@@ -24,9 +24,8 @@ import net.minecraft.world.level.block.Block;
 
 // Magnatour
 import roeyqian.magnatour.Magnatour;
-import roeyqian.magnatour.item.CustomArmorMaterial;
-import roeyqian.magnatour.item.CustomItemSetting;
-import roeyqian.magnatour.item.CustomToolMaterial;
+import roeyqian.magnatour.item.MagnaArmorMaterials;
+import roeyqian.magnatour.item.MagnaItemSettings;
 import roeyqian.magnatour.item.supreme.EmperorArmor;
 import roeyqian.magnatour.item.supreme.EmperorBow;
 import roeyqian.magnatour.item.supreme.MirrorMobile;
@@ -67,65 +66,65 @@ public final class MagnaItems {
   );
   public static final Item EMPEROR_BOW = StuffHelper.registerDurableItem(
       "emperor_bow", EmperorBow::new,
-      CustomItemSetting.applySupremeDefaults(new Item.Properties())
+      MagnaItemSettings.applySupremeDefaults(new Item.Properties())
           .durability(100)
           .enchantable(1)
   );
   public static final Item EMPEROR_AXE_PICKAXE = StuffHelper.registerDurableItem(
       "emperor_axe_pickaxe",
-      Item::new, CustomItemSetting.applySupremeDefaults(new Item.Properties())
-          .axe(CustomToolMaterial.SUPREME_TOOL, 110.0F, -2.5F)
-          .tool(CustomToolMaterial.SUPREME_TOOL, EMPEROR_AXE_PICKAXE_MINEABLE,
+      Item::new, MagnaItemSettings.applySupremeDefaults(new Item.Properties())
+          .axe(MagnaItemSettings.SUPREME_TOOL, 110.0F, -2.5F)
+          .tool(MagnaItemSettings.SUPREME_TOOL, EMPEROR_AXE_PICKAXE_MINEABLE,
               110.0F, -2.5F, 5.0F)
           .durability(100)
   );
   public static final Item EMPEROR_HOE = StuffHelper.registerDurableItem(
       "emperor_hoe",
-      Item::new, CustomItemSetting.applySupremeDefaults(new Item.Properties())
-          .hoe(CustomToolMaterial.SUPREME_TOOL, 10.0F, -1.0F)
+      Item::new, MagnaItemSettings.applySupremeDefaults(new Item.Properties())
+          .hoe(MagnaItemSettings.SUPREME_TOOL, 10.0F, -1.0F)
           .durability(100)
   );
   public static final Item MIRROR_MOBILE = StuffHelper.registerDurableItem(
       "mirror_mobile",
-      MirrorMobile::new, CustomItemSetting.applySupremeDefaults(new Item.Properties())
+      MirrorMobile::new, MagnaItemSettings.applySupremeDefaults(new Item.Properties())
   );
   public static final Item EMPEROR_SHOVEL = StuffHelper.registerDurableItem(
       "emperor_shovel",
-      Item::new, CustomItemSetting.applySupremeDefaults(new Item.Properties())
-          .shovel(CustomToolMaterial.SUPREME_TOOL, 10.0F, -1.0F)
+      Item::new, MagnaItemSettings.applySupremeDefaults(new Item.Properties())
+          .shovel(MagnaItemSettings.SUPREME_TOOL, 10.0F, -1.0F)
           .durability(100)
   );
   public static final Item EMPEROR_SWORD = StuffHelper.registerDurableItem(
       "emperor_sword", Item::new,
-      CustomItemSetting.applySupremeDefaults(new Item.Properties())
-          .sword(CustomToolMaterial.SUPREME_TOOL, 100.0F, 1.0F)
+      MagnaItemSettings.applySupremeDefaults(new Item.Properties())
+          .sword(MagnaItemSettings.SUPREME_TOOL, 100.0F, 1.0F)
           .durability(100)
   );
 
   // Armor
   public static final Item EMPEROR_BOOTS = StuffHelper.registerDurableItem(
       "emperor_boots", settings -> new EmperorArmor(settings, 1, 25),
-      CustomItemSetting.applySupremeDefaults(new Item.Properties())
-          .humanoidArmor(CustomArmorMaterial.SUPREME_BOOTS_ARMOR, ArmorType.BOOTS)
+      MagnaItemSettings.applySupremeDefaults(new Item.Properties())
+          .humanoidArmor(MagnaArmorMaterials.SUPREME_BOOTS_ARMOR, ArmorType.BOOTS)
           .durability(100)
   );
   public static final Item EMPEROR_CHESTPLATE = StuffHelper.registerDurableItem(
       "emperor_chestplate", settings -> new EmperorArmor(settings, 4, 40),
-      CustomItemSetting.applySupremeDefaults(new Item.Properties())
-          .humanoidArmor(CustomArmorMaterial.SUPREME_CHESTPLATE_ARMOR, ArmorType.CHESTPLATE)
+      MagnaItemSettings.applySupremeDefaults(new Item.Properties())
+          .humanoidArmor(MagnaArmorMaterials.SUPREME_CHESTPLATE_ARMOR, ArmorType.CHESTPLATE)
           .component(DataComponents.GLIDER, Unit.INSTANCE)
           .durability(100)
   );
   public static final Item EMPEROR_HELMET = StuffHelper.registerDurableItem(
       "emperor_helmet", settings -> new EmperorArmor(settings, 2, 30),
-      CustomItemSetting.applySupremeDefaults(new Item.Properties())
-          .humanoidArmor(CustomArmorMaterial.SUPREME_HELMET_ARMOR, ArmorType.HELMET)
+      MagnaItemSettings.applySupremeDefaults(new Item.Properties())
+          .humanoidArmor(MagnaArmorMaterials.SUPREME_HELMET_ARMOR, ArmorType.HELMET)
           .durability(100)
   );
   public static final Item EMPEROR_LEGGINGS = StuffHelper.registerDurableItem(
       "emperor_leggings", settings -> new EmperorArmor(settings, 3, 35),
-      CustomItemSetting.applySupremeDefaults(new Item.Properties())
-          .humanoidArmor(CustomArmorMaterial.SUPREME_LEGGINGS_ARMOR, ArmorType.LEGGINGS)
+      MagnaItemSettings.applySupremeDefaults(new Item.Properties())
+          .humanoidArmor(MagnaArmorMaterials.SUPREME_LEGGINGS_ARMOR, ArmorType.LEGGINGS)
           .durability(100)
   );
 
@@ -144,7 +143,7 @@ public final class MagnaItems {
   );
   public static final Item STRANGE_MATTER = StuffHelper.registerConsumableItem(
       "strange_matter", 64, Item::new,
-      CustomItemSetting.applySupremeDefaults(new Item.Properties())
+      MagnaItemSettings.applySupremeDefaults(new Item.Properties())
   );
   public static final Item SUPREME_CORE = StuffHelper.registerConsumableItem(
       "supreme_core", 64, Item::new,
@@ -230,7 +229,7 @@ public final class MagnaItems {
   // Universe Group
   public static final Item UNIVERSE_ANNIHILATOR_SPAWN_EGG = StuffHelper.registerConsumableItem(
       "universe_annihilator_spawn_egg", 64, SpawnEggItem::new,
-      CustomItemSetting.applyUniverseDefaults(
+      MagnaItemSettings.applyUniverseDefaults(
           new Item.Properties().spawnEgg(MagnaEntities.UNIVERSE_ANNIHILATOR)));
 
   // Handheld
@@ -245,10 +244,10 @@ public final class MagnaItems {
   public static final Item UNIVERSE_OMNI_BLADE = StuffHelper.registerDurableItem(
       "universe_omni_blade",
       UniverseOmniBlade::new, new Item.Properties()
-          .sword(CustomToolMaterial.UNIVERSE_TOOL, 0, 0)
-          .axe(CustomToolMaterial.UNIVERSE_TOOL, 0, 0)
-          .pickaxe(CustomToolMaterial.UNIVERSE_TOOL, 0, 0)
-          .shovel(CustomToolMaterial.UNIVERSE_TOOL, 0, 0)
+          .sword(MagnaItemSettings.UNIVERSE_TOOL, 0, 0)
+          .axe(MagnaItemSettings.UNIVERSE_TOOL, 0, 0)
+          .pickaxe(MagnaItemSettings.UNIVERSE_TOOL, 0, 0)
+          .shovel(MagnaItemSettings.UNIVERSE_TOOL, 0, 0)
   );
   public static final Item UNIVERSE_STICK = StuffHelper.registerDurableItem(
       "universe_stick",
@@ -257,32 +256,32 @@ public final class MagnaItems {
   public static final Item UNIVERSE_ULTIMA_SWORD = StuffHelper.registerDurableItem(
       "universe_ultima_sword",
       UniverseUltimaSword::new, new Item.Properties()
-          .sword(CustomToolMaterial.UNIVERSE_TOOL, 0, 0)
-          .axe(CustomToolMaterial.UNIVERSE_TOOL, 0, 0)
-          .pickaxe(CustomToolMaterial.UNIVERSE_TOOL, 0, 0)
-          .shovel(CustomToolMaterial.UNIVERSE_TOOL, 0, 0)
+          .sword(MagnaItemSettings.UNIVERSE_TOOL, 0, 0)
+          .axe(MagnaItemSettings.UNIVERSE_TOOL, 0, 0)
+          .pickaxe(MagnaItemSettings.UNIVERSE_TOOL, 0, 0)
+          .shovel(MagnaItemSettings.UNIVERSE_TOOL, 0, 0)
   );
 
   // Armor
   public static final Item UNIVERSE_VOID_BOOTS = StuffHelper.registerDurableItem(
       "universe_void_boots",
       UniverseVoidBoots::new, new Item.Properties()
-          .humanoidArmor(CustomArmorMaterial.UNIVERSE_VOID_ARMOR, ArmorType.BOOTS)
+          .humanoidArmor(MagnaArmorMaterials.UNIVERSE_VOID_ARMOR, ArmorType.BOOTS)
   );
   public static final Item UNIVERSE_VOID_CHESTPLATE = StuffHelper.registerDurableItem(
       "universe_void_chestplate",
       UniverseVoidChestplate::new, new Item.Properties()
-          .humanoidArmor(CustomArmorMaterial.UNIVERSE_VOID_ARMOR, ArmorType.CHESTPLATE)
+          .humanoidArmor(MagnaArmorMaterials.UNIVERSE_VOID_ARMOR, ArmorType.CHESTPLATE)
   );
   public static final Item UNIVERSE_VOID_HELMET = StuffHelper.registerDurableItem(
       "universe_void_helmet",
       UniverseVoidHelmet::new, new Item.Properties()
-          .humanoidArmor(CustomArmorMaterial.UNIVERSE_VOID_ARMOR, ArmorType.HELMET)
+          .humanoidArmor(MagnaArmorMaterials.UNIVERSE_VOID_ARMOR, ArmorType.HELMET)
   );
   public static final Item UNIVERSE_VOID_LEGGINGS = StuffHelper.registerDurableItem(
       "universe_void_leggings",
       UniverseVoidLeggings::new, new Item.Properties()
-          .humanoidArmor(CustomArmorMaterial.UNIVERSE_VOID_ARMOR, ArmorType.LEGGINGS)
+          .humanoidArmor(MagnaArmorMaterials.UNIVERSE_VOID_ARMOR, ArmorType.LEGGINGS)
   );
 
   // Material
@@ -346,7 +345,7 @@ public final class MagnaItems {
   // Spawn Egg
   public static final Item UNIVERSE_GUARDIAN_SPAWN_EGG = StuffHelper.registerConsumableItem(
       "universe_guardian_spawn_egg", 64, SpawnEggItem::new,
-      CustomItemSetting.applyUniverseDefaults(
+      MagnaItemSettings.applyUniverseDefaults(
           new Item.Properties().spawnEgg(MagnaEntities.UNIVERSE_GUARDIAN)
       )
   );
@@ -366,7 +365,7 @@ public final class MagnaItems {
     StuffHelper.registerFuel(universeFuelTime, UNIVERSE_GEMWHITE);
     StuffHelper.registerFuel(universeFuelTime, UNIVERSE_CORE);
 
-    Magnatour.LOGGER.info("[Server] Initializing 'MagnaItems'");
+    Magnatour.LOGGER.info("[Server] Initializing 'MagnaItemSettings'");
   }
 
 }

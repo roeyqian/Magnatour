@@ -25,7 +25,7 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 
 // Magnatour
-import roeyqian.magnatour.block.VirtualBlockLightManager;
+import roeyqian.magnatour.block.VirtualBlockLighter;
 import roeyqian.magnatour.registry.input.RegKeyBindings;
 import roeyqian.magnatour.registry.output.RegBlockLayers;
 import roeyqian.magnatour.registry.output.RegEntityLayers;
@@ -39,16 +39,16 @@ public class MagnatourClient implements ClientModInitializer {
 
   @Override
   public void onInitializeClient() {
-    ClientPlayNetworking.registerGlobalReceiver(VirtualBlockLightManager.UniverseLightPayload.ID, (payload, context) -> {
-      if (context.client().level != null) VirtualBlockLightManager.receiveUniverseState(context.client().level, payload);
+    ClientPlayNetworking.registerGlobalReceiver(VirtualBlockLighter.UniverseLightPayload.ID, (payload, context) -> {
+      if (context.client().level != null) VirtualBlockLighter.receiveUniverseState(context.client().level, payload);
     });
     ClientTickEvents.END_CLIENT_TICK.register(client -> {
       if (client.level != null) {
-        VirtualBlockLightManager.tick(client.level);
+        VirtualBlockLighter.tick(client.level);
       }
     });
-    ClientChunkEvents.CHUNK_LOAD.register((world, chunk) -> VirtualBlockLightManager.onChunkLoad(world, chunk.getPos()));
-    ClientChunkEvents.CHUNK_UNLOAD.register((world, chunk) -> VirtualBlockLightManager.onChunkUnload(world, chunk.getPos()));
+    ClientChunkEvents.CHUNK_LOAD.register((world, chunk) -> VirtualBlockLighter.onChunkLoad(world, chunk.getPos()));
+    ClientChunkEvents.CHUNK_UNLOAD.register((world, chunk) -> VirtualBlockLighter.onChunkUnload(world, chunk.getPos()));
     RegScreens.init();
     StarAtlasScreen.initClient();
     RegParticles.init();

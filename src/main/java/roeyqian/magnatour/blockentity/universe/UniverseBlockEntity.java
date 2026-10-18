@@ -14,7 +14,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
 // Magnatour
-import roeyqian.magnatour.block.VirtualBlockLightManager;
+import roeyqian.magnatour.block.VirtualBlockLighter;
 import roeyqian.magnatour.block.universe.UniverseBlock;
 import roeyqian.magnatour.registry.stuff.MagnaBlockEntities;
 
@@ -46,7 +46,7 @@ public class UniverseBlockEntity extends BlockEntity {
     if (this.registered == registered || this.level == null) return;
 
     this.registered = registered;
-    VirtualBlockLightManager.setActive(this.level, this.worldPosition, registered);
+    VirtualBlockLighter.setActive(this.level, this.worldPosition, registered);
   }
 
   @Override
