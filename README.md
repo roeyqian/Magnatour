@@ -42,12 +42,9 @@
     - 目前包含 `丰收大陆`、`矿石大陆` 与 `寰宇元` 三个主要维度。
     - `丰收大陆` 侧重特色地貌与群系，例如小麦平原、西瓜丛林、南瓜峡谷、大湖、湖心岛。
     - `矿石大陆` 侧重矿物资源堆叠与高密度采集。
-    - `寰宇元界` 是虚空中的寰宇维度：首次生成时会在原点创建一个 64×64×64 的实体立方体，主体使用死亡方块，并以重生方块加固边缘；生成状态会随存档持久保存。
-- 传送门与跨维
-    - `寰宇元界` 传送门采用末地传送门式的 5×5 水平结构：点亮 12 个非角落的寰宇方块后，中心会生成 3×3 传送门。
-    - 该传送门可在主世界与 `寰宇元界` 间往返；生存模式需在门内停留 80 游戏刻，创造模式可立即传送。传送门会记录配对的落点，并在需要时安全生成返回门。
+    - `寰宇元界` 是虚空中的寰宇维度。
 - 结构与探索
-    - 目前代表性结构包括 `黄金钟楼` 与 `钻石城`。
+    - 目前代表性结构包括 `黄金钟楼`、`钻石城` 与 `财富镇`。
 - 生物与战斗
     - 当前已有头目、敌对、友好等多类生物，例如 `幽匿巨兽`、`苍白领主`、`守钟人`、`黑曜石傀儡`、`下界合金傀儡`、`寰宇守卫`。
 - 玩法风格
@@ -89,12 +86,9 @@ The mod's progression is divided into three main stages:
     - The main dimensions are currently `Harvest Continent`, `Ore Continent`, and `Universe Meta`.
     - `Harvest Continent` focuses on themed terrain and biomes such as Wheat Plains, Watermelon Jungle, Pumpkin Canyon, Great Lake, and Lake Isle.
     - `Ore Continent` focuses on concentrated mineral generation and high-density resource collection.
-    - `Universe Meta` is a void-based Universe dimension. On its first generation, a solid 64×64×64 cube is created at the origin, primarily from Death Blocks with edges reinforced by Rebirth Blocks; its generation state is saved with the world.
-- Portals and cross-dimensional travel
-    - The `Universe Meta` portal uses a 5×5 horizontal, End-Portal-style structure: light all 12 non-corner Universe Blocks to create the 3×3 portal center.
-    - It supports travel between the Overworld and `Universe Meta`. Survival players must remain in the portal for 80 game ticks, while Creative players teleport instantly. Portals remember paired destinations and safely create a return portal when needed.
+    - `Universe Meta` is a void-based Universe dimension.
 - Structures and exploration
-    - Major structures currently include `Golden Clock Tower` and `Diamond City`.
+    - Major structures currently include `Golden Clock Tower`, `Diamond City`, and `Wealth Town`.
 - Creatures and combat
     - The mod already includes bosses, enemies, and friendly units such as `Sculk Behemoth`, `Pale Lord`, `Bell Keeper`, `Obsidian Golem`, `Netherite Golem`, and `Universe Guardian`.
 - Gameplay style
@@ -136,12 +130,9 @@ For full documentation about blocks, items, dimensions, creatures, recipes, cont
     - 主なディメンションは `豊穣大陸`、`鉱石大陸`、`寰宇元` です。
     - `豊穣大陸` には、`小麦平原`、`メロンの密林`、`カボチャ峡谷`、`大湖`、`湖心島` などの特徴的なバイオームがあります。
     - `鉱石大陸` は鉱石資源の集中生成と大量採掘に重点が置かれています。
-    - `寰宇元` は虚無に存在する寰宇ディメンションです。初回生成時、原点に死のブロックを主体とし、再生のブロックで縁を補強した 64×64×64 の中実キューブが生成され、その生成状態はワールドに保存されます。
-- ポータルと次元間移動
-    - `寰宇元` ポータルは、エンドポータル式の 5×5 水平構造です。角以外の 12 個の `寰宇のブロック` を点灯すると、中央に 3×3 のポータルが生成されます。
-    - このポータルでオーバーワールドと `寰宇元` を往復できます。サバイバルでは 80 ゲームティックの滞在が必要ですが、クリエイティブでは即座に転送されます。ポータルは接続先を記録し、必要に応じて安全な帰還用ポータルを生成します。
+    - `寰宇元` は虚無に存在する寰宇ディメンションです。
 - 構造物と探索
-    - 代表的な構造物は `黄金の時計塔` と `ダイヤモンドの都` です。
+    - 代表的な構造物は `黄金の時計塔`、`ダイヤモンドの都`、`富の町` です。
 - 生物と戦闘
     - `スカルクの巨獣`、`ペイルロード`、`鐘守`、`黒曜石のゴーレム`、`ネザライトのゴーレム`、`寰宇の守護者` など、ボス、敵対、友好の各種生物が実装されています。
 - ゲームプレイの方向性
@@ -183,12 +174,9 @@ La progresión del mod se divide en tres etapas principales:
     - Las dimensiones principales son `Harvest Continent`, `Ore Continent` y `Universe Meta`.
     - `Harvest Continent` incluye biomas característicos como Wheat Plains, Watermelon Jungle, Pumpkin Canyon, Great Lake y Lake Isle.
     - `Ore Continent` se centra en la generación concentrada de minerales y la recolección masiva de recursos.
-    - `Universe Meta` es una dimensión Universe situada en el vacío. Durante su primera generación, se crea en el origen un cubo macizo de 64×64×64, compuesto principalmente de bloques de muerte y con bordes reforzados de bloques de renacimiento; su estado de generación se guarda con el mundo.
-- Portales y viaje entre dimensiones
-    - El portal de `Universe Meta` usa una estructura horizontal de 5×5 al estilo del portal del End: activa los 12 Universe Blocks que no están en las esquinas para crear el centro de portal de 3×3.
-    - Permite viajar entre el Overworld y `Universe Meta`. En Supervivencia debes permanecer en el portal 80 ticks de juego; en Creativo el teletransporte es inmediato. Los portales recuerdan los destinos vinculados y crean de forma segura un portal de regreso cuando hace falta.
+    - `Universe Meta` es una dimensión Universe situada en el vacío.
 - Estructuras y exploración
-    - Las estructuras más representativas incluyen `Golden Clock Tower` y `Diamond City`.
+    - Las estructuras más representativas incluyen `Golden Clock Tower`, `Diamond City` y `Wealth Town`.
 - Criaturas y combate
     - Ya existen jefes, enemigos y aliados como `Sculk Behemoth`, `Pale Lord`, `Bell Keeper`, `Obsidian Golem`, `Netherite Golem` y `Universe Guardian`.
 - Estilo de juego
