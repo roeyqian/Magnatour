@@ -5,7 +5,7 @@
  * This file is part of Magnatour.
  * Full license text available in the LICENSE file in the project root.
  */
-package roeyqian.magnatour.level.network;
+package roeyqian.magnatour.blockentity.universe;
 
 // Minecraft
 import net.minecraft.core.BlockPos;
@@ -20,7 +20,6 @@ import org.jspecify.annotations.NonNull;
 
 // Magnatour
 import roeyqian.magnatour.Magnatour;
-import roeyqian.magnatour.blockentity.universe.UniverseDotEntity;
 
 public record UniverseDotPayload(
     Action action,

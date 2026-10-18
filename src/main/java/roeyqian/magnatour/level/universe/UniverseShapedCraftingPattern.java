@@ -5,7 +5,7 @@
  * This file is part of Magnatour.
  * Full license text available in the LICENSE file in the project root.
  */
-package roeyqian.magnatour.level.recipe;
+package roeyqian.magnatour.level.universe;
 
 // Java Standard
 import java.util.ArrayList;
@@ -29,17 +29,17 @@ import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.Ingredient;
 
 /** A shaped recipe pattern sized for the Universe Forge's 5x5 grid. */
-public final class UniverseCraftingPattern {
+public final class UniverseShapedCraftingPattern {
 
-  public static final StreamCodec<RegistryFriendlyByteBuf, UniverseCraftingPattern> STREAM_CODEC =
+  public static final StreamCodec<RegistryFriendlyByteBuf, UniverseShapedCraftingPattern> STREAM_CODEC =
       StreamCodec.composite(
           ByteBufCodecs.VAR_INT,
-          UniverseCraftingPattern::width,
+          UniverseShapedCraftingPattern::width,
           ByteBufCodecs.VAR_INT,
-          UniverseCraftingPattern::height,
+          UniverseShapedCraftingPattern::height,
           Ingredient.OPTIONAL_CONTENTS_STREAM_CODEC.apply(ByteBufCodecs.list(25)),
-          UniverseCraftingPattern::ingredients,
-          UniverseCraftingPattern::new
+          UniverseShapedCraftingPattern::ingredients,
+          UniverseShapedCraftingPattern::new
       );
 
   private static final Codec<Character> SYMBOL_CODEC = Codec.STRING.comapFlatMap(
@@ -60,8 +60,8 @@ public final class UniverseCraftingPattern {
       ).apply(instance, Data::new)
   );
 
-  public static final MapCodec<UniverseCraftingPattern> MAP_CODEC = DATA_CODEC.flatXmap(
-      UniverseCraftingPattern::decode,
+  public static final MapCodec<UniverseShapedCraftingPattern> MAP_CODEC = DATA_CODEC.flatXmap(
+      UniverseShapedCraftingPattern::decode,
       pattern -> DataResult.success(pattern.data)
   );
 
@@ -72,7 +72,7 @@ public final class UniverseCraftingPattern {
 
   private Data data;
 
-  private UniverseCraftingPattern(
+  private UniverseShapedCraftingPattern(
       int width, int height,
       List<Optional<Ingredient>> ingredients
   ) {
@@ -86,7 +86,7 @@ public final class UniverseCraftingPattern {
     this.data = null;
   }
 
-  private UniverseCraftingPattern(
+  private UniverseShapedCraftingPattern(
       int width, int height,
       List<Optional<Ingredient>> ingredients,
       Data data
@@ -153,7 +153,7 @@ public final class UniverseCraftingPattern {
     return trimmed;
   }
 
-  private static DataResult<UniverseCraftingPattern> decode(
+  private static DataResult<UniverseShapedCraftingPattern> decode(
       Data data
   ) {
     if (data.pattern().isEmpty() || data.pattern().size() > 5) {
@@ -204,7 +204,7 @@ public final class UniverseCraftingPattern {
       }
     }
 
-    return DataResult.success(new UniverseCraftingPattern(width, height, ingredients, data));
+    return DataResult.success(new UniverseShapedCraftingPattern(width, height, ingredients, data));
   }
 
   private boolean matchesAt(

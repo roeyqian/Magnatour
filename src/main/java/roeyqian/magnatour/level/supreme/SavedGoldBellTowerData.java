@@ -5,7 +5,7 @@
  * This file is part of Magnatour.
  * Full license text available in the LICENSE file in the project root.
  */
-package roeyqian.magnatour.level.data;
+package roeyqian.magnatour.level.supreme;
 
 // Java Standard
 import java.util.HashSet;
@@ -26,30 +26,30 @@ import net.minecraft.world.level.saveddata.SavedDataType;
 import roeyqian.magnatour.Magnatour;
 
 /** Disabled tower instances, keyed by their start chunk and persisted per dimension. */
-public class GoldBellTowerSpawnSavedData extends SavedData {
+public class SavedGoldBellTowerData extends SavedData {
 
-  private static final Codec<GoldBellTowerSpawnSavedData> CODEC = Codec.LONG.listOf()
+  private static final Codec<SavedGoldBellTowerData> CODEC = Codec.LONG.listOf()
       .fieldOf("disabled_structures").codec()
-      .xmap(GoldBellTowerSpawnSavedData::new, data -> List.copyOf(data.disabledStructures));
+      .xmap(SavedGoldBellTowerData::new, data -> List.copyOf(data.disabledStructures));
 
-  private static final SavedDataType<GoldBellTowerSpawnSavedData> TYPE = new SavedDataType<>(
+  private static final SavedDataType<SavedGoldBellTowerData> TYPE = new SavedDataType<>(
       Identifier.fromNamespaceAndPath(Magnatour.MOD_ID, "gold_bell_tower_spawning"),
-      GoldBellTowerSpawnSavedData::new,
+      SavedGoldBellTowerData::new,
       CODEC,
       DataFixTypes.LEVEL
   );
 
   private final Set<Long> disabledStructures = new HashSet<>();
 
-  public GoldBellTowerSpawnSavedData() {}
+  public SavedGoldBellTowerData() {}
 
-  private GoldBellTowerSpawnSavedData(
+  private SavedGoldBellTowerData(
       List<Long> disabledStructures
   ) {
     this.disabledStructures.addAll(disabledStructures);
   }
 
-  public static GoldBellTowerSpawnSavedData get(
+  public static SavedGoldBellTowerData get(
       ServerLevel level
   ) {
     return level.getDataStorage().computeIfAbsent(TYPE);

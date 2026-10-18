@@ -15,7 +15,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 
 // Magnatour
-import roeyqian.magnatour.level.data.UniverseMetaGenerationSavedData;
+import roeyqian.magnatour.level.universe.SavedUniverseMetaData;
 import roeyqian.magnatour.registry.stuff.MagnaBlocks;
 import roeyqian.magnatour.registry.world.MagnaDimensions;
 
@@ -33,7 +33,7 @@ public final class UniverseMetaDimensionGenerator {
   public static void register() {
     ServerTickEvents.END_SERVER_TICK.register(server -> {
       ServerLevel world = server.getLevel(MagnaDimensions.UNIVERSE_META);
-      UniverseMetaGenerationSavedData generationData = UniverseMetaGenerationSavedData.get(server);
+      SavedUniverseMetaData generationData = SavedUniverseMetaData.get(server);
       if (world != null && !generationData.isGenerated()) {
         int startIndex = generationData.nextBlockIndex();
         int endIndex = Math.min(startIndex + BLOCKS_PER_TICK, TOTAL_BLOCKS);

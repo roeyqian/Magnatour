@@ -32,7 +32,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 // Magnatour
 import roeyqian.magnatour.block.MagnaPortalX;
-import roeyqian.magnatour.level.data.PortalLinkSavedData;
+import roeyqian.magnatour.level.CommonPortalData;
 import roeyqian.magnatour.registry.world.MagnaDimensions;
 
 /** Universe portal ignition, destination lookup and persistent Nether portal links. */
@@ -77,9 +77,9 @@ public final class UniversePortalMain {
   ) {
     if (!isUniverseMetaOrNether(sourceLevel.dimension())) return;
 
-    PortalLinkSavedData linkData = PortalLinkSavedData.get(sourceLevel.getServer());
-    PortalLinkSavedData.Endpoint source = endpointAt(sourceLevel, portalPos);
-    Optional<PortalLinkSavedData.Endpoint> linked = linkData.getDestination(source);
+    CommonPortalData linkData = CommonPortalData.get(sourceLevel.getServer());
+    CommonPortalData.Endpoint source = endpointAt(sourceLevel, portalPos);
+    Optional<CommonPortalData.Endpoint> linked = linkData.getDestination(source);
     if (linked.isEmpty() || !isUniverseMetaNetherPair(source.dimension(), linked.get().dimension())) return;
 
     ServerLevel destinationLevel = sourceLevel.getServer().getLevel(linked.get().dimension());
@@ -113,12 +113,12 @@ public final class UniversePortalMain {
       return;
     }
 
-    PortalLinkSavedData.Endpoint source = endpointAt(sourceLevel, sourcePortalPos);
-    PortalLinkSavedData.Endpoint destination = endpointAt(
+    CommonPortalData.Endpoint source = endpointAt(sourceLevel, sourcePortalPos);
+    CommonPortalData.Endpoint destination = endpointAt(
         transition.newLevel(),
         BlockPos.containing(transition.position())
     );
-    PortalLinkSavedData.get(sourceLevel.getServer()).link(source, destination);
+    CommonPortalData.get(sourceLevel.getServer()).link(source, destination);
   }
 
   private static BlockPos findPortalOrigin(
@@ -212,11 +212,11 @@ public final class UniversePortalMain {
     return MagnaDimensions.UNIVERSE_META.equals(dimension) || Level.NETHER.equals(dimension);
   }
 
-  private static PortalLinkSavedData.Endpoint endpointAt(
+  private static CommonPortalData.Endpoint endpointAt(
       ServerLevel level,
       BlockPos portalPos
   ) {
-    return new PortalLinkSavedData.Endpoint(level.dimension(), findPortalOrigin(level, portalPos));
+    return new CommonPortalData.Endpoint(level.dimension(), findPortalOrigin(level, portalPos));
   }
 
   private static boolean isUniverseMetaNetherPair(

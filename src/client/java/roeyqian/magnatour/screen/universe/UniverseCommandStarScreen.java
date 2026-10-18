@@ -36,7 +36,7 @@ import org.jspecify.annotations.NonNull;
 import roeyqian.magnatour.Magnatour;
 import roeyqian.magnatour.inventory.universe.UniverseCommandStarMenu;
 import roeyqian.magnatour.item.universe.UniverseCommandStar;
-import roeyqian.magnatour.level.network.UniverseCommandStarBoundBlockPayload;
+import roeyqian.magnatour.item.universe.UniverseCommandStarPayload;
 
 public class UniverseCommandStarScreen extends AbstractContainerScreen<UniverseCommandStarMenu> {
 
@@ -417,8 +417,8 @@ public class UniverseCommandStarScreen extends AbstractContainerScreen<UniverseC
       UniverseCommandStar.BoundBlocks block,
       int index
   ) {
-    ClientPlayNetworking.send(new UniverseCommandStarBoundBlockPayload(
-        UniverseCommandStarBoundBlockPayload.Action.REMOVE, block.pos(), block.dimension()
+    ClientPlayNetworking.send(new UniverseCommandStarPayload(
+        UniverseCommandStarPayload.Action.REMOVE, block.pos(), block.dimension()
     ));
 
     boundBlocks.remove(index);
@@ -435,8 +435,8 @@ public class UniverseCommandStarScreen extends AbstractContainerScreen<UniverseC
   private void openBoundBlock(
       UniverseCommandStar.BoundBlocks block
   ) {
-    ClientPlayNetworking.send(new UniverseCommandStarBoundBlockPayload(
-        UniverseCommandStarBoundBlockPayload.Action.OPEN, block.pos(), block.dimension()
+    ClientPlayNetworking.send(new UniverseCommandStarPayload(
+        UniverseCommandStarPayload.Action.OPEN, block.pos(), block.dimension()
     ));
   }
 

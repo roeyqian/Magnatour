@@ -5,7 +5,7 @@
  * This file is part of Magnatour.
  * Full license text available in the LICENSE file in the project root.
  */
-package roeyqian.magnatour.level.recipe;
+package roeyqian.magnatour.level.supreme;
 
 // Java Standard
 import java.util.List;
@@ -17,7 +17,6 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 // Minecraft
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
@@ -30,7 +29,7 @@ import net.minecraft.world.item.crafting.RecipeBookCategory;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.display.RecipeDisplay;
-import net.minecraft.world.item.crafting.display.ShapelessCraftingRecipeDisplay;
+import net.minecraft.world.item.crafting.display.ShapedCraftingRecipeDisplay;
 import net.minecraft.world.item.crafting.display.SlotDisplay;
 import net.minecraft.world.level.Level;
 
@@ -38,12 +37,13 @@ import net.minecraft.world.level.Level;
 import org.jspecify.annotations.NonNull;
 
 // Magnatour
+import roeyqian.magnatour.level.CommonCraftingHelper;
 import roeyqian.magnatour.registry.logic.MagnaRecipes;
 import roeyqian.magnatour.registry.stuff.MagnaBlocks;
 
-public class SupremeShapelessCraftingRecipe implements CraftingRecipe {
+public class SupremeShapedCraftingRecipe implements CraftingRecipe {
 
-  public static final MapCodec<SupremeShapelessCraftingRecipe> CODEC = RecordCodecBuilder.mapCodec(
+  public static final MapCodec<SupremeShapedCraftingRecipe> CODEC = RecordCodecBuilder.mapCodec(
       instance -> instance.group(
           Codec.STRING
               .optionalFieldOf("group", "")
@@ -54,9 +54,8 @@ public class SupremeShapelessCraftingRecipe implements CraftingRecipe {
               .orElse(CraftingBookCategory.MISC)
               .forGetter(recipe -> recipe.recipeCategory),
 
-          Ingredient.CODEC.listOf(1, 16)
-              .fieldOf("ingredients")
-              .forGetter(recipe -> recipe.ingredients),
+          SupremeShapedCraftingPattern.MAP_CODEC
+              .forGetter(recipe -> recipe.rawContents),
 
           ItemStackTemplate.CODEC
               .fieldOf("result")
@@ -65,39 +64,35 @@ public class SupremeShapelessCraftingRecipe implements CraftingRecipe {
           Codec.BOOL
               .optionalFieldOf("show_notification", true)
               .forGetter(recipe -> recipe.notification)
-      ).apply(instance, SupremeShapelessCraftingRecipe::new)
+      ).apply(instance, SupremeShapedCraftingRecipe::new)
   );
 
-  public static final StreamCodec<RegistryFriendlyByteBuf, SupremeShapelessCraftingRecipe> PACKET_CODEC =
-      StreamCodec.of(SupremeShapelessCraftingRecipe::write, SupremeShapelessCraftingRecipe::read);
+  public static final StreamCodec<RegistryFriendlyByteBuf, SupremeShapedCraftingRecipe> PACKET_CODEC =
+      StreamCodec.of(SupremeShapedCraftingRecipe::write, SupremeShapedCraftingRecipe::read);
 
-  public static final RecipeSerializer<SupremeShapelessCraftingRecipe> SERIALIZER =
+  public static final RecipeSerializer<SupremeShapedCraftingRecipe> SERIALIZER =
       new RecipeSerializer<>(CODEC, PACKET_CODEC);
 
   final boolean notification;
 
   final String recipeGroup;
 
+  final SupremeShapedCraftingPattern rawContents;
+
   final ItemStackTemplate resultStack;
 
   final CraftingBookCategory recipeCategory;
 
-  final List<Ingredient> ingredients;
-
-  public SupremeShapelessCraftingRecipe(
+  public SupremeShapedCraftingRecipe(
       String group,
       CraftingBookCategory category,
-      List<Ingredient> ingredients,
+      SupremeShapedCraftingPattern raw,
       ItemStackTemplate result,
       boolean showNotification
   ) {
-    if (ingredients.isEmpty() || ingredients.size() > 16) {
-      throw new IllegalArgumentException("Supreme shapeless recipes require between 1 and 16 ingredients");
-    }
-
     this.recipeGroup = group;
     this.recipeCategory = category;
-    this.ingredients = List.copyOf(ingredients);
+    this.rawContents = raw;
     this.resultStack = result;
     this.notification = showNotification;
   }
@@ -106,7 +101,7 @@ public class SupremeShapelessCraftingRecipe implements CraftingRecipe {
   public ItemStack assemble(
       @NonNull CraftingInput input
   ) {
-    return CraftingResultHelper.createResultStack(this.resultStack, input);
+    return CommonCraftingHelper.createResultStack(this.resultStack, input);
   }
 
   @Override @NonNull
@@ -116,8 +111,11 @@ public class SupremeShapelessCraftingRecipe implements CraftingRecipe {
 
   @Override @NonNull
   public List<RecipeDisplay> display() {
-    List<SlotDisplay> ingredientDisplays = this.ingredients.stream()
-        .map(Ingredient::display)
+    List<SlotDisplay> ingredientDisplays = this.rawContents.ingredients().stream()
+        .map((ingredient) -> ingredient
+            .map(Ingredient::display)
+            .orElse(SlotDisplay.Empty.INSTANCE)
+        )
         .toList();
 
     SlotDisplay resultDisplay = new SlotDisplay.ItemStackSlotDisplay(this.resultStack);
@@ -126,7 +124,9 @@ public class SupremeShapelessCraftingRecipe implements CraftingRecipe {
     );
 
     return List.of(
-        new ShapelessCraftingRecipeDisplay(
+        new ShapedCraftingRecipeDisplay(
+            getWidth(),
+            getHeight(),
             ingredientDisplays,
             resultDisplay,
             craftingStationDisplay
@@ -138,14 +138,22 @@ public class SupremeShapelessCraftingRecipe implements CraftingRecipe {
     return this.resultStack.count();
   }
 
+  public int getHeight() {
+    return this.rawContents.height();
+  }
+
   @Override @NonNull
-  public RecipeSerializer<SupremeShapelessCraftingRecipe> getSerializer() {
+  public RecipeSerializer<SupremeShapedCraftingRecipe> getSerializer() {
     return SERIALIZER;
   }
 
   @Override @NonNull
   public RecipeType<CraftingRecipe> getType() {
     return MagnaRecipes.SUPREME_CRAFTING_TYPE;
+  }
+
+  public int getWidth() {
+    return this.rawContents.width();
   }
 
   @Override @NonNull
@@ -158,13 +166,12 @@ public class SupremeShapelessCraftingRecipe implements CraftingRecipe {
       @NonNull CraftingInput input,
       @NonNull Level world
   ) {
-    return input.ingredientCount() == this.ingredients.size()
-        && input.stackedContents().canCraft(this, null);
+    return this.rawContents.matches(input);
   }
 
   @Override @NonNull
   public PlacementInfo placementInfo() {
-    return PlacementInfo.create(this.ingredients);
+    return PlacementInfo.createFromOptionals(this.rawContents.ingredients());
   }
 
   @Override @NonNull
@@ -177,29 +184,25 @@ public class SupremeShapelessCraftingRecipe implements CraftingRecipe {
     return this.notification;
   }
 
-  private static SupremeShapelessCraftingRecipe read(
+  private static SupremeShapedCraftingRecipe read(
       RegistryFriendlyByteBuf buf
   ) {
     String group = buf.readUtf();
     CraftingBookCategory category = CraftingBookCategory.STREAM_CODEC.decode(buf);
-    List<Ingredient> ingredients = Ingredient.CONTENTS_STREAM_CODEC
-        .apply(ByteBufCodecs.list(16))
-        .decode(buf);
+    SupremeShapedCraftingPattern raw = SupremeShapedCraftingPattern.STREAM_CODEC.decode(buf);
     ItemStackTemplate result = ItemStackTemplate.STREAM_CODEC.decode(buf);
     boolean showNotification = buf.readBoolean();
 
-    return new SupremeShapelessCraftingRecipe(group, category, ingredients, result, showNotification);
+    return new SupremeShapedCraftingRecipe(group, category, raw, result, showNotification);
   }
 
   private static void write(
       RegistryFriendlyByteBuf buf,
-      SupremeShapelessCraftingRecipe recipe
+      SupremeShapedCraftingRecipe recipe
   ) {
     buf.writeUtf(recipe.recipeGroup);
     CraftingBookCategory.STREAM_CODEC.encode(buf, recipe.recipeCategory);
-    Ingredient.CONTENTS_STREAM_CODEC
-        .apply(ByteBufCodecs.list(16))
-        .encode(buf, recipe.ingredients);
+    SupremeShapedCraftingPattern.STREAM_CODEC.encode(buf, recipe.rawContents);
 
     ItemStackTemplate.STREAM_CODEC.encode(buf, recipe.resultStack);
     buf.writeBoolean(recipe.notification);

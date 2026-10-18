@@ -25,11 +25,11 @@ import net.minecraft.world.level.Level;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 // Magnatour
-import roeyqian.magnatour.level.recipe.CraftingResultHelper;
-import roeyqian.magnatour.level.recipe.SupremeShapedCraftingRecipe;
-import roeyqian.magnatour.level.recipe.SupremeShapelessCraftingRecipe;
-import roeyqian.magnatour.level.recipe.UniverseShapedCraftingRecipe;
-import roeyqian.magnatour.level.recipe.UniverseShapelessCraftingRecipe;
+import roeyqian.magnatour.level.CommonCraftingHelper;
+import roeyqian.magnatour.level.supreme.SupremeShapedCraftingRecipe;
+import roeyqian.magnatour.level.supreme.SupremeShapelessCraftingRecipe;
+import roeyqian.magnatour.level.universe.UniverseShapedCraftingRecipe;
+import roeyqian.magnatour.level.universe.UniverseShapelessCraftingRecipe;
 import roeyqian.magnatour.registry.logic.MagnaRecipes;
 
 public final class CraftingSlotMain {
@@ -50,7 +50,7 @@ public final class CraftingSlotMain {
     CraftingRecipe recipe = recipeHolder.value();
     int baseResultCount = getBaseResultCount(recipe);
     int removedItemCount = removeCount > 0 ? removeCount : Math.max(stack.getCount(), baseResultCount);
-    int craftsToConsume = CraftingResultHelper.getConsumedCraftCount(
+    int craftsToConsume = CommonCraftingHelper.getConsumedCraftCount(
         removedItemCount,
         baseResultCount
     );

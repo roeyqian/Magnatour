@@ -35,7 +35,7 @@ import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 // Magnatour
-import roeyqian.magnatour.level.data.PortalLinkSavedData;
+import roeyqian.magnatour.level.CommonPortalData;
 
 public interface MagnaPortalY {
 
@@ -225,15 +225,15 @@ public interface MagnaPortalY {
 
     if (targetWorld == null) return;
 
-    PortalLinkSavedData linkData = PortalLinkSavedData.get(server);
-    PortalLinkSavedData.Endpoint sourceEndpoint = new PortalLinkSavedData.Endpoint(
+    CommonPortalData linkData = CommonPortalData.get(server);
+    CommonPortalData.Endpoint sourceEndpoint = new CommonPortalData.Endpoint(
         currentWorld.dimension(), getPortalCenter(currentWorld, portalPos, frameBlock)
     );
     BlockPos targetPos = null;
 
-    Optional<PortalLinkSavedData.Endpoint> linkedEndpoint = linkData.getDestination(sourceEndpoint);
+    Optional<CommonPortalData.Endpoint> linkedEndpoint = linkData.getDestination(sourceEndpoint);
     if (linkedEndpoint.isPresent()) {
-      PortalLinkSavedData.Endpoint endpoint = linkedEndpoint.get();
+      CommonPortalData.Endpoint endpoint = linkedEndpoint.get();
       ServerLevel linkedWorld = server.getLevel(endpoint.dimension());
       if (linkedWorld != null) {
         loadPortalChunks(linkedWorld, endpoint.pos());
@@ -253,7 +253,7 @@ public interface MagnaPortalY {
       BlockPos targetCenter = getPortalCenter(targetWorld, targetPos, frameBlock);
       linkData.link(
           sourceEndpoint,
-          new PortalLinkSavedData.Endpoint(targetWorld.dimension(), targetCenter)
+          new CommonPortalData.Endpoint(targetWorld.dimension(), targetCenter)
       );
     }
 

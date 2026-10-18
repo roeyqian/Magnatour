@@ -5,7 +5,7 @@
  * This file is part of Magnatour.
  * Full license text available in the LICENSE file in the project root.
  */
-package roeyqian.magnatour.level.recipe;
+package roeyqian.magnatour.level.universe;
 
 // Java Standard
 import java.util.List;
@@ -38,6 +38,7 @@ import net.minecraft.world.level.Level;
 import org.jspecify.annotations.NonNull;
 
 // Magnatour
+import roeyqian.magnatour.level.CommonCraftingHelper;
 import roeyqian.magnatour.registry.logic.MagnaRecipes;
 import roeyqian.magnatour.registry.stuff.MagnaBlocks;
 
@@ -106,7 +107,7 @@ public class UniverseShapelessCraftingRecipe implements CraftingRecipe {
   public ItemStack assemble(
       @NonNull CraftingInput input
   ) {
-    return CraftingResultHelper.createResultStack(this.resultStack, input);
+    return CommonCraftingHelper.createResultStack(this.resultStack, input);
   }
 
   @Override @NonNull

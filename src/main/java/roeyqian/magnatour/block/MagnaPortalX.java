@@ -40,7 +40,7 @@ import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 // Magnatour
-import roeyqian.magnatour.level.data.PortalLinkSavedData;
+import roeyqian.magnatour.level.CommonPortalData;
 import roeyqian.magnatour.registry.stuff.MagnaBlocks;
 import roeyqian.magnatour.registry.world.MagnaDimensions;
 
@@ -157,17 +157,17 @@ public interface MagnaPortalX {
   ) {
     MinecraftServer server = player.level().getServer();
     ServerLevel currentWorld = player.level();
-    PortalLinkSavedData linkData = PortalLinkSavedData.get(server);
-    PortalLinkSavedData.Endpoint sourceEndpoint = new PortalLinkSavedData.Endpoint(
+    CommonPortalData linkData = CommonPortalData.get(server);
+    CommonPortalData.Endpoint sourceEndpoint = new CommonPortalData.Endpoint(
         currentWorld.dimension(), getPortalOrigin(currentWorld, portalPos, frameBlock, portalBlock)
     );
     ServerLevel targetWorld = null;
     BlockPos targetPos = null;
 
     if (currentWorld.dimension() == sourceDim) {
-      Optional<PortalLinkSavedData.Endpoint> linkedEndpoint = linkData.getDestination(sourceEndpoint);
+      Optional<CommonPortalData.Endpoint> linkedEndpoint = linkData.getDestination(sourceEndpoint);
       if (linkedEndpoint.isPresent()) {
-        PortalLinkSavedData.Endpoint endpoint = linkedEndpoint.get();
+        CommonPortalData.Endpoint endpoint = linkedEndpoint.get();
         ServerLevel linkedWorld = server.getLevel(endpoint.dimension());
         if (linkedWorld != null && endpoint.dimension() == MagnaDimensions.UNIVERSE_META
             && isValidPortal(linkedWorld, endpoint.pos(), portalAxis(linkedWorld, endpoint.pos()), frameBlock, portalBlock)) {
@@ -196,7 +196,7 @@ public interface MagnaPortalX {
       );
 
       if (currentWorld.dimension() == MagnaDimensions.UNIVERSE_META) {
-        PortalLinkSavedData.Endpoint targetEndpoint = new PortalLinkSavedData.Endpoint(
+        CommonPortalData.Endpoint targetEndpoint = new CommonPortalData.Endpoint(
             targetWorld.dimension(), getPortalOrigin(targetWorld, targetPos, frameBlock, portalBlock)
         );
         linkData.link(sourceEndpoint, targetEndpoint);

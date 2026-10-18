@@ -5,7 +5,7 @@
  * This file is part of Magnatour.
  * Full license text available in the LICENSE file in the project root.
  */
-package roeyqian.magnatour.level.data;
+package roeyqian.magnatour.level.universe;
 
 // Mojang
 import com.mojang.datafixers.util.Either;
@@ -22,7 +22,7 @@ import net.minecraft.world.level.saveddata.SavedDataType;
 import roeyqian.magnatour.Magnatour;
 
 /** Persistent generation status for the Universe Meta dimension's central cube. */
-public class UniverseMetaGenerationSavedData extends SavedData {
+public class SavedUniverseMetaData extends SavedData {
 
   private static final int COMPLETED = Integer.MAX_VALUE;
 
@@ -30,37 +30,37 @@ public class UniverseMetaGenerationSavedData extends SavedData {
    * The boolean branch preserves worlds created before generation became incremental. New saves
    * store the next block index, so an interrupted first generation resumes after a restart.
    */
-  private static final Codec<UniverseMetaGenerationSavedData> CODEC = Codec.either(
+  private static final Codec<SavedUniverseMetaData> CODEC = Codec.either(
       Codec.BOOL.fieldOf("generated").codec(),
       Codec.INT.fieldOf("next_block_index").codec()
   ).xmap(
       savedValue -> savedValue.map(
-          generated -> new UniverseMetaGenerationSavedData(generated ? COMPLETED : 0),
-          UniverseMetaGenerationSavedData::new
+          generated -> new SavedUniverseMetaData(generated ? COMPLETED : 0),
+          SavedUniverseMetaData::new
       ),
       savedData -> Either.right(savedData.nextBlockIndex)
   );
 
-  private static final SavedDataType<UniverseMetaGenerationSavedData> TYPE = new SavedDataType<>(
+  private static final SavedDataType<SavedUniverseMetaData> TYPE = new SavedDataType<>(
       Identifier.fromNamespaceAndPath(Magnatour.MOD_ID, "universe_meta_generation"),
-      UniverseMetaGenerationSavedData::new,
+      SavedUniverseMetaData::new,
       CODEC,
       DataFixTypes.LEVEL
   );
 
   private int nextBlockIndex;
 
-  public UniverseMetaGenerationSavedData() {
+  public SavedUniverseMetaData() {
     this(0);
   }
 
-  private UniverseMetaGenerationSavedData(
+  private SavedUniverseMetaData(
       int nextBlockIndex
   ) {
     this.nextBlockIndex = Math.max(0, nextBlockIndex);
   }
 
-  public static UniverseMetaGenerationSavedData get(
+  public static SavedUniverseMetaData get(
       MinecraftServer server
   ) {
     return server.overworld().getDataStorage().computeIfAbsent(TYPE);

@@ -5,16 +5,16 @@
  * This file is part of Magnatour.
  * Full license text available in the LICENSE file in the project root.
  */
-package roeyqian.magnatour.level.recipe;
+package roeyqian.magnatour.level;
 
 // Minecraft
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.CraftingInput;
 
-public final class CraftingResultHelper {
+public final class CommonCraftingHelper {
 
-  private CraftingResultHelper() {}
+  private CommonCraftingHelper() {}
 
   public static ItemStack createResultStack(
       ItemStackTemplate resultTemplate,

@@ -5,7 +5,7 @@
  * This file is part of Magnatour.
  * Full license text available in the LICENSE file in the project root.
  */
-package roeyqian.magnatour.level.network;
+package roeyqian.magnatour.item.universe;
 
 // Minecraft
 import net.minecraft.core.BlockPos;
@@ -24,25 +24,25 @@ import org.jspecify.annotations.NonNull;
 // Magnatour
 import roeyqian.magnatour.Magnatour;
 
-public record UniverseCommandStarBoundBlockPayload(
+public record UniverseCommandStarPayload(
     Action act,
     BlockPos pos,
     ResourceKey<Level> dimension
 ) implements CustomPacketPayload {
 
-  public static final Type<UniverseCommandStarBoundBlockPayload> ID = new Type<>(
+  public static final Type<UniverseCommandStarPayload> ID = new Type<>(
       Identifier.fromNamespaceAndPath(Magnatour.MOD_ID, "bound_block_action")
   );
 
-  public static final StreamCodec<RegistryFriendlyByteBuf, UniverseCommandStarBoundBlockPayload> CODEC =
+  public static final StreamCodec<RegistryFriendlyByteBuf, UniverseCommandStarPayload> CODEC =
       StreamCodec.composite(
           ByteBufCodecs.idMapper(id -> Action.values()[id], Action::ordinal),
-          UniverseCommandStarBoundBlockPayload::act,
+          UniverseCommandStarPayload::act,
           BlockPos.STREAM_CODEC,
-          UniverseCommandStarBoundBlockPayload::pos,
+          UniverseCommandStarPayload::pos,
           ResourceKey.streamCodec(Registries.DIMENSION),
-          UniverseCommandStarBoundBlockPayload::dimension,
-          UniverseCommandStarBoundBlockPayload::new
+          UniverseCommandStarPayload::dimension,
+          UniverseCommandStarPayload::new
       );
 
   @Override @NonNull

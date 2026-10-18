@@ -5,7 +5,7 @@
  * This file is part of Magnatour.
  * Full license text available in the LICENSE file in the project root.
  */
-package roeyqian.magnatour.level.data;
+package roeyqian.magnatour.level;
 
 // Java Standard
 import java.util.ArrayList;
@@ -32,27 +32,26 @@ import net.minecraft.world.level.saveddata.SavedDataType;
 // Magnatour
 import roeyqian.magnatour.Magnatour;
 
-/** Persistent, bidirectional links between endpoints of custom horizontal portals. */
-public class PortalLinkSavedData extends SavedData {
+public final class CommonPortalData extends SavedData {
 
-  private static final Codec<PortalLinkSavedData> CODEC = RecordCodecBuilder.create(instance ->
+  private static final Codec<CommonPortalData> CODEC = RecordCodecBuilder.create(instance ->
       instance.group(
-          PortalLink.CODEC.listOf().fieldOf("links").forGetter(PortalLinkSavedData::links)
-      ).apply(instance, PortalLinkSavedData::new)
+          PortalLink.CODEC.listOf().fieldOf("links").forGetter(CommonPortalData::links)
+      ).apply(instance, CommonPortalData::new)
   );
 
-  private static final SavedDataType<PortalLinkSavedData> TYPE = new SavedDataType<>(
+  private static final SavedDataType<CommonPortalData> TYPE = new SavedDataType<>(
       Identifier.fromNamespaceAndPath(Magnatour.MOD_ID, "portal_links"),
-      PortalLinkSavedData::new,
+      CommonPortalData::new,
       CODEC,
       DataFixTypes.LEVEL
   );
 
   private final Map<Endpoint, Endpoint> links = new HashMap<>();
 
-  public PortalLinkSavedData() {}
+  public CommonPortalData() {}
 
-  private PortalLinkSavedData(
+  private CommonPortalData(
       List<PortalLink> links
   ) {
     for (PortalLink link : links) {
@@ -60,7 +59,7 @@ public class PortalLinkSavedData extends SavedData {
     }
   }
 
-  public static PortalLinkSavedData get(
+  public static CommonPortalData get(
       MinecraftServer server
   ) {
     return server.overworld().getDataStorage().computeIfAbsent(TYPE);

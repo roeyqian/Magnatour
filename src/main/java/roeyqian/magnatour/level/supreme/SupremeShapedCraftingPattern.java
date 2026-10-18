@@ -5,7 +5,7 @@
  * This file is part of Magnatour.
  * Full license text available in the LICENSE file in the project root.
  */
-package roeyqian.magnatour.level.recipe;
+package roeyqian.magnatour.level.supreme;
 
 // Java Standard
 import java.util.ArrayList;
@@ -29,17 +29,17 @@ import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.Ingredient;
 
 /** A shaped recipe pattern sized for the Supreme Craftable's 4x4 grid. */
-public final class SupremeCraftingPattern {
+public final class SupremeShapedCraftingPattern {
 
-  public static final StreamCodec<RegistryFriendlyByteBuf, SupremeCraftingPattern> STREAM_CODEC =
+  public static final StreamCodec<RegistryFriendlyByteBuf, SupremeShapedCraftingPattern> STREAM_CODEC =
       StreamCodec.composite(
           ByteBufCodecs.VAR_INT,
-          SupremeCraftingPattern::width,
+          SupremeShapedCraftingPattern::width,
           ByteBufCodecs.VAR_INT,
-          SupremeCraftingPattern::height,
+          SupremeShapedCraftingPattern::height,
           Ingredient.OPTIONAL_CONTENTS_STREAM_CODEC.apply(ByteBufCodecs.list(16)),
-          SupremeCraftingPattern::ingredients,
-          SupremeCraftingPattern::new
+          SupremeShapedCraftingPattern::ingredients,
+          SupremeShapedCraftingPattern::new
       );
 
   private static final Codec<Character> SYMBOL_CODEC = Codec.STRING.comapFlatMap(
@@ -60,8 +60,8 @@ public final class SupremeCraftingPattern {
       ).apply(instance, Data::new)
   );
 
-  public static final MapCodec<SupremeCraftingPattern> MAP_CODEC = DATA_CODEC.flatXmap(
-      SupremeCraftingPattern::decode,
+  public static final MapCodec<SupremeShapedCraftingPattern> MAP_CODEC = DATA_CODEC.flatXmap(
+      SupremeShapedCraftingPattern::decode,
       pattern -> DataResult.success(pattern.data)
   );
 
@@ -72,7 +72,7 @@ public final class SupremeCraftingPattern {
 
   private Data data;
 
-  private SupremeCraftingPattern(
+  private SupremeShapedCraftingPattern(
       int width, int height,
       List<Optional<Ingredient>> ingredients
   ) {
@@ -86,7 +86,7 @@ public final class SupremeCraftingPattern {
     this.data = null;
   }
 
-  private SupremeCraftingPattern(
+  private SupremeShapedCraftingPattern(
       int width, int height,
       List<Optional<Ingredient>> ingredients,
       Data data
@@ -153,7 +153,7 @@ public final class SupremeCraftingPattern {
     return trimmed;
   }
 
-  private static DataResult<SupremeCraftingPattern> decode(
+  private static DataResult<SupremeShapedCraftingPattern> decode(
       Data data
   ) {
     if (data.pattern().isEmpty() || data.pattern().size() > 4) {
@@ -204,7 +204,7 @@ public final class SupremeCraftingPattern {
       }
     }
 
-    return DataResult.success(new SupremeCraftingPattern(width, height, ingredients, data));
+    return DataResult.success(new SupremeShapedCraftingPattern(width, height, ingredients, data));
   }
 
   private boolean matchesAt(

@@ -15,12 +15,12 @@ import net.minecraft.world.item.crafting.RecipeType;
 
 // Magnatour
 import roeyqian.magnatour.Magnatour;
-import roeyqian.magnatour.level.recipe.SupremeShapedCraftingRecipe;
-import roeyqian.magnatour.level.recipe.SupremeShapelessCraftingRecipe;
-import roeyqian.magnatour.level.recipe.SupremeSmeltingRecipe;
-import roeyqian.magnatour.level.recipe.UniverseShapedCraftingRecipe;
-import roeyqian.magnatour.level.recipe.UniverseShapelessCraftingRecipe;
-import roeyqian.magnatour.level.recipe.UniverseSmeltingRecipe;
+import roeyqian.magnatour.level.supreme.SupremeShapedCraftingRecipe;
+import roeyqian.magnatour.level.supreme.SupremeShapelessCraftingRecipe;
+import roeyqian.magnatour.level.supreme.SupremeSmeltingRecipe;
+import roeyqian.magnatour.level.universe.UniverseShapedCraftingRecipe;
+import roeyqian.magnatour.level.universe.UniverseShapelessCraftingRecipe;
+import roeyqian.magnatour.level.universe.UniverseSmeltingRecipe;
 import roeyqian.magnatour.registry.LogicHelper;
 
 /*

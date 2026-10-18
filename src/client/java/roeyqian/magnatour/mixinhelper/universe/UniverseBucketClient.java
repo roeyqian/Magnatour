@@ -31,7 +31,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 // Magnatour
 import roeyqian.magnatour.item.universe.UniverseBucket;
-import roeyqian.magnatour.level.network.UniverseBucketPickupPayload;
+import roeyqian.magnatour.item.universe.UniverseBucketPayload;
 
 @Environment(EnvType.CLIENT)
 public final class UniverseBucketClient {
@@ -47,7 +47,7 @@ public final class UniverseBucketClient {
     BlockHitResult hitResult = getPlayerFluidSourceHitResult(client);
     if (hitResult.getType() != HitResult.Type.BLOCK || !canPickupFluidAt(client, hitResult)) return;
 
-    ClientPlayNetworking.send(new UniverseBucketPickupPayload());
+    ClientPlayNetworking.send(new UniverseBucketPayload());
     client.player.swing(InteractionHand.MAIN_HAND, SwingAnimation.DEFAULT, false);
     cir.setReturnValue(true);
   }

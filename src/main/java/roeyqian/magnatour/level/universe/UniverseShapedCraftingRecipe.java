@@ -5,7 +5,7 @@
  * This file is part of Magnatour.
  * Full license text available in the LICENSE file in the project root.
  */
-package roeyqian.magnatour.level.recipe;
+package roeyqian.magnatour.level.universe;
 
 // Java Standard
 import java.util.List;
@@ -37,12 +37,13 @@ import net.minecraft.world.level.Level;
 import org.jspecify.annotations.NonNull;
 
 // Magnatour
+import roeyqian.magnatour.level.CommonCraftingHelper;
 import roeyqian.magnatour.registry.logic.MagnaRecipes;
 import roeyqian.magnatour.registry.stuff.MagnaBlocks;
 
-public class SupremeShapedCraftingRecipe implements CraftingRecipe {
+public class UniverseShapedCraftingRecipe implements CraftingRecipe {
 
-  public static final MapCodec<SupremeShapedCraftingRecipe> CODEC = RecordCodecBuilder.mapCodec(
+  public static final MapCodec<UniverseShapedCraftingRecipe> CODEC = RecordCodecBuilder.mapCodec(
       instance -> instance.group(
           Codec.STRING
               .optionalFieldOf("group", "")
@@ -53,7 +54,7 @@ public class SupremeShapedCraftingRecipe implements CraftingRecipe {
               .orElse(CraftingBookCategory.MISC)
               .forGetter(recipe -> recipe.recipeCategory),
 
-          SupremeCraftingPattern.MAP_CODEC
+          UniverseShapedCraftingPattern.MAP_CODEC
               .forGetter(recipe -> recipe.rawContents),
 
           ItemStackTemplate.CODEC
@@ -63,29 +64,29 @@ public class SupremeShapedCraftingRecipe implements CraftingRecipe {
           Codec.BOOL
               .optionalFieldOf("show_notification", true)
               .forGetter(recipe -> recipe.notification)
-      ).apply(instance, SupremeShapedCraftingRecipe::new)
+      ).apply(instance, UniverseShapedCraftingRecipe::new)
   );
 
-  public static final StreamCodec<RegistryFriendlyByteBuf, SupremeShapedCraftingRecipe> PACKET_CODEC =
-      StreamCodec.of(SupremeShapedCraftingRecipe::write, SupremeShapedCraftingRecipe::read);
+  public static final StreamCodec<RegistryFriendlyByteBuf, UniverseShapedCraftingRecipe> PACKET_CODEC =
+      StreamCodec.of(UniverseShapedCraftingRecipe::write, UniverseShapedCraftingRecipe::read);
 
-  public static final RecipeSerializer<SupremeShapedCraftingRecipe> SERIALIZER =
+  public static final RecipeSerializer<UniverseShapedCraftingRecipe> SERIALIZER =
       new RecipeSerializer<>(CODEC, PACKET_CODEC);
 
   final boolean notification;
 
   final String recipeGroup;
 
-  final SupremeCraftingPattern rawContents;
+  final UniverseShapedCraftingPattern rawContents;
 
   final ItemStackTemplate resultStack;
 
   final CraftingBookCategory recipeCategory;
 
-  public SupremeShapedCraftingRecipe(
+  public UniverseShapedCraftingRecipe(
       String group,
       CraftingBookCategory category,
-      SupremeCraftingPattern raw,
+      UniverseShapedCraftingPattern raw,
       ItemStackTemplate result,
       boolean showNotification
   ) {
@@ -100,7 +101,7 @@ public class SupremeShapedCraftingRecipe implements CraftingRecipe {
   public ItemStack assemble(
       @NonNull CraftingInput input
   ) {
-    return CraftingResultHelper.createResultStack(this.resultStack, input);
+    return CommonCraftingHelper.createResultStack(this.resultStack, input);
   }
 
   @Override @NonNull
@@ -119,7 +120,7 @@ public class SupremeShapedCraftingRecipe implements CraftingRecipe {
 
     SlotDisplay resultDisplay = new SlotDisplay.ItemStackSlotDisplay(this.resultStack);
     SlotDisplay craftingStationDisplay = new SlotDisplay.ItemSlotDisplay(
-        MagnaBlocks.SUPREME_CRAFTABLE.asItem()
+        MagnaBlocks.UNIVERSE_FORGE.asItem()
     );
 
     return List.of(
@@ -142,13 +143,13 @@ public class SupremeShapedCraftingRecipe implements CraftingRecipe {
   }
 
   @Override @NonNull
-  public RecipeSerializer<SupremeShapedCraftingRecipe> getSerializer() {
+  public RecipeSerializer<UniverseShapedCraftingRecipe> getSerializer() {
     return SERIALIZER;
   }
 
   @Override @NonNull
   public RecipeType<CraftingRecipe> getType() {
-    return MagnaRecipes.SUPREME_CRAFTING_TYPE;
+    return MagnaRecipes.UNIVERSE_CRAFTING_TYPE;
   }
 
   public int getWidth() {
@@ -175,7 +176,7 @@ public class SupremeShapedCraftingRecipe implements CraftingRecipe {
 
   @Override @NonNull
   public RecipeBookCategory recipeBookCategory() {
-    return MagnaRecipes.SUPREME_CRAFTING;
+    return MagnaRecipes.UNIVERSE_CRAFTING;
   }
 
   @Override
@@ -183,25 +184,25 @@ public class SupremeShapedCraftingRecipe implements CraftingRecipe {
     return this.notification;
   }
 
-  private static SupremeShapedCraftingRecipe read(
+  private static UniverseShapedCraftingRecipe read(
       RegistryFriendlyByteBuf buf
   ) {
     String group = buf.readUtf();
     CraftingBookCategory category = CraftingBookCategory.STREAM_CODEC.decode(buf);
-    SupremeCraftingPattern raw = SupremeCraftingPattern.STREAM_CODEC.decode(buf);
+    UniverseShapedCraftingPattern raw = UniverseShapedCraftingPattern.STREAM_CODEC.decode(buf);
     ItemStackTemplate result = ItemStackTemplate.STREAM_CODEC.decode(buf);
     boolean showNotification = buf.readBoolean();
 
-    return new SupremeShapedCraftingRecipe(group, category, raw, result, showNotification);
+    return new UniverseShapedCraftingRecipe(group, category, raw, result, showNotification);
   }
 
   private static void write(
       RegistryFriendlyByteBuf buf,
-      SupremeShapedCraftingRecipe recipe
+      UniverseShapedCraftingRecipe recipe
   ) {
     buf.writeUtf(recipe.recipeGroup);
     CraftingBookCategory.STREAM_CODEC.encode(buf, recipe.recipeCategory);
-    SupremeCraftingPattern.STREAM_CODEC.encode(buf, recipe.rawContents);
+    UniverseShapedCraftingPattern.STREAM_CODEC.encode(buf, recipe.rawContents);
 
     ItemStackTemplate.STREAM_CODEC.encode(buf, recipe.resultStack);
     buf.writeBoolean(recipe.notification);

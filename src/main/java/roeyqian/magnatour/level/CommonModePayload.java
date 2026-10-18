@@ -5,7 +5,7 @@
  * This file is part of Magnatour.
  * Full license text available in the LICENSE file in the project root.
  */
-package roeyqian.magnatour.level.network;
+package roeyqian.magnatour.level;
 
 // Minecraft
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -19,17 +19,17 @@ import org.jspecify.annotations.NonNull;
 // Magnatour
 import roeyqian.magnatour.Magnatour;
 
-public record UniverseBucketPickupPayload() implements CustomPacketPayload {
+public record CommonModePayload() implements CustomPacketPayload {
 
-  public static final Type<UniverseBucketPickupPayload> ID =
-      new Type<>(Identifier.fromNamespaceAndPath(Magnatour.MOD_ID, "universe_bucket_pickup"));
+  public static final Type<CommonModePayload> UNIVERSE_MODE_CHANGE =
+      new Type<>(Identifier.fromNamespaceAndPath(Magnatour.MOD_ID, "universe_mode_change"));
 
-  public static final StreamCodec<RegistryFriendlyByteBuf, UniverseBucketPickupPayload> CODEC =
-      StreamCodec.unit(new UniverseBucketPickupPayload());
+  public static final StreamCodec<RegistryFriendlyByteBuf, CommonModePayload> CODEC =
+      StreamCodec.unit(new CommonModePayload());
 
   @Override @NonNull
   public Type<? extends CustomPacketPayload> type() {
-    return ID;
+    return UNIVERSE_MODE_CHANGE;
   }
 
 }

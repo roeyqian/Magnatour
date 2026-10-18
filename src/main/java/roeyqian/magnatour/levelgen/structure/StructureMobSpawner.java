@@ -55,7 +55,7 @@ import net.minecraft.world.phys.AABB;
 import roeyqian.magnatour.Magnatour;
 import roeyqian.magnatour.entity.supreme.BellRinger;
 import roeyqian.magnatour.entity.supreme.BellSoul;
-import roeyqian.magnatour.level.data.GoldBellTowerSpawnSavedData;
+import roeyqian.magnatour.level.supreme.SavedGoldBellTowerData;
 import roeyqian.magnatour.registry.stuff.MagnaEntities;
 import roeyqian.magnatour.registry.world.MagnaDimensions;
 import roeyqian.magnatour.registry.world.MagnaStructures;
@@ -176,7 +176,7 @@ public final class StructureMobSpawner {
     if (!start.isValid() || !AABB.of(start.getBoundingBox()).contains(player.position())) return;
 
     long startChunk = start.getChunkPos().pack();
-    GoldBellTowerSpawnSavedData data = GoldBellTowerSpawnSavedData.get(level);
+    SavedGoldBellTowerData data = SavedGoldBellTowerData.get(level);
     if (data.isDisabled(startChunk)) {
       data.setDisabled(startChunk, false);
       player.sendOverlayMessage(Component.translatable("msg.magnatour.gold_bell_tower.resumed"));
@@ -352,7 +352,7 @@ public final class StructureMobSpawner {
       long currentTick
   ) {
     if (profile == GOLD_BELL_TOWER_PROFILE
-        && GoldBellTowerSpawnSavedData.get(level).isDisabled(start.getChunkPos().pack())) {
+        && SavedGoldBellTowerData.get(level).isDisabled(start.getChunkPos().pack())) {
       return;
     }
 

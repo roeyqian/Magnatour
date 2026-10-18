@@ -29,7 +29,7 @@ import roeyqian.magnatour.item.universe.UniverseBucket;
 import roeyqian.magnatour.item.universe.UniverseCommandStar;
 import roeyqian.magnatour.item.universe.UniverseOmniBlade;
 import roeyqian.magnatour.item.universe.UniverseUltimaSword;
-import roeyqian.magnatour.level.network.DurableItemModePayload;
+import roeyqian.magnatour.level.CommonModePayload;
 
 @Environment(EnvType.CLIENT)
   public final class RegKeyBindings {
@@ -59,7 +59,7 @@ import roeyqian.magnatour.level.network.DurableItemModePayload;
             item instanceof UniverseOmniBlade ||
             item instanceof UniverseCommandStar ||
             item instanceof UniverseBucket) {
-          ClientPlayNetworking.send(new DurableItemModePayload());
+          ClientPlayNetworking.send(new CommonModePayload());
         }
       }
     });
