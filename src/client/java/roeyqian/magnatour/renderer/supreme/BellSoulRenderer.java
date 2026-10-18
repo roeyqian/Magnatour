@@ -26,7 +26,7 @@ import org.jspecify.annotations.NonNull;
 import roeyqian.magnatour.Magnatour;
 import roeyqian.magnatour.entity.supreme.BellSoul;
 import roeyqian.magnatour.model.supreme.BellSoulModel;
-import roeyqian.magnatour.registry.output.RegEntityLayers;
+import roeyqian.magnatour.registry.output.MagnaEntityLayers;
 import roeyqian.magnatour.renderstate.supreme.BellSoulRenderState;
 
 @Environment(EnvType.CLIENT)
@@ -40,7 +40,7 @@ public final class BellSoulRenderer extends MobRenderer<BellSoul, BellSoulRender
   public BellSoulRenderer(
       EntityRendererProvider.Context context
   ) {
-    super(context, new BellSoulModel(context.bakeLayer(RegEntityLayers.BELL_SOUL)), 0.3F);
+    super(context, new BellSoulModel(context.bakeLayer(MagnaEntityLayers.BELL_SOUL)), 0.3F);
   }
 
   @NonNull @Override

@@ -32,7 +32,7 @@ import roeyqian.magnatour.item.universe.UniverseUltimaSword;
 import roeyqian.magnatour.level.CommonModePayload;
 
 @Environment(EnvType.CLIENT)
-  public final class RegKeyBindings {
+  public final class MagnaKeyBindings {
 
   public static final KeyMapping.Category UNIVERSE_CATEGORY =
       KeyMapping.Category.register(Identifier.fromNamespaceAndPath(Magnatour.MOD_ID, "general"));
@@ -46,11 +46,11 @@ import roeyqian.magnatour.level.CommonModePayload;
       )
   );
 
-  private RegKeyBindings() {}
+  private MagnaKeyBindings() {}
 
   public static void init() {
     ClientTickEvents.END_CLIENT_TICK.register(client -> {
-      while (RegKeyBindings.universeModeKey.consumeClick()) {
+      while (MagnaKeyBindings.universeModeKey.consumeClick()) {
         if (client.player == null) return;
 
         Item item = client.player.getMainHandItem().getItem();
@@ -64,7 +64,7 @@ import roeyqian.magnatour.level.CommonModePayload;
       }
     });
 
-    Magnatour.LOGGER.info("[Client] Initializing 'RegKeyBindings'");
+    Magnatour.LOGGER.info("[Client] Initializing 'MagnaKeyBindings'");
   }
 
 }

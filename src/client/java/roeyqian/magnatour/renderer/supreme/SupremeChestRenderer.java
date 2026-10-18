@@ -45,7 +45,7 @@ import org.jspecify.annotations.Nullable;
 import roeyqian.magnatour.Magnatour;
 import roeyqian.magnatour.block.supreme.SupremeChest;
 import roeyqian.magnatour.blockentity.supreme.SupremeChestEntity;
-import roeyqian.magnatour.registry.output.RegEntityLayers;
+import roeyqian.magnatour.registry.output.MagnaEntityLayers;
 import roeyqian.magnatour.renderstate.supreme.SupremeChestRenderState;
 
 @Environment(EnvType.CLIENT)
@@ -84,7 +84,7 @@ public final class SupremeChestRenderer implements BlockEntityRenderer<SupremeCh
         new ChestModel(ctx.bakeLayer(ModelLayers.DOUBLE_CHEST_LEFT)),
         new ChestModel(ctx.bakeLayer(ModelLayers.DOUBLE_CHEST_RIGHT))
     );
-    this.tripleMiddleModel = new ChestModel(ctx.bakeLayer(RegEntityLayers.SUPREME_CHEST_TRIPLE_MIDDLE));
+    this.tripleMiddleModel = new ChestModel(ctx.bakeLayer(MagnaEntityLayers.SUPREME_CHEST_TRIPLE_MIDDLE));
     this.sprites = ctx.sprites();
   }
 

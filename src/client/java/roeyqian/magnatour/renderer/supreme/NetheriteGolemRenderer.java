@@ -30,7 +30,7 @@ import org.jspecify.annotations.NonNull;
 import roeyqian.magnatour.Magnatour;
 import roeyqian.magnatour.entity.supreme.NetheriteGolem;
 import roeyqian.magnatour.model.supreme.CustomGolemModel;
-import roeyqian.magnatour.registry.output.RegEntityLayers;
+import roeyqian.magnatour.registry.output.MagnaEntityLayers;
 import roeyqian.magnatour.renderstate.supreme.CustomGolemRenderState;
 
 @Environment(EnvType.CLIENT)
@@ -47,7 +47,7 @@ public final class NetheriteGolemRenderer extends MobRenderer<NetheriteGolem, Cu
   public NetheriteGolemRenderer(
       final EntityRendererProvider.Context context
   ) {
-    super(context, new CustomGolemModel(context.bakeLayer(RegEntityLayers.NETHERITE_GOLEM)), 0.7F * NetheriteGolem.SIZE_SCALE);
+    super(context, new CustomGolemModel(context.bakeLayer(MagnaEntityLayers.NETHERITE_GOLEM)), 0.7F * NetheriteGolem.SIZE_SCALE);
     this.blockModelResolver = context.getBlockModelResolver();
   }
 

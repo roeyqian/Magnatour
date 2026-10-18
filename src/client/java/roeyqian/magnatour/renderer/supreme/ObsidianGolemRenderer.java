@@ -30,7 +30,7 @@ import org.jspecify.annotations.NonNull;
 import roeyqian.magnatour.Magnatour;
 import roeyqian.magnatour.entity.supreme.ObsidianGolem;
 import roeyqian.magnatour.model.supreme.CustomGolemModel;
-import roeyqian.magnatour.registry.output.RegEntityLayers;
+import roeyqian.magnatour.registry.output.MagnaEntityLayers;
 import roeyqian.magnatour.renderstate.supreme.CustomGolemRenderState;
 
 @Environment(EnvType.CLIENT)
@@ -47,7 +47,7 @@ public final class ObsidianGolemRenderer extends MobRenderer<ObsidianGolem, Cust
   public ObsidianGolemRenderer(
       final EntityRendererProvider.Context context
   ) {
-    super(context, new CustomGolemModel(context.bakeLayer(RegEntityLayers.OBSIDIAN_GOLEM)), 0.7F * ObsidianGolem.SIZE_SCALE);
+    super(context, new CustomGolemModel(context.bakeLayer(MagnaEntityLayers.OBSIDIAN_GOLEM)), 0.7F * ObsidianGolem.SIZE_SCALE);
     this.blockModelResolver = context.getBlockModelResolver();
   }
 

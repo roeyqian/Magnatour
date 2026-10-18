@@ -27,9 +27,9 @@ import roeyqian.magnatour.item.supreme.EmperorArmor;
 import roeyqian.magnatour.registry.logic.MagnaComponents;
 
 @Environment(EnvType.CLIENT)
-public final class RegItemTooltips {
+public final class MagnaItemTooltips {
 
-  private RegItemTooltips() {}
+  private MagnaItemTooltips() {}
 
   public static void init() {
     ItemTooltipCallback.EVENT.register((stack, context, flag, lines) -> {
@@ -46,7 +46,7 @@ public final class RegItemTooltips {
         lines.add(Math.min(1, lines.size()), armor.getAttributesTooltip(stack));
       }
     });
-    Magnatour.LOGGER.info("[Client] Initializing 'RegItemTooltips'");
+    Magnatour.LOGGER.info("[Client] Initializing 'MagnaItemTooltips'");
   }
 
 }

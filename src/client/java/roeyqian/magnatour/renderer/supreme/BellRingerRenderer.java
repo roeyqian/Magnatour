@@ -24,7 +24,7 @@ import org.jspecify.annotations.NonNull;
 import roeyqian.magnatour.Magnatour;
 import roeyqian.magnatour.entity.supreme.BellRinger;
 import roeyqian.magnatour.model.supreme.BellRingerModel;
-import roeyqian.magnatour.registry.output.RegEntityLayers;
+import roeyqian.magnatour.registry.output.MagnaEntityLayers;
 
 @Environment(EnvType.CLIENT)
 public final class BellRingerRenderer extends HumanoidMobRenderer<BellRinger, HumanoidRenderState, BellRingerModel> {
@@ -37,7 +37,7 @@ public final class BellRingerRenderer extends HumanoidMobRenderer<BellRinger, Hu
   public BellRingerRenderer(
       EntityRendererProvider.Context context
   ) {
-    super(context, new BellRingerModel(context.bakeLayer(RegEntityLayers.BELL_RINGER)), 0.5F);
+    super(context, new BellRingerModel(context.bakeLayer(MagnaEntityLayers.BELL_RINGER)), 0.5F);
   }
 
   @NonNull @Override

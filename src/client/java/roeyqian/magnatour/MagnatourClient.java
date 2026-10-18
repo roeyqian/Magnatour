@@ -26,12 +26,12 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 
 // Magnatour
 import roeyqian.magnatour.block.VirtualBlockLighter;
-import roeyqian.magnatour.registry.input.RegKeyBindings;
-import roeyqian.magnatour.registry.output.RegBlockLayers;
-import roeyqian.magnatour.registry.output.RegEntityLayers;
-import roeyqian.magnatour.registry.output.RegItemTooltips;
-import roeyqian.magnatour.registry.output.RegParticles;
-import roeyqian.magnatour.registry.output.RegScreens;
+import roeyqian.magnatour.registry.input.MagnaKeyBindings;
+import roeyqian.magnatour.registry.output.MagnaBlockLayers;
+import roeyqian.magnatour.registry.output.MagnaEntityLayers;
+import roeyqian.magnatour.registry.output.MagnaItemTooltips;
+import roeyqian.magnatour.registry.output.MagnaParticles;
+import roeyqian.magnatour.registry.output.MagnaScreens;
 import roeyqian.magnatour.screen.supreme.StarAtlasScreen;
 
 @Environment(EnvType.CLIENT)
@@ -49,13 +49,13 @@ public class MagnatourClient implements ClientModInitializer {
     });
     ClientChunkEvents.CHUNK_LOAD.register((world, chunk) -> VirtualBlockLighter.onChunkLoad(world, chunk.getPos()));
     ClientChunkEvents.CHUNK_UNLOAD.register((world, chunk) -> VirtualBlockLighter.onChunkUnload(world, chunk.getPos()));
-    RegScreens.init();
+    MagnaScreens.init();
     StarAtlasScreen.initClient();
-    RegParticles.init();
-    RegEntityLayers.init();
-    RegBlockLayers.init();
-    RegItemTooltips.init();
-    RegKeyBindings.init();
+    MagnaParticles.init();
+    MagnaEntityLayers.init();
+    MagnaBlockLayers.init();
+    MagnaItemTooltips.init();
+    MagnaKeyBindings.init();
   }
 
 }

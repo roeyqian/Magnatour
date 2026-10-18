@@ -25,7 +25,7 @@ import org.jspecify.annotations.NonNull;
 import roeyqian.magnatour.Magnatour;
 import roeyqian.magnatour.entity.supreme.SculkBehemoth;
 import roeyqian.magnatour.model.supreme.SculkBehemothModel;
-import roeyqian.magnatour.registry.output.RegEntityLayers;
+import roeyqian.magnatour.registry.output.MagnaEntityLayers;
 import roeyqian.magnatour.renderstate.supreme.SculkBehemothRenderState;
 
 @Environment(EnvType.CLIENT)
@@ -43,12 +43,12 @@ public final class SculkBehemothRenderer extends MobRenderer<SculkBehemoth, Scul
   public SculkBehemothRenderer(
       EntityRendererProvider.Context context
   ) {
-    super(context, new SculkBehemothModel(context.bakeLayer(RegEntityLayers.SCULK_BEHEMOTH)), 2.0F);
+    super(context, new SculkBehemothModel(context.bakeLayer(MagnaEntityLayers.SCULK_BEHEMOTH)), 2.0F);
     addLayer(new LivingEntityEmissiveLayer<>(
         this,
         state -> HEART_TEXTURE,
         (state, ageInTicks) -> state.heartAnimation,
-        new SculkBehemothModel(context.bakeLayer(RegEntityLayers.SCULK_BEHEMOTH_HEART)),
+        new SculkBehemothModel(context.bakeLayer(MagnaEntityLayers.SCULK_BEHEMOTH_HEART)),
         RenderTypes::entityTranslucentEmissive,
         false
     ));

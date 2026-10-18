@@ -23,7 +23,7 @@ import org.jspecify.annotations.NonNull;
 // Magnatour
 import roeyqian.magnatour.Magnatour;
 import roeyqian.magnatour.model.supreme.PaleLordModel;
-import roeyqian.magnatour.registry.output.RegEntityLayers;
+import roeyqian.magnatour.registry.output.MagnaEntityLayers;
 import roeyqian.magnatour.renderstate.supreme.PaleLordRenderState;
 
 @Environment(EnvType.CLIENT)
@@ -37,7 +37,7 @@ public final class PaleLordRenderer extends MobRenderer<Monster, PaleLordRenderS
   public PaleLordRenderer(
       EntityRendererProvider.Context context
   ) {
-    super(context, new PaleLordModel(context.bakeLayer(RegEntityLayers.PALE_LORD)), 0.6F);
+    super(context, new PaleLordModel(context.bakeLayer(MagnaEntityLayers.PALE_LORD)), 0.6F);
   }
 
   @NonNull @Override

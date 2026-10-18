@@ -41,7 +41,7 @@ import roeyqian.magnatour.renderer.universe.UniverseAnnihilatorRenderer;
 import roeyqian.magnatour.renderer.universe.UniverseGuardianRenderer;
 
 @Environment(EnvType.CLIENT)
-public final class RegEntityLayers {
+public final class MagnaEntityLayers {
 
   public static final ModelLayerLocation BELL_RINGER = new ModelLayerLocation(
       Identifier.fromNamespaceAndPath(Magnatour.MOD_ID, "bell_ringer"), "main"
@@ -74,7 +74,7 @@ public final class RegEntityLayers {
       Identifier.fromNamespaceAndPath(Magnatour.MOD_ID, "universe_guardian"), "main"
   );
 
-  private RegEntityLayers() {}
+  private MagnaEntityLayers() {}
 
   public static void init() {
     EntityRenderers.register(MagnaEntities.UNIVERSE_ANNIHILATOR, UniverseAnnihilatorRenderer::new);
@@ -101,7 +101,7 @@ public final class RegEntityLayers {
 
     registerTntLike(MagnaEntities.PRIMED_CHUNK_TNT);
 
-    Magnatour.LOGGER.info("[Client] Initializing 'RegEntityLayers'");
+    Magnatour.LOGGER.info("[Client] Initializing 'MagnaEntityLayers'");
   }
 
   @SuppressWarnings({"unchecked", "rawtypes"})

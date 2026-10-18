@@ -24,7 +24,7 @@ import org.jspecify.annotations.NonNull;
 import roeyqian.magnatour.Magnatour;
 import roeyqian.magnatour.entity.universe.UniverseGuardian;
 import roeyqian.magnatour.model.universe.UniverseGuardianModel;
-import roeyqian.magnatour.registry.output.RegEntityLayers;
+import roeyqian.magnatour.registry.output.MagnaEntityLayers;
 import roeyqian.magnatour.renderstate.universe.UniverseGuardianRenderState;
 
 @Environment(EnvType.CLIENT)
@@ -38,7 +38,7 @@ public final class UniverseGuardianRenderer extends MobRenderer<UniverseGuardian
   public UniverseGuardianRenderer(
       EntityRendererProvider.Context context
   ) {
-    super(context, new UniverseGuardianModel(context.bakeLayer(RegEntityLayers.UNIVERSE_GUARDIAN)), 0.5F);
+    super(context, new UniverseGuardianModel(context.bakeLayer(MagnaEntityLayers.UNIVERSE_GUARDIAN)), 0.5F);
     Minecraft.getInstance().getTextureManager().registerAndLoad(TEXTURE, new UniverseGuardianTexture(TEXTURE));
     addLayer(new UniverseGuardianGlintLayer(this));
   }

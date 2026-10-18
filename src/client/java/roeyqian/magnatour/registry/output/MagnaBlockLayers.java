@@ -43,7 +43,7 @@ import roeyqian.magnatour.block.universe.UniverseMetaPortal;
 import roeyqian.magnatour.registry.stuff.MagnaBlocks;
 
 @Environment(EnvType.CLIENT)
-public final class RegBlockLayers {
+public final class MagnaBlockLayers {
 
   private static final int ARRIVAL_GRACE_TICKS = 20;
 
@@ -61,7 +61,7 @@ public final class RegBlockLayers {
       Magnatour.MOD_ID, "universe_meta_portal_overlay"
   );
 
-  private RegBlockLayers() {}
+  private MagnaBlockLayers() {}
 
   public static void init() {
     registerPortalOverlay(
@@ -132,7 +132,7 @@ public final class RegBlockLayers {
       );
     });
 
-    Magnatour.LOGGER.info("[Client] Initializing 'RegBlockLayers'");
+    Magnatour.LOGGER.info("[Client] Initializing 'MagnaBlockLayers'");
   }
 
   public static void renderPortalOverlay(

@@ -37,9 +37,9 @@ import roeyqian.magnatour.screen.universe.UniversePoolScreen;
 import roeyqian.magnatour.screen.universe.UniverseRefineryScreen;
 
 @Environment(EnvType.CLIENT)
-public final class RegScreens {
+public final class MagnaScreens {
 
-  private RegScreens() {}
+  private MagnaScreens() {}
 
   public static void init() {
     MenuScreens.register(MagnaMenus.UNIVERSE_ANNIHILATOR_HANDLER, UniverseAnnihilatorScreen::new);
@@ -61,7 +61,7 @@ public final class RegScreens {
     BlockEntityRenderers.register(MagnaBlockEntities.UNIVERSE_LIBRARY_ENTITY, UniverseLibraryRenderer::new);
     BlockEntityRenderers.register(MagnaBlockEntities.SUPREME_CHEST_ENTITY, SupremeChestRenderer::new);
 
-    Magnatour.LOGGER.info("[Client] Initializing 'RegScreens'");
+    Magnatour.LOGGER.info("[Client] Initializing 'MagnaScreens'");
   }
 
 }

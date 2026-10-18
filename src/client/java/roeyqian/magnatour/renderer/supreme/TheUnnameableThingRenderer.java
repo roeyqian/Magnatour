@@ -26,7 +26,7 @@ import org.jspecify.annotations.NonNull;
 import roeyqian.magnatour.Magnatour;
 import roeyqian.magnatour.entity.supreme.TheUnnameableThing;
 import roeyqian.magnatour.model.supreme.TheUnnameableThingModel;
-import roeyqian.magnatour.registry.output.RegEntityLayers;
+import roeyqian.magnatour.registry.output.MagnaEntityLayers;
 import roeyqian.magnatour.renderstate.supreme.TheUnnameableThingRenderState;
 
 @Environment(EnvType.CLIENT)
@@ -42,7 +42,7 @@ public final class TheUnnameableThingRenderer extends MobRenderer<TheUnnameableT
   public TheUnnameableThingRenderer(
       EntityRendererProvider.Context context
   ) {
-    super(context, new TheUnnameableThingModel(context.bakeLayer(RegEntityLayers.THE_UNNAMEABLE_THING)), 0.35F * MODEL_SCALE);
+    super(context, new TheUnnameableThingModel(context.bakeLayer(MagnaEntityLayers.THE_UNNAMEABLE_THING)), 0.35F * MODEL_SCALE);
   }
 
   @NonNull @Override
