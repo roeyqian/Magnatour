@@ -22,17 +22,11 @@ import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 
 // Fabric
-import net.fabricmc.fabric.api.entity.event.v1.ServerEntityLevelChangeEvents;
-import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
-import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 
 // Minecraft
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Registry;
 import net.minecraft.core.SectionPos;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -74,6 +68,11 @@ public final class VirtualBlockLighter {
   public static final int LIGHT_LEVEL = 15;
   public static final int MAX_BLOCKS_PER_TICK = 4096;
 
+  public static final TicketType UNIVERSE_TICKET = new TicketType(
+      TicketType.NO_TIMEOUT,
+      TicketType.FLAG_PERSIST | TicketType.FLAG_LOADING | TicketType.FLAG_SIMULATION | TicketType.FLAG_KEEP_DIMENSION_ACTIVE
+  );
+
   private static final int HALF_X = 32;
   private static final int HALF_Y = 16;
   private static final int HALF_Z = 32;
@@ -87,11 +86,6 @@ public final class VirtualBlockLighter {
   private static final int[] SPARSE_RANKS = createSourceRanks(SPARSE_OFFSETS);
 
   private static final ChunkPos[] UNIVERSE_CHUNK_OFFSETS = createUniverseChunkOffsets();
-
-  private static final TicketType UNIVERSE_TICKET = new TicketType(
-      TicketType.NO_TIMEOUT,
-      TicketType.FLAG_PERSIST | TicketType.FLAG_LOADING | TicketType.FLAG_SIMULATION | TicketType.FLAG_KEEP_DIMENSION_ACTIVE
-  );
 
   private static final Map<BlockGetter, WorldSources> LIGHT_SOURCES = new WeakHashMap<>();
 
@@ -128,14 +122,6 @@ public final class VirtualBlockLighter {
     if (sources == null) return 0;
     SectionSources section = sources.sections.get(sectionKey(pos));
     return section == null ? 0 : section.getPackedLight(localIndex(pos));
-  }
-
-  public static void init() {
-    Registry.register(BuiltInRegistries.TICKET_TYPE, "magnatour:universe_light", UNIVERSE_TICKET);
-    PayloadTypeRegistry.clientboundPlay().register(UniverseLightPayload.ID, UniverseLightPayload.CODEC);
-    ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> sendUniverseSnapshot(handler.player));
-    ServerPlayerEvents.AFTER_RESPAWN.register((oldPlayer, newPlayer, alive) -> sendUniverseSnapshot(newPlayer));
-    ServerEntityLevelChangeEvents.AFTER_PLAYER_CHANGE_LEVEL.register((player, origin, destination) -> sendUniverseSnapshot(player));
   }
 
   public static boolean isUniverseLit(
@@ -240,6 +226,21 @@ public final class VirtualBlockLighter {
   ) {
     if (!world.dimension().equals(payload.dimension())) return;
     enqueueUniverseState(world, payload.pos(), payload.active());
+  }
+
+  public static void sendUniverseSnapshot(
+      ServerPlayer player
+  ) {
+    Level world = player.level();
+    WorldSources sources = getWorldSources(world, false);
+    if (sources == null) return;
+    synchronized (sources) {
+      for (Set<Long> origins : sources.universeChunks.values()) {
+        for (long origin : origins) {
+          ServerPlayNetworking.send(player, new UniverseLightPayload(world.dimension(), BlockPos.of(origin), true));
+        }
+      }
+    }
   }
 
   public static void setActive(
@@ -527,21 +528,6 @@ public final class VirtualBlockLighter {
       long pos
   ) {
     return ((BlockPos.getY(pos) & 15) << 8) | ((BlockPos.getZ(pos) & 15) << 4) | (BlockPos.getX(pos) & 15);
-  }
-
-  private static void sendUniverseSnapshot(
-      ServerPlayer player
-  ) {
-    Level world = player.level();
-    WorldSources sources = getWorldSources(world, false);
-    if (sources == null) return;
-    synchronized (sources) {
-      for (Set<Long> origins : sources.universeChunks.values()) {
-        for (long origin : origins) {
-          ServerPlayNetworking.send(player, new UniverseLightPayload(world.dimension(), BlockPos.of(origin), true));
-        }
-      }
-    }
   }
 
   private static void enqueueUniverseState(

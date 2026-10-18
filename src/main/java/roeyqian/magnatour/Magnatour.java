@@ -19,9 +19,6 @@ package roeyqian.magnatour;
 // Fabric
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.creativetab.v1.FabricCreativeModeTab;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerChunkEvents;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 
 // Minecraft
 import net.minecraft.core.Registry;
@@ -39,10 +36,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 // Magnatour
-import roeyqian.magnatour.block.VirtualBlockLighter;
-import roeyqian.magnatour.entity.universe.UniverseAnnihilation;
-import roeyqian.magnatour.mixinhelper.universe.UniverseVoidArmorMain;
 import roeyqian.magnatour.registry.logic.MagnaComponents;
+import roeyqian.magnatour.registry.logic.MagnaEvents;
 import roeyqian.magnatour.registry.logic.MagnaNetworks;
 import roeyqian.magnatour.registry.logic.MagnaParticles;
 import roeyqian.magnatour.registry.logic.MagnaRecipes;
@@ -78,27 +73,14 @@ public class Magnatour implements ModInitializer {
 
   @Override
   public void onInitialize() {
-    ServerTickEvents.END_SERVER_TICK.register(server -> {
-      for (var player : server.getPlayerList().getPlayers()) {
-        UniverseVoidArmorMain.dropExcess(player);
-      }
-    });
-    ServerTickEvents.END_SERVER_TICK.register(UniverseAnnihilation::tick);
-    ServerLifecycleEvents.SERVER_STOPPED.register(UniverseAnnihilation::forget);
-    VirtualBlockLighter.init();
-    ServerTickEvents.END_LEVEL_TICK.register(VirtualBlockLighter::tick);
-    ServerChunkEvents.CHUNK_LOAD.register((world, chunk, _) -> VirtualBlockLighter.onChunkLoad(world, chunk));
-    ServerChunkEvents.CHUNK_UNLOAD.register((world, chunk) -> VirtualBlockLighter.onChunkUnload(world, chunk.getPos()));
     MagnaItems.init();
-    MagnaNetworks.init();
-
     MagnaBlocks.init();
     MagnaBlockEntities.init();
-
     MagnaEntities.init();
 
     MagnaMenus.init();
-
+    MagnaEvents.init();
+    MagnaNetworks.init();
     MagnaRecipes.init();
     MagnaParticles.init();
     MagnaComponents.init();
